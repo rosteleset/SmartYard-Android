@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="RangeSlider">
+        <attr name="maskColor" format="color" />
+        <attr name="trimThumbDrawable" format="reference" />
+        <attr name="playThumbDrawable" format="reference" />
+        <attr name="sliderHeight" format="dimension" />
+        <attr name="trimMode" format="boolean" />
+    </declare-styleable>
+</resources>

@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/clELD"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvELDName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Название события"
+        android:textAlignment="textStart"
+        android:textColor="@color/black_200"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:autoSizeMinTextSize="15sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cvELDHeader"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        app:cardCornerRadius="13dp"
+        app:cardElevation="0dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvELDName">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/tvELDAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:text="Адрес"
+                android:textColor="@color/black_200"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvELDDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:text="Дата, время"
+                android:textColor="@color/grey_100"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvELDAddress" />
+
+            <TextView
+                android:id="@+id/tvELDUnansweredCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:drawableLeft="@drawable/ic_eld_unanswered_call"
+                android:paddingBottom="8dp"
+                android:text="@string/event_log_unanswered_call"
+                android:textColor="@color/red_100"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvELDDate" />
+
+            <TextView
+                android:id="@+id/tvELDAnsweredCall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:drawableLeft="@drawable/ic_eld_answered_call"
+                android:paddingBottom="8dp"
+                android:text="@string/event_log_answered_call"
+                android:textColor="@color/green_100"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvELDDate" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.cardview.widget.CardView>
+
+    <ScrollView
+        android:id="@+id/svELD"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cvELDHeader">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
+
+                <ImageView
+                    android:id="@+id/ivHelpELD"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:translationZ="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/ic_baseline_help" />
+
+                <ru.madbrains.smartyard.ui.main.address.event_log.FaceImageView
+                    android:id="@+id/ivELDImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitCenter"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/ivBackwardELD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:alpha="0"
+                    android:translationZ="10dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/ivELDImage"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/ivELDImage"
+                    app:srcCompat="@drawable/ic_backward_10" />
+
+                <ImageView
+                    android:id="@+id/ivForwardELD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="32dp"
+                    android:alpha="0"
+                    android:translationZ="10dp"
+                    android:visibility="invisible"
+                    app:layout_constraintBottom_toBottomOf="@id/ivELDImage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/ivELDImage"
+                    app:srcCompat="@drawable/ic_forward_10" />
+
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/pvELDVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:alpha="0.0"
+                    android:background="@drawable/background_radius_transparent"
+                    android:translationZ="5dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivELDImage"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:use_artwork="false"
+                    app:use_controller="false"
+                    app:use_sensor_rotation="false" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clELDFriend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivELDImage">
+
+                    <Button
+                        android:id="@+id/bELDFriend"
+                        style="@style/buttonGreenFlooded"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvELDFriend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="6dp"
+                        android:elevation="10dp"
+                        android:text="@string/event_log_detail_friend"
+                        android:textColor="@color/white_0"
+                        android:textSize="18sp"
+                        app:drawableLeftCompat="@drawable/ic_eld_friend"
+                        app:layout_constraintBottom_toBottomOf="@+id/bELDFriend"
+                        app:layout_constraintEnd_toEndOf="@+id/bELDFriend"
+                        app:layout_constraintStart_toStartOf="@+id/bELDFriend"
+                        app:layout_constraintTop_toTopOf="@+id/bELDFriend" />
+
+                    <TextView
+                        android:id="@+id/tvELDFriendDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:singleLine="false"
+                        android:text="@string/event_log_detail_friend_description"
+                        android:textColor="@color/black_200"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bELDFriend" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/clELDFoe"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/ivELDImage">
+
+                    <Button
+                        android:id="@+id/bELDFoe"
+                        style="@style/buttonRedFlooded"
+                        android:layout_width="match_parent"
+                        android:layout_height="36dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tvELDFoe"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawablePadding="6dp"
+                        android:elevation="10dp"
+                        android:text="@string/event_log_detail_foe"
+                        android:textColor="@color/white_0"
+                        android:textSize="18sp"
+                        app:drawableLeftCompat="@drawable/ic_eld_foe"
+                        app:layout_constraintBottom_toBottomOf="@+id/bELDFoe"
+                        app:layout_constraintEnd_toEndOf="@+id/bELDFoe"
+                        app:layout_constraintStart_toStartOf="@+id/bELDFoe"
+                        app:layout_constraintTop_toTopOf="@+id/bELDFoe" />
+
+                    <TextView
+                        android:id="@+id/tvELDFoeDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
+                        android:singleLine="false"
+                        android:text="@string/event_log_detail_foe_description"
+                        android:textColor="@color/black_200"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/bELDFoe" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

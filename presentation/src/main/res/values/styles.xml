@@ -1,0 +1,114 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="fontFamily">@font/source_sans_family</item>
+    </style>
+
+    <!-- No action bar -->
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <!-- Splash application theme. -->
+    <style name="AppTheme.Launcher">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
+    </style>
+
+    <!-- Dialog style -->
+    <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:textColorPrimary">@color/grey_100</item>
+        <item name="android:windowTitleStyle">@style/WindowTitleStyle</item>
+    </style>
+
+    <style name="WindowTitleStyle" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <!-- Нижняя навигация -->
+    <style name="BottomNavigationView">
+        <item name="itemTextColor">@drawable/color_bottom_nav_item</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.BottomNavigation.Overline</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.BottomNavigation.Overline</item>
+    </style>
+
+    <style name="TextAppearance.BottomNavigation.Overline" parent="TextAppearance.MaterialComponents.Overline">
+        <item name="android:textSize">8sp</item>
+        <item name="android:fontFamily">regular</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <!-- Tab layout -->
+    <style name="MyCustomTextAppearance" parent="TextAppearance.Design.Tab">
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <!-- Кнопка зеленая, с залитым фоном-->
+    <style name="buttonGreenFlooded" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/button_bg_flooded_rounded_green</item>
+        <item name="android:textColor">@color/white_0</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Кнопка красная, с залитым фоном-->
+    <style name="buttonRedFlooded" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/button_bg_flooded_rounded_red</item>
+        <item name="android:textColor">@color/white_0</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Кнопка синяя, с залитым фоном-->
+    <style name="buttonBlueFlooded" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/button_bg_flooded_rounded</item>
+        <item name="android:textColor">@color/white_0</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <!-- Кнопка синяя, без фоном-->
+    <style name="buttonBlueNoFlooded" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/button_bg_no_flooded_rounded</item>
+        <item name="android:textColor">@drawable/button_text_no_flooded</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+    <style name="clock_style" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Buttom Sheet Dialog -->
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/rounded_buttom_sheet_dialog</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/white_transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+</resources>

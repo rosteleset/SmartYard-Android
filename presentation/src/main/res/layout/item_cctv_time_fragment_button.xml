@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/buttonView"
+    android:layout_width="wrap_content"
+    android:layout_height="24dp"
+    android:orientation="horizontal"
+    android:background="?attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true"
+>
+
+    <TextView
+        android:id="@+id/tvTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        tools:text="03.00 - 06.00"
+        android:paddingStart="9dp"
+        android:paddingEnd="9dp"
+        android:textColor="@color/grey_100"
+        android:textSize="14sp"
+        android:textStyle="normal"
+        android:background="@drawable/ic_time_fragment_button_bg"
+    />
+
+</LinearLayout>

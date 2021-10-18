@@ -1,0 +1,19 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/badge_frame_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tvBadge"
+        android:layout_width="10dp"
+        android:layout_height="10dp"
+        android:layout_gravity="top|center_horizontal"
+        android:layout_marginStart="10dp"
+        android:textColor="@android:color/white"
+        android:background="@drawable/ic_ellipse_badge"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:padding="2dp"
+        tools:text="9+" />
+</FrameLayout>

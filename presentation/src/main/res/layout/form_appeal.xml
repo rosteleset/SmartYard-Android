@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_radius"
+    android:orientation="vertical"
+    tools:showIn="@layout/fragment_appeal">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="24dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/nameText"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/background_edit_text_radius"
+                android:ems="10"
+                android:hint="Имя*"
+                android:inputType="textPersonName"
+                android:padding="16dp"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/patronymicText"
+                android:textCursorDrawable="@drawable/color_cursor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:background="@drawable/background_edit_text_radius"
+                android:ems="10"
+                android:hint="@string/appeal_title_patronymic"
+                android:inputType="textPersonName"
+                android:padding="16dp"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnDone"
+                style="@style/buttonBlueFlooded"
+                android:layout_width="match_parent"
+                android:layout_height="61dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="42dp"
+                android:layout_marginEnd="24dp"
+                android:paddingStart="50dp"
+                android:paddingTop="18dp"
+                android:paddingEnd="50dp"
+                android:paddingBottom="18dp"
+                tools:text="@string/next" />
+
+            <TextView
+                android:id="@+id/tvError"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:textAlignment="center"
+                android:textColor="@color/red_100"
+                android:visibility="gone"
+                tools:text="@string/send_sms_error_code"
+                tools:visibility="visible"
+
+                />
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

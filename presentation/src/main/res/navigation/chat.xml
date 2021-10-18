@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/chat"
+    app:startDestination="@id/chatFragment2">
+    <fragment
+        android:id="@+id/chatFragment2"
+        android:name="ru.madbrains.smartyard.ui.main.chat.ChatFragment"
+        android:label="ChatFragment" />
+</navigation>

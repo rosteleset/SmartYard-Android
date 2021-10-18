@@ -1,0 +1,161 @@
+package ru.madbrains.smartyard.ui.main.settings.accessAddress.adapterdelegates
+
+import android.Manifest
+import android.app.Activity
+import android.content.ContentUris
+import android.content.Context
+import android.content.pm.PackageManager
+import android.database.Cursor
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.ContactsContract
+import android.provider.ContactsContract.Contacts
+import android.provider.ContactsContract.PhoneLookup
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.isVisible
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
+import kotlinx.android.synthetic.main.item_contact_access_address.view.*
+import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
+import ru.rambler.libs.swipe_layout.SwipeLayout
+import java.io.IOException
+import java.io.InputStream
+
+/**
+ * @author Nail Shakurov
+ * Created on 26/02/2020.
+ */
+class ContactAdapterDelegate(
+    var activity: Activity,
+    var hideSms: Boolean,
+    private val deleteListener: (position: Int, number: String) -> Unit,
+    private val smsListener: (number: String) -> Unit
+) :
+    AdapterDelegate<List<ContactModel>>() {
+
+    private val inflater: LayoutInflater = activity.layoutInflater
+
+    override fun isForViewType(items: List<ContactModel>, position: Int): Boolean =
+        true
+
+    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
+        AddressCameraViewHolder(
+            inflater.inflate(
+                R.layout.item_contact_access_address,
+                parent,
+                false
+            )
+        )
+
+    override fun onBindViewHolder(
+        items: List<ContactModel>,
+        position: Int,
+        holder: RecyclerView.ViewHolder,
+        payloads: MutableList<Any>
+    ) {
+        val vh = holder as AddressCameraViewHolder
+        holder?.apply {
+            val item: ContactModel = items[position]
+            activity.applicationContext?.let {
+                var infoContact: Contact? = null
+                if (ContextCompat.checkSelfPermission(activity, Manifest.permission.WRITE_CONTACTS)
+                    == PackageManager.PERMISSION_GRANTED
+                ) {
+                    infoContact = getInfoNumberContact(
+                        item.number,
+                        it
+                    )
+                }
+
+                tvTitle.text = infoContact?.name ?: item.number
+
+                Glide.with(it)
+                    .load(infoContact?.avatar)
+                    .placeholder(R.drawable.ic_userpic)
+                    .apply(RequestOptions.circleCropTransform())
+                    .into(holder.ivAvatar)
+            }
+
+            rightViewDelete.setOnClickListener {
+                holder.swipeLayout.reset()
+                deleteListener.invoke(position, item.number)
+            }
+
+            tvSms.isVisible = !hideSms
+
+            tvSms.setOnClickListener {
+                smsListener.invoke(item.number)
+            }
+        }
+    }
+
+    internal class AddressCameraViewHolder(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
+        val tvTitle: TextView = itemView.tvTitle
+        val rightViewDelete: LinearLayout = itemView.rightViewDelete
+        val ivAvatar: ImageView = itemView.ivAvatar
+        val swipeLayout: SwipeLayout = itemView.swipeLayout
+        val tvSms: TextView = itemView.tvSms
+    }
+
+    private fun getInfoNumberContact(phoneNumber: String, context: Context): Contact? {
+        var photo = AppCompatResources.getDrawable(
+            context, R.drawable.ic_userpic
+        )?.toBitmap()
+
+        var contactName: String? = null
+        var contactId: String? = null
+
+        val uri = Uri.withAppendedPath(
+            PhoneLookup.CONTENT_FILTER_URI,
+            Uri.encode(phoneNumber)
+        )
+        val projection =
+            arrayOf(PhoneLookup.DISPLAY_NAME, PhoneLookup._ID)
+
+        val cursor: Cursor? = context.contentResolver.query(uri, projection, null, null, null)
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
+                contactName = cursor.getString(0)
+                contactId =
+                    cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID))
+            }
+            cursor.close()
+
+            if (contactId != null) {
+                try {
+                    val inputStream: InputStream? = Contacts.openContactPhotoInputStream(
+                        context.contentResolver,
+                        ContentUris.withAppendedId(Contacts.CONTENT_URI, contactId!!.toLong())
+                    )
+                    if (inputStream != null) {
+                        photo = BitmapFactory.decodeStream(inputStream)
+                    }
+                    assert(inputStream != null)
+                    inputStream?.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        }
+
+        return Contact(contactName, photo)
+    }
+
+    private data class Contact(
+        var name: String?,
+        var avatar: Bitmap?
+    )
+}

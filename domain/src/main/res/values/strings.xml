@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Текст ошибок -->
+    <string name="common_error_connection">Ошибка соединения.</string>
+    <string name="common_timeout">Тайм-аут</string>
+    <string name="common_too_many">Слишком много попыток. Подождите.</string>
+    <string name="common_unauthorized">UNAUTHORIZED</string>
+    <string name="common_do_authorization_on_another">Произведена авторизация на другом устройстве.</string>
+    <string name="common_error">Ошибка.</string>
+    <string name="common_not_found">Не найдено.</string>
+    <string name="no_content">Нет контента.</string>
+    <string name="title_0">Внимание!</string>
+
+    <string name="type_internet">Интернет</string>
+    <string name="type_iptv">Телевидение</string>
+    <string name="type_phone">Телефония</string>
+    <string name="type_domophone">Умный домофон</string>
+    <string name="type_cctv">Видеонаблюдение</string>
+    <string name="type_ctv">CTV</string>
+    <string name="type_gsm">GSM</string>
+</resources>
