@@ -13,13 +13,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import kotlinx.android.synthetic.main.fragment_access_address.*
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentAccessAddressBinding
 import ru.madbrains.smartyard.ui.Type
-import ru.madbrains.smartyard.ui.main.address.AddressViewModel
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.adapterdelegates.ContactAdapterDelegate
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
@@ -29,6 +27,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 
 class AccessAddressFragment : Fragment() {
+    private var _binding: FragmentAccessAddressBinding? = null
+    private val binding get() = _binding!!
+
     private var listAccessBarrierGate = mutableListOf<ContactModel>()
     private var listPermanentAccessAddress = mutableListOf<ContactModel>()
     private lateinit var adapterAccessBarrierGate: ListDelegationAdapter<List<ContactModel>>
@@ -46,10 +47,13 @@ class AccessAddressFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_access_address, container, false)
+    ): View {
+        _binding = FragmentAccessAddressBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private fun initAddContact() {
-        tvAddBarrierGate.setOnClickListener {
+        binding.tvAddBarrierGate.setOnClickListener {
             val dialog = DialogShareAccessDialog()
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
@@ -61,7 +65,7 @@ class AccessAddressFragment : Fragment() {
             dialog.show(parentFragmentManager, "")
         }
 
-        tvPermanentAccessAddress.setOnClickListener {
+        binding.tvPermanentAccessAddress.setOnClickListener {
             val dialog = DialogShareAccessDialog()
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
@@ -79,23 +83,23 @@ class AccessAddressFragment : Fragment() {
             viewLifecycleOwner,
             Observer {
                 if (it.doorCode == null) {
-                    llCode.isVisible = false
+                    binding.llCode.isVisible = false
                 } else {
-                    tvCodeOpen.text = it.doorCode
+                    binding.tvCodeOpen.text = it.doorCode
                 }
                 val c: Calendar = Calendar.getInstance()
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val getCurrentDateTime = sdf.format(c.time)
                 if (getCurrentDateTime <= it.autoOpen) {
-                    btnGuestAccessOpen.isClickable = false
-                    btnGuestAccessOpen.isChecked = true
+                    binding.btnGuestAccessOpen.isClickable = false
+                    binding.btnGuestAccessOpen.isChecked = true
                 }
                 hideCodeOpen(it.allowDoorCode)
 
                 if (it.frsDisabled == false) {
-                    expLayoutByFace.expand()
+                    binding.expLayoutByFace.expand()
                 } else {
-                    expLayoutByFace.collapse()
+                    binding.expLayoutByFace.collapse()
                 }
             }
         )
@@ -137,28 +141,28 @@ class AccessAddressFragment : Fragment() {
         mViewModel.resetCode.observe(
             viewLifecycleOwner,
             Observer {
-                tvCodeOpen.text = it.code.toString()
+                binding.tvCodeOpen.text = it.code.toString()
             }
         )
 
-        ivRefreshCode.setOnClickListener {
+        binding.ivRefreshCode.setOnClickListener {
             mViewModel.resetCode(flatId)
         }
     }
 
     private fun checkHide() {
         // скрываем постоянный доступ к адресу
-        cvPermanentAccessAddress.isVisible = contractOwner
-        tvTitlePermanentAccessAddress.isVisible = contractOwner
+        binding.cvPermanentAccessAddress.isVisible = contractOwner
+        binding.tvTitlePermanentAccessAddress.isVisible = contractOwner
 
         // Если hasGates = false, то скрываем временный доступ
-        tvTitleAccessBarrierGate.isVisible = hasGates
-        cvAccessGate.isVisible = hasGates
+        binding.tvTitleAccessBarrierGate.isVisible = hasGates
+        binding.cvAccessGate.isVisible = hasGates
     }
 
     private fun hideCodeOpen(availableDoorCode: Boolean) {
-        llCode.isVisible = availableDoorCode
-        view8.isVisible = availableDoorCode
+        binding.llCode.isVisible = availableDoorCode
+        binding.view8.isVisible = availableDoorCode
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -180,21 +184,21 @@ class AccessAddressFragment : Fragment() {
 
         mViewModel.getRoommateAndIntercom(flatId)
 
-        tvShareAccess.setOnClickListener {
+        binding.tvShareAccess.setOnClickListener {
             WebViewDialogFragment(R.string.help_share_access).show(requireActivity().supportFragmentManager, "HelpShareAccess")
         }
 
-        btnGuestAccessOpen.isChecked = false
-        btnGuestAccessOpen.setOnClickListener {
+        binding.btnGuestAccessOpen.isChecked = false
+        binding.btnGuestAccessOpen.setOnClickListener {
             showDialog()
         }
 
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        tvAddressName.text = address
+        binding.tvAddressName.text = address
 
-        btnManageFaces.setOnClickListener {
+        binding.btnManageFaces.setOnClickListener {
             val action = AccessAddressFragmentDirections.actionAccessAddressFragmentToFaceSettingsFragment(address)
             action.flatId = flatId
             this.findNavController().navigate(action)
@@ -202,7 +206,7 @@ class AccessAddressFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        rvAccessBarrierGate.apply {
+        binding.rvAccessBarrierGate.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapterAccessBarrierGate = ListDelegationAdapter<List<ContactModel>>(
@@ -215,9 +219,9 @@ class AccessAddressFragment : Fragment() {
             )
         )
         adapterAccessBarrierGate.items = listAccessBarrierGate
-        rvAccessBarrierGate.adapter = adapterAccessBarrierGate
+        binding.rvAccessBarrierGate.adapter = adapterAccessBarrierGate
 
-        rvPermanentAccessAddress.apply {
+        binding.rvPermanentAccessAddress.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapterPermanentAccessAddress = ListDelegationAdapter<List<ContactModel>>(
@@ -233,7 +237,7 @@ class AccessAddressFragment : Fragment() {
         )
 
         adapterPermanentAccessAddress.items = listPermanentAccessAddress
-        rvPermanentAccessAddress.adapter = adapterPermanentAccessAddress
+        binding.rvPermanentAccessAddress.adapter = adapterPermanentAccessAddress
     }
 
     private fun showDialog() {
@@ -243,10 +247,10 @@ class AccessAddressFragment : Fragment() {
             .setMessage(resources.getString(R.string.dialog_message))
             .setPositiveButton(resources.getString(R.string.dialog_yes)) { _, _ ->
                 mViewModel.guestAccessOpen(flatId)
-                btnGuestAccessOpen.isClickable = false
+                binding.btnGuestAccessOpen.isClickable = false
             }
             .setNegativeButton(resources.getString(R.string.dialog_no)) { _, _ ->
-                btnGuestAccessOpen.isChecked = false
+                binding.btnGuestAccessOpen.isChecked = false
                 returnTransition
             }.show()
     }

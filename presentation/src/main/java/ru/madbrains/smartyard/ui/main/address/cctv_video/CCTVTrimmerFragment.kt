@@ -33,12 +33,7 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.MimeTypes
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_cctv_detail_online.*
-import kotlinx.android.synthetic.main.fragment_cctv_exoplayer.*
-import kotlinx.android.synthetic.main.fragment_cctv_trimmer.*
-import kotlinx.android.synthetic.main.fragment_cctv_trimmer.videoWrap
-import kotlinx.android.synthetic.main.fragment_city_camera.*
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -47,6 +42,7 @@ import ru.madbrains.lib.timeInMs
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.clamp
+import ru.madbrains.smartyard.databinding.FragmentCctvTrimmerBinding
 import ru.madbrains.smartyard.removeTrailingZeros
 import ru.madbrains.smartyard.show
 import ru.madbrains.smartyard.ui.animationFadeInFadeOut
@@ -55,16 +51,18 @@ import ru.madbrains.smartyard.ui.main.UserInteractionListener
 import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVTrimmerViewModel.Companion.dialogPrepareVideo
 import ru.madbrains.smartyard.ui.main.address.cctv_video.adapters.TimeFragmentButtonsAdapter
 import ru.madbrains.smartyard.ui.showStandardAlert
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 import timber.log.Timber
 
 class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
+    private var _binding: FragmentCctvTrimmerBinding? = null
+    private val binding get() = _binding!!
+
     private var mPlayer: SimpleExoPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private lateinit var chosenDate: LocalDate
 
     private val mDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yy")
-    private val mCCTVViewModel: CCTVViewModel by stateSharedViewModel()
+    private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
     private val mViewModel by viewModel<CCTVTrimmerViewModel>()
     private var mCurrentPlaybackData: CCTVTrimmerViewModel.PlayerIntervalChangeData? = null
 
@@ -106,7 +104,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
 
         mViewModel.setAvailableRanges(mCCTVViewModel.availableRanges)
-        rangePlayer.setAvailableIntervals(mCurrentPlaybackData?.interval, archiveRanges)
+        binding.rangePlayer.setAvailableIntervals(mCurrentPlaybackData?.interval, archiveRanges)
         //rangePlayer.setBarHeight(2.dpToPx())
     }
 
@@ -124,7 +122,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             }
         }
 
-        rangeTrimmer.setAvailableIntervals(interval, trimmerRanges)
+        binding.rangeTrimmer.setAvailableIntervals(interval, trimmerRanges)
     }
 
     //позиционирование в указанную временную точку в миллисекундах внутри интервала
@@ -170,7 +168,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
 
         mPlayer?.seekTo(seekToTime.timeInMs() - archiveRanges[currentArchiveRangeIndex].from.timeInMs())
-        rangePlayer.slider.setSeekFromPlayer(playerCurrentPosition())
+        binding.rangePlayer.slider.setSeekFromPlayer(playerCurrentPosition())
     }
 
     //текущая позиция видео в миллисекундах внутри интервала
@@ -217,16 +215,16 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
     private fun hideVideoControllers() {
         if (mExoPlayerFullscreen) {
-            contentWrap?.visibility = View.GONE
-            mFullScreens?.visibility = View.GONE
+            binding.contentWrap.visibility = View.GONE
+            binding.mFullScreens.visibility = View.GONE
             areVideoControllersShown = false
         }
     }
 
     private fun showVideoControllers() {
         if (mExoPlayerFullscreen) {
-            contentWrap?.visibility = View.VISIBLE
-            mFullScreens?.visibility = View.VISIBLE
+            binding.contentWrap.visibility = View.VISIBLE
+            binding.mFullScreens.visibility = View.VISIBLE
             areVideoControllersShown = true
             resetInactiveTimer()
         }
@@ -238,7 +236,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         savedInstanceState: Bundle?
     ): View? {
         (activity as? MainActivity)?.setUserInteractionListener(this)
-        return inflater.inflate(R.layout.fragment_cctv_trimmer, container, false)
+        _binding = FragmentCctvTrimmerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onDestroyView() {
@@ -266,133 +265,133 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     private fun setFullscreenMode() {
-        lpContentWrap = ConstraintLayout.LayoutParams(contentWrap.layoutParams as ConstraintLayout.LayoutParams)
+        lpContentWrap = ConstraintLayout.LayoutParams(binding.contentWrap.layoutParams as ConstraintLayout.LayoutParams)
 
-        lpVideoWrap = LinearLayout.LayoutParams(videoWrap.layoutParams as LinearLayout.LayoutParams)
-        (videoWrap.parent as ViewGroup).removeView(videoWrap)
-        clVideoPlayback.addView(videoWrap, 1)
+        lpVideoWrap = LinearLayout.LayoutParams(binding.videoWrap.layoutParams as LinearLayout.LayoutParams)
+        (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+        binding.clVideoPlayback.addView(binding.videoWrap, 1)
 
-        lpRangeSlider = FrameLayout.LayoutParams(rangePlayer.layoutParams as FrameLayout.LayoutParams)
-        (rangePlayer.parent as ViewGroup).removeView(rangePlayer)
-        llControls.addView(rangePlayer, 0)
+        lpRangeSlider = FrameLayout.LayoutParams(binding.rangePlayer.layoutParams as FrameLayout.LayoutParams)
+        (binding.rangePlayer.parent as ViewGroup).removeView(binding.rangePlayer)
+        binding.llControls.addView(binding.rangePlayer, 0)
 
-        (panelTrim.parent as ViewGroup).removeView(panelTrim)
-        (btnMainAction.parent as ViewGroup).removeView(btnMainAction)
+        (binding.panelTrim.parent as ViewGroup).removeView(binding.panelTrim)
+        (binding.btnMainAction.parent as ViewGroup).removeView(binding.btnMainAction)
 
         //скрываем ненужные элементы
-        imageView.visibility = View.INVISIBLE
-        ivBack.visibility = View.INVISIBLE
-        tvTitle.visibility = View.INVISIBLE
-        gradStart.visibility = View.INVISIBLE
-        gradEnd.visibility = View.INVISIBLE
+        binding.imageView.visibility = View.INVISIBLE
+        binding.ivBack.visibility = View.INVISIBLE
+        binding.tvTitle.visibility = View.INVISIBLE
+        binding.gradStart.visibility = View.INVISIBLE
+        binding.gradEnd.visibility = View.INVISIBLE
         (activity as? MainActivity)?.hideSystemUI()
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
-        contentWrap.background = null
-        svContentWrap.background = null
-        flVideoPlayback.setBackgroundColor(Color.BLACK)
-        llControls.background = ColorDrawable(Color.parseColor("#77000000"))
+        binding.contentWrap.background = null
+        binding.svContentWrap.background = null
+        binding.flVideoPlayback.setBackgroundColor(Color.BLACK)
+        binding.llControls.background = ColorDrawable(Color.parseColor("#77000000"))
 
-        playerResizeMode = mPlayerView.resizeMode
-        mPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
+        playerResizeMode = binding.mPlayerView.resizeMode
+        binding.mPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        binding.mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
 
         //layouts в полноэкранном режиме
-        val lp2 = videoWrap.layoutParams as ConstraintLayout.LayoutParams
+        val lp2 = binding.videoWrap.layoutParams as ConstraintLayout.LayoutParams
         lp2.width = ConstraintLayout.LayoutParams.MATCH_PARENT
         lp2.height = ConstraintLayout.LayoutParams.MATCH_PARENT
         lp2.topToTop = R.id.clVideoPlayback
         lp2.bottomToBottom = R.id.clVideoPlayback
         lp2.startToStart = R.id.clVideoPlayback
         lp2.endToEnd = R.id.clVideoPlayback
-        videoWrap.layoutParams = lp2
-        videoWrap.requestLayout()
+        binding.videoWrap.layoutParams = lp2
+        binding.videoWrap.requestLayout()
 
-        val lp = (contentWrap.layoutParams as ConstraintLayout.LayoutParams)
+        val lp = (binding.contentWrap.layoutParams as ConstraintLayout.LayoutParams)
         lp.topToBottom = ConstraintLayout.LayoutParams.UNSET
         lp.startToStart = R.id.clVideoPlayback
         lp.endToEnd = R.id.clVideoPlayback
         lp.bottomToBottom = R.id.clVideoPlayback
         lp.height = ConstraintLayout.LayoutParams.WRAP_CONTENT
-        contentWrap.layoutParams = lp
-        contentWrap.requestLayout()
-        (mPlayerView.parent as ZoomLayout).resetZoom()
+        binding.contentWrap.layoutParams = lp
+        binding.contentWrap.requestLayout()
+        (binding.mPlayerView.parent as ZoomLayout).resetZoom()
 
-        (rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(true)
-        tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.white_0))
-        tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.white_0))
-        btnPlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_p_button_fs)
+        (binding.rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(true)
+        binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.white_0))
+        binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.white_0))
+        binding.btnPlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_p_button_fs)
 
         areVideoControllersShown = true
         resetInactiveTimer()
 
-        rangePlayer.setupRV(requireContext())
+        binding.rangePlayer.setupRV(requireContext())
     }
 
     private fun setNormalMode() {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
-            contentWrap.visibility = View.VISIBLE
-            mFullScreens.visibility = View.VISIBLE
+            binding.contentWrap.visibility = View.VISIBLE
+            binding.mFullScreens.visibility = View.VISIBLE
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-            (videoWrap.parent as ViewGroup).removeView(videoWrap)
-            llControls.addView(videoWrap, 0)
+            (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+            binding.llControls.addView(binding.videoWrap, 0)
 
-            (rangePlayer.parent as ViewGroup).removeView(rangePlayer)
-            videoWrap.addView(rangePlayer, 2)
+            (binding.rangePlayer.parent as ViewGroup).removeView(binding.rangePlayer)
+            binding.videoWrap.addView(binding.rangePlayer, 2)
 
-            llControls.addView(panelTrim)
-            llControls.addView(btnMainAction)
+            binding.llControls.addView(binding.panelTrim)
+            binding.llControls.addView(binding.btnMainAction)
 
             //показываем скрытые элементы
-            imageView.visibility = View.VISIBLE
-            ivBack.visibility = View.VISIBLE
-            tvTitle.visibility = View.VISIBLE
-            gradStart.visibility = View.VISIBLE
-            gradEnd.visibility = View.VISIBLE
+            binding.imageView.visibility = View.VISIBLE
+            binding.ivBack.visibility = View.VISIBLE
+            binding.tvTitle.visibility = View.VISIBLE
+            binding.gradStart.visibility = View.VISIBLE
+            binding.gradEnd.visibility = View.VISIBLE
             (activity as? MainActivity)?.showSystemUI()
 
-            contentWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_upper_clip)
-            svContentWrap.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
-            flVideoPlayback.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-            llControls.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.contentWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_upper_clip)
+            binding.svContentWrap.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.flVideoPlayback.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.llControls.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
 
-            mPlayerView.resizeMode = playerResizeMode
-            mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
+            binding.mPlayerView.resizeMode = playerResizeMode
+            binding.mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
 
             //возвращаем дефолтные layouts
-            videoWrap.layoutParams = lpVideoWrap
-            videoWrap.requestLayout()
+            binding.videoWrap.layoutParams = lpVideoWrap
+            binding.videoWrap.requestLayout()
 
-            rangePlayer.layoutParams = lpRangeSlider
-            rangePlayer.requestLayout()
+            binding.rangePlayer.layoutParams = lpRangeSlider
+            binding.rangePlayer.requestLayout()
 
-            contentWrap.layoutParams = lpContentWrap
-            contentWrap.requestLayout()
-            (mPlayerView.parent as ZoomLayout).resetZoom()
+            binding.contentWrap.layoutParams = lpContentWrap
+            binding.contentWrap.requestLayout()
+            (binding.mPlayerView.parent as ZoomLayout).resetZoom()
 
-            (rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(false)
-            tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_100))
-            tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_100))
-            btnPlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_p_button)
+            (binding.rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(false)
+            binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_100))
+            binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_100))
+            binding.btnPlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_p_button)
 
-            rangePlayer.setupRV(requireContext())
+            binding.rangePlayer.setupRV(requireContext())
         }
     }
 
     private fun setupUi(context: Context) {
-        contentWrap.clipToOutline = true
-        videoWrap.clipToOutline = true
+        binding.contentWrap.clipToOutline = true
+        binding.videoWrap.clipToOutline = true
 
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack(R.id.CCTVDetailFragment, true)
             this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
         }
-        mFullScreens.setOnClickListener {
+        binding.mFullScreens.setOnClickListener {
             mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
         }
-        tvTitle.text = getString(R.string.cctv_video_from_date, chosenDate.format(mDateFormatter))
-        rvTimeFragmentButtons.apply {
+        binding.tvTitle.text = getString(R.string.cctv_video_from_date, chosenDate.format(mDateFormatter))
+        binding.rvTimeFragmentButtons.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
             addItemDecoration(
                 DividerItemDecoration(
@@ -420,44 +419,44 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 mViewModel.positionRecyclerViewInterval.value ?: 0
             )
             if ((adapter as TimeFragmentButtonsAdapter).itemCount == 0) {
-                btnMainAction.visibility = View.INVISIBLE
+                binding.btnMainAction.visibility = View.INVISIBLE
             } else {
-                btnMainAction.visibility = View.VISIBLE
+                binding.btnMainAction.visibility = View.VISIBLE
             }
         }
-        btnPlay.setOnClickListener {
+        binding.btnPlay.setOnClickListener {
             mViewModel.toggleVideoPlay()
         }
-        tvSpeedDown.setOnClickListener {
+        binding.tvSpeedDown.setOnClickListener {
             mViewModel.changeSpeed(0.5)
         }
-        tvSpeedUp.setOnClickListener {
+        binding.tvSpeedUp.setOnClickListener {
             mViewModel.changeSpeed(2.0)
         }
-        btnMainAction.setOnClickListener {
+        binding.btnMainAction.setOnClickListener {
             mViewModel.pressMainButton(context)
         }
-        btnToPlayMode.setOnClickListener {
+        binding.btnToPlayMode.setOnClickListener {
             mViewModel.changeUIMode(CCTVTrimmerViewModel.UiMode.Play)
         }
-        btnStepPlus.setOnClickListener {
-            rangeTrimmer.slider.interval?.let {
+        binding.btnStepPlus.setOnClickListener {
+            binding.rangeTrimmer.slider.interval?.let {
                 mViewModel.changeTrimmerIntervalTo(15 * 60, it)
             }
         }
-        btnStepMinus.setOnClickListener {
-            rangeTrimmer.slider.interval?.let {
+        binding.btnStepMinus.setOnClickListener {
+            binding.rangeTrimmer.slider.interval?.let {
                 mViewModel.changeTrimmerIntervalTo(-15 * 60, it)
             }
         }
-        rangePlayer.slider.run {
+        binding.rangePlayer.slider.run {
             setCurrentDate(chosenDate)
             setSeekChangeListener { progress ->
                 playerSeekTo((playerDuration() * progress).toLong())
                 mViewModel.savePlayerState(playerCurrentPosition())
             }
         }
-        rangeTrimmer.slider.run {
+        binding.rangeTrimmer.slider.run {
             setCurrentDate(chosenDate)
             setSelectionChangeListener { from, to ->
                 mViewModel.saveCurrentSelection(TimeInterval(from, to))
@@ -492,27 +491,27 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.changePlayerInterval.observe(
             viewLifecycleOwner,
             EventObserver {
-                rangePlayer.slider.setIntervalPlayer(it.interval)
+                binding.rangePlayer.slider.setIntervalPlayer(it.interval)
                 mPlayer?.changeVideoSource(context, it)
             }
         )
         mViewModel.changeTrimInterval.observe(
             viewLifecycleOwner,
             EventObserver {
-                rangeTrimmer.slider.setIntervalTrimmer(it.interval, it.reset)
+                binding.rangeTrimmer.slider.setIntervalTrimmer(it.interval, it.reset)
                 generateTrimmerRanges(it.interval)
             }
         )
         mViewModel.shiftPickerPosition.observe(
             viewLifecycleOwner,
             EventObserver {
-                rangeTrimmer.slider.shiftPickerPositionByMs(it)
+                binding.rangeTrimmer.slider.shiftPickerPositionByMs(it)
             }
         )
         mViewModel.playState.observe(
             viewLifecycleOwner,
             Observer { playing ->
-                btnPlay.isSelected = playing
+                binding.btnPlay.isSelected = playing
                 mPlayer?.playWhenReady = playing
             }
         )
@@ -520,22 +519,22 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             viewLifecycleOwner,
             Observer { num ->
                 if (num == MAX_SPEED_UP_VALUE) {
-                    tvSpeedUp.text = ""
+                    binding.tvSpeedUp.text = ""
                 } else {
                     val speedUpText = (num * 2).clamp(0.25, 32.0)
                         .toString().removeTrailingZeros()
-                    tvSpeedUp.text =
+                    binding.tvSpeedUp.text =
                         getString(
                             R.string.cctv_speed_template,
                             speedUpText
                         )
                 }
                 if (num == MIN_SPEED_DOWN_VALUE) {
-                    tvSpeedDown.text = ""
+                    binding.tvSpeedDown.text = ""
                 } else {
                     val speedDownText = (num * 0.5).clamp(0.125, 8.0)
                         .toString().removeTrailingZeros()
-                    tvSpeedDown.text =
+                    binding.tvSpeedDown.text =
                         getString(
                             R.string.cctv_speed_template,
                             speedDownText
@@ -547,7 +546,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.videoLoaderVisible.observe(
             viewLifecycleOwner,
             EventObserver { visible ->
-                mVideoLoader.show(visible)
+                binding.mVideoLoader.show(visible)
             }
         )
         mViewModel.uiMode.observe(
@@ -565,7 +564,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.restoreSeek.observe(
             viewLifecycleOwner,
             EventObserver { position ->
-                rangePlayer.slider.setSeekFromPlayer(position)
+                binding.rangePlayer.slider.setSeekFromPlayer(position)
                 playerSeekTo(position)
                 mPlayer?.playWhenReady = (mViewModel.playState.value ?: false)
             }
@@ -574,7 +573,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.updateSeekTick.observe(
             viewLifecycleOwner,
             EventObserver {
-                rangePlayer.slider.setSeekFromPlayer(playerCurrentPosition())
+                binding.rangePlayer.slider.setSeekFromPlayer(playerCurrentPosition())
                 mViewModel.savePlayerState(playerCurrentPosition())
             }
         )
@@ -595,19 +594,19 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.playerMaskImages.observe(
             viewLifecycleOwner,
             EventObserver { images ->
-                rangePlayer.setMaskImages(images)
+                binding.rangePlayer.setMaskImages(images)
             }
         )
         mViewModel.trimmerMaskImages.observe(
             viewLifecycleOwner,
             EventObserver { images ->
-                rangeTrimmer.setMaskImages(images)
+                binding.rangeTrimmer.setMaskImages(images)
             }
         )
         mViewModel.trimmerPreviewImage.observe(
             viewLifecycleOwner,
             Observer { image ->
-                mPreview.setImageBitmap(image)
+                view?.findViewById<ImageView>(R.id.mPreview)?.setImageBitmap(image)
             }
         )
 
@@ -625,19 +624,19 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     private fun setTrimMode(active: Boolean) {
-        mPreview.show(active)
-        panelTrim.show(active)
-        panelPlay.show(!active)
-        btnMainAction.setText(if (active) R.string.cctv_download_and_get_link else R.string.cctv_choose_fragment)
-        mFullScreens.isVisible = !active
-        rangePlayer.show(!active, true)
-        rangeTrimmer.show(active, true)
-        rvTimeFragmentButtonsWrap.show(!active)
+        view?.findViewById<ImageView>(R.id.mPreview)?.show(active)
+        binding.panelTrim.show(active)
+        binding.panelPlay.show(!active)
+        binding.btnMainAction.setText(if (active) R.string.cctv_download_and_get_link else R.string.cctv_choose_fragment)
+        binding.mFullScreens.isVisible = !active
+        binding.rangePlayer.show(!active, true)
+        binding.rangeTrimmer.show(active, true)
+        binding.rvTimeFragmentButtonsWrap.show(!active)
     }
 
     override fun onStart() {
         super.onStart()
-        mPlayer = createPlayer(mPlayerView)
+        mPlayer = createPlayer(binding.mPlayerView)
         mCurrentPlaybackData?.run {
             mPlayer?.changeVideoSource(requireContext(), this)
         }
@@ -661,7 +660,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         p.removeView(videoView)
         p.addView(videoView, 0)
 
-        zlArchive.setSingleTapConfirmeListener {
+        binding.zlArchive.setSingleTapConfirmeListener {
             if (mExoPlayerFullscreen) {
                 if (areVideoControllersShown) {
                     hideVideoControllers()
@@ -672,12 +671,12 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
 
         //двойной тап делает перемотку вперед или назад в зависимости от места двойного тапа: слева - назад, справа - вперед
-        zlArchive.setDoubleTapConfirmedListener { x_pos ->
+        binding.zlArchive.setDoubleTapConfirmedListener { x_pos ->
             if (mPlayer?.playbackState == Player.STATE_READY && x_pos != null) {
                 var currentPosition = mPlayer?.currentPosition ?: 0
                 val lastPosition = (mPlayer?.duration ?: 0) - 1
                 var seekStep = CCTVTrimmerViewModel.SEEK_STEP
-                if (x_pos.toInt() < zlArchive.width / 2) {
+                if (x_pos.toInt() < binding.zlArchive.width / 2) {
                     seekStep = -seekStep
                 }
                 currentPosition += seekStep
@@ -707,7 +706,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 if (playbackState == Player.STATE_READY) {
                     mPlayer?.videoFormat?.let {
                         if (it.width > 0 && it.height > 0) {
-                            (mPlayerView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
+                            (binding.mPlayerView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
                         }
                     }
                 }
@@ -743,7 +742,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                         releasePlayer()
                         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
-                        mPlayer = createPlayer(mPlayerView)
+                        mPlayer = createPlayer(binding.mPlayerView)
                         mCurrentPlaybackData?.run {
                             mPlayer?.changeVideoSource(requireContext(), this)
                         }
@@ -828,8 +827,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        rangePlayer.setupRV(requireContext())
-        (mPlayerView.parent as ZoomLayout).resetZoom()
+        binding.rangePlayer.setupRV(requireContext())
+        (binding.mPlayerView.parent as ZoomLayout).resetZoom()
     }
 
     private fun releasePlayer() {
@@ -847,7 +846,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             releasePlayer()
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
-            mPlayer = createPlayer(mPlayerView)
+            mPlayer = createPlayer(binding.mPlayerView)
             mCurrentPlaybackData?.run {
                 mPlayer?.changeVideoSource(requireContext(), this)
             }

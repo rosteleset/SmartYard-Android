@@ -1,11 +1,7 @@
 package ru.madbrains.smartyard.ui
 
-import android.app.Activity
+import android.app.*
 import android.app.Activity.RESULT_OK
-import android.app.Dialog
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -27,23 +23,32 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
+import android.os.Bundle
+import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.View
 import android.view.Window
+import android.widget.DatePicker
 import android.widget.FrameLayout
 import android.widget.ProgressBar
+import android.widget.TimePicker
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.model.FcmCallData
 import ru.madbrains.domain.utils.listenerEmpty
@@ -216,7 +221,7 @@ class SoundChooser {
             fragment.context?.let { context ->
                 val currentTone = getChosenTone(context, type, flatId, prefs)
                 val intent = Intent(RingtoneManager.ACTION_RINGTONE_PICKER)
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE)
+                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, type)
                 intent.putExtra(
                     RingtoneManager.EXTRA_RINGTONE_TITLE,
                     context.getString(R.string.choose_sound)
@@ -438,5 +443,36 @@ fun animationFadeInFadeOut(view: View?) {
                         }
                 }
         }
+    }
+}
+
+class DatePickerFragment(
+    private val selectedDate: LocalDate,
+    private val minDate: LocalDate? = null,
+    private val callback: listenerGeneric<LocalDate>) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = DatePickerDialog(requireContext(), this,
+            selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth)
+        dialog.datePicker.maxDate = System.currentTimeMillis()
+        if (minDate != null) {
+            dialog.datePicker.minDate = ZonedDateTime.of(minDate, LocalTime.of(0, 0), ZoneId.systemDefault()).toInstant().toEpochMilli()
+        }
+        return dialog
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        callback(LocalDate.of(year, month + 1, dayOfMonth))
+    }
+}
+
+class TimePickerFragment(
+    private val selectedTime: LocalTime,
+    private val callback: listenerGeneric<LocalTime>) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        return TimePickerDialog(requireContext(), this, selectedTime.hour, selectedTime.minute,
+            DateFormat.is24HourFormat(requireContext()))
+    }
+    override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
+        callback(LocalTime.of(hourOfDay, minute))
     }
 }

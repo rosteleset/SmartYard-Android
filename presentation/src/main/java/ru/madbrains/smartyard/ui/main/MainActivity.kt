@@ -27,8 +27,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.android.material.shape.MaterialShapeDrawable
-import kotlinx.android.synthetic.main.activity_main.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.CommonActivity
 import ru.madbrains.smartyard.Event
@@ -38,6 +36,7 @@ import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_CH
 import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_MESSAGE_TYPE
 import ru.madbrains.smartyard.FirebaseMessagingService.TypeMessage
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ActivityMainBinding
 import ru.madbrains.smartyard.reduceToZero
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity
 import ru.madbrains.smartyard.ui.dpToPx
@@ -56,6 +55,8 @@ interface ExitFullscreenListener {
 }
 
 class MainActivity : CommonActivity() {
+    lateinit var binding: ActivityMainBinding
+
     override val mViewModel by viewModel<MainActivityViewModel>()
 
     private var currentNavController: LiveData<NavController>? = null
@@ -65,7 +66,9 @@ class MainActivity : CommonActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         /*(bottom_nav.background as MaterialShapeDrawable).apply {
             this.setStroke(2.0f, 12345)
@@ -73,9 +76,9 @@ class MainActivity : CommonActivity() {
 
         appVersion()
         val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
-        ViewCompat.setOnApplyWindowInsetsListener(relativeLayout) { _, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.relativeLayout) { _, insets ->
             ViewCompat.onApplyWindowInsets(
-                relativeLayout,
+                binding.relativeLayout,
                 insets.replaceSystemWindowInsets(
                     insets.systemWindowInsetLeft, 0,
                     insets.systemWindowInsetRight,
@@ -87,15 +90,15 @@ class MainActivity : CommonActivity() {
             setupBottomNavigationBar(false)
         } // Else, need to wait for onRestoreInstanceState
 
-        bottom_nav.itemIconTintList = null
+        binding.bottomNav.itemIconTintList = null
 
-        showBadge(this, bottom_nav, R.id.notification, "")
+        showBadge(this, binding.bottomNav, R.id.notification, "")
         mViewModel.onCreate()
 
         mViewModel.badge.observe(
             this,
             Observer { badge ->
-                if (badge) showBadge(this, bottom_nav, R.id.notification, "") else removeBadge()
+                if (badge) showBadge(this, binding.bottomNav, R.id.notification, "") else removeBadge()
             }
         )
 
@@ -103,7 +106,7 @@ class MainActivity : CommonActivity() {
             this,
             Observer { chat ->
                 if (chat) {
-                    showBadge(this, bottom_nav, R.id.chat, "")
+                    showBadge(this, binding.bottomNav, R.id.chat, "")
                 } else {
                     removeBadge(R.id.chat)
                 }
@@ -163,9 +166,9 @@ class MainActivity : CommonActivity() {
 
     private fun rootingTabMessage(messageType: TypeMessage) {
         if (messageType == TypeMessage.INBOX) {
-            bottom_nav.selectedItemId = R.id.notification
+            binding.bottomNav.selectedItemId = R.id.notification
         } else {
-            bottom_nav.selectedItemId = R.id.address
+            binding.bottomNav.selectedItemId = R.id.address
         }
     }
 
@@ -181,7 +184,7 @@ class MainActivity : CommonActivity() {
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         // Now that BottomNavigationBar has restored its instance state
         // and its selectedItemId, we can proceed with settings up the
@@ -233,39 +236,39 @@ class MainActivity : CommonActivity() {
 
     fun hideSystemUI() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        nav_host_container.post {
-            nav_host_container.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE or
+        binding.navHostContainer.post {
+            binding.navHostContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE or
                 View.SYSTEM_UI_FLAG_FULLSCREEN or
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
                 View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
-        bottom_nav.isVisible = false
+        binding.bottomNav.isVisible = false
     }
 
     fun showSystemUI() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        nav_host_container.post {
-            nav_host_container.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
+        binding.navHostContainer.post {
+            binding.navHostContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
-        bottom_nav.isVisible = true
+        binding.bottomNav.isVisible = true
     }
 
     fun navigateToAddressAuthFragment() {
-        bottom_nav.selectedItemId = R.id.address
+        binding.bottomNav.selectedItemId = R.id.address
         mViewModel.navigationToAddressAuthFragmentAction()
     }
 
     fun reloadToAddress() {
-        if (bottom_nav.selectedItemId == R.id.address) {
-            bottom_nav.selectedItemId = R.id.address
+        if (binding.bottomNav.selectedItemId == R.id.address) {
+            binding.bottomNav.selectedItemId = R.id.address
             mViewModel.navigationToAddress()
         }
     }
 
     fun removeBadge(id: Int = R.id.notification) {
-        val itemView: BottomNavigationItemView = bottom_nav.findViewById(id)
+        val itemView: BottomNavigationItemView = binding.bottomNav.findViewById(id)
         if (itemView.childCount == 3) {
             itemView.removeViewAt(2)
         }

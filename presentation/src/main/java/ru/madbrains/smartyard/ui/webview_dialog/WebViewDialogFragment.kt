@@ -7,29 +7,27 @@ import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.text.Html
 import android.view.*
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.fragment_web_view_dialog.*
-import ru.madbrains.smartyard.R
-
+import ru.madbrains.smartyard.databinding.FragmentWebViewDialogBinding
 
 class WebViewDialogFragment(private val resId: Int) : DialogFragment() {
+    private var _binding: FragmentWebViewDialogBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_web_view_dialog, container, false)
+    ): View {
+        _binding = FragmentWebViewDialogBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvHelpDialogContent.text = Html.fromHtml(getString(resId))
+        binding.tvHelpDialogContent.text = Html.fromHtml(getString(resId))
 
-        ivWebViewDialogClose.setOnClickListener {
+        binding.ivWebViewDialogClose.setOnClickListener {
             this.dismiss()
         }
     }

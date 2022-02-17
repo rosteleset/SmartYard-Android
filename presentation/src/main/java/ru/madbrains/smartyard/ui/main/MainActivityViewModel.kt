@@ -7,6 +7,7 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.domain.interactors.InboxInteractor
@@ -16,6 +17,7 @@ import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.ui.main.settings.SettingsViewModel
+import timber.log.Timber
 
 class MainActivityViewModel(
     private val authInteractor: AuthInteractor,
@@ -55,6 +57,8 @@ class MainActivityViewModel(
     }
 
     fun onCreate() {
+        Timber.d("debug_dmm baseUrl from storage: ${mPreferenceStorage.baseUrl}")
+        DataModule.URL = mPreferenceStorage.baseUrl ?: DataModule.URL
         checkAndRegisterFcmToken()
     }
 

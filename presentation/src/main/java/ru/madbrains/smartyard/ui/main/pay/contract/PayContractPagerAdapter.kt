@@ -3,13 +3,11 @@ package ru.madbrains.smartyard.ui.main.pay.contract
 import android.app.Activity
 import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_contract_pay.view.*
 import ru.madbrains.domain.model.Services
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ItemContractPayBinding
 import ru.madbrains.smartyard.ui.main.pay.PayAddressModel
 import ru.madbrains.smartyard.ui.openUrl
 
@@ -25,10 +23,8 @@ class PayContractPagerAdapter(
 ) : RecyclerView.Adapter<PayContractPagerAdapter.PageViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageViewHolder {
-        val itemView = LayoutInflater
-            .from(parent.context)
-            .inflate(R.layout.item_contract_pay, parent, false)
-        return PageViewHolder(itemView)
+        val itemBinding = ItemContractPayBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return PageViewHolder(itemBinding)
     }
 
     override fun getItemCount(): Int {
@@ -37,7 +33,7 @@ class PayContractPagerAdapter(
 
     override fun onBindViewHolder(holder: PageViewHolder, position: Int) {
         val account = contracts[position]
-        holder.itemView.run {
+        holder.itemBinding.run {
             tvOpenUserAccount.paintFlags = tvOpenUserAccount.paintFlags or Paint.UNDERLINE_TEXT_FLAG
             tvNumberContract.text = account.contractName
             tvBalance.text = account.getBalanceToRub()
@@ -60,5 +56,5 @@ class PayContractPagerAdapter(
         }
     }
 
-    class PageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+    class PageViewHolder(val itemBinding: ItemContractPayBinding) : RecyclerView.ViewHolder(itemBinding.root)
 }

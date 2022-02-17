@@ -9,24 +9,26 @@ import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
-import kotlinx.android.synthetic.main.form_appeal.view.*
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import androidx.core.widget.addTextChangedListener
 import ru.madbrains.domain.utils.listenerEmpty
+import ru.madbrains.smartyard.databinding.FormAppealBinding
 
 class AppealForm @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr), KoinComponent {
+    private var _binding: FormAppealBinding? = null
+    private val binding get() = _binding!!
 
     private val mViewModel: AppealFormViewModel by inject()
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.form_appeal, this, true)
+        _binding = FormAppealBinding.inflate(LayoutInflater.from(context) ,this, true)
     }
 
     private fun textChangeListener() {
@@ -40,13 +42,13 @@ class AppealForm @JvmOverloads constructor(
         success: listenerEmpty
     ) {
         mViewModel.loadName(arguments)
-        nameText?.addTextChangedListener { this.textChangeListener() }
+        binding.nameText.addTextChangedListener { this.textChangeListener() }
 
         mViewModel.sentName.observe(
             viewLifecycleOwner,
             Observer {
-                nameText?.setText(it.name)
-                patronymicText?.setText(it.patronymic)
+                binding.nameText.setText(it.name)
+                binding.patronymicText.setText(it.patronymic)
             }
         )
         mViewModel.localErrorsSink.observe(
@@ -55,13 +57,13 @@ class AppealForm @JvmOverloads constructor(
                 toggleError(true, error.status.messageId)
             }
         )
-        btnDone.setText(btnText)
-        btnDone?.setOnClickListener {
+        binding.btnDone.setText(btnText)
+        binding.btnDone.setOnClickListener {
             toggleError(false)
             if (validate()) {
                 mViewModel.sendName(
-                    nameText.text.toString(),
-                    patronymicText.text.toString()
+                    binding.nameText.text.toString(),
+                    binding.patronymicText.text.toString()
                 ) { success() }
             } else {
                 toggleError(true, R.string.appeal_validation_error)
@@ -70,15 +72,15 @@ class AppealForm @JvmOverloads constructor(
     }
 
     private fun validate(): Boolean {
-        return nameText.text.isNotEmpty()
+        return binding.nameText.text.isNotEmpty()
     }
 
     private fun toggleError(error: Boolean, @StringRes mesId: Int? = null) {
         if (error && mesId != null) {
-            tvError.visibility = View.VISIBLE
-            tvError.setText(mesId)
+            binding.tvError.visibility = View.VISIBLE
+            binding.tvError.setText(mesId)
         } else {
-            tvError.visibility = View.GONE
+            binding.tvError.visibility = View.GONE
         }
     }
 }

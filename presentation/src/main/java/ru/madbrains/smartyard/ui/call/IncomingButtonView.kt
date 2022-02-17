@@ -6,18 +6,20 @@ import android.view.LayoutInflater
 import android.widget.Checkable
 import android.widget.LinearLayout
 import androidx.core.view.isVisible
-import kotlinx.android.synthetic.main.item_incoming_call_button.view.*
 import ru.madbrains.domain.utils.listenerGeneric
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ItemIncomingCallButtonBinding
 
 class IncomingButtonView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr), Checkable {
+    private var _binding: ItemIncomingCallButtonBinding? = null
+    private val binding get() = _binding!!
+
     init {
-        LayoutInflater.from(context)
-            .inflate(R.layout.item_incoming_call_button, this, true)
+        _binding = ItemIncomingCallButtonBinding.inflate(LayoutInflater.from(context), this, true)
         setupAttrs(context, attrs)
     }
 
@@ -26,7 +28,7 @@ class IncomingButtonView @JvmOverloads constructor(
     private var bgChecked: Int = 0
     private var bgNormal: Int = 0
     private var SCREEN_ORIENTATION_LANDSCAPE = false
-    var mChecked: Boolean = false
+    private var mChecked: Boolean = false
 
     private fun setupAttrs(context: Context, attrs: AttributeSet?) {
         attrs?.let {
@@ -51,35 +53,35 @@ class IncomingButtonView @JvmOverloads constructor(
                 R.styleable.item_incoming_call_button_attributes_orientationLandscap,
                 false
             )
-            mButton.setBackgroundResource(bgNormal)
+            binding.mButton.setBackgroundResource(bgNormal)
             if (isCheckable) {
-                mButton.setOnClickListener { toggle() }
+                binding.mButton.setOnClickListener { toggle() }
             }
             if (SCREEN_ORIENTATION_LANDSCAPE) {
-                mButtonText.isVisible = false
+                binding.mButtonText.isVisible = false
             }
             if (text != -1) {
-                mButtonText.setText(text)
+                binding.mButtonText.setText(text)
             }
             typedArray.recycle()
         }
     }
 
     fun setText(resId: Int) {
-        mButtonText.setText(resId)
+        binding.mButtonText.setText(resId)
     }
 
     fun setText(text: String) {
-        mButtonText.text = text
+        binding.mButtonText.text = text
     }
 
     override fun setSelected(selected: Boolean) {
         super.setSelected(selected)
-        mButton.isSelected = selected
+        binding.mButton.isSelected = selected
     }
 
     override fun setOnClickListener(l: OnClickListener?) {
-        mButton.setOnClickListener(l)
+        binding.mButton.setOnClickListener(l)
     }
 
     override fun isChecked(): Boolean {
@@ -99,7 +101,7 @@ class IncomingButtonView @JvmOverloads constructor(
     }
 
     private fun updateDrawable(checked: Boolean) {
-        mButton.isSelected = checked
+        binding.mButton.isSelected = checked
     }
 
     fun setOnCheckedChangeListener(listener: listenerGeneric<Boolean>) {

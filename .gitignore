@@ -12,8 +12,6 @@
 bin/
 gen/
 out/
-keys/
-presentation/google-services.json
 
 # Gradle files
 .gradle/

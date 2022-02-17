@@ -27,26 +27,26 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.MimeTypes
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_cctv_detail_online.*
-import kotlinx.android.synthetic.main.fragment_cctv_detail_online.videoWrap
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import ru.madbrains.domain.model.response.CCTVData
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentCctvDetailOnlineBinding
 import ru.madbrains.smartyard.ui.main.ExitFullscreenListener
 import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment
 import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVViewModel
 import ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout
 import ru.madbrains.smartyard.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 import timber.log.Timber
 
 class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
+    private var _binding: FragmentCctvDetailOnlineBinding? = null
+    private val binding get() = _binding!!
+
     private var mPlayer: SimpleExoPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
-    private val mCCTVViewModel: CCTVViewModel by stateSharedViewModel()
+    private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
     private var mExoPlayerFullscreen = false
 
     //для полноэкранного режима
@@ -57,9 +57,10 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         (activity as? MainActivity)?.setExitFullscreenListener(this)
-        return inflater.inflate(R.layout.fragment_cctv_detail_online, container, false)
+        _binding = FragmentCctvDetailOnlineBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onDestroyView() {
@@ -77,28 +78,28 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
     private fun setFullscreenMode() {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            lpVideoWrap = LinearLayout.LayoutParams(videoWrap.layoutParams as LinearLayout.LayoutParams)
-            (videoWrap.parent as ViewGroup).removeView(videoWrap)
+            lpVideoWrap = LinearLayout.LayoutParams(binding.videoWrap.layoutParams as LinearLayout.LayoutParams)
+            (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
 
-            activity?.relativeLayout?.visibility = View.INVISIBLE
-            activity?.llMain?.addView(videoWrap, 0)
+            (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.INVISIBLE
+            (activity as? MainActivity)?.binding?.llMain?.addView(binding.videoWrap, 0)
 
             (activity as? MainActivity)?.hideSystemUI()
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
-            playerResizeMode = mVideoView.resizeMode
-            mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            mFullScreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
-            videoWrap.background = null
-            activity?.llMain?.background = ColorDrawable(Color.BLACK)
+            playerResizeMode = binding.mVideoView.resizeMode
+            binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+            binding.mFullScreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
+            binding.videoWrap.background = null
+            (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
-            val lp = videoWrap.layoutParams as LinearLayout.LayoutParams
+            val lp = binding.videoWrap.layoutParams as LinearLayout.LayoutParams
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT
             lp.topMargin = 0
-            videoWrap.layoutParams = lp
-            videoWrap.requestLayout()
-            (mVideoView.parent as ZoomLayout).resetZoom()
+            binding.videoWrap.layoutParams = lp
+            binding.videoWrap.requestLayout()
+            (binding.mVideoView.parent as ZoomLayout).resetZoom()
         }
     }
 
@@ -106,36 +107,36 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-            (videoWrap.parent as ViewGroup).removeView(videoWrap)
-            activity?.relativeLayout?.visibility = View.VISIBLE
-            llVideoPlayback.addView(videoWrap, 0)
+            (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+            (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.VISIBLE
+            binding.llVideoPlayback.addView(binding.videoWrap, 0)
 
             (activity as? MainActivity)?.showSystemUI()
 
-            mVideoView.resizeMode = playerResizeMode
-            mFullScreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
+            binding.mVideoView.resizeMode = playerResizeMode
+            binding.mFullScreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
 
-            videoWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
+            binding.videoWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
 
             //возвращаем дефолтные layouts
             if (lpVideoWrap != null) {
-                videoWrap.layoutParams = lpVideoWrap
-                videoWrap.requestLayout()
+                binding.videoWrap.layoutParams = lpVideoWrap
+                binding.videoWrap.requestLayout()
             }
-            (mVideoView.parent as ZoomLayout).resetZoom()
+            (binding.mVideoView.parent as ZoomLayout).resetZoom()
 
-            activity?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white_200))
+            (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white_200))
         }
     }
 
     private fun setupAdapter(currentList: List<CCTVData>?, currentIndex: Int?) {
         val lm = GridLayoutManager(context, 5)
-        recyclerView.layoutManager = lm
+        binding.recyclerView.layoutManager = lm
         if (currentIndex != null && currentList != null) {
             val spacingHor = resources.getDimensionPixelSize(R.dimen.cctv_buttons_hor)
             val spacingVer = resources.getDimensionPixelSize(R.dimen.cctv_buttons_ver)
-            recyclerView.addItemDecoration(GridSpacingItemDecoration(5, spacingHor, spacingVer))
-            recyclerView.adapter = DetailButtonsAdapter(
+            binding.recyclerView.addItemDecoration(GridSpacingItemDecoration(5, spacingHor, spacingVer))
+            binding.recyclerView.adapter = DetailButtonsAdapter(
                 requireContext(),
                 currentIndex,
                 currentList
@@ -190,7 +191,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         p.removeView(videoView)
         p.addView(videoView, 0)
 
-        mFullScreen.setOnClickListener {
+        binding.mFullScreen.setOnClickListener {
             mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
         }
 
@@ -202,7 +203,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 if (playbackState == Player.STATE_READY) {
                     mPlayer?.videoFormat?.let {
                         if (it.width > 0 && it.height > 0) {
-                            (mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
+                            (binding.mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
                         }
                     }
                 }
@@ -279,7 +280,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
     private fun changeVideoSource(context: Context, hls_url: String) {
         mPlayer?.let { player ->
-            mProgress.visibility = View.VISIBLE
+            binding.mProgress.visibility = View.VISIBLE
             player.setMediaItem(MediaItem.fromUri(Uri.parse(hls_url)))
             player.prepare()
         }
@@ -295,9 +296,9 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
     fun initPlayer() {
         if (mPlayer == null && view != null) {
-            mPlayer = createPlayer(mVideoView, mProgress)
+            mPlayer = createPlayer(binding.mVideoView, binding.mProgress)
             setupObserve(requireContext())
-            videoWrap.clipToOutline = true
+            binding.videoWrap.clipToOutline = true
         }
     }
 
@@ -351,7 +352,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
         Timber.d("debug_dmm __onResume, is fragment hidden = $isHidden")
 
-        if ((activity as? MainActivity)?.bottom_nav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
+        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
             initPlayer()
             Timber.d("debug_dmm __CCTVOnlineTab: $this")
         }
@@ -360,7 +361,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        (mVideoView.parent as ZoomLayout).resetZoom()
+        (binding.mVideoView.parent as ZoomLayout).resetZoom()
     }
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {

@@ -21,16 +21,14 @@ import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.video.VideoListener
-import kotlinx.android.synthetic.main.fragment_event_log_detail.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.domain.model.response.Plog
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.address.event_log.adapters.EventLogDetailAdapter
 import timber.log.Timber
-import kotlinx.android.synthetic.main.activity_main.bottom_nav
-import kotlinx.android.synthetic.main.item_event_log_detail.*
 import org.threeten.bp.DateTimeUtils
+import ru.madbrains.smartyard.databinding.FragmentEventLogDetailBinding
 import ru.madbrains.smartyard.ui.animationFadeInFadeOut
 import ru.madbrains.smartyard.ui.main.address.cctv_video.MyGestureDetector
 import ru.madbrains.smartyard.ui.main.settings.faceSettings.dialogAddPhoto.DialogAddPhotoFragment
@@ -38,6 +36,9 @@ import ru.madbrains.smartyard.ui.main.settings.faceSettings.dialogRemovePhoto.Di
 import ru.madbrains.smartyard.ui.webview_dialog.WebViewDialogFragment
 
 class EventLogDetailFragment : Fragment() {
+    private var _binding: FragmentEventLogDetailBinding? = null
+    private val binding get() = _binding!!
+
     private val mViewModel by sharedViewModel<EventLogViewModel>()
     private var snapHelper: PagerSnapHelper? = null
 
@@ -48,15 +49,16 @@ class EventLogDetailFragment : Fragment() {
     private var savedPosition = -1
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_event_log_detail, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = FragmentEventLogDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         initRecycler()
-        ivEventLogDetailBack.setOnClickListener {
+        binding.ivEventLogDetailBack.setOnClickListener {
             releasePlayer()
             this.findNavController().popBackStack()
         }
@@ -108,7 +110,7 @@ class EventLogDetailFragment : Fragment() {
     }
 
     private fun playVideo(position: Int) {
-        (rvEventLogDetail.adapter as? EventLogDetailAdapter)?.let { adapter ->
+        (binding.rvEventLogDetail.adapter as? EventLogDetailAdapter)?.let { adapter ->
             val (day, index) = adapter.getPlog(position)
             if (day != null && index != null) {
                 (mPlayerView?.parent as? ViewGroup)?.let {
@@ -140,9 +142,8 @@ class EventLogDetailFragment : Fragment() {
     override fun onResume() {
         super.onResume()
 
-        if ((activity as? MainActivity)?.bottom_nav?.selectedItemId == R.id.address) {
+        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address) {
             initPlayer()
-            Timber.d("__Q__ saved position $savedPosition")
             playVideo(savedPosition)
         }
     }
@@ -160,7 +161,7 @@ class EventLogDetailFragment : Fragment() {
 
     @SuppressLint("ClickableViewAccessibility")
     private fun initRecycler() {
-        rvEventLogDetail.apply {
+        binding.rvEventLogDetail.apply {
             layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
             adapter = EventLogDetailAdapter(listOf(), hashMapOf(),
                 {
@@ -221,21 +222,21 @@ class EventLogDetailFragment : Fragment() {
         }
 
         snapHelper = PagerSnapHelper()
-        rvEventLogDetail.attachSnapHelperWithListener(snapHelper!!, SnapOnScrollListener.ScrollBehavior.NOTIFY_ON_SCROLL_IDLE,
+        binding.rvEventLogDetail.attachSnapHelperWithListener(snapHelper!!, SnapOnScrollListener.ScrollBehavior.NOTIFY_ON_SCROLL_IDLE,
             object : OnSnapPositionChangeListener {
                 override fun onSnapPositionChanged(prevPosition: Int, newPosition: Int) {
                     //Timber.d("__Q__ snap position changed: prev = $prevPosition;  new = $newPosition")
                     if (prevPosition != RecyclerView.NO_POSITION) {
-                        val pvELDVideo: PlayerView? = rvEventLogDetail.findViewHolderForAdapterPosition(prevPosition)?.itemView?.findViewById(R.id.pvELDVideo)
+                        val pvELDVideo: PlayerView? = binding.rvEventLogDetail.findViewHolderForAdapterPosition(prevPosition)?.itemView?.findViewById(R.id.pvELDVideo)
                         pvELDVideo?.alpha = 0.0f
                         mPlayer?.stop()
                         pvELDVideo?.player = null
                         mPlayerView = null
                     }
-                    val pvELDVideo: PlayerView? = rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.pvELDVideo)
+                    val pvELDVideo: PlayerView? = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.pvELDVideo)
                     mPlayerView = pvELDVideo
 
-                    val svELD: ScrollView? = rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.svELD)
+                    val svELD: ScrollView? = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.svELD)
                     val q = GestureDetector(requireContext(), MyGestureDetector(
                         {
                             if (mPlayer?.playbackState == Player.STATE_READY) {
@@ -265,9 +266,9 @@ class EventLogDetailFragment : Fragment() {
                                     mPlayer?.seekTo(currentPosition)
 
                                     val ivAnimation: ImageView? = if (seekStep < 0) {
-                                        rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.ivBackwardELD)
+                                        binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.ivBackwardELD)
                                     } else {
-                                        rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.ivForwardELD)
+                                        binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.ivForwardELD)
                                     }
 
                                     //делаем анимацию значка перемотки
@@ -301,12 +302,12 @@ class EventLogDetailFragment : Fragment() {
                 }
             })
 
-        rvEventLogDetail.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.rvEventLogDetail.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
 
-                val llm = rvEventLogDetail.layoutManager as LinearLayoutManager
-                val itemCount = rvEventLogDetail.adapter?.itemCount ?: 0
+                val llm = binding.rvEventLogDetail.layoutManager as LinearLayoutManager
+                val itemCount = binding.rvEventLogDetail.adapter?.itemCount ?: 0
                 val itemPosition = llm.findLastCompletelyVisibleItemPosition()
                 if (dx > 0 && itemPosition  == itemCount - 1
                     && (mViewModel.lastLoadedDayFilterIndex.value ?: 0) < mViewModel.eventDaysFilter.size - 1) {
@@ -315,8 +316,7 @@ class EventLogDetailFragment : Fragment() {
                 }
                 if (itemPosition == llm.findFirstCompletelyVisibleItemPosition()
                     && itemPosition != RecyclerView.NO_POSITION) {
-                    mViewModel.currentEventDayFilter = (rvEventLogDetail.adapter as EventLogDetailAdapter).getPlog(itemPosition).first
-                    //Timber.d("__Q__ currentDay = ${mViewModel.currentEventDayFilter}")
+                    mViewModel.currentEventDayFilter = (binding.rvEventLogDetail.adapter as EventLogDetailAdapter).getPlog(itemPosition).first
                 }
 
                 if (dx != 0) {
@@ -325,26 +325,35 @@ class EventLogDetailFragment : Fragment() {
             }
         })
 
-        mViewModel.lastLoadedDayFilterIndex.observe(viewLifecycleOwner, { lastLoadedIndex ->
+        mViewModel.lastLoadedDayFilterIndex.observe(viewLifecycleOwner) { lastLoadedIndex ->
             if (prevLoadedIndex >= lastLoadedIndex) {
                 prevLoadedIndex = lastLoadedIndex
                 return@observe
             }
 
-            (rvEventLogDetail.adapter as EventLogDetailAdapter).also { adapter ->
-                adapter.eventsDay = mViewModel.eventDaysFilter.map {it.day}.subList(0, lastLoadedIndex + 1)
+            (binding.rvEventLogDetail.adapter as EventLogDetailAdapter).also { adapter ->
+                adapter.eventsDay =
+                    mViewModel.eventDaysFilter.map { it.day }.subList(0, lastLoadedIndex + 1)
                 adapter.eventsByDays = mViewModel.eventsByDaysFilter
                 if (prevLoadedIndex < 0) {
                     adapter.notifyDataSetChanged()
                     mViewModel.currentEventItem?.let { currentItem ->
-                        val p = mViewModel.getEventItemCountTillDay(currentItem.first.plusDays(1)) + currentItem.second
-                        (rvEventLogDetail.layoutManager as? LinearLayoutManager)?.let { layoutManager ->
+                        val p =
+                            mViewModel.getEventItemCountTillDay(currentItem.first.plusDays(1)) + currentItem.second
+                        (binding.rvEventLogDetail.layoutManager as? LinearLayoutManager)?.let { layoutManager ->
                             layoutManager.scrollToPosition(p)
-                            rvEventLogDetail.doOnPreDraw {
-                                val targetView = layoutManager.findViewByPosition(p) ?: return@doOnPreDraw
-                                val distanceToFinalSnap = snapHelper?.calculateDistanceToFinalSnap(layoutManager, targetView) ?: return@doOnPreDraw
+                            binding.rvEventLogDetail.doOnPreDraw {
+                                val targetView =
+                                    layoutManager.findViewByPosition(p) ?: return@doOnPreDraw
+                                val distanceToFinalSnap = snapHelper?.calculateDistanceToFinalSnap(
+                                    layoutManager,
+                                    targetView
+                                ) ?: return@doOnPreDraw
                                 if (p > 0) {
-                                    layoutManager.scrollToPositionWithOffset(p, -distanceToFinalSnap[0])
+                                    layoutManager.scrollToPositionWithOffset(
+                                        p,
+                                        -distanceToFinalSnap[0]
+                                    )
                                 }
                             }
                         }
@@ -359,11 +368,11 @@ class EventLogDetailFragment : Fragment() {
             }
 
             prevLoadedIndex = lastLoadedIndex
-        })
+        }
 
-        mViewModel.progress.observe(viewLifecycleOwner, {
-            pbEventLogDetail.isVisible = it
-        })
+        mViewModel.progress.observe(viewLifecycleOwner) {
+            binding.pbEventLogDetail.isVisible = it
+        }
     }
 }
 

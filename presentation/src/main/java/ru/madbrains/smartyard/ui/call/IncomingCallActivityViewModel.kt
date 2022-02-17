@@ -3,6 +3,7 @@ package ru.madbrains.smartyard.ui.call
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import androidx.lifecycle.MutableLiveData
+import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.model.FcmCallData
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
@@ -10,7 +11,7 @@ import timber.log.Timber
 import java.util.Timer
 import kotlin.concurrent.fixedRateTimer
 
-class IncomingCallActivityViewModel : GenericViewModel() {
+class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : GenericViewModel() {
     private lateinit var mFcmCallData: FcmCallData
     private var slideShowTimer: Timer? = null
     val imageBitmapData = MutableLiveData<Event<Bitmap>>()

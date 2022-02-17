@@ -14,24 +14,26 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.android.synthetic.main.fragment_pay_contract.*
-import ru.madbrains.smartyard.R
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import ru.madbrains.smartyard.databinding.FragmentPayContractBinding
 import ru.madbrains.smartyard.ui.main.pay.PayAddressFragment
 import ru.madbrains.smartyard.ui.main.pay.PayAddressModel
 import ru.madbrains.smartyard.ui.main.pay.PayAddressViewModel
 import ru.madbrains.smartyard.ui.viewPager2.DepthPageTransformer
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 
 class PayContractFragment : Fragment() {
+    private var _binding: FragmentPayContractBinding? = null
+    private val binding get() = _binding!!
 
-    private val payViewModel: PayAddressViewModel by stateSharedViewModel()
-    var payAddressModel: PayAddressModel? = null
+    private val payViewModel: PayAddressViewModel by sharedStateViewModel()
+    private var payAddressModel: PayAddressModel? = null
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_pay_contract, container, false)
+    ): View {
+        _binding = FragmentPayContractBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -40,19 +42,19 @@ class PayContractFragment : Fragment() {
             viewLifecycleOwner,
             Observer {
                 payAddressModel = payViewModel.addressList.value?.peekContent()!![it ?: 0]
-                tvAddress.text = payAddressModel?.address
+                binding.tvAddress.text = payAddressModel?.address
                 setupPager()
             }
         )
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
     }
 
     private fun setupPager() {
         payAddressModel?.let {
-            pageIndicatorView.count = it.accounts.size
-            contractViewPager.apply {
+            binding.pageIndicatorView.count = it.accounts.size
+            binding.contractViewPager.apply {
                 setPageTransformer(DepthPageTransformer())
                 adapter = PayContractPagerAdapter(requireActivity(), it.accounts) {
                     with(it) {
@@ -70,10 +72,10 @@ class PayContractFragment : Fragment() {
                 }
                 (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
             }
-            contractViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+            binding.contractViewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
                     super.onPageSelected(position)
-                    pageIndicatorView.selection = position
+                    binding.pageIndicatorView.selection = position
                 }
             })
         }

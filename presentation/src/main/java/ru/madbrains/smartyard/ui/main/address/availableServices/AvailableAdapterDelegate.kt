@@ -7,9 +7,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import kotlinx.android.synthetic.main.item_available.view.checkBox
-import kotlinx.android.synthetic.main.item_available.view.description
-import kotlinx.android.synthetic.main.item_available.view.title
 import ru.madbrains.smartyard.R
 
 /**
@@ -57,8 +54,8 @@ class AvailableAdapterDelegate(private var clickCheckBox: () -> Unit) :
 
     internal class AddressCameraViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.title
-        val tvDescription: TextView = itemView.description
-        val checkbox: CheckBox = itemView.checkBox
+        val tvTitle: TextView = itemView.findViewById(R.id.title)
+        val tvDescription: TextView = itemView.findViewById(R.id.description)
+        val checkbox: CheckBox = itemView.findViewById(R.id.checkBox)
     }
 }

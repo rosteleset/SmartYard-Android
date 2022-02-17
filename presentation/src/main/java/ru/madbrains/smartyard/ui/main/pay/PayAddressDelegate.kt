@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import kotlinx.android.synthetic.main.item_pay_address.view.*
 import ru.madbrains.smartyard.R
 
 /**
@@ -45,6 +44,6 @@ class PayAddressDelegate(
 
     internal class PayAddressViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val tvAddress: TextView = itemView.tvAddressPayItem
+        val tvAddress: TextView = itemView.findViewById(R.id.tvAddressPayItem)
     }
 }

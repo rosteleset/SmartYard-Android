@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_input_address.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.response.HousesData
 import ru.madbrains.domain.model.response.LocationData
@@ -18,9 +17,12 @@ import ru.madbrains.domain.model.response.StreetsData
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.afterTextChanged
+import ru.madbrains.smartyard.databinding.FragmentInputAddressBinding
 import ru.madbrains.smartyard.hideKeyboard
 
 class InputAddressFragment : Fragment() {
+    private var _binding: FragmentInputAddressBinding? = null
+    private val binding get() = _binding!!
 
     private val mViewModel by viewModel<InputAddressViewModel>()
 
@@ -36,32 +38,35 @@ class InputAddressFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_input_address, container, false)
+    ): View {
+        _binding = FragmentInputAddressBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private fun initAutoCompleteTextView() {
         cityAdapter = CityAdapter(requireContext(), layout.simple_list_item_1, mutableListOf())
-        actvCity.setAdapter(cityAdapter)
-        actvCity.setOnItemClickListener() { parent, _, position, id ->
+        binding.actvCity.setAdapter(cityAdapter)
+        binding.actvCity.setOnItemClickListener() { parent, _, position, id ->
             val selectItem = parent.adapter.getItem(position) as LocationData
-            actvCity.setText(selectItem.name)
+            binding.actvCity.setText(selectItem.name)
             mViewModel.getStreet(selectItem.locationId)
         }
 
         streetAdapter =
             StreetAdapter(requireContext(), layout.simple_list_item_1, mutableListOf())
-        actvStreet.setAdapter(streetAdapter)
-        actvStreet.setOnItemClickListener() { parent, _, position, id ->
+        binding.actvStreet.setAdapter(streetAdapter)
+        binding.actvStreet.setOnItemClickListener() { parent, _, position, id ->
             val selectedItem = parent.adapter.getItem(position) as StreetsData?
-            actvStreet.setText(selectedItem?.name)
+            binding.actvStreet.setText(selectedItem?.name)
             mViewModel.getHouses(selectedItem?.streetId ?: 0)
         }
 
         houseAdapter =
             HousesAdapter(requireContext(), layout.simple_list_item_1, mutableListOf())
-        actvHouse.setAdapter(houseAdapter)
-        actvHouse.setOnItemClickListener() { parent, _, position, id ->
+        binding.actvHouse.setAdapter(houseAdapter)
+        binding.actvHouse.setOnItemClickListener() { parent, _, position, id ->
             val selectedItem = parent.adapter.getItem(position) as HousesData?
-            actvHouse.setText(selectedItem?.number)
+            binding.actvHouse.setText(selectedItem?.number)
             houseId = selectedItem?.houseId
         }
     }
@@ -70,11 +75,11 @@ class InputAddressFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         initAutoCompleteTextView()
 
-        ivBack?.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
 
-        btnСheckAvailableServices?.setOnClickListener {
+        binding.btnHeckAvailableServices.setOnClickListener {
             hideKeyboard(requireActivity())
             mViewModel.getServices(houseId = houseId, address = getAddress())
         }
@@ -98,21 +103,21 @@ class InputAddressFragment : Fragment() {
         mViewModel.progressCity.observe(
             viewLifecycleOwner,
             Observer {
-                progressCity.isVisible = it
+                binding.progressCity.isVisible = it
             }
         )
 
         mViewModel.progressStreet.observe(
             viewLifecycleOwner,
             Observer {
-                progressStreet.isVisible = it
+                binding.progressStreet.isVisible = it
             }
         )
 
         mViewModel.progressHouse.observe(
             viewLifecycleOwner,
             Observer {
-                progressHouse.isVisible = it
+                binding.progressHouse.isVisible = it
             }
         )
 
@@ -133,18 +138,18 @@ class InputAddressFragment : Fragment() {
         mViewModel.confirmError.observe(
             viewLifecycleOwner,
             EventObserver {
-                progressCity.isVisible = false
-                progressStreet.isVisible = false
-                progressHouse.isVisible = false
+                binding.progressCity.isVisible = false
+                binding.progressStreet.isVisible = false
+                binding.progressHouse.isVisible = false
             }
         )
 
         mViewModel.servicesList.observe(
             viewLifecycleOwner,
             EventObserver {
-                val address = if (etApartment.text.isNotEmpty())
-                    "${actvCity.text}, ${actvStreet.text}, ${actvHouse.text}, ${etApartment.text}" else
-                    "${actvCity.text}, ${actvStreet.text}, ${actvHouse.text}"
+                val address = if (binding.etApartment.text.isNotEmpty())
+                    "${binding.actvCity.text}, ${binding.actvStreet.text}, ${binding.actvHouse.text}, ${binding.etApartment.text}" else
+                    "${binding.actvCity.text}, ${binding.actvStreet.text}, ${binding.actvHouse.text}"
                 val action =
                     InputAddressFragmentDirections.actionInputAddressFragmentToAvailableServicesFragment(
                         it.toTypedArray(),
@@ -153,21 +158,21 @@ class InputAddressFragment : Fragment() {
                 this.findNavController().navigate(action)
             }
         )
-        actvCity.afterTextChanged(this::validateFields)
-        actvStreet.afterTextChanged(this::validateFields)
-        actvHouse.afterTextChanged(this::validateFields)
+        binding.actvCity.afterTextChanged(this::validateFields)
+        binding.actvStreet.afterTextChanged(this::validateFields)
+        binding.actvHouse.afterTextChanged(this::validateFields)
         // etApartment.afterTextChanged(this::validateFields)
-        tvQrCode.setOnClickListener {
+        binding.tvQrCode.setOnClickListener {
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_inputAddressFragment_to_qrCodeFragment)
         }
     }
 
-    fun validateFields(text: String) {
-        btnСheckAvailableServices?.isEnabled =
-            actvCity.text.isNotEmpty() && actvStreet.text.isNotEmpty() && actvHouse.text.isNotEmpty()
+    private fun validateFields(text: String) {
+        binding.btnHeckAvailableServices.isEnabled =
+            binding.actvCity.text.isNotEmpty() && binding.actvStreet.text.isNotEmpty() && binding.actvHouse.text.isNotEmpty()
     }
 
     private fun getAddress() =
-        "${actvCity.text} ${actvStreet.text} ${actvHouse.text}  ${etApartment.text}"
+        "${binding.actvCity.text} ${binding.actvStreet.text} ${binding.actvHouse.text}  ${binding.etApartment.text}"
 }

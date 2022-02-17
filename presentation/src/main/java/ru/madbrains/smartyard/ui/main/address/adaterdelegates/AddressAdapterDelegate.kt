@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import kotlinx.android.synthetic.main.item_parent_recycler.view.*
 import net.cachapa.expandablelayout.ExpandableLayout
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.ui.main.address.adapters.ChildListAdapter
@@ -68,9 +67,9 @@ class AddressAdapterDelegate(private val setting: ParentListAdapterSetting) :
 
     internal class AddressCameraViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val recyclerView: RecyclerView = itemView.rv_child
-        val textView: TextView = itemView.textView
-        val coll: ExpandableLayout = itemView.expandable_layout
-        val imageView: ImageView = itemView.imageView6
+        val recyclerView: RecyclerView = itemView.findViewById(R.id.rv_child)
+        val textView: TextView = itemView.findViewById(R.id.textView)
+        val coll: ExpandableLayout = itemView.findViewById(R.id.expandable_layout)
+        val imageView: ImageView = itemView.findViewById(R.id.imageView6)
     }
 }

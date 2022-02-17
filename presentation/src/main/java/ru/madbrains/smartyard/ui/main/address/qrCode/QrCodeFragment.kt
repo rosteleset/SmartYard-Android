@@ -24,16 +24,18 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode
-import kotlinx.android.synthetic.main.fragment_qr_code.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentQrCodeBinding
 import ru.madbrains.smartyard.ui.main.MainActivity
 
 class QrCodeFragment :
     Fragment(),
     OnSuccessListener<List<FirebaseVisionBarcode>>,
     OnFailureListener {
+    private var _binding: FragmentQrCodeBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var preview: Preview
     private lateinit var cameraTextureView: TextureView
@@ -44,7 +46,10 @@ class QrCodeFragment :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_qr_code, container, false)
+    ): View {
+        _binding = FragmentQrCodeBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -57,10 +62,10 @@ class QrCodeFragment :
         } else {
             requestCameraPermission()
         }
-        switchFlash.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchFlash.setOnCheckedChangeListener { _, isChecked ->
             enableFlashlight(isChecked)
         }
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
         mViewModel.navigationToDialog.observe(

@@ -2,7 +2,7 @@ package ru.madbrains.domain.model.response
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 
 typealias GetServicesResponse = ApiResult<List<ServicesData>>?
 

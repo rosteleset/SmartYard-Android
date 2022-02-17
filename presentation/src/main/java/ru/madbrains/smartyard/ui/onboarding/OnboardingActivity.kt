@@ -5,11 +5,11 @@ import android.os.Bundle
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import kotlinx.android.synthetic.main.activity_onboarding.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.CommonActivity
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ActivityOnboardingBinding
 import ru.madbrains.smartyard.ui.viewPager2.ZoomOutPageTransformer
 import ru.madbrains.smartyard.ui.reg.RegistrationActivity
 
@@ -18,18 +18,21 @@ import ru.madbrains.smartyard.ui.reg.RegistrationActivity
  * Created on 08/05/2020.
  */
 class OnboardingActivity : CommonActivity() {
+    lateinit var binding: ActivityOnboardingBinding
 
     override val mViewModel by viewModel<OnboardingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_onboarding)
+        binding = ActivityOnboardingBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         setupPager()
 
-        nextButton.setOnClickListener { mViewModel.onNextClick() }
-        completeButton.setOnClickListener { mViewModel.onCompleteClick() }
-        skipTextView.setOnClickListener { mViewModel.onSkipClick() }
+        binding.nextButton.setOnClickListener { mViewModel.onNextClick() }
+        binding.completeButton.setOnClickListener { mViewModel.onCompleteClick() }
+        binding.skipTextView.setOnClickListener { mViewModel.onSkipClick() }
 
         mViewModel.navigateToNextPage.observe(
             this,
@@ -69,29 +72,29 @@ class OnboardingActivity : CommonActivity() {
                 )
             )
         }
-        pageIndicatorView.count = pages.size
-        viewPager.apply {
+        binding.pageIndicatorView.count = pages.size
+        binding.viewPager.apply {
             setPageTransformer(ZoomOutPageTransformer())
             adapter = OnboardingPageAdapter(pages)
             (getChildAt(0) as RecyclerView).overScrollMode = RecyclerView.OVER_SCROLL_NEVER
         }
-        viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                pageIndicatorView.selection = position
+                binding.pageIndicatorView.selection = position
                 if (position == pages.count() - 1) {
-                    nextButton.isInvisible = true
-                    completeButton.isInvisible = false
+                    binding.nextButton.isInvisible = true
+                    binding.completeButton.isInvisible = false
                 } else {
-                    nextButton.isInvisible = false
-                    completeButton.isInvisible = true
+                    binding.nextButton.isInvisible = false
+                    binding.completeButton.isInvisible = true
                 }
             }
         })
     }
 
     private fun displayNextPage() {
-        viewPager.currentItem += 1
+        binding.viewPager.currentItem += 1
     }
 
     private fun openRegistrationActivity() {

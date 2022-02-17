@@ -11,8 +11,8 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.dialog_service.*
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogServiceBinding
 import ru.madbrains.smartyard.ui.main.settings.SettingsViewModel
 
 /**
@@ -20,6 +20,8 @@ import ru.madbrains.smartyard.ui.main.settings.SettingsViewModel
  * Created on 2020-02-20.
  */
 class DialogServiceFragment : DialogFragment() {
+    private var _binding: DialogServiceBinding? = null
+    private val binding get() = _binding!!
 
     interface OnDialogServiceListener {
         fun onDismiss()
@@ -28,13 +30,16 @@ class DialogServiceFragment : DialogFragment() {
 
     private lateinit var mData: SettingsViewModel.TypeDialog
     private var service: String = ""
-    var onDialogServiceListener: OnDialogServiceListener? = null
+    private var onDialogServiceListener: OnDialogServiceListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.dialog_service, container, false)
+    ): View {
+        _binding = DialogServiceBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
@@ -49,13 +54,13 @@ class DialogServiceFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvTitle.text = "Услуга \"$service\" ${getString(mData.title)}"
-        tvCaption.setText(mData.caption)
-        btnDone.setText(mData.button)
-        ivDismiss.setOnClickListener {
+        binding.tvTitle.text = "Услуга \"$service\" ${getString(mData.title)}"
+        binding.tvCaption.setText(mData.caption)
+        binding.btnDone.setText(mData.button)
+        binding.ivDismiss.setOnClickListener {
             onDialogServiceListener?.onDismiss()
         }
-        btnDone.setOnClickListener {
+        binding.btnDone.setOnClickListener {
             onDialogServiceListener?.onDone()
         }
     }

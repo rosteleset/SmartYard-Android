@@ -11,15 +11,17 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import kotlinx.android.synthetic.main.dialog_change_name.*
 import ru.madbrains.domain.utils.listenerEmpty
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogChangeNameBinding
 
 /**
  * @author Nail Shakurov
  * Created on 2020-02-20.
  */
 class DialogChangeName : DialogFragment() {
+    private var _binding: DialogChangeNameBinding? = null
+    private val binding get() = _binding!!
 
     var onSuccess: listenerEmpty? = null
 
@@ -27,7 +29,10 @@ class DialogChangeName : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.dialog_change_name, container, false)
+    ): View {
+        _binding = DialogChangeNameBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
@@ -37,7 +42,7 @@ class DialogChangeName : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        mForm.initialize(viewLifecycleOwner, R.string.save) {
+        binding.mForm.initialize(viewLifecycleOwner, R.string.save) {
             onSuccess?.invoke()
             this.dismiss()
         }

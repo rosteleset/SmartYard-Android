@@ -7,7 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.widget.RemoteViews
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import ru.madbrains.smartyard.R
 
 class WidgetProvider : AppWidgetProvider(), KoinComponent {

@@ -20,10 +20,7 @@ import androidx.fragment.app.DialogFragment
 import com.redmadrobot.inputmask.MaskedTextChangedListener
 import com.redmadrobot.inputmask.MaskedTextChangedListener.Companion.installOn
 import com.redmadrobot.inputmask.helper.AffinityCalculationStrategy
-import kotlinx.android.synthetic.main.dialog_share_access.btnDone
-import kotlinx.android.synthetic.main.dialog_share_access.ivAddContact
-import kotlinx.android.synthetic.main.dialog_share_access.prefix_edit_text
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogShareAccessBinding
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
 
 /**
@@ -32,6 +29,9 @@ import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
  */
 class DialogShareAccessDialog() :
     DialogFragment() {
+
+    private var _binding: DialogShareAccessBinding? = null
+    private val binding get() = _binding!!
 
     interface OnDialogAccessListener {
         fun onDone(contactModel: ContactModel)
@@ -43,7 +43,10 @@ class DialogShareAccessDialog() :
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.dialog_share_access, container, false)
+    ): View {
+        _binding = DialogShareAccessBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
@@ -54,11 +57,11 @@ class DialogShareAccessDialog() :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        btnDone.setOnClickListener {
+        binding.btnDone.setOnClickListener {
             onDialogServiceListener?.onDone(contactModel)
         }
 
-        ivAddContact.setOnClickListener {
+        binding.ivAddContact.setOnClickListener {
             val contactPickerIntent = Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -70,7 +73,7 @@ class DialogShareAccessDialog() :
     }
 
     private fun setupPrefixSample() {
-        val editText: EditText = prefix_edit_text
+        val editText: EditText = binding.prefixEditText
         val affineFormats: MutableList<String> = ArrayList()
         val listener =
             installOn(
@@ -79,7 +82,7 @@ class DialogShareAccessDialog() :
                 affineFormats, AffinityCalculationStrategy.PREFIX,
                 object : MaskedTextChangedListener.ValueListener {
                     override fun onTextChanged(maskFilled: Boolean, @NonNull extractedValue: String, @NonNull formattedText: String) {
-                        btnDone.isEnabled = maskFilled
+                        binding.btnDone.isEnabled = maskFilled
                         contactModel.number = "7$extractedValue"
                     }
                 }
@@ -106,7 +109,7 @@ class DialogShareAccessDialog() :
             when (requestCode) {
                 RESULT_PICK_CONTACT -> {
                     val contactUri: Uri = data?.data!!
-                    val cursor = context!!.contentResolver.query(
+                    val cursor = requireContext().contentResolver.query(
                         contactUri, null,
                         null, null, null
                     )
@@ -118,8 +121,8 @@ class DialogShareAccessDialog() :
                         val number = cursor.getString(phoneIndex)
                         val name = cursor.getString(nameIndex)
                         contactModel.name = name
-                        prefix_edit_text.setText(number)
-                        btnDone.isEnabled = true
+                        binding.prefixEditText.setText(number)
+                        binding.btnDone.isEnabled = true
                     }
                     cursor?.close()
                 }

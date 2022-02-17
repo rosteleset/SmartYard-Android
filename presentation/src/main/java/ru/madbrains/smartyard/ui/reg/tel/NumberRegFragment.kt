@@ -9,13 +9,14 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.fragment_number_reg.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.ErrorStatus
 import ru.madbrains.smartyard.EventObserver
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentNumberRegBinding
 
 class NumberRegFragment : Fragment() {
+    private var _binding: FragmentNumberRegBinding? = null
+    private val binding get() = _binding!!
 
     private var mPhoneNumber: String = ""
     private val mViewModel by viewModel<NumberRegViewModel>()
@@ -24,12 +25,15 @@ class NumberRegFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_number_reg, container, false)
+    ): View {
+        _binding = FragmentNumberRegBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNumbersEditText()
-        ivExit.setOnClickListener {
+        binding.ivExit.setOnClickListener {
             activity?.finish()
         }
         mViewModel.localErrorsSink.observe(
@@ -45,49 +49,49 @@ class NumberRegFragment : Fragment() {
     }
 
     private fun setupNumbersEditText() {
-        tel1?.focus()
+        binding.tel1.focus()
 
-        tel1?.addTextChangedListener {
+        binding.tel1.addTextChangedListener {
             checkToSmsReg()
             if (it?.length == 3) {
-                tel2?.requestFocus()
+                binding.tel2.requestFocus()
             }
         }
 
-        tel2?.addTextChangedListener {
+        binding.tel2.addTextChangedListener {
             checkToSmsReg()
             if (it?.length == 3) {
-                tel3?.requestFocus()
+                binding.tel3.requestFocus()
             }
         }
 
-        tel2.setOnKeyListener { _, keyCode, event ->
+        binding.tel2.setOnKeyListener { _, keyCode, event ->
             var r = false
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && tel2.text?.isEmpty() == true) {
-                val text: String = tel1.text.toString()
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && binding.tel2.text?.isEmpty() == true) {
+                val text: String = binding.tel1.text.toString()
                 if (text.isNotEmpty()) {
-                    tel1.setText(text.substring(0, text.length - 1))
-                    tel1.setSelection(text.length - 1)
+                    binding.tel1.setText(text.substring(0, text.length - 1))
+                    binding.tel1.setSelection(text.length - 1)
                 }
-                tel1.requestFocus()
+                binding.tel1.requestFocus()
                 r = true
             }
             r
         }
 
-        tel3?.addTextChangedListener {
+        binding.tel3?.addTextChangedListener {
             checkToSmsReg()
         }
 
-        tel3.setOnKeyListener { _, keyCode, event ->
+        binding.tel3.setOnKeyListener { _, keyCode, event ->
             var r = false
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && tel3.text?.isEmpty() == true) {
-                val text: String = tel2.text.toString()
+            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && binding.tel3.text?.isEmpty() == true) {
+                val text: String = binding.tel2.text.toString()
                 if (text.isNotEmpty()) {
-                    tel2.setText(text.substring(0, text.length - 1))
-                    tel2.setSelection(text.length - 1)
+                    binding.tel2.setText(text.substring(0, text.length - 1))
+                    binding.tel2.setSelection(text.length - 1)
                 }
-                tel2.requestFocus()
+                binding.tel2.requestFocus()
                 r = true
             }
             r
@@ -96,17 +100,17 @@ class NumberRegFragment : Fragment() {
 
     private fun checkToSmsReg() {
         toggleError(false)
-        mPhoneNumber = tel1.text.toString() + tel2.text.toString() + tel3.text.toString()
+        mPhoneNumber = binding.tel1.text.toString() + binding.tel2.text.toString() + binding.tel3.text.toString()
         if (mPhoneNumber.length == 10) {
             mViewModel.requestSmsCode(mPhoneNumber, this)
         }
     }
 
     private fun toggleError(error: Boolean, @StringRes resId: Int? = null) {
-        tvError.isVisible = error
+        binding.tvError.isVisible = error
         if (error) {
             resId?.let { id ->
-                tvError.setText(id)
+                binding.tvError.setText(id)
             }
         }
     }

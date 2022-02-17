@@ -49,7 +49,7 @@ object PresentationModule {
         viewModel { SmsRegViewModel(get(), get()) }
         viewModel { NumberRegViewModel(get(), get()) }
         viewModel { AppealFormViewModel(get(), get()) }
-        viewModel { IncomingCallActivityViewModel() }
+        viewModel { IncomingCallActivityViewModel(get()) }
         viewModel { InputAddressViewModel(get()) }
         viewModel { AddressSettingsViewModel(get(), get(), get(), get()) }
         viewModel { AccessAddressViewModel(get(), get()) }

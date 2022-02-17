@@ -2,7 +2,7 @@ package ru.madbrains.domain.model.response
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import org.threeten.bp.DateTimeUtils
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId

@@ -18,9 +18,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.activity_incoming_call.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.KoinComponent
+import org.koin.core.component.KoinComponent
 import org.linphone.core.RegistrationState
 import ru.madbrains.domain.model.FcmCallData
 import ru.madbrains.domain.utils.doDelayed
@@ -32,10 +31,13 @@ import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.LinphoneProvider
 import ru.madbrains.smartyard.LinphoneService
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ActivityIncomingCallBinding
 import ru.madbrains.smartyard.show
 import ru.madbrains.smartyard.ui.showStandardAlert
 
 class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListener {
+    private lateinit var binding: ActivityIncomingCallBinding
+
     private lateinit var mLinphone: LinphoneProvider
     private var mTryingToOpenDoor: Boolean = false
     override val mViewModel by viewModel<IncomingCallActivityViewModel>()
@@ -46,7 +48,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_incoming_call)
+        binding = ActivityIncomingCallBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
         mSensorManager = this.getSystemService(Context.SENSOR_SERVICE) as SensorManager
         mProximity = mSensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         setupUi()
@@ -59,34 +63,43 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             intentParse(intent)
             observeChanges()
             checkAndRequestCallPermissions()
-            mLinphone.setNativeVideoWindowId(mVideoSip)
+            mLinphone.setNativeVideoWindowId(binding.mVideoSip)
 
             mViewModel.start(mFcmCallData)
-            mImageViewWrap.clipToOutline = true
+            binding.mImageViewWrap.clipToOutline = true
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
                 window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
                 window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
             }
 
-            mOpenButton.setOnClickListener { openDoor() }
-            mAnswerButton.setOnClickListener { answerCall() }
-            mPeekButton.setOnClickListener {
-                mViewModel.eyeState.value = !mPeekButton.isChecked
+            binding.mOpenButton.setOnClickListener { openDoor() }
+            binding.mAnswerButton.setOnClickListener { answerCall() }
+            binding.mPeekButton.setOnClickListener {
+                mViewModel.eyeState.value = !binding.mPeekButton.isChecked
                 mLinphone.stopRinging()
             }
-            mHangUpButton.setOnClickListener { hangUp() }
+            binding.mHangUpButton.setOnClickListener { hangUp() }
         } else {
             finish()
         }
 
+        var useSpeaker = false
         if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mViewModel.routeAudioToValue(true)
+            useSpeaker = true
+        } else {
+            //включение громкой связи, если выставлен флаг в настройках домофона
+            if (fcmData != null) {
+                if (mViewModel.preferenceStorage.addressOptions.getOption(fcmData.flatId).isSpeaker == true) {
+                    useSpeaker = true
+                }
+            }
         }
+        mViewModel.routeAudioToValue(useSpeaker)
     }
 
     private fun setupUi() {
-        ivFullscreenMinimalize?.setOnClickListener {
+        binding.ivFullscreenMinimalize.setOnClickListener {
             requestedOrientation =
                 if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
                     ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
@@ -95,8 +108,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
         }
 
-        mSpeakerButton?.setOnClickListener {
-            mViewModel.routeAudioToValue(!mSpeakerButton.isSelected)
+        binding.mSpeakerButton.setOnClickListener {
+            mViewModel.routeAudioToValue(!binding.mSpeakerButton.isSelected)
         }
     }
 
@@ -106,7 +119,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     private fun openDoor() {
         if (mLinphone.isConnected()) {
-            mAnswerButton.setText(R.string.connecting)
+            binding.mAnswerButton.setText(R.string.connecting)
             mLinphone.sendDtmf()
         } else {
             mTryingToOpenDoor = true
@@ -133,7 +146,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.imageBitmapData.observe(
             this,
             EventObserver { bitmap ->
-                mPeekView.setImageBitmap(bitmap)
+                binding.mPeekView.setImageBitmap(bitmap)
             }
         )
         mViewModel.eyeState.observe(
@@ -145,32 +158,31 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.imageStringData.observe(
             this,
             EventObserver { string ->
-                Glide.with(mPeekView)
+                Glide.with(binding.mPeekView)
                     .load(string)
-                    .into(mPeekView)
+                    .into(binding.mPeekView)
             }
         )
 
         mViewModel.connected.observe(
             this,
             EventObserver {
-                mAnswerButton?.isVisible = false
-                mSpeakerButton?.isVisible = true
+                binding.mAnswerButton.isVisible = false
+                binding.mSpeakerButton.isVisible = true
             }
         )
 
         mViewModel.routeAudioTo.observe(
-            this,
-            Observer {
-                if (it) {
-                    mLinphone.mAudioManager.routeAudioToSpeaker()
-                    mSpeakerButton?.isSelected = true
-                } else {
-                    mLinphone.mAudioManager.routeAudioToEarPiece()
-                    mSpeakerButton?.isSelected = false
-                }
+            this
+        ) {
+            if (it) {
+                mLinphone.mAudioManager.routeAudioToSpeaker()
+                binding.mSpeakerButton.isSelected = true
+            } else {
+                mLinphone.mAudioManager.routeAudioToEarPiece()
+                binding.mSpeakerButton.isSelected = false
             }
-        )
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -181,7 +193,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private fun resetView(data: FcmCallData) {
         mLinphone.reset()
         setDoorState(false)
-        mStatusText.text = data.callerId
+        binding.mStatusText.text = data.callerId
     }
 
     private fun intentParse(intent: Intent) {
@@ -198,33 +210,33 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 1000
             )
         }
-        mOpenedButton.show(opened, true)
-        mHangUpButton.show(!opened)
-        mOpenButton.show(!opened)
+        binding.mOpenedButton.show(opened, true)
+        binding.mHangUpButton.show(!opened)
+        binding.mOpenButton.show(!opened)
     }
 
     private fun answerCall() {
-        if (!mAnswerButton.isSelected && mLinphone.dtmfIsSent.value != true) {
-            mAnswerButton.isSelected = true
-            mLinphone.acceptCall(mVideoSip)
+        if (!binding.mAnswerButton.isSelected && mLinphone.dtmfIsSent.value != true) {
+            binding.mAnswerButton.isSelected = true
+            mLinphone.acceptCall(binding.mVideoSip)
         }
     }
 
     private fun setConnectedState(connected: Boolean) {
         if (connected) {
             setPeek(false)
-            mPeekButton.setOnClickListener(null)
+            binding.mPeekButton.setOnClickListener(null)
         } else {
-            mPeekButton.setOnClickListener {
-                setPeek(!mPeekButton.isChecked)
+            binding.mPeekButton.setOnClickListener {
+                setPeek(!binding.mPeekButton.isChecked)
             }
         }
 
         toggleCallClock(connected)
-        mVideoSip.show(connected)
-        mHangUpButton.setText(if (connected) R.string.reject else R.string.ignore)
-        mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
-        mAnswerButton.isSelected = connected
+        binding.mVideoSip.show(connected)
+        binding.mHangUpButton.setText(if (connected) R.string.reject else R.string.ignore)
+        binding.mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
+        binding.mAnswerButton.isSelected = connected
         if (connected) {
             mViewModel.connectedСhangeStateUiAudioToSpeaker()
         }
@@ -233,24 +245,24 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private fun setPeek(peek: Boolean) {
         setTitleState(mLinphone.isConnected(), peek)
         mViewModel.switchStreamMode(peek)
-        mPeekButton.isChecked = peek
+        binding.mPeekButton.isChecked = peek
     }
 
     private fun setTitleState(connected: Boolean, peek: Boolean) {
         val text = if (!connected) {
             if (peek) R.string.call_peek_on else R.string.call_on_domophone
         } else R.string.call_talk
-        mTitle.setText(text)
+        binding.mTitle.setText(text)
     }
 
     private fun toggleCallClock(on: Boolean) {
-        mStatusText.show(!on)
-        mCallTimer.show(on)
+        binding.mStatusText.show(!on)
+        binding.mCallTimer.show(on)
         if (on) {
-            mCallTimer.base = SystemClock.elapsedRealtime() - 1000 * (mLinphone.getCallDuration())
-            mCallTimer.start()
+            binding.mCallTimer.base = SystemClock.elapsedRealtime() - 1000 * (mLinphone.getCallDuration())
+            binding.mCallTimer.start()
         } else {
-            mCallTimer.stop()
+            binding.mCallTimer.stop()
         }
     }
 
@@ -262,9 +274,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 RegistrationState.Progress -> R.string.connecting
                 else -> R.string.answer
             }
-            mAnswerButton.setText(text)
+            binding.mAnswerButton.setText(text)
             if (state == RegistrationState.None) {
-                mAnswerButton.isSelected = false
+                binding.mAnswerButton.isSelected = false
             }
         }
     }
@@ -279,17 +291,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
                 CallStateSimple.CONNECTED -> {
                     if (mTryingToOpenDoor) {
-                        mAnswerButton.setText(R.string.connecting)
+                        binding.mAnswerButton.setText(R.string.connecting)
                         mLinphone.sendDtmf()
                     } else {
                         setConnectedState(true)
                     }
                 }
                 CallStateSimple.CONNECTING -> {
-                    mAnswerButton.setText(R.string.connecting)
+                    binding.mAnswerButton.setText(R.string.connecting)
                 }
                 CallStateSimple.ERROR -> {
-                    mAnswerButton.setText(R.string.error)
+                    binding.mAnswerButton.setText(R.string.error)
                 }
                 CallStateSimple.END -> {
                 }

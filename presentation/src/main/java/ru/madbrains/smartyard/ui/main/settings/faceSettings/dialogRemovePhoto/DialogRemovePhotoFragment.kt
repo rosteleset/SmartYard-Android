@@ -8,18 +8,20 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.dialog_remove_photo.*
 import ru.madbrains.domain.utils.listenerEmpty
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogRemovePhotoBinding
 
 class DialogRemovePhotoFragment(
     private val photoUrl: String,
     private val callback: listenerEmpty
 ) : DialogFragment() {
+    private var _binding: DialogRemovePhotoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_remove_photo, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = DialogRemovePhotoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -31,17 +33,17 @@ class DialogRemovePhotoFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Glide.with(ivRemoveFacePhoto)
+        Glide.with(binding.ivRemoveFacePhoto)
             .load(photoUrl)
-            .into(ivRemoveFacePhoto)
-        ivRemoveFacePhoto.clipToOutline = true
+            .into(binding.ivRemoveFacePhoto)
+        binding.ivRemoveFacePhoto.clipToOutline = true
 
-        btnRemoveFaceConfirm.setOnClickListener {
+        binding.btnRemoveFaceConfirm.setOnClickListener {
             callback()
             this.dismiss()
         }
 
-        tvRemoveFaceCancel.setOnClickListener {
+        binding.tvRemoveFaceCancel.setOnClickListener {
             this.dismiss()
         }
     }

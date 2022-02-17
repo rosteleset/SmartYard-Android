@@ -36,8 +36,9 @@ import com.squareup.moshi.Moshi
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.domain.interactors.InboxInteractor
@@ -108,6 +109,13 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val json = JSONObject(data as Map<*, *>).toString()
                         Timber.tag(TAG).d("debug_dmm incoming call json: $json")
                         moshi.adapter(FcmCallData::class.java).fromJson(json)?.let { msg ->
+
+                            msg.baseUrl?.let { baseUrl ->
+                                if (baseUrl.isNotEmpty()) {
+                                    preferenceStorage.baseUrl = baseUrl
+                                    DataModule.URL = baseUrl
+                                }
+                            }
                             waitForLinServiceAndRun(msg) {
                                 it.listenAndGetNotifications(msg)
                             }
@@ -208,14 +216,18 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         badge: Int,
         isChat: Boolean = false
     ) {
+        Timber.d("debug_dmm __Notification__")
         preferenceStorage.notificationData.addInboxNotification(preferenceStorage)
         val notId = preferenceStorage.notificationData.currentInboxId
 
         val tone = SoundChooser.getChosenTone(this, RingtoneManager.TYPE_NOTIFICATION, null, preferenceStorage)
         val soundUri = tone.uri
+
+        Timber.d("debug_dmm soundUri: $soundUri")
+
         val channelId = getChannelId(tone.getToneTitle(this))
         val intent = Intent(this, MainActivity::class.java)
-        intent.setAction(Intent.ACTION_MAIN)
+        intent.action = Intent.ACTION_MAIN
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
         intent.putExtra(NOTIFICATION_MESSAGE_ID, messageId)
         intent.putExtra(NOTIFICATION_MESSAGE_TYPE, TypeMessage.getTypeMessage(messageType))

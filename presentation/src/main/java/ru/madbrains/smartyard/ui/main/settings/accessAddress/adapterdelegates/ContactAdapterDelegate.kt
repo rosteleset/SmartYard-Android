@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import kotlinx.android.synthetic.main.item_contact_access_address.view.*
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
 import ru.rambler.libs.swipe_layout.SwipeLayout
@@ -103,14 +102,14 @@ class ContactAdapterDelegate(
 
     internal class AddressCameraViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.tvTitle
-        val rightViewDelete: LinearLayout = itemView.rightViewDelete
-        val ivAvatar: ImageView = itemView.ivAvatar
-        val swipeLayout: SwipeLayout = itemView.swipeLayout
-        val tvSms: TextView = itemView.tvSms
+        val tvTitle: TextView = itemView.findViewById(R.id.tvTitle)
+        val rightViewDelete: LinearLayout = itemView.findViewById(R.id.rightViewDelete)
+        val ivAvatar: ImageView = itemView.findViewById(R.id.ivAvatar)
+        val swipeLayout: SwipeLayout = itemView.findViewById(R.id.swipeLayout)
+        val tvSms: TextView = itemView.findViewById(R.id.tvSms)
     }
 
-    private fun getInfoNumberContact(phoneNumber: String, context: Context): Contact? {
+    private fun getInfoNumberContact(phoneNumber: String, context: Context): Contact {
         var photo = AppCompatResources.getDrawable(
             context, R.drawable.ic_userpic
         )?.toBitmap()

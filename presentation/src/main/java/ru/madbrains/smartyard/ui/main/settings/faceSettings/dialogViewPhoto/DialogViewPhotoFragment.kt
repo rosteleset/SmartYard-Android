@@ -8,16 +8,18 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.dialog_view_photo.*
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogViewPhotoBinding
 
 class DialogViewPhotoFragment(
     private val photoUrl: String
 ) : DialogFragment() {
+    private var _binding: DialogViewPhotoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_view_photo, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = DialogViewPhotoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -29,12 +31,12 @@ class DialogViewPhotoFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Glide.with(ivViewFacePhoto)
+        Glide.with(binding.ivViewFacePhoto)
             .load(photoUrl)
-            .into(ivViewFacePhoto)
-        ivViewFacePhoto.clipToOutline = true
+            .into(binding.ivViewFacePhoto)
+        binding.ivViewFacePhoto.clipToOutline = true
 
-        ivViewFacePhotoClose.setOnClickListener {
+        binding.ivViewFacePhotoClose.setOnClickListener {
             this.dismiss()
         }
     }

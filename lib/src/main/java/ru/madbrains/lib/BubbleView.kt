@@ -5,7 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewTreeObserver
 import android.widget.LinearLayout
-import kotlinx.android.synthetic.main.bubble_view.view.tvTime
+import ru.madbrains.lib.databinding.BubbleViewBinding
 
 /**
  * Create On 16/10/2016
@@ -13,8 +13,11 @@ import kotlinx.android.synthetic.main.bubble_view.view.tvTime
  */
 @SuppressLint("ViewConstructor")
 class BubbleView(context: Context) : LinearLayout(context) {
+    private var _binding: BubbleViewBinding? = null
+    private val binding get() = _binding!!
+
     init {
-        LayoutInflater.from(context).inflate(R.layout.bubble_view, this, true)
+        _binding = BubbleViewBinding.inflate(LayoutInflater.from(context), this, true)
         layoutParams = LayoutParams(
             LayoutParams.WRAP_CONTENT,
             LayoutParams.MATCH_PARENT
@@ -35,7 +38,7 @@ class BubbleView(context: Context) : LinearLayout(context) {
     }
 
     fun setTimeText(text: String) {
-        if (text.length > tvTime.text.length) {
+        if (text.length > binding.tvTime.text.length) {
             viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
                     viewTreeObserver.removeOnGlobalLayoutListener(this)
@@ -43,6 +46,6 @@ class BubbleView(context: Context) : LinearLayout(context) {
                 }
             })
         }
-        tvTime.text = text
+        binding.tvTime.text = text
     }
 }

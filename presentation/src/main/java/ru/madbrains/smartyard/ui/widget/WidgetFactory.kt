@@ -8,8 +8,8 @@ import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
 import kotlinx.coroutines.runBlocking
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import ru.madbrains.domain.interactors.DatabaseInteractor
 import ru.madbrains.domain.model.AddressItem
 import ru.madbrains.domain.model.StateButton

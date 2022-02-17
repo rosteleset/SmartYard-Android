@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -11,12 +12,11 @@ import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
-import kotlinx.android.synthetic.main.calendar_day_legend.view.*
-import kotlinx.android.synthetic.main.fragment_cctv_detail_archive.*
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentCctvDetailArchiveBinding
 import ru.madbrains.smartyard.daysOfWeekFromLocale
 import ru.madbrains.smartyard.setTextColorRes
 import ru.madbrains.smartyard.ui.main.address.cctv_video.AvailableRange
@@ -25,6 +25,9 @@ import ru.madbrains.smartyard.ui.main.address.cctv_video.detail.CalendarDayBinde
 import ru.madbrains.smartyard.ui.main.address.cctv_video.isDateInAvailableRanges
 
 class CCTVArchiveTab : Fragment() {
+    private var _binding: FragmentCctvDetailArchiveBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var startDate: LocalDate
     private lateinit var endDate: LocalDate
     private var availableRanges = mutableListOf<AvailableRange>()
@@ -59,7 +62,10 @@ class CCTVArchiveTab : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_cctv_detail_archive, container, false)
+    ): View  {
+        _binding = FragmentCctvDetailArchiveBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private fun scrollToMonth(plus: Boolean) {
         currentYearMonth = if (plus) {
@@ -68,19 +74,19 @@ class CCTVArchiveTab : Fragment() {
             currentYearMonth.minusMonths(1)
         }
 
-        archiveCalendar.scrollToMonth(currentYearMonth)
+        binding.archiveCalendar.scrollToMonth(currentYearMonth)
     }
 
     private fun updateModButtons(yearMonth: YearMonth) {
         if (yearMonth <= minYearMonth) {
-            monthBack?.visibility = View.INVISIBLE
+            binding.monthBack.visibility = View.INVISIBLE
         } else {
-            monthBack?.visibility = View.VISIBLE
+            binding.monthBack.visibility = View.VISIBLE
         }
         if (yearMonth >= maxYearMonth) {
-            monthForward?.visibility = View.INVISIBLE
+            binding.monthForward.visibility = View.INVISIBLE
         } else {
-            monthForward?.visibility = View.VISIBLE
+            binding.monthForward.visibility = View.VISIBLE
         }
 
         currentYearMonth = yearMonth
@@ -108,33 +114,35 @@ class CCTVArchiveTab : Fragment() {
         maxYearMonth = endDate.yearMonth
         currentYearMonth = maxYearMonth
 
-        archiveCalendar.setup(
+        binding.archiveCalendar.setup(
             minYearMonth,
             maxYearMonth,
             daysOfWeek.first()
         )
-        monthBack.setOnClickListener {
+        binding.monthBack.setOnClickListener {
             scrollToMonth(false)
         }
-        monthForward.setOnClickListener {
+        binding.monthForward.setOnClickListener {
             scrollToMonth(true)
         }
-        archiveCalendar.scrollToMonth(currentYearMonth)
+        binding.archiveCalendar.scrollToMonth(currentYearMonth)
 
-        archiveCalendar.dayBinder = CalendarDayBinder(
+        binding.archiveCalendar.dayBinder = CalendarDayBinder(
             today = endDate,
             rangeDays = rangeDays,
             availableRanges = availableRanges,
             notifyDate = { old, new ->
-                old?.let { archiveCalendar.notifyDateChanged(it) }
-                archiveCalendar.notifyDateChanged(new)
+                old?.let {
+                    binding.archiveCalendar.notifyDateChanged(it)
+                }
+                binding.archiveCalendar.notifyDateChanged(new)
             },
             clickOnDate = this::clickOnDate
         )
 
-        archiveCalendar.monthScrollListener = {
+        binding.archiveCalendar.monthScrollListener = {
             updateModButtons(it.yearMonth)
-            monthTitle?.text = if (it.year == endDate.year) {
+            binding.monthTitle.text = if (it.year == endDate.year) {
                 titleSameYearFormatter.format(it.yearMonth).capitalize()
             } else {
                 titleFormatter.format(it.yearMonth).capitalize()
@@ -142,16 +150,16 @@ class CCTVArchiveTab : Fragment() {
         }
 
         class MonthViewContainer(view: View) : ViewContainer(view) {
-            val legendLayout = view.legendLayout
+            val legendLayout = view.findViewById<LinearLayout>(R.id.legendLayout)
         }
-        archiveCalendar.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
+        binding.archiveCalendar.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
             override fun create(view: View) = MonthViewContainer(view)
             override fun bind(container: MonthViewContainer, month: CalendarMonth) {
                 // Setup each header day text if we have not done that already.
                 if (container.legendLayout.tag == null) {
                     container.legendLayout.tag = month.yearMonth
                     container.legendLayout.children.map { it as TextView }
-                        .forEachIndexed { index, tv ->
+                        .forEachIndexed { _, tv ->
                             // tv.text = daysOfWeek[index].name.first().toString()
                             tv.setTextColorRes(R.color.calendar_black)
                         }
@@ -161,6 +169,6 @@ class CCTVArchiveTab : Fragment() {
     }
 
     private fun selectDate(date: LocalDate) {
-        (archiveCalendar.dayBinder as CalendarDayBinder).selectDate(date)
+        (binding.archiveCalendar.dayBinder as CalendarDayBinder).selectDate(date)
     }
 }

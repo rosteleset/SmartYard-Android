@@ -66,7 +66,7 @@ class AddressSettingsViewModel(
         }
     }
 
-    fun deleteRooomate(flatId: Int, clientId: String) {
+    fun deleteRoommate(flatId: Int, clientId: String) {
         viewModelScope.withProgress {
             addressInteractor.access(
                 flatId,
@@ -86,6 +86,12 @@ class AddressSettingsViewModel(
         val cur = preferenceStorage.addressOptions
         cur.getOption(flatId).notifySoundUri = tone.uri.toString()
         preferenceStorage.addressOptions = cur
+    }
+
+    fun saveSpeakerFlag(flatId: Int, flag: Boolean) {
+        val addressOpts = preferenceStorage.addressOptions
+        addressOpts.getOption(flatId).isSpeaker = flag
+        preferenceStorage.addressOptions = addressOpts
     }
 
     /**    """issue"": {

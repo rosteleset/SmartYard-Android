@@ -10,22 +10,6 @@ import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import kotlinx.android.synthetic.main.item_parent_recycler.view.expandable_layout
-import kotlinx.android.synthetic.main.item_parent_recycler.view.imageView6
-import kotlinx.android.synthetic.main.item_settings_address.view.cbCall
-import kotlinx.android.synthetic.main.item_settings_address.view.cbEye
-import kotlinx.android.synthetic.main.item_settings_address.view.cbKey
-import kotlinx.android.synthetic.main.item_settings_address.view.cbMonitor
-import kotlinx.android.synthetic.main.item_settings_address.view.cbWifi
-import kotlinx.android.synthetic.main.item_settings_address.view.llBlockService
-import kotlinx.android.synthetic.main.item_settings_address.view.llLcab
-import kotlinx.android.synthetic.main.item_settings_address.view.llProvideAccess
-import kotlinx.android.synthetic.main.item_settings_address.view.llSettingAddress
-import kotlinx.android.synthetic.main.item_settings_address.view.tvAddress
-import kotlinx.android.synthetic.main.item_settings_address.view.tvCaption
-import kotlinx.android.synthetic.main.item_settings_address.view.view2
-import kotlinx.android.synthetic.main.item_settings_address.view.view4
-import kotlinx.android.synthetic.main.item_settings_address.view.viewSeparatorBlockService
 import net.cachapa.expandablelayout.ExpandableLayout
 import ru.madbrains.domain.model.Services
 import ru.madbrains.smartyard.R
@@ -154,23 +138,23 @@ class SettingsAddressDelegate(
 
     internal class SettingsAddressViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val llBlockService: LinearLayout = itemView.llBlockService
-        val viewSeparatorBlockService: View = itemView.viewSeparatorBlockService
-        val llLcab: LinearLayout = itemView.llLcab
-        val tvAddress: TextView = itemView.tvAddress
-        val tvCaption: TextView = itemView.tvCaption
-        val coll: ExpandableLayout = itemView.expandable_layout
-        val imageView: ImageView = itemView.imageView6
-        val llSettingAddress: LinearLayout = itemView.llSettingAddress
-        val viewSettingAddress: View = itemView.view2
+        val llBlockService: LinearLayout = itemView.findViewById(R.id.llBlockService)
+        val viewSeparatorBlockService: View = itemView.findViewById(R.id.viewSeparatorBlockService)
+        val llLcab: LinearLayout = itemView.findViewById(R.id.llLcab)
+        val tvAddress: TextView = itemView.findViewById(R.id.tvAddress)
+        val tvCaption: TextView = itemView.findViewById(R.id.tvCaption)
+        val coll: ExpandableLayout = itemView.findViewById(R.id.expandable_layout)
+        val imageView: ImageView = itemView.findViewById(R.id.imageView6)
+        val llSettingAddress: LinearLayout = itemView.findViewById(R.id.llSettingAddress)
+        val viewSettingAddress: View = itemView.findViewById(R.id.view2)
 
-        val llProvideAccess: LinearLayout = itemView.llProvideAccess
-        val viewAccess: View = itemView.view4
+        val llProvideAccess: LinearLayout = itemView.findViewById(R.id.llProvideAccess)
+        val viewAccess: View = itemView.findViewById(R.id.view4)
 
-        val ivWifi: ImageView = itemView.cbWifi
-        val ivMonitor: ImageView = itemView.cbMonitor
-        val ivCall: ImageView = itemView.cbCall
-        val ivKey: ImageView = itemView.cbKey
-        val ivEye: ImageView = itemView.cbEye
+        val ivWifi: ImageView = itemView.findViewById(R.id.cbWifi)
+        val ivMonitor: ImageView = itemView.findViewById(R.id.cbMonitor)
+        val ivCall: ImageView = itemView.findViewById(R.id.cbCall)
+        val ivKey: ImageView = itemView.findViewById(R.id.cbKey)
+        val ivEye: ImageView = itemView.findViewById(R.id.cbEye)
     }
 }

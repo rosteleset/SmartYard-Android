@@ -48,6 +48,7 @@ class BasicSettingsViewModel(
 
     fun setPushSetting(flag: Boolean) {
         viewModelScope.withProgress {
+            preferenceStorage.xDmApiRefresh = true
             val res = authInteractor.userNotification(
                 null,
                 TF.getBoolean(flag)

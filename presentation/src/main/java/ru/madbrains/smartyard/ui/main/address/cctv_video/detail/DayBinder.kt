@@ -7,7 +7,6 @@ import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
-import kotlinx.android.synthetic.main.calendar_day.view.dateNum
 import org.threeten.bp.LocalDate
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.setTextColorRes
@@ -16,7 +15,7 @@ import ru.madbrains.smartyard.ui.main.address.cctv_video.isDateInAvailableRanges
 
 class DayViewContainer(view: View) : ViewContainer(view) {
     lateinit var day: CalendarDay
-    val dateNum: TextView = view.dateNum
+    val dateNum: TextView = view.findViewById(R.id.dateNum)
 }
 class CalendarDayBinder(
     private val today: LocalDate,

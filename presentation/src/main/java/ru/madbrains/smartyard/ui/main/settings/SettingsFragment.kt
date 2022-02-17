@@ -19,18 +19,18 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import kotlinx.android.synthetic.main.fragment_settings.*
-import kotlinx.android.synthetic.main.fragment_settings.floatingActionButton
-import kotlinx.android.synthetic.main.fragment_settings.swipeContainer
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.EventObserver
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentSettingsBinding
 import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.MainActivityViewModel
 import ru.madbrains.smartyard.ui.main.settings.dialog.DialogServiceFragment
 import timber.log.Timber
 
 class SettingsFragment : Fragment() {
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+
     private val mViewModel by sharedViewModel<SettingsViewModel>()
     private val mMainViewModel by sharedViewModel<MainActivityViewModel>()
     lateinit var adapter: ListDelegationAdapter<List<SettingsAddressModel>>
@@ -39,15 +39,18 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_settings, container, false)
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
-        ivBackAddressSettings.setOnClickListener {
+        binding.ivBackAddressSettings.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        floatingActionButton.setOnClickListener() {
+        binding.floatingActionButton.setOnClickListener() {
             (activity as MainActivity?)?.navigateToAddressAuthFragment()
         }
     }
@@ -73,7 +76,7 @@ class SettingsFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        swipeContainer.setOnRefreshListener {
+        binding.swipeContainer.setOnRefreshListener {
             mViewModel.getDataList(true)
         }
 
@@ -82,10 +85,10 @@ class SettingsFragment : Fragment() {
             Observer {
                 adapter.items = it
                 adapter.notifyDataSetChanged()
-                swipeContainer.isRefreshing = false
+                binding.swipeContainer.isRefreshing = false
 
-                if (floatingActionButton.visibility != View.VISIBLE) {
-                    floatingActionButton.show()
+                if (binding.floatingActionButton.visibility != View.VISIBLE) {
+                    binding.floatingActionButton.show()
                 }
             }
         )
@@ -93,8 +96,10 @@ class SettingsFragment : Fragment() {
         mViewModel.progress.observe(
             viewLifecycleOwner,
             Observer {
-                if (!swipeContainer.isRefreshing) progressBar.isVisible = it
-                swipeContainer.isRefreshing = false
+                if (!binding.swipeContainer.isRefreshing) {
+                    binding.progressBar.isVisible = it
+                }
+                binding.swipeContainer.isRefreshing = false
             }
         )
 
@@ -109,7 +114,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        rvSettings.apply {
+        binding.rvSettings.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapter = ListDelegationAdapter<List<SettingsAddressModel>>(
@@ -140,7 +145,7 @@ class SettingsFragment : Fragment() {
                     this.findNavController().navigate(action)
                 },
                 { position ->
-                    val layoutManager = rvSettings
+                    val layoutManager = binding.rvSettings
                         .layoutManager as LinearLayoutManager
                     val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
                         override fun getVerticalSnapPreference(): Int {
@@ -153,19 +158,19 @@ class SettingsFragment : Fragment() {
             )
         )
         adapter.items = emptyList()
-        rvSettings.adapter = adapter
-        rvSettings.addOnScrollListener(object : OnScrollListener() {
+        binding.rvSettings.adapter = adapter
+        binding.rvSettings.addOnScrollListener(object : OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && floatingActionButton.visibility == View.VISIBLE) {
-                    floatingActionButton.hide()
-                } else if (dy < 0 && floatingActionButton.visibility != View.VISIBLE) {
-                    floatingActionButton.show()
+                if (dy > 0 && binding.floatingActionButton.visibility == View.VISIBLE) {
+                    binding.floatingActionButton.hide()
+                } else if (dy < 0 && binding.floatingActionButton.visibility != View.VISIBLE) {
+                    binding.floatingActionButton.show()
                 }
 
-                if (!rvSettings.canScrollVertically(-1)
-                    && floatingActionButton.visibility != View.VISIBLE) {
-                    floatingActionButton.show()
+                if (!binding.rvSettings.canScrollVertically(-1)
+                    && binding.floatingActionButton.visibility != View.VISIBLE) {
+                    binding.floatingActionButton.show()
                 }
             }
         })

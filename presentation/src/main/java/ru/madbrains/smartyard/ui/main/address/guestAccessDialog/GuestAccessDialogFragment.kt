@@ -19,11 +19,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import kotlinx.android.synthetic.main.dialog_guest_access.btnDismiss
-import kotlinx.android.synthetic.main.dialog_guest_access.btnShare
-import kotlinx.android.synthetic.main.dialog_guest_access.rvGuestAccess
-import kotlinx.android.synthetic.main.dialog_guest_access.tvAddContact
-import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogGuestAccessBinding
 import timber.log.Timber
 
 /**
@@ -31,14 +27,17 @@ import timber.log.Timber
  * Created on 2020-02-19.
  */
 class GuestAccessDialogFragment : DialogFragment() {
+    private var _binding: DialogGuestAccessBinding? = null
+    private val binding get() = _binding!!
+
     interface OnGuestAccessListener {
         fun onDismiss(dialog: GuestAccessDialogFragment)
         fun onShare()
     }
 
-    var onGuestAccessListener: OnGuestAccessListener? = null
+    private var onGuestAccessListener: OnGuestAccessListener? = null
 
-    var listGuestAccessModel = mutableListOf<GuestAccessModel>()
+    private var listGuestAccessModel = mutableListOf<GuestAccessModel>()
 
     lateinit var adapter: ListDelegationAdapter<List<GuestAccessModel>>
 
@@ -48,7 +47,10 @@ class GuestAccessDialogFragment : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.dialog_guest_access, container, false)
+    ): View {
+        _binding = DialogGuestAccessBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
@@ -66,11 +68,11 @@ class GuestAccessDialogFragment : DialogFragment() {
     }
 
     private fun initRecycler() {
-        rvGuestAccess.apply {
+        binding.rvGuestAccess.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapter = ListDelegationAdapter<List<GuestAccessModel>>(
-            GuestAccessDelegates(activity!!) {
+            GuestAccessDelegates(requireActivity()) {
                 listGuestAccessModel.removeAt(it)
                 adapter.notifyDataSetChanged()
             }
@@ -79,7 +81,7 @@ class GuestAccessDialogFragment : DialogFragment() {
         listGuestAccessModel.add(GuestAccessModel("+7 917 619 48 95", "Василий"))
 
         adapter.items = listGuestAccessModel
-        rvGuestAccess.adapter = adapter
+        binding.rvGuestAccess.adapter = adapter
     }
 
     override fun onStart() {
@@ -98,13 +100,13 @@ class GuestAccessDialogFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
 
-        btnShare.setOnClickListener {
+        binding.btnShare.setOnClickListener {
             onGuestAccessListener?.onShare()
         }
-        btnDismiss.setOnClickListener {
+        binding.btnDismiss.setOnClickListener {
             onGuestAccessListener?.onDismiss(this)
         }
-        tvAddContact.setOnClickListener {
+        binding.tvAddContact.setOnClickListener {
             val contactPickerIntent = Intent(
                 Intent.ACTION_PICK,
                 ContactsContract.CommonDataKinds.Phone.CONTENT_URI
@@ -119,7 +121,7 @@ class GuestAccessDialogFragment : DialogFragment() {
             when (requestCode) {
                 RESULT_PICK_CONTACT -> {
                     val contactUri: Uri = data?.data!!
-                    val cursor = context!!.contentResolver.query(
+                    val cursor = requireContext().contentResolver.query(
                         contactUri, null,
                         null, null, null
                     )

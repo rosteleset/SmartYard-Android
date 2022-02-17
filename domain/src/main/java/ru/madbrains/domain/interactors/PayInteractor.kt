@@ -31,7 +31,7 @@ class PayInteractor(
         paymentToken: String,
         amount: String,
         orderNumber: String
-    ): PaymentDoResponse? {
+    ): PaymentDoResponse {
         return repository.paymentDo(
             merchant,
             returnUrl,

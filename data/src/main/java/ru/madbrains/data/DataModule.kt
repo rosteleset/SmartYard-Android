@@ -43,8 +43,8 @@ import java.util.concurrent.TimeUnit
 
 object DataModule {
 
-    const val URL = "dm.lanta.me:543"
-    private const val BASE_URL = "https://$URL/"
+    var URL = "https://dm.lanta.me:543"
+    private var BASE_URL = "$URL/"
 
     fun create() = module {
         single {

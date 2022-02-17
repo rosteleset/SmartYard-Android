@@ -12,13 +12,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_address_settings.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.TF
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.string
+import ru.madbrains.smartyard.databinding.FragmentAddressSettingsBinding
 import ru.madbrains.smartyard.ui.SoundChooser
 import ru.madbrains.smartyard.ui.main.address.AddressViewModel
 import ru.madbrains.smartyard.ui.main.settings.SettingsViewModel
@@ -26,9 +26,10 @@ import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogDeleteReason.
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogDeleteReason.DialogDeleteReasonFragment.OnGuestDeleteListener
 import ru.madbrains.smartyard.ui.showStandardAlert
 import ru.madbrains.smartyard.ui.webview_dialog.WebViewDialogFragment
-import timber.log.Timber
 
 class AddressSettingsFragment : Fragment() {
+    private var _binding: FragmentAddressSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var mSetting: AddressSettingsFragmentArgs
     private val viewModel by viewModel<AddressSettingsViewModel>()
@@ -45,15 +46,17 @@ class AddressSettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? =
-        inflater.inflate(R.layout.fragment_address_settings, container, false)
+    ): View {
+        _binding = FragmentAddressSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireNotNull(arguments).let {
             mSetting = AddressSettingsFragmentArgs.fromBundle(it)
         }
-        cvDeleteAddress.setOnClickListener {
+        binding.cvDeleteAddress.setOnClickListener {
             if (contractOwner) {
                 val dialog = DialogDeleteReasonFragment()
                 dialog.setTargetFragment(this, 0)
@@ -74,7 +77,7 @@ class AddressSettingsFragment : Fragment() {
                 showDialogDelete()
             }
         }
-        tvSoundChoose.setOnClickListener {
+        binding.tvSoundChoose.setOnClickListener {
             SoundChooser.showSoundChooseIntent(
                 this,
                 RingtoneManager.TYPE_RINGTONE,
@@ -89,20 +92,20 @@ class AddressSettingsFragment : Fragment() {
                 mSetting.flatId,
                 viewModel.preferenceStorage
             )
-            tvSoundChoose.text = tone.getToneTitle(it)
+            binding.tvSoundChoose.text = tone.getToneTitle(it)
         }
-        tvTitleNotif.setOnClickListener {
-            if (expandableLayoutNotif.isExpanded) {
-                expandableLayoutNotif.collapse()
-                tvTitleNotif.setCompoundDrawablesWithIntrinsicBounds(
+        binding.tvTitleNotif.setOnClickListener {
+            if (binding.expandableLayoutNotif.isExpanded) {
+                binding.expandableLayoutNotif.collapse()
+                binding.tvTitleNotif.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
                     R.drawable.ic_arrow_bottom,
                     0
                 )
             } else {
-                expandableLayoutNotif.expand()
-                tvTitleNotif.setCompoundDrawablesWithIntrinsicBounds(
+                binding.expandableLayoutNotif.expand()
+                binding.tvTitleNotif.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
                     R.drawable.ic_arrow_top,
@@ -111,19 +114,19 @@ class AddressSettingsFragment : Fragment() {
             }
         }
 
-        tvWhiteRabbit.setOnClickListener {
+        binding.tvWhiteRabbit.setOnClickListener {
             WebViewDialogFragment(string.help_white_rabbit).show(requireActivity().supportFragmentManager, "HelpWhiteRabbit")
         }
 
-        tvAddressName.text = mSetting.address
+        binding.tvAddressName.text = mSetting.address
         flatId = mSetting.flatId
         clientId = mSetting.clientId
         isKey = mSetting.isKey
         contractOwner = mSetting.contractOwner
 
         // Значение домофона
-        cvNotification.isVisible = isKey
-        ivBack.setOnClickListener {
+        binding.cvNotification.isVisible = isKey
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
         viewModel.getIntercom(flatId)
@@ -141,75 +144,72 @@ class AddressSettingsFragment : Fragment() {
         )
 
         viewModel.intercom.observe(
-            viewLifecycleOwner,
-            {
-                Timber.d("__Q__ observer intercom $it")
+            viewLifecycleOwner
+        ) {
+            binding.switchIntercom.isChecked = it.cMS
+            binding.switchVoip.isChecked = it.voIP
 
-                switchIntercom.isChecked = it.cMS
-                switchVoip.isChecked = it.voIP
-                
-                val paperBill = it.paperBill
-                if (paperBill == null) {
-                    tvPaperBill.isVisible = false
-                    switchPaperBill.isVisible = false
-                    vPaperBill.isVisible = false
-                } else {
-                    tvPaperBill.isVisible = true
-                    switchPaperBill.isChecked = paperBill
-                    switchPaperBill.isVisible = true
-                    vPaperBill.isVisible = true
-                }
-
-                val useEventLog = it.disablePlog
-                if (useEventLog == null) {
-                    tvUseEventLog.isVisible = false
-                    switchUseEventLog.isVisible = false
-                    vUseEventLog.isVisible = false
-                } else {
-                    tvUseEventLog.isVisible = true
-                    switchUseEventLog.isChecked = !useEventLog
-                    switchUseEventLog.isVisible = true
-                    vUseEventLog.isVisible = true
-                }
-
-                val ownerEventLog = it.hiddenPlog
-                if (ownerEventLog == null) {
-                    tvOwnerEventLog.isVisible = false
-                    switchOwnerEventLog.isVisible = false
-                    vOwnerEventLog.isVisible = false
-                } else {
-                    tvOwnerEventLog.isVisible = true
-                    switchOwnerEventLog.isChecked = ownerEventLog
-                    switchOwnerEventLog.isVisible = true
-                    vOwnerEventLog.isVisible = true
-                }
-
-                val useFRS = it.frsDisabled
-                if (useFRS == null) {
-                    tvUseFRS.isVisible = false
-                    ivUseFRSBeta.isVisible = false
-                    switchUseFRS.isVisible = false
-                    vUseFRS.isVisible = false
-                } else {
-                    if (!contractOwner) {
-                        //не владелец квартиры, запрещаем переключатель распознавания лиц и делаем настройку попупрозрачной
-                        tvUseFRS.alpha = FRS_DISABLED_ALPHA
-                        ivUseFRSBeta.alpha = FRS_DISABLED_ALPHA
-                        switchUseFRS.alpha = FRS_DISABLED_ALPHA
-                        switchUseFRS.isEnabled = false
-                        switchUseFRS.setOnCheckedChangeListener(null)
-                    }
-
-                    tvUseFRS.isVisible = true
-                    ivUseFRSBeta.isVisible = true
-                    switchUseFRS.isChecked = !useFRS
-                    switchUseFRS.isVisible = true
-                    vUseFRS.isVisible = true
-                }
-
-                switchWhiteRabbit.isChecked = (it.whiteRabbit > 0)
+            val paperBill = it.paperBill
+            if (paperBill == null) {
+                binding.tvPaperBill.isVisible = false
+                binding.switchPaperBill.isVisible = false
+                binding.vPaperBill.isVisible = false
+            } else {
+                binding.tvPaperBill.isVisible = true
+                binding.switchPaperBill.isChecked = paperBill
+                binding.switchPaperBill.isVisible = true
+                binding.vPaperBill.isVisible = true
             }
-        )
+
+            val useEventLog = it.disablePlog
+            if (useEventLog == null) {
+                binding.tvUseEventLog.isVisible = false
+                binding.switchUseEventLog.isVisible = false
+                binding.vUseEventLog.isVisible = false
+            } else {
+                binding.tvUseEventLog.isVisible = true
+                binding.switchUseEventLog.isChecked = !useEventLog
+                binding.switchUseEventLog.isVisible = true
+                binding.vUseEventLog.isVisible = true
+            }
+
+            val ownerEventLog = it.hiddenPlog
+            if (ownerEventLog == null) {
+                binding.tvOwnerEventLog.isVisible = false
+                binding.switchOwnerEventLog.isVisible = false
+                binding.vOwnerEventLog.isVisible = false
+            } else {
+                binding.tvOwnerEventLog.isVisible = true
+                binding.switchOwnerEventLog.isChecked = ownerEventLog
+                binding.switchOwnerEventLog.isVisible = true
+                binding.vOwnerEventLog.isVisible = true
+            }
+
+            val useFRS = it.frsDisabled
+            if (useFRS == null) {
+                binding.tvUseFRS.isVisible = false
+                binding.ivUseFRSBeta.isVisible = false
+                binding.switchUseFRS.isVisible = false
+                binding.vUseFRS.isVisible = false
+            } else {
+                if (!contractOwner) {
+                    //не владелец квартиры, запрещаем переключатель распознавания лиц и делаем настройку попупрозрачной
+                    binding.tvUseFRS.alpha = FRS_DISABLED_ALPHA
+                    binding.ivUseFRSBeta.alpha = FRS_DISABLED_ALPHA
+                    binding.switchUseFRS.alpha = FRS_DISABLED_ALPHA
+                    binding.switchUseFRS.isEnabled = false
+                    binding.switchUseFRS.setOnCheckedChangeListener(null)
+                }
+
+                binding.tvUseFRS.isVisible = true
+                binding.ivUseFRSBeta.isVisible = true
+                binding.switchUseFRS.isChecked = !useFRS
+                binding.switchUseFRS.isVisible = true
+                binding.vUseFRS.isVisible = true
+            }
+
+            binding.switchWhiteRabbit.isChecked = (it.whiteRabbit > 0)
+        }
 
         viewModel.deleteRoommate.observe(
             viewLifecycleOwner,
@@ -219,7 +219,7 @@ class AddressSettingsFragment : Fragment() {
             }
         )
 
-        switchIntercom.setOnCheckedChangeListener { compoundButton, check ->
+        binding.switchIntercom.setOnCheckedChangeListener { compoundButton, check ->
             if (!compoundButton.isPressed) {
                 return@setOnCheckedChangeListener
             }
@@ -237,7 +237,7 @@ class AddressSettingsFragment : Fragment() {
             )
         }
 
-        switchVoip.setOnCheckedChangeListener { _, check ->
+        binding.switchVoip.setOnCheckedChangeListener { _, check ->
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -252,7 +252,7 @@ class AddressSettingsFragment : Fragment() {
             )
         }
 
-        switchPaperBill.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchPaperBill.setOnCheckedChangeListener { _, isChecked ->
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -267,7 +267,7 @@ class AddressSettingsFragment : Fragment() {
             )
         }
 
-        switchUseEventLog.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchUseEventLog.setOnCheckedChangeListener { _, isChecked ->
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -284,7 +284,7 @@ class AddressSettingsFragment : Fragment() {
             mSettingsVM.nextListNoCache = true
         }
 
-        switchOwnerEventLog.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchOwnerEventLog.setOnCheckedChangeListener { _, isChecked ->
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -299,7 +299,7 @@ class AddressSettingsFragment : Fragment() {
             )
         }
 
-        switchUseFRS.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchUseFRS.setOnCheckedChangeListener { _, isChecked ->
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -314,7 +314,7 @@ class AddressSettingsFragment : Fragment() {
             )
         }
 
-        switchWhiteRabbit.setOnCheckedChangeListener { _, isChecked ->
+        binding.switchWhiteRabbit.setOnCheckedChangeListener { _, isChecked ->
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -328,13 +328,19 @@ class AddressSettingsFragment : Fragment() {
                 null
             )
         }
+
+        binding.switchUseSpeaker.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.saveSpeakerFlag(flatId, isChecked)
+        }
+
+        binding.switchUseSpeaker.isChecked = (viewModel.preferenceStorage.addressOptions.getOption(flatId).isSpeaker == true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         SoundChooser.getDataFromIntent(context, requestCode, resultCode, data) { tone ->
             context?.let {
-                tvSoundChoose.text = tone.getToneTitle(it)
+                binding.tvSoundChoose.text = tone.getToneTitle(it)
                 viewModel.saveSoundToPref(tone, mSetting.flatId)
             }
         }
@@ -345,7 +351,7 @@ class AddressSettingsFragment : Fragment() {
         builder
             .setMessage(resources.getString(R.string.setting_dialog_delete_title))
             .setPositiveButton(resources.getString(R.string.setting_dialog_delete_yes)) { _, _ ->
-                viewModel.deleteRooomate(flatId, clientId)
+                viewModel.deleteRoommate(flatId, clientId)
             }
             .setNegativeButton(resources.getString(R.string.setting_dialog_delete_no)) { _, _ ->
                 returnTransition

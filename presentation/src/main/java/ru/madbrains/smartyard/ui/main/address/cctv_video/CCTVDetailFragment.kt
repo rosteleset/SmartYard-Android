@@ -1,6 +1,5 @@
 package ru.madbrains.smartyard.ui.main.address.cctv_video
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,19 +10,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener
-import kotlinx.android.synthetic.main.fragment_cctv_detail.*
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.threeten.bp.LocalDate
 import ru.madbrains.domain.model.response.targetZoneId
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentCctvDetailBinding
 import ru.madbrains.smartyard.ui.main.address.addressVerification.TabAdapter
 import ru.madbrains.smartyard.ui.main.address.cctv_video.detail.CCTVOnlineTab
 import ru.madbrains.smartyard.ui.main.address.cctv_video.detail.arhive.CCTVArchiveTab
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 import timber.log.Timber
 
 class CCTVDetailFragment : Fragment() {
-    private val mCCTVViewModel: CCTVViewModel by stateSharedViewModel()
+    private var _binding: FragmentCctvDetailBinding? = null
+    private val binding get() = _binding!!
+
+    private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
     private var endDate = LocalDate.now(targetZoneId)
     private var startDate = endDate.minusDays(minusDate)
 
@@ -53,7 +55,10 @@ class CCTVDetailFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_cctv_detail, container, false)
+    ): View {
+        _binding = FragmentCctvDetailBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -63,8 +68,8 @@ class CCTVDetailFragment : Fragment() {
 
     private fun setupUi(fm: FragmentManager
     ) {
-        contentWrap.clipToOutline = true
-        ivBack.setOnClickListener {
+        binding.contentWrap.clipToOutline = true
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
 
@@ -79,15 +84,15 @@ class CCTVDetailFragment : Fragment() {
             CCTVArchiveTab.newInstance(startDate, endDate, mCCTVViewModel.availableRanges),
             resources.getString(R.string.cctv_detail_tab_archive)
         )
-        viewPager.adapter = adapter
-        tabLayout.setupWithViewPager(viewPager)
-        viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
+        binding.viewPager.adapter = adapter
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        binding.viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 mCCTVViewModel.setCurrentTabPosition(position)
                 setupTabs(adapter, position)
             }
         })
-        viewPager.setCurrentItem(mCCTVViewModel.currentTabId, false)
+        binding.viewPager.setCurrentItem(mCCTVViewModel.currentTabId, false)
     }
 
     private fun setupTabs(adapter: TabAdapter, position: Int) {
@@ -117,13 +122,13 @@ class CCTVDetailFragment : Fragment() {
         mCCTVViewModel.chosenCamera.observe(
             viewLifecycleOwner,
             Observer {
-                tvTitle.text = it?.name
+                binding.tvTitle.text = it?.name
             }
         )
         mCCTVViewModel.cctvModel.observe(
             viewLifecycleOwner,
             Observer {
-                tvTitleSub.text = it?.address
+                binding.tvTitleSub.text = it?.address
             }
         )
     }
@@ -132,14 +137,14 @@ class CCTVDetailFragment : Fragment() {
         Timber.d("debug_dmm __detail fragment onHidden, hidden = $hidden")
         if (hidden) {
             if (mCCTVViewModel.currentTabId == ONLINE_TAB_POSITION) {
-                val onlineTabFragment = (viewPager.adapter as? TabAdapter)?.getItem(ONLINE_TAB_POSITION) as? CCTVOnlineTab
+                val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(ONLINE_TAB_POSITION) as? CCTVOnlineTab
                 Timber.d("debug_dmm __onlineTabFragment: $onlineTabFragment")
                 onlineTabFragment?.releasePlayer()
                 activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         } else {
             if (mCCTVViewModel.currentTabId == ONLINE_TAB_POSITION) {
-                val onlineTabFragment = (viewPager.adapter as? TabAdapter)?.getItem(ONLINE_TAB_POSITION) as? CCTVOnlineTab
+                val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(ONLINE_TAB_POSITION) as? CCTVOnlineTab
                 onlineTabFragment?.initPlayer()
             }
         }

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.RelativeLayout
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
@@ -23,7 +24,6 @@ import com.google.android.gms.wallet.PaymentsClient
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.buttom_dialog_sheet_pay.*
 import org.json.JSONException
 import org.json.JSONObject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -32,11 +32,11 @@ import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.GooglePayUtils
 import ru.madbrains.smartyard.GooglePayUtils.URL_SBER
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ButtomDialogSheetPayBinding
 import ru.madbrains.smartyard.ui.main.MainActivity.Companion.LOAD_PAYMENT_DATA_REQUEST_CODE
 import ru.madbrains.smartyard.ui.main.MainActivityViewModel
 import ru.madbrains.smartyard.ui.main.pay.contract.PayContractFragmentDirections
 import ru.madbrains.smartyard.ui.openUrl
-import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
@@ -83,6 +83,8 @@ class DecimalDigitsInputFilter(
 }
 
 class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
+    private var _binding: ButtomDialogSheetPayBinding? = null
+    private val binding get() = _binding!!
 
     private lateinit var mPaymentsClient: PaymentsClient
 
@@ -98,11 +100,9 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(
-            R.layout.buttom_dialog_sheet_pay, container,
-            false
-        )
+    ): View {
+        _binding = ButtomDialogSheetPayBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -114,26 +114,28 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
             val lcabPay = args.lcabPay
             clientId = args.clientId
             if (payAdvice == 0.0f) {
-                tvRecommendedMoney.isVisible = false
+                binding.tvRecommendedMoney.isVisible = false
             } else {
-                tvRecommendedMoney.text = String.format(
+                binding.tvRecommendedMoney.text = String.format(
                     getString(R.string.pay_recomended_sum), payAdvice.toString().replace(".", ",")
                 )
-                etMoneyBalance.setText(payAdvice.toString())
+                binding.etMoneyBalance.setText(payAdvice.toString())
             }
-            tvLcabPay.setOnClickListener {
+            binding.tvLcabPay.setOnClickListener {
                 openUrl(requireActivity(), lcabPay)
             }
-            if (lcabPay.isEmpty()) tvLcabPay.isVisible = false
-            tvNumber.text = "№ $contractName"
+            if (lcabPay.isEmpty()) {
+                binding.tvLcabPay.isVisible = false
+            }
+            binding.tvNumber.text = "№ $contractName"
         }
 
         //задаем максимальное количество знаков после запятой
-        etMoneyBalance?.inputFilterDecimal(8, 2)
+        binding.etMoneyBalance.inputFilterDecimal(8, 2)
 
-        etMoneyBalance?.addTextChangedListener {
+        binding.etMoneyBalance.addTextChangedListener {
             it?.let {
-                btnPay?.isEnabled = it.isNotEmpty()
+                view.findViewById<RelativeLayout>(R.id.btnPay)?.isEnabled = it.isNotEmpty()
             }
         }
 
@@ -175,7 +177,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
                                         .getJSONObject("tokenizationData").getString("token")
                                 payBottomSheetDialogViewModel.pay(
                                     token,
-                                    etMoneyBalance.text.toString(),
+                                    binding.etMoneyBalance.text.toString(),
                                     clientId
                                 )
                             } catch (e: JSONException) {
@@ -192,7 +194,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
                         }
                     }
                 }
-                btnPay?.isClickable = true
+                view.findViewById<RelativeLayout>(R.id.btnPay)?.isClickable = true
             }
         )
     }
@@ -215,7 +217,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
                         if (it) {
                             setUpGooglePayButton()
                         } else {
-                            btnPay?.visibility = View.GONE
+                            view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.GONE
                         }
                     }
                 }
@@ -224,9 +226,9 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
     }
 
     private fun setUpGooglePayButton() {
-        btnPay?.visibility = View.VISIBLE
-        btnPay?.setOnClickListener {
-            if (etMoneyBalance.text.toString().toFloat() > 0f) {
+        view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.VISIBLE
+        view?.findViewById<RelativeLayout>(R.id.btnPay)?.setOnClickListener {
+            if (binding.etMoneyBalance.text.toString().toFloat() > 0f) {
                 requestPayment()
             } else {
                 onError(getString(R.string.payments_error_2))
@@ -236,8 +238,8 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     @SuppressLint("NewApi")
     private fun requestPayment() {
-        btnPay?.isClickable = false
-        val paymentDataRequestJson = GooglePayUtils.getPaymentDataRequest(etMoneyBalance.text.toString()) ?: return
+        view?.findViewById<RelativeLayout>(R.id.btnPay)?.isClickable = false
+        val paymentDataRequestJson = GooglePayUtils.getPaymentDataRequest(binding.etMoneyBalance.text.toString()) ?: return
         val request = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
         if (request != null) {
             AutoResolveHelper.resolveTask(

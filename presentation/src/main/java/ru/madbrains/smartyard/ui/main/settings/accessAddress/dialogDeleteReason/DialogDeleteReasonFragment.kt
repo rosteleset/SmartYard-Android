@@ -15,11 +15,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import kotlinx.android.synthetic.main.dialog_delete_reason.btnDelete
-import kotlinx.android.synthetic.main.dialog_delete_reason.btnDismiss
-import kotlinx.android.synthetic.main.dialog_delete_reason.etReason
-import kotlinx.android.synthetic.main.dialog_delete_reason.rvGuestAccess
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogDeleteReasonBinding
 import timber.log.Timber
 
 /**
@@ -27,6 +24,9 @@ import timber.log.Timber
  * Created on 26/02/2020.
  */
 class DialogDeleteReasonFragment : DialogFragment() {
+    private var _binding: DialogDeleteReasonBinding? = null
+    private val binding get() = _binding!!
+
     interface OnGuestDeleteListener {
         fun onDismiss(dialog: DialogDeleteReasonFragment)
         fun onShare(reasonText: String, reasonList: String)
@@ -42,7 +42,10 @@ class DialogDeleteReasonFragment : DialogFragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.dialog_delete_reason, container, false)
+    ): View {
+        _binding = DialogDeleteReasonBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog: Dialog = super.onCreateDialog(savedInstanceState)
@@ -60,7 +63,7 @@ class DialogDeleteReasonFragment : DialogFragment() {
     }
 
     private fun initRecycler() {
-        rvGuestAccess.apply {
+        binding.rvGuestAccess.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapter = ListDelegationAdapter<List<ReasonModel>>(
@@ -71,7 +74,7 @@ class DialogDeleteReasonFragment : DialogFragment() {
         listReasonAccessModel.add(ReasonModel("Другое"))
 
         adapter.items = listReasonAccessModel
-        rvGuestAccess.adapter = adapter
+        binding.rvGuestAccess.adapter = adapter
     }
 
     override fun onStart() {
@@ -90,14 +93,14 @@ class DialogDeleteReasonFragment : DialogFragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
 
-        btnDelete.setOnClickListener {
+        binding.btnDelete.setOnClickListener { _ ->
             onDeleteReasonListener?.onShare(
-                etReason.text.toString(),
+                binding.etReason.text.toString(),
                 listReasonAccessModel.filter { it.check }.map { it.name }
                     .joinToString { it -> "\'${it}\'" }
             )
         }
-        btnDismiss.setOnClickListener {
+        binding.btnDismiss.setOnClickListener {
             onDeleteReasonListener?.onDismiss(this)
         }
     }

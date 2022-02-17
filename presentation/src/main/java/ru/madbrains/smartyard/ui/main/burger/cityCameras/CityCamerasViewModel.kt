@@ -79,5 +79,8 @@ class CityCamerasViewModel(
 
         //количество подгружаемых происшествий
         const val CHUNK_ITEM_COUNT = 8
+
+        //глубина записи архива в днях
+        const val RECORD_DEPTH_DAYS = 7L
     }
 }

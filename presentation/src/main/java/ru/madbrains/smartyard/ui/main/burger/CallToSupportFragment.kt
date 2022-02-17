@@ -5,11 +5,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import kotlinx.android.synthetic.main.fragment_call_to_support.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentCallToSupportBinding
 
 class CallToSupportFragment : BottomSheetDialogFragment() {
+    private var _binding: FragmentCallToSupportBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel: BurgerViewModel by sharedViewModel()
 
@@ -19,18 +21,19 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_call_to_support, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = FragmentCallToSupportBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ivCloseSupport.setOnClickListener {
+        binding.ivCloseSupport.setOnClickListener {
             dismiss()
         }
 
-        llOrderCallback.setOnClickListener {
+        binding.llOrderCallback.setOnClickListener {
             viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)
             dismiss()
         }
@@ -40,21 +43,21 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
 
     private fun setupObservers() {
         viewModel.dialNumber.observe(
-            viewLifecycleOwner,
-            {
-                it?.let { dialNumber ->
-                    if (dialNumber.isNotEmpty()) {
-                        tvCallToSupport.text = resources.getString(R.string.burger_call_support_by_phone, dialNumber)
-                        pbCallToSupport.visibility = View.GONE
+            viewLifecycleOwner
+        ) {
+            it?.let { dialNumber ->
+                if (dialNumber.isNotEmpty()) {
+                    binding.tvCallToSupport.text =
+                        resources.getString(R.string.burger_call_support_by_phone, dialNumber)
+                    binding.pbCallToSupport.visibility = View.GONE
 
-                        //когда получили номер, тогда и создаем обработчик
-                        llCallToSupport.setOnClickListener {
-                            viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.CALL_TO_SUPPORT_BY_PHONE)
-                            dismiss()
-                        }
+                    //когда получили номер, тогда и создаем обработчик
+                    binding.llCallToSupport.setOnClickListener {
+                        viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.CALL_TO_SUPPORT_BY_PHONE)
+                        dismiss()
                     }
                 }
             }
-        )
+        }
     }
 }

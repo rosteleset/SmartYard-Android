@@ -19,12 +19,11 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
-import kotlinx.android.synthetic.main.fragment_address.*
-import kotlinx.android.synthetic.main.fragment_address.floatingActionButton
-import kotlinx.android.synthetic.main.fragment_address.swipeContainer
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentAddressBinding
 import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.MainActivityViewModel
 import ru.madbrains.smartyard.ui.main.address.adapters.ParentListAdapter
@@ -33,13 +32,14 @@ import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVViewModel
 import ru.madbrains.smartyard.ui.main.address.event_log.EventLogViewModel
 import ru.madbrains.smartyard.ui.main.address.guestAccessDialog.GuestAccessDialogFragment
 import ru.madbrains.smartyard.ui.updateAllWidget
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 import timber.log.Timber
 
 class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListener {
+    private var _binding: FragmentAddressBinding? = null
+    private val binding get() = _binding!!
 
     private val mainActivityViewModel by sharedViewModel<MainActivityViewModel>()
-    private val mCCTVViewModel: CCTVViewModel by stateSharedViewModel()
+    private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
     private val mViewModel by sharedViewModel<AddressViewModel>()
     private val mEventLog by sharedViewModel<EventLogViewModel>()
 
@@ -51,18 +51,19 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_address, container, false)
+    ): View {
+        _binding = FragmentAddressBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initRecycler()
-        floatingActionButton?.setOnClickListener {
+        binding.floatingActionButton?.setOnClickListener {
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_addressFragment_to_authFragment)
         }
-        swipeContainer.setOnRefreshListener {
+        binding.swipeContainer.setOnRefreshListener {
             mViewModel.getDataList(true)
         }
 
@@ -88,11 +89,11 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                 // val items = ParentDataFactory.getParents(5) + it
                 adapter?.items = it
                 adapter?.notifyDataSetChanged()
-                swipeContainer.isRefreshing = false
+                binding.swipeContainer.isRefreshing = false
                 updateAllWidget(requireContext())
 
-                if (floatingActionButton.visibility != View.VISIBLE) {
-                    floatingActionButton.show()
+                if (binding.floatingActionButton.visibility != View.VISIBLE) {
+                    binding.floatingActionButton.show()
                 }
             }
         )
@@ -100,8 +101,9 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         mViewModel.progress.observe(
             viewLifecycleOwner,
             Observer {
-                if (!swipeContainer.isRefreshing) progressBarAddress.isVisible = it
-                swipeContainer.isRefreshing = false
+                if (!binding.swipeContainer.isRefreshing)
+                    binding.progressBarAddress.isVisible = it
+                binding.swipeContainer.isRefreshing = false
             }
         )
 
@@ -170,7 +172,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                 }
             )
         )
-        recyclerView = rv_parent
+        recyclerView = binding.rvParent
         recyclerView.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
@@ -179,15 +181,15 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         recyclerView.addOnScrollListener(object : OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && floatingActionButton.visibility == View.VISIBLE) {
-                    floatingActionButton.hide()
-                } else if (dy < 0 && floatingActionButton.visibility != View.VISIBLE) {
-                    floatingActionButton.show()
+                if (dy > 0 && binding.floatingActionButton.visibility == View.VISIBLE) {
+                    binding.floatingActionButton.hide()
+                } else if (dy < 0 && binding.floatingActionButton.visibility != View.VISIBLE) {
+                    binding.floatingActionButton.show()
                 }
 
                 if (!recyclerView.canScrollVertically(-1)
-                    && floatingActionButton.visibility != View.VISIBLE) {
-                    floatingActionButton.show()
+                    && binding.floatingActionButton.visibility != View.VISIBLE) {
+                    binding.floatingActionButton.show()
                 }
             }
         })

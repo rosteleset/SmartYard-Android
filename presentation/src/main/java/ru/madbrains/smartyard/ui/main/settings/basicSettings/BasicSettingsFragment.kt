@@ -11,17 +11,19 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_basic_settings.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.drawable
-import ru.madbrains.smartyard.R.layout
+import ru.madbrains.smartyard.databinding.FragmentBasicSettingsBinding
 import ru.madbrains.smartyard.ui.SoundChooser
 import ru.madbrains.smartyard.ui.firstCharacter
 import ru.madbrains.smartyard.ui.main.settings.dialog.DialogChangeName
 import ru.madbrains.smartyard.ui.updateAllWidget
+import timber.log.Timber
 
 class BasicSettingsFragment : Fragment() {
+    private var _binding: FragmentBasicSettingsBinding? = null
+    private val binding get() = _binding!!
 
     private val mViewModel by viewModel<BasicSettingsViewModel>()
 
@@ -29,23 +31,26 @@ class BasicSettingsFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(layout.fragment_basic_settings, container, false)
+    ): View {
+        _binding = FragmentBasicSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        cvExit.setOnClickListener {
+        binding.cvExit.setOnClickListener {
             showDialog()
         }
-        swShowNotify.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.swShowNotify.setOnCheckedChangeListener { buttonView, isChecked ->
             mViewModel.setPushSetting(isChecked)
         }
-        sBalanse.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.sBalanse.setOnCheckedChangeListener { buttonView, isChecked ->
             mViewModel.setPushMoneySetting(isChecked)
         }
-        tvSoundChoose.setOnClickListener {
+        binding.tvSoundChoose.setOnClickListener {
             SoundChooser.showSoundChooseIntent(
                 this,
                 RingtoneManager.TYPE_NOTIFICATION,
@@ -60,29 +65,29 @@ class BasicSettingsFragment : Fragment() {
                 null,
                 mViewModel.preferenceStorage
             )
-            tvSoundChoose.text = tone.getToneTitle(it)
+            binding.tvSoundChoose.text = tone.getToneTitle(it)
         }
 
-        tvTitleNotif.setOnClickListener {
-            if (expandableLayoutNotif.isExpanded) {
-                expandableLayoutNotif.collapse()
-                ivNotif.setImageResource(drawable.ic_arrow_bottom)
+        binding.tvTitleNotif.setOnClickListener {
+            if (binding.expandableLayoutNotif.isExpanded) {
+                binding.expandableLayoutNotif.collapse()
+                binding.ivNotif.setImageResource(drawable.ic_arrow_bottom)
             } else {
-                expandableLayoutNotif.expand()
-                ivNotif.setImageResource(drawable.ic_arrow_top)
+                binding.expandableLayoutNotif.expand()
+                binding.ivNotif.setImageResource(drawable.ic_arrow_top)
             }
         }
-        tvTitleSecurity.setOnClickListener {
-            if (expandableLayoutSecurity.isExpanded) {
-                expandableLayoutSecurity.collapse()
-                ivSecurity.setImageResource(drawable.ic_arrow_bottom)
+        binding.tvTitleSecurity.setOnClickListener {
+            if (binding.expandableLayoutSecurity.isExpanded) {
+                binding.expandableLayoutSecurity.collapse()
+                binding.ivSecurity.setImageResource(drawable.ic_arrow_bottom)
             } else {
-                expandableLayoutSecurity.expand()
-                ivSecurity.setImageResource(drawable.ic_arrow_top)
+                binding.expandableLayoutSecurity.expand()
+                binding.ivSecurity.setImageResource(drawable.ic_arrow_top)
             }
         }
 
-        ivNameEdit.setOnClickListener {
+        binding.ivNameEdit.setOnClickListener {
             val dialog = DialogChangeName()
             dialog.onSuccess = { mViewModel.refreshSendName() }
             dialog.show(parentFragmentManager, "")
@@ -97,30 +102,30 @@ class BasicSettingsFragment : Fragment() {
             }
         )
         mViewModel.sentName.observe(
-            viewLifecycleOwner,
-            {
-                tvUserName.text = "${it.name} ${firstCharacter(it.patronymic)}"
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.tvUserName.text = "${it.name} ${firstCharacter(it.patronymic)}"
+        }
         mViewModel.isPushSetting.observe(
             viewLifecycleOwner,
             Observer {
-                swShowNotify.isChecked = it
+                binding.swShowNotify.isChecked = it
             }
         )
         mViewModel.isPushMoneySetting.observe(
             viewLifecycleOwner,
             Observer {
-                sBalanse.isChecked = it
+                binding.sBalanse.isChecked = it
             }
         )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        Timber.d("debug_sound $resultCode")
         SoundChooser.getDataFromIntent(context, requestCode, resultCode, data) { tone ->
             context?.let {
-                tvSoundChoose.text = tone.getToneTitle(it)
+                binding.tvSoundChoose.text = tone.getToneTitle(it)
                 mViewModel.saveSoundToPref(tone)
             }
         }

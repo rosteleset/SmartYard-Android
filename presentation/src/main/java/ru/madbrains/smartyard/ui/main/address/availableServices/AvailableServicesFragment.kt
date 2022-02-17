@@ -9,15 +9,17 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_available_services.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.TF
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentAvailableServicesBinding
 import ru.madbrains.smartyard.ui.DividerItemDecorator
 import ru.madbrains.smartyard.ui.main.MainActivity
 
 class AvailableServicesFragment : Fragment() {
+    private var _binding: FragmentAvailableServicesBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModel<AvailableServicesViewModel>()
     private var servicesList = mutableListOf<AvailableModel>()
@@ -28,11 +30,14 @@ class AvailableServicesFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_available_services, container, false)
+    ): View {
+        _binding = FragmentAvailableServicesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        imageView7?.setOnClickListener {
+        binding.imageView7.setOnClickListener {
             this.findNavController().popBackStack()
         }
         initRecycler()
@@ -48,8 +53,8 @@ class AvailableServicesFragment : Fragment() {
             adapter.items = servicesList
             address = AvailableServicesFragmentArgs.fromBundle(it).address
         }
-        tvAddress.text = address
-        btnNext.setOnClickListener {
+        binding.tvAddress.text = address
+        binding.btnNext.setOnClickListener {
             viewModel.checkServices(servicesList, address)
         }
         setupObserve()
@@ -60,7 +65,7 @@ class AvailableServicesFragment : Fragment() {
         viewModel.stateEnabledButtonNext.observe(
             viewLifecycleOwner,
             EventObserver { enabled ->
-                btnNext.isEnabled = enabled
+                binding.btnNext.isEnabled = enabled
             }
         )
         viewModel.navigateToIssueSuccessDialogAction.observe(
@@ -89,7 +94,7 @@ class AvailableServicesFragment : Fragment() {
                     R.drawable.divider
                 )
             )
-        rvAvailable.apply {
+        binding.rvAvailable.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(dividerItemDecoration)
         }
@@ -122,6 +127,6 @@ class AvailableServicesFragment : Fragment() {
             )
         )
         adapter.items = list
-        rvAvailable.adapter = adapter
+        binding.rvAvailable.adapter = adapter
     }
 }

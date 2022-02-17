@@ -11,14 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import kotlinx.android.synthetic.main.fragment_no_network.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentNoNetworkBinding
 import ru.madbrains.smartyard.ui.DividerItemDecorator
 import ru.madbrains.smartyard.ui.main.MainActivity
 
 class NoNetworkFragment : Fragment() {
+    private var _binding: FragmentNoNetworkBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModel<NoNetworkViewModel>()
     private var address = ""
@@ -34,8 +36,9 @@ class NoNetworkFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_no_network, container, false)
+    ): View {
+        _binding = FragmentNoNetworkBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -58,10 +61,10 @@ class NoNetworkFragment : Fragment() {
     }
 
     private fun setupUi() {
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        btnCreateIssue.setOnClickListener {
+        binding.btnCreateIssue.setOnClickListener {
             viewModel.createIssue(address, servicesList.filter { it.check }.map { it.name })
         }
     }
@@ -74,21 +77,21 @@ class NoNetworkFragment : Fragment() {
                     R.drawable.divider
                 )
             )
-        rvServices.apply {
+        binding.rvServices.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             addItemDecoration(dividerItemDecoration)
         }
         val adapter = ListDelegationAdapter<List<ItemService>>(
             ServicesAdapterDelegate {
-                avalaibleButton(servicesList)
+                availableButton(servicesList)
             }
         )
         adapter.items = servicesList
-        rvServices.adapter = adapter
+        binding.rvServices.adapter = adapter
     }
 
-    private fun avalaibleButton(list: MutableList<ItemService>) {
-        btnCreateIssue.isEnabled = list.filter { it.check == true }.isNotEmpty()
+    private fun availableButton(list: MutableList<ItemService>) {
+        binding.btnCreateIssue.isEnabled = list.any { it.check }
     }
 
     data class ItemService(

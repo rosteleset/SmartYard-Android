@@ -4,7 +4,7 @@ apply plugin: 'com.google.gms.google-services'
 
 apply plugin: 'kotlin-android'
 
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 apply plugin: 'com.google.firebase.crashlytics'
 
@@ -12,12 +12,9 @@ apply plugin: 'kotlin-kapt'
 
 apply plugin: 'androidx.navigation.safeargs'
 
-apply plugin: 'marathon'
-
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
-    buildToolsVersion rootProject.buildToolsVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -28,39 +25,21 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-    signingConfigs {
-       /* debug {
-            storeFile file('../keys/debug.keystore')
-            //SHA1: 9E:8E:70:DE:D4:FF:2C:A7:9C:93:D2:69:14:14:CD:3C:11:CB:72:B9
-            storePassword 'android'
-            keyAlias = 'androiddebugkey'
-            keyPassword 'android'
-        }*/
-        debug {
-            storeFile file('../keys/keyAppBundle')
-            storePassword 'UhokpzDhQ'
-            keyAlias = 'MadBrains'
-            keyPassword 'UhokpzDhQ'
-        }
-    }
     defaultConfig {
         applicationId "ru.madbrains.smartyard"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 34
-        versionName '1.6.24'
+        versionCode 36
+        versionName '1.6.26'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         disableLint {
-            signingConfig signingConfigs.debug
             debuggable true
         }
         debug {
-            signingConfig signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -77,16 +56,9 @@ android {
             applicationId "ru.lanta.net.smartyard"
         }
     }
-}
 
-marathon {
-    debug = false
-    autoGrantPermission = true
-    name = "sample-app tests"
-    shardingStrategy {
-        countSharding {
-            count = 2
-        }
+    buildFeatures {
+        viewBinding true
     }
 }
 
@@ -108,7 +80,7 @@ repositories {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.1'
     implementation project(':domain')
     implementation project(':data')
     implementation project(':lib')
@@ -121,7 +93,7 @@ dependencies {
     implementation "androidx.transition:transition:$rootProject.androidxTransition"
     implementation "com.google.android.material:material:$rootProject.materialMaterial"
     implementation "androidx.viewpager2:viewpager2:$rootProject.viewpagerVersion"
-    implementation "com.romandanylyk:pageindicatorview:$rootProject.pageIndicatorVersion"
+    implementation "com.github.romandanylyk:PageIndicatorView:$rootProject.pageIndicatorVersion"
 
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
@@ -172,15 +144,17 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$rootProject.lifecycleViewModelVersion"
     kapt "androidx.lifecycle:lifecycle-compiler:$rootProject.lifecycleVersion"
 
-    // Koin
-    implementation "org.koin:koin-androidx-scope:$rootProject.koin_version"
-    implementation "org.koin:koin-androidx-viewmodel:$rootProject.koin_version"
-    testImplementation "org.koin:koin-test:$rootProject.koin_version"
+    // Koin Core features
+    implementation "io.insert-koin:koin-core:$koin_version"
+    // Koin Test features
+    testImplementation "io.insert-koin:koin-test:$koin_version"
+    // Koin main features for Android
+    implementation "io.insert-koin:koin-android:$koin_version"
 
     // Images
     implementation "com.github.bumptech.glide:glide:$rootProject.glide_version"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    annotationProcessor "com.github.bumptech.glide:compiler:$rootProject.glide_version"
+    kapt "com.github.bumptech.glide:compiler:$rootProject.glide_version"
 
     // Serialization
     implementation "com.squareup.moshi:moshi-kotlin:$rootProject.moshi_version"
@@ -193,15 +167,11 @@ dependencies {
         exclude group: 'androidx.appcompat', module: 'appcompat'
     }
 
-    // Bottom Navigation
-    //implementation "com.tbuonomo:morph-bottom-navigation:$rootProject.morphBottomNavigation"
-    //api 'com.tbuonomo:magicshapepath:1.0.0-alpha3'
-
     // LinPhone SDK
     implementation "org.linphone:linphone-sdk-android:$rootProject.linphoneVersion"
 
-    // Exapndable Layout
-    implementation "net.cachapa.expandablelayout:expandablelayout:${expandablelayoutVersion}"
+    // Expandable Layout
+    implementation "com.github.cachapa:ExpandableLayout:${expandablelayoutVersion}"
 
     // AdapterDelegates
     implementation "com.hannesdorfmann:adapterdelegates4:${adapterdelegates}"
@@ -210,10 +180,10 @@ dependencies {
     implementation "org.osmdroid:osmdroid-android:${openStreetMapVersion}"
 
     // Swipe
-    implementation "ru.rambler.android:swipe-layout:${swipeLayout}"
+    implementation 'com.github.rambler-digital-solutions:swipe-layout-android:1.0.17'
 
     // Mask
-    implementation "com.redmadrobot:input-mask-android:${inputMask}"
+    implementation "com.github.RedMadRobot:input-mask-android:${inputMask}"
 
     // CameraX
     implementation "androidx.camera:camera-core:${cameraxVersion}"
@@ -250,8 +220,8 @@ dependencies {
     implementation 'com.github.bekannax:OnlineChatSdk:0.1.3'
 
     // Test
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
-    androidTestImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
+    androidTestImplementation 'androidx.test:runner:1.4.0'
+    androidTestImplementation 'androidx.test:rules:1.4.0'
     androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.1.0'
 }

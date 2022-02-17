@@ -10,15 +10,17 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_auth.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.string
 import ru.madbrains.smartyard.afterTextChanged
+import ru.madbrains.smartyard.databinding.FragmentAuthBinding
 import ru.madbrains.smartyard.ui.showStandardAlert
 
 class AuthFragment : Fragment() {
+    private var _binding: FragmentAuthBinding? = null
+    private val binding get() = _binding!!
 
     private val viewModel by viewModel<AuthViewModel>()
     private var start = 0
@@ -27,7 +29,10 @@ class AuthFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_auth, container, false)
+    ): View {
+        _binding = FragmentAuthBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -58,46 +63,46 @@ class AuthFragment : Fragment() {
     }
 
     private fun showHidePass() {
-        start = etPassword.selectionStart
-        end = etPassword.selectionEnd
-        if (etPassword.transformationMethod == PasswordTransformationMethod.getInstance()
+        start = binding.etPassword.selectionStart
+        end = binding.etPassword.selectionEnd
+        if (binding.etPassword.transformationMethod == PasswordTransformationMethod.getInstance()
         ) {
-            ivShowHide.setImageResource(R.drawable.ic_visibility)
-            etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
+            binding.ivShowHide.setImageResource(R.drawable.ic_visibility)
+            binding.etPassword.transformationMethod = HideReturnsTransformationMethod.getInstance()
         } else {
-            ivShowHide.setImageResource(R.drawable.ic_visibility_off)
-            etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
+            binding.ivShowHide.setImageResource(R.drawable.ic_visibility_off)
+            binding.etPassword.transformationMethod = PasswordTransformationMethod.getInstance()
         }
-        etPassword.setSelection(start, end)
+        binding.etPassword.setSelection(start, end)
     }
 
     private fun setupUi() {
-        ivShowHide.setOnClickListener {
+        binding.ivShowHide.setOnClickListener {
             showHidePass()
         }
-        btnNoContract.setOnClickListener {
+        binding.btnNoContract.setOnClickListener {
             viewModel.seenWarning()
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_authFragment_to_inputAddressFragment)
         }
-        btnSignIn.setOnClickListener {
+        binding.btnSignIn.setOnClickListener {
             viewModel.seenWarning()
-            viewModel.signIn(etContractNumber.text.toString(), etPassword.text.toString())
+            viewModel.signIn(binding.etContractNumber.text.toString(), binding.etPassword.text.toString())
         }
-        tvNotRememberPassword.setOnClickListener {
+        binding.tvNotRememberPassword.setOnClickListener {
             val action =
-                AuthFragmentDirections.actionAuthFragmentToRestoreAccessFragment(etContractNumber.text.toString())
+                AuthFragmentDirections.actionAuthFragmentToRestoreAccessFragment(binding.etContractNumber.text.toString())
             this.findNavController().navigate(action)
         }
-        etContractNumber.afterTextChanged {
-            btnSignIn.isEnabled = it.isNotEmpty() && etPassword.text.isNotEmpty()
+        binding.etContractNumber.afterTextChanged {
+            binding.btnSignIn.isEnabled = it.isNotEmpty() && binding.etPassword.text.isNotEmpty()
         }
 
-        etPassword.afterTextChanged {
-            btnSignIn.isEnabled = it.isNotEmpty() && etContractNumber.text.isNotEmpty()
+        binding.etPassword.afterTextChanged {
+            binding.btnSignIn.isEnabled = it.isNotEmpty() && binding.etContractNumber.text.isNotEmpty()
         }
 
-        tvRememberAnything.setOnClickListener {
+        binding.tvRememberAnything.setOnClickListener {
             showDialogIssue()
         }
     }

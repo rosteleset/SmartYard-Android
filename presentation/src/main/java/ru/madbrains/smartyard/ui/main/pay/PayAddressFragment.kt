@@ -16,14 +16,15 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import kotlinx.android.synthetic.main.fragment_pay.*
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import ru.madbrains.smartyard.EventObserver
-import ru.madbrains.smartyard.R
-import ru.madbrains.smartyard.utils.stateSharedViewModel
+import ru.madbrains.smartyard.databinding.FragmentPayBinding
 
 class PayAddressFragment : Fragment() {
+    private var _binding: FragmentPayBinding? = null
+    private val binding get() = _binding!!
 
-    private val payViewModel: PayAddressViewModel by stateSharedViewModel()
+    private val payViewModel: PayAddressViewModel by sharedStateViewModel()
 
     lateinit var adapter: ListDelegationAdapter<List<PayAddressModel>>
 
@@ -31,12 +32,13 @@ class PayAddressFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        val root = inflater.inflate(R.layout.fragment_pay, container, false)
+    ): View {
+        _binding = FragmentPayBinding.inflate(inflater, container, false)
+        val root = binding.root
         payViewModel.addressList.observe(
             viewLifecycleOwner,
             EventObserver {
-                swipeContainer.isRefreshing = false
+                binding.swipeContainer.isRefreshing = false
                 if (it.size == 1) {
                     payViewModel.navigateToPayContractFragment(0)
                 } else {
@@ -50,8 +52,10 @@ class PayAddressFragment : Fragment() {
         payViewModel.progress.observe(
             viewLifecycleOwner,
             Observer {
-                if (!swipeContainer.isRefreshing) progressBarAddress.isVisible = it
-                swipeContainer.isRefreshing = false
+                if (!binding.swipeContainer.isRefreshing) {
+                    binding.progressBarAddress.isVisible = it
+                }
+                binding.swipeContainer.isRefreshing = false
             }
         )
         payViewModel.navigateToСontractFragment.observe(
@@ -67,7 +71,7 @@ class PayAddressFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initRecycler()
-        swipeContainer.setOnRefreshListener {
+        binding.swipeContainer.setOnRefreshListener {
             payViewModel.getPaymentsList()
         }
     }
@@ -78,7 +82,7 @@ class PayAddressFragment : Fragment() {
     }
 
     private fun initRecycler() {
-        rvAddressPay.apply {
+        binding.rvAddressPay.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapter = ListDelegationAdapter(
@@ -86,7 +90,7 @@ class PayAddressFragment : Fragment() {
                 payViewModel.navigateToPayContractFragment(position)
             }
         )
-        rvAddressPay.adapter = adapter
+        binding.rvAddressPay.adapter = adapter
     }
 
     private var receiver = object : BroadcastReceiver() {

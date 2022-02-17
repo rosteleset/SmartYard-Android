@@ -1,6 +1,7 @@
 package ru.madbrains.smartyard.ui.reg.sms
 
 import android.content.res.ColorStateList
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +13,11 @@ import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_sms_reg.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.ErrorStatus
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentSmsRegBinding
 import ru.madbrains.smartyard.eventHandler
 import ru.madbrains.smartyard.getColorCompat
 
@@ -25,6 +26,8 @@ import ru.madbrains.smartyard.getColorCompat
  * Created on 2020-02-04.
  */
 class SmsRegFragment : Fragment() {
+    private var _binding: FragmentSmsRegBinding? = null
+    private val binding get() = _binding!!
 
     private var phoneNumber: String = ""
 
@@ -34,7 +37,10 @@ class SmsRegFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_sms_reg, container, false)
+    ): View {
+        _binding = FragmentSmsRegBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,28 +81,30 @@ class SmsRegFragment : Fragment() {
             phoneNumber = requireNotNull(getString(KEY_PHONE_NUMBER))
         }
 
-        tvTel.text = String.format(
+        binding.tvTel.text = String.format(
             getString(R.string.reg_sms_code_tel), phoneNumber
         )
 
-        tvCorrectNumberTel.setOnClickListener {
+        binding.tvCorrectNumberTel.setOnClickListener {
             this.findNavController().navigate(R.id.action_smsRegFragment_to_numberRegFragment)
         }
 
-        pin?.focus()
+        binding.pin.focus()
 
-        pin?.addTextChangedListener {
+        binding.pin.addTextChangedListener {
             togglePinLineColor(false)
             toggleError(false)
         }
-        pin?.setOnClickListener {
-            eventHandler(pin, requireContext())
+        binding.pin.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                eventHandler(binding.pin, requireContext())
+            }
         }
-        pin?.setOnPinEnteredListener {
+        binding.pin.setOnPinEnteredListener {
             mViewModel.confirmCode(phoneNumber, it.toString(), this)
         }
 
-        btnResendСode.setOnClickListener {
+        binding.btnResendOde.setOnClickListener {
             toggleError(false)
             mViewModel.resendCode(phoneNumber)
         }
@@ -104,40 +112,40 @@ class SmsRegFragment : Fragment() {
         mViewModel.time.observe(
             viewLifecycleOwner,
             Observer { time ->
-                tvTimer?.text = getString(R.string.reg_sms_send_code_repeat, time)
+                binding.tvTimer.text = getString(R.string.reg_sms_send_code_repeat, time)
             }
         )
 
         mViewModel.resendTimerUp.observe(
             viewLifecycleOwner,
             Observer {
-                tvTimer?.isVisible = false
-                btnResendСode.isVisible = true
+                binding.tvTimer.isVisible = false
+                binding.btnResendOde.isVisible = true
             }
         )
 
         mViewModel.resendTimerStarted.observe(
             viewLifecycleOwner,
             Observer {
-                tvTimer?.isVisible = true
-                btnResendСode.isVisible = false
+                binding.tvTimer.isVisible = true
+                binding.btnResendOde.isVisible = false
             }
         )
     }
 
     private fun togglePinLineColor(error: Boolean) {
         if (error) {
-            pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.red_100)))
+            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.red_100)))
         } else {
-            pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.black)))
+            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.black)))
         }
     }
 
     private fun toggleError(error: Boolean, @StringRes resId: Int? = null) {
-        tvError.isVisible = error
+        binding.tvError.isVisible = error
         if (error) {
             resId?.let { id ->
-                tvError.setText(id)
+                binding.tvError.setText(id)
             }
         }
     }

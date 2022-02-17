@@ -4,19 +4,20 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import androidx.core.view.ViewCompat
-import kotlinx.android.synthetic.main.activity_registration.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.CommonActivity
 import ru.madbrains.smartyard.FirebaseMessagingService
 import ru.madbrains.smartyard.FirebaseMessagingService.TypeMessage
 import ru.madbrains.smartyard.FirebaseMessagingService.TypeMessage.Companion.getTypeMessage
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.ActivityRegistrationBinding
 import ru.madbrains.smartyard.reduceToZero
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import ru.madbrains.smartyard.ui.getBottomNavigationHeight
 import timber.log.Timber
 
 class RegistrationActivity : CommonActivity() {
+    private lateinit var binding: ActivityRegistrationBinding
 
     override val mViewModel by viewModel<RegistrationViewModel>()
     private var messageId = ""
@@ -25,18 +26,20 @@ class RegistrationActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_registration)
+        binding = ActivityRegistrationBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
         intent?.extras?.let {
             intentParse(it)
         }
 
-        mViewModel.onStart(navFragment, messageId, messageType, activity = this)
+        mViewModel.onStart(supportFragmentManager.findFragmentById(R.id.navFragment)!!, messageId, messageType, activity = this)
 
         val bottomNavHeight = getBottomNavigationHeight(this)
-        ViewCompat.setOnApplyWindowInsetsListener(frame_layout) { _, insets ->
+        ViewCompat.setOnApplyWindowInsetsListener(binding.frameLayout) { _, insets ->
             ViewCompat.onApplyWindowInsets(
-                frame_layout,
+                binding.frameLayout,
                 insets.replaceSystemWindowInsets(
                     insets.systemWindowInsetLeft, 0,
                     insets.systemWindowInsetRight,

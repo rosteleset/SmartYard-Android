@@ -10,14 +10,12 @@ import android.os.Bundle
 import android.view.*
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
-import kotlinx.android.synthetic.main.dialog_add_photo.*
 import ru.madbrains.domain.utils.listenerEmpty
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.DialogAddPhotoBinding
 
 class DialogAddPhotoFragment(
     private val photoUrl: String,
@@ -28,10 +26,13 @@ class DialogAddPhotoFragment(
     private val isReg: Boolean = false,
     private val callback: listenerEmpty
 ) : DialogFragment() {
+    private var _binding: DialogAddPhotoBinding? = null
+    private val binding get() = _binding!!
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.dialog_add_photo, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = DialogAddPhotoBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -43,26 +44,26 @@ class DialogAddPhotoFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        ivAddFacePhoto.setFaceRect(faceLeft, faceTop, faceWidth, faceHeight, isReg)
-        Glide.with(ivAddFacePhoto)
+        binding.ivAddFacePhoto.setFaceRect(faceLeft, faceTop, faceWidth, faceHeight, isReg)
+        Glide.with(binding.ivAddFacePhoto)
             .asBitmap()
             .load(photoUrl)
-            .transform(RoundedCorners(ivAddFacePhoto.resources.getDimensionPixelSize(R.dimen.event_log_detail_corner)))
+            .transform(RoundedCorners(binding.ivAddFacePhoto.resources.getDimensionPixelSize(R.dimen.event_log_detail_corner)))
             .into(object : CustomTarget<Bitmap>(){
                 override fun onResourceReady(resource: Bitmap,
                     transition: Transition<in Bitmap>?) {
-                    ivAddFacePhoto.setImageBitmap(resource)
+                    binding.ivAddFacePhoto.setImageBitmap(resource)
                 }
 
                 override fun onLoadCleared(placeholder: Drawable?) {}
             })
-        
-        btnAddFaceConfirm.setOnClickListener {
+
+        binding.btnAddFaceConfirm.setOnClickListener {
             callback()
             this.dismiss()
         }
 
-        tvAddFaceCancel.setOnClickListener {
+        binding.tvAddFaceCancel.setOnClickListener {
             this.dismiss()
         }
     }

@@ -50,7 +50,7 @@
         android:label="SuccessButtomSheetDialogFragment" /><action android:id="@+id/action_global_successButtomSheetDialogFragment" app:destination="@id/successButtomSheetDialogFragment"/>
     <dialog
         android:id="@+id/errorButtomSheetDialogFragment"
-        android:name="ru.madbrains.smartyard.ui.main.pay.contract.dialogError.ErrorButtomSheetDialogFragment"
+        android:name="ru.madbrains.smartyard.ui.main.pay.contract.dialogError.ErrorBottomSheetDialogFragment"
         android:label="ErrorButtomSheetDialogFragment" >
         <argument
             android:name="textError"

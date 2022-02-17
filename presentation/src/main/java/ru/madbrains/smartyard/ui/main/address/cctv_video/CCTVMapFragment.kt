@@ -6,25 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_cctv_map.*
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import ru.madbrains.domain.model.response.CCTVData
 import ru.madbrains.smartyard.MapFragment
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentCctvMapBinding
 import ru.madbrains.smartyard.toLatLng
 import ru.madbrains.smartyard.ui.map.MapProvider
 import ru.madbrains.smartyard.ui.map.MapSettings
 import ru.madbrains.smartyard.ui.map.MarkerData
 import ru.madbrains.smartyard.ui.map.MarkerType
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 
 class CCTVMapFragment : MapFragment() {
-    private val mCCTVViewModel: CCTVViewModel by stateSharedViewModel()
+    private var _binding: FragmentCctvMapBinding? = null
+    private val binding get() = _binding!!
+
+    private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_cctv_map, container, false)
+    ): View {
+        _binding = FragmentCctvMapBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -34,11 +40,11 @@ class CCTVMapFragment : MapFragment() {
     }
 
     private fun setupUi(context: Context) {
-        contentWrap.clipToOutline = true
-        ivBack.setOnClickListener {
+        binding.contentWrap.clipToOutline = true
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        tvTitleSub.text = mCCTVViewModel.cctvModel.value?.address
+        binding.tvTitleSub.text = mCCTVViewModel.cctvModel.value?.address
         mCCTVViewModel.cameraList.value?.let { list ->
             createMapProvider(context, list)
         }
@@ -60,8 +66,8 @@ class CCTVMapFragment : MapFragment() {
         val listMarker = list.mapIndexed { index, item ->
             MarkerData(MarkerType.Camera, item.toLatLng(), "", index)
         }
-        contentWrap.removeAllViews()
-        contentWrap.addView(mapProvider)
+        binding.contentWrap.removeAllViews()
+        binding.contentWrap.addView(mapProvider)
         mapProvider.createMap(this, settings) {
             it.placeMarkers(
                 listMarker,

@@ -191,7 +191,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
                                     android:thumb="@null"
                                     android:track="@null"
@@ -226,7 +226,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
 
                                     android:thumb="@null"
@@ -262,7 +262,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
                                     android:thumb="@null"
                                     app:layout_constraintBottom_toBottomOf="@+id/textView23"
@@ -289,7 +289,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
                                     android:thumb="@null"
                                     android:track="@null"
@@ -324,7 +324,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
                                     android:thumb="@null"
                                     android:track="@null"
@@ -359,7 +359,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
                                     android:thumb="@null"
                                     android:track="@null"
@@ -403,7 +403,7 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
-                                    android:button="@drawable/swithcbutton_selector"
+                                    android:button="@drawable/switch_button_selector"
                                     android:paddingStart="24dp"
                                     android:thumb="@null"
                                     android:track="@null"
@@ -463,6 +463,31 @@
                                     app:layout_constraintEnd_toEndOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/vUseFRS"
                                     tools:text="Def" />
+
+                                <TextView
+                                    android:id="@+id/tvIsSpeaker"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Громкая связь"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switch_use_speaker"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/view6" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switch_use_speaker"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvIsSpeaker"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/view6" />
 
                             </androidx.constraintlayout.widget.ConstraintLayout>
 

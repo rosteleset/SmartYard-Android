@@ -1,7 +1,7 @@
 package ru.madbrains.smartyard.ui.main.address.models.interfaces
 
 import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import ru.madbrains.smartyard.ui.main.address.event_log.Flat
 
 @Parcelize

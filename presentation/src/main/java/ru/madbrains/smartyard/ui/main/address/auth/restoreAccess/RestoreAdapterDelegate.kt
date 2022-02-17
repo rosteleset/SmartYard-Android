@@ -8,8 +8,6 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import kotlinx.android.synthetic.main.item_recovery.view.checkBox
-import kotlinx.android.synthetic.main.item_recovery.view.title
 import ru.madbrains.smartyard.R
 
 /**
@@ -59,7 +57,7 @@ class RestoreAdapterDelegate(
 
     internal class AddressCameraViewHolder(itemView: View) :
         RecyclerView.ViewHolder(itemView) {
-        val tvTitle: TextView = itemView.title
-        val checkbox: CheckBox = itemView.checkBox
+        val tvTitle: TextView = itemView.findViewById(R.id.title)
+        val checkbox: CheckBox = itemView.findViewById(R.id.checkBox)
     }
 }

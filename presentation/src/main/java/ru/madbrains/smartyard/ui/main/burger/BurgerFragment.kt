@@ -8,36 +8,40 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.fragment_burger.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentBurgerBinding
 import ru.madbrains.smartyard.ui.showStandardAlert
 
 class BurgerFragment : Fragment() {
+    private var _binding: FragmentBurgerBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: BurgerViewModel by sharedViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_burger, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = FragmentBurgerBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        cvBurgerCityCameras.setOnClickListener {
+        binding.cvBurgerCityCameras.setOnClickListener {
             this.findNavController().navigate(R.id.action_burgerFragment_to_cityCamerasFragment)
         }
 
-        cvBurgerAddressSettings.setOnClickListener {
+        binding.cvBurgerAddressSettings.setOnClickListener {
             this.findNavController().navigate(R.id.action_burgerFragment_to_settingsFragment)
         }
 
-        cvBurgerCommonSettings.setOnClickListener {
+        binding.cvBurgerCommonSettings.setOnClickListener {
             this.findNavController().navigate(R.id.action_burgerFragment_to_basicSettingsFragment)
         }
 
-        llCallSupport.setOnClickListener {
+        binding.llCallSupport.setOnClickListener {
             viewModel.getHelpMe()
             val dialog = CallToSupportFragment()
             dialog.show(requireActivity().supportFragmentManager, "callToSupport")
@@ -48,16 +52,17 @@ class BurgerFragment : Fragment() {
 
     private fun setupObservers() {
         viewModel.chosenSupportOption.observe(
-            viewLifecycleOwner,
-            {
-                it?.let { supportOption ->
-                    when(supportOption) {
-                        BurgerViewModel.SupportOption.CALL_TO_SUPPORT_BY_PHONE -> callToSupportByPhone(viewModel.dialNumber.value ?: "")
-                        BurgerViewModel.SupportOption.ORDER_CALLBACK -> orderCallback()
-                    }
+            viewLifecycleOwner
+        ) {
+            it?.let { supportOption ->
+                when (supportOption) {
+                    BurgerViewModel.SupportOption.CALL_TO_SUPPORT_BY_PHONE -> callToSupportByPhone(
+                        viewModel.dialNumber.value ?: ""
+                    )
+                    BurgerViewModel.SupportOption.ORDER_CALLBACK -> orderCallback()
                 }
             }
-        )
+        }
 
         viewModel.navigateToIssueSuccessDialogAction.observe(
             viewLifecycleOwner,

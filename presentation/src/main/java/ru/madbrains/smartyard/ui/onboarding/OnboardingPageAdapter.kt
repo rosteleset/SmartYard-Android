@@ -3,8 +3,10 @@ package ru.madbrains.smartyard.ui.onboarding
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.item_onboarding.view.*
 import ru.madbrains.smartyard.R
 
 /**
@@ -29,9 +31,11 @@ class OnboardingPageAdapter(
     override fun onBindViewHolder(holder: PageViewHolder, position: Int) {
         val page = onboardingPageModels[position]
         holder.itemView.run {
-            titleImageView.run { setImageDrawable(context.getDrawable(page.image)) }
-            titleTextView.text = page.title
-            subtitleTextView.text = page.subtitle
+            findViewById<ImageView>(R.id.titleImageView).run {
+                setImageDrawable(AppCompatResources.getDrawable(context, page.image))
+            }
+            findViewById<TextView>(R.id.titleTextView).text = page.title
+            findViewById<TextView>(R.id.subtitleTextView).text = page.subtitle
         }
     }
     class PageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

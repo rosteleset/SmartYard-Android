@@ -15,29 +15,32 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.range_slider.view.*
+import ru.madbrains.lib.databinding.RangeSliderBinding
 
 class RangeSlider @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : LinearLayout(context, attrs, defStyleAttr) {
+    private var _binding: RangeSliderBinding? = null
+    private val binding get() = _binding!!
+
     var slider: RangeSliderView private set
     private val itemCount = 5
     private val itemWidth: Int get() = measuredWidth / itemCount
     private var mMaskImages: HashBitmap? = null
 
     init {
-        LayoutInflater.from(context).inflate(R.layout.range_slider, this, true)
+        _binding = RangeSliderBinding.inflate(LayoutInflater.from(context), this, true)
         val array = context.obtainStyledAttributes(attrs, R.styleable.RangeSlider, 0, 0)
         val sliderHeight = array.getDimensionPixelOffset(
             R.styleable.RangeSlider_sliderHeight,
             resources.getDimensionPixelSize(R.dimen.default_slider_height)
         )
-        slider = createSlider(context, array, overlayView).apply {
+        slider = createSlider(context, array, binding.overlayView).apply {
             layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT)
         }
-        sliderView.apply {
+        binding.sliderView.apply {
             clipToOutline = true
             addView(slider, 2)
             layoutParams.height = sliderHeight
@@ -46,15 +49,15 @@ class RangeSlider @JvmOverloads constructor(
         val bubbleHeight = resources.getDimensionPixelSize(R.dimen.bubble_height)
         val bubbleMargin = resources.getDimensionPixelSize(R.dimen.bubble_bottom_margin)
         val bubbleOffset = resources.getDimensionPixelSize(R.dimen.bubble_between_margin)
-        mainView.layoutParams.height = sliderHeight + bubbleHeight * 2 + bubbleMargin + bubbleOffset
+        binding.mainView.layoutParams.height = sliderHeight + bubbleHeight * 2 + bubbleMargin + bubbleOffset
 
         setupRV(context)
         array.recycle()
     }
 
     fun setupRV(context: Context) {
-        rvImageMask.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-        rvImageMask.adapter = ThumbnailRecyclerView(itemCount)
+        binding.rvImageMask.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.rvImageMask.adapter = ThumbnailRecyclerView(itemCount)
     }
 
     inner class ThumbnailRecyclerView(private val count: Int) : RecyclerView.Adapter<ThumbnailViewHolder>() {
@@ -80,7 +83,7 @@ class RangeSlider @JvmOverloads constructor(
 
     inner class ThumbnailViewHolder constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun setImage() {
-            val mask = mMaskImages?.get(adapterPosition)
+            val mask = mMaskImages?.get(absoluteAdapterPosition)
             mask?.let {
                 (itemView as ImageView).setImageBitmap(it)
             }
@@ -113,15 +116,15 @@ class RangeSlider @JvmOverloads constructor(
 
     fun setMaskImages(images: HashBitmap) {
         mMaskImages = images
-        rvImageMask.adapter?.notifyDataSetChanged()
+        binding.rvImageMask.adapter?.notifyDataSetChanged()
     }
 
     fun setAvailableIntervals(timeInterval: TimeInterval?, intervals: List<TimeInterval>) {
-        intervalsBar.setAvailableIntervals(timeInterval, intervals)
+        binding.intervalsBar.setAvailableIntervals(timeInterval, intervals)
     }
 
     fun setBarHeight(barHeight: Int) {
-        intervalsBar.setBarHeight(barHeight)
+        binding.intervalsBar.setBarHeight(barHeight)
     }
 
     companion object {

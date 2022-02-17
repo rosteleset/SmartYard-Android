@@ -6,20 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
-import kotlinx.android.synthetic.main.city_cameras_map_fragment.*
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import ru.madbrains.domain.model.response.CCTVCityCameraData
 import ru.madbrains.smartyard.MapFragment
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.CityCamerasMapFragmentBinding
 import ru.madbrains.smartyard.toLatLng
 import ru.madbrains.smartyard.ui.map.*
-import ru.madbrains.smartyard.utils.stateSharedViewModel
 
 class CityCamerasMapFragment : MapFragment() {
-    private val viewModel: CityCamerasViewModel by stateSharedViewModel()
+    private var _binding: CityCamerasMapFragmentBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: CityCamerasViewModel by sharedStateViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.city_cameras_map_fragment, container, false)
+        savedInstanceState: Bundle?): View {
+        _binding = CityCamerasMapFragmentBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -31,8 +35,8 @@ class CityCamerasMapFragment : MapFragment() {
     }
 
     private fun setupUi(context: Context) {
-        llCityCamerasMap.clipToOutline = true
-        ivCityCamerasBack.setOnClickListener {
+        binding.llCityCamerasMap.clipToOutline = true
+        binding.ivCityCamerasBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
 
@@ -57,8 +61,8 @@ class CityCamerasMapFragment : MapFragment() {
         val listMarker = list.mapIndexed { index, item ->
             MarkerData(MarkerType.CityCamera, item.toLatLng(), "", index)
         }
-        llCityCamerasMap.removeAllViews()
-        llCityCamerasMap.addView(mapProvider)
+        binding.llCityCamerasMap.removeAllViews()
+        binding.llCityCamerasMap.addView(mapProvider)
         mapProvider.createMap(this, settings) {
             it.placeMarkers(
                 listMarker,

@@ -21,15 +21,17 @@ import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import kotlinx.android.synthetic.main.fragment_notification.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.FirebaseMessagingService
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentNotificationBinding
 import ru.madbrains.smartyard.ui.main.MainActivity
 import timber.log.Timber
 
 class NotificationFragment : Fragment() {
+    private var _binding: FragmentNotificationBinding? = null
+    private val binding get() = _binding!!
 
     private val mViewModel by viewModel<NotificationViewModel>()
     private var mLoaded: Boolean = false
@@ -38,19 +40,22 @@ class NotificationFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_notification, container, false)
+    ): View {
+        _binding = FragmentNotificationBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     inner class WebAppInterface {
         @JavascriptInterface
         fun resize(height: Float) {
             activity?.runOnUiThread {
-                val viewGroup = webViewNotification?.layoutParams
+                val viewGroup = binding.webViewNotification.layoutParams
                 viewGroup?.height = TypedValue.applyDimension(
                     TypedValue.COMPLEX_UNIT_DIP,
                     height,
                     resources.displayMetrics
                 ).toInt()
-                webViewNotification?.layoutParams = viewGroup
+                binding.webViewNotification.layoutParams = viewGroup
             }
         }
     }
@@ -59,9 +64,9 @@ class NotificationFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mViewModel.onStart()
-        webViewNotification.settings.javaScriptEnabled = true
-        webViewNotification.addJavascriptInterface(WebAppInterface(), "AndroidFunction")
-        webViewNotification.webViewClient = object : WebViewClient() {
+        binding.webViewNotification.settings.javaScriptEnabled = true
+        binding.webViewNotification.addJavascriptInterface(WebAppInterface(), "AndroidFunction")
+        binding.webViewNotification.webViewClient = object : WebViewClient() {
             private val URL = "javascript:AndroidFunction.resize(document.body.scrollHeight)"
             override fun onLoadResource(view: WebView?, url: String?) {
                 if (url != null && url.endsWith(".mp4")) {
@@ -94,13 +99,13 @@ class NotificationFragment : Fragment() {
                 }
             }
         }
-        refreshLayout.setOnRefreshListener {
+        binding.refreshLayout.setOnRefreshListener {
             mViewModel.loadInbox()
         }
         mViewModel.loaded.observe(
             viewLifecycleOwner,
             EventObserver {
-                webViewNotification.loadDataWithBaseURL(
+                binding.webViewNotification.loadDataWithBaseURL(
                     it.basePath,
                     it.code,
                     "text/html", "UTF-8", null
@@ -111,7 +116,7 @@ class NotificationFragment : Fragment() {
         mViewModel.progress.observe(
             viewLifecycleOwner,
             Observer { progress ->
-                refreshLayout.isRefreshing = progress
+                binding.refreshLayout.isRefreshing = progress
             }
         )
     }

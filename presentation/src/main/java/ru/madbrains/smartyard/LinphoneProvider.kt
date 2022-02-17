@@ -9,8 +9,8 @@ import android.view.TextureView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.linphone.core.AccountCreator
 import org.linphone.core.Call
 import org.linphone.core.Core
@@ -136,6 +136,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             pendingData.flatId,
             preferenceStorage
         )
+
+        Timber.d("debug_dmm ring.uri: ${ring.uri}")
 
         currentRingtone = RingtoneManager.getRingtone(service, ring.uri)
         fcmData = pendingData

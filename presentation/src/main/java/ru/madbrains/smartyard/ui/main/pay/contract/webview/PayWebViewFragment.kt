@@ -11,40 +11,38 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import kotlinx.android.synthetic.main.fragment_pay_web_view.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.databinding.FragmentPayWebViewBinding
 
 class PayWebViewFragment : Fragment() {
+    private var _binding: FragmentPayWebViewBinding? = null
+    private val binding get() = _binding!!
 
     private val payWebViewViewModel by viewModel<PayWebViewViewModel>()
 
     private val args: PayWebViewFragmentArgs by navArgs()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pay_web_view, container, false)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        _binding = FragmentPayWebViewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        webView.settings.javaScriptEnabled = true
-        webView.loadUrl(args.url)
-        webView.webChromeClient = object : WebChromeClient() {
+        binding.webView.settings.javaScriptEnabled = true
+        binding.webView.loadUrl(args.url)
+        binding.webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
                 if (progress < 100) {
-                    progressBar2?.visibility = ProgressBar.VISIBLE
+                    binding.progressBar2.visibility = ProgressBar.VISIBLE
                 }
                 if (progress == 100) {
-                    progressBar2?.visibility = ProgressBar.GONE
+                    binding.progressBar2.visibility = ProgressBar.GONE
                 }
             }
         }
-        ivClose.setOnClickListener {
+        binding.ivClose.setOnClickListener {
             this@PayWebViewFragment.findNavController().popBackStack()
             val action =
                 PayWebViewFragmentDirections.actionGlobalErrorButtomSheetDialogFragment(
@@ -53,7 +51,7 @@ class PayWebViewFragment : Fragment() {
             this.findNavController()
                 .navigate(action)
         }
-        webView.webViewClient = object : WebViewClient() {
+        binding.webView.webViewClient = object : WebViewClient() {
             /**
              * Notify the host application that a page has finished loading.
              * @param view The WebView that is initiating the callback.

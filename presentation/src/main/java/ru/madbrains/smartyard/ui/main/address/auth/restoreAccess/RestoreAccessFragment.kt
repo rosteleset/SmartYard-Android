@@ -13,13 +13,14 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.fragment_restore_access.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
-import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.afterTextChanged
+import ru.madbrains.smartyard.databinding.FragmentRestoreAccessBinding
 
 class RestoreAccessFragment : Fragment() {
+    private var _binding: FragmentRestoreAccessBinding? = null
+    private val binding get() = _binding!!
 
     private val mViewModel by viewModel<RestoreAccessViewModel>()
     private lateinit var adapter: RestoreAdapter
@@ -36,21 +37,21 @@ class RestoreAccessFragment : Fragment() {
         arguments?.let {
             contractNumber = RestoreAccessFragmentArgs.fromBundle(it).contractNumber
         }
-        etContractNumber.setText(contractNumber)
-        btnRecovery.isEnabled = etContractNumber.text?.isNotEmpty() == true
-        etContractNumber.addTextChangedListener {
-            btnRecovery.isEnabled = it?.isNotEmpty() == true
+        binding.etContractNumber.setText(contractNumber)
+        binding.btnRecovery.isEnabled = binding.etContractNumber.text?.isNotEmpty() == true
+        binding.etContractNumber.addTextChangedListener {
+            binding.btnRecovery.isEnabled = it?.isNotEmpty() == true
         }
-        btnRecovery.setOnClickListener {
-            mViewModel.recoveryOptions(etContractNumber.text.toString())
+        binding.btnRecovery.setOnClickListener {
+            mViewModel.recoveryOptions(binding.etContractNumber.text.toString())
         }
 
-        ivBack.setOnClickListener {
+        binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
 
-        btnCodeConfirm.setOnClickListener {
-            mViewModel.sentCodeRecovery(etContractNumber.text.toString(), contactId)
+        binding.btnCodeConfirm.setOnClickListener {
+            mViewModel.sentCodeRecovery(binding.etContractNumber.text.toString(), contactId)
         }
 
         mViewModel.navigationToCodeSms.observe(
@@ -58,17 +59,17 @@ class RestoreAccessFragment : Fragment() {
             EventObserver {
                 val action =
                     RestoreAccessFragmentDirections.actionRestoreAccessFragmentToCodeSmsRestoreFragment(
-                        etContractNumber.text.toString(), contactId, contactName
+                        binding.etContractNumber.text.toString(), contactId, contactName
                     )
                 this.findNavController().navigate(action)
             }
         )
 
-        etContractNumber.afterTextChanged {
+        binding.etContractNumber.afterTextChanged {
             adapter.items = emptyList()
             adapter.notifyDataSetChanged()
-            btnRecovery.isVisible = true
-            btnCodeConfirm.isVisible = false
+            binding.btnRecovery.isVisible = true
+            binding.btnCodeConfirm.isVisible = false
         }
 
         mViewModel.recoveryList.observe(
@@ -76,9 +77,9 @@ class RestoreAccessFragment : Fragment() {
             Observer {
                 adapter.items = it.map { RecoveryModel(it.contact, it.id, false) }
                 adapter.notifyDataSetChanged()
-                btnRecovery.isVisible = false
-                btnCodeConfirm.isVisible = true
-                btnCodeConfirm.isEnabled = false
+                binding.btnRecovery.isVisible = false
+                binding.btnCodeConfirm.isVisible = true
+                binding.btnCodeConfirm.isEnabled = false
             }
         )
     }
@@ -86,23 +87,23 @@ class RestoreAccessFragment : Fragment() {
     private fun initRecycler() {
 
         activity?.let {
-            recoveryOptionsRv.layoutManager =
+            binding.recoveryOptionsRv.layoutManager =
                 LinearLayoutManager(context, RecyclerView.VERTICAL, false)
 
             adapter = RestoreAdapter(
                 it
             ) { _, id, name ->
                 adapter.notifyDataSetChanged()
-                btnRecovery.isVisible = false
-                btnCodeConfirm.isVisible = true
-                btnCodeConfirm.isEnabled = true
+                binding.btnRecovery.isVisible = false
+                binding.btnCodeConfirm.isVisible = true
+                binding.btnCodeConfirm.isEnabled = true
                 contactId = id
                 contactName = name
             }
         }
-        recoveryOptionsRv.adapter = adapter
+        binding.recoveryOptionsRv.adapter = adapter
 
-        recoveryOptionsRv.addItemDecoration(
+        binding.recoveryOptionsRv.addItemDecoration(
             DividerItemDecoration(
                 context,
                 DividerItemDecoration.VERTICAL
@@ -131,5 +132,8 @@ class RestoreAccessFragment : Fragment() {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = inflater.inflate(R.layout.fragment_restore_access, container, false)
+    ): View {
+        _binding = FragmentRestoreAccessBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 }

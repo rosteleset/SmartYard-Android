@@ -22,7 +22,6 @@ import ru.madbrains.domain.model.response.Plog
 import ru.madbrains.domain.utils.listenerEmpty
 import ru.madbrains.domain.utils.listenerGeneric
 import ru.madbrains.smartyard.R
-import ru.madbrains.smartyard.ui.main.address.event_log.EventLogViewModel
 import ru.madbrains.smartyard.ui.main.address.event_log.FaceImageView
 import kotlin.math.roundToInt
 

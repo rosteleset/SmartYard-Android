@@ -17,7 +17,8 @@ data class FcmCallData(
     val callerId: String,
     val flatId: Int,
     val stun: String? = null,
-    val stun_transport: String? = null
+    val stun_transport: String? = null,
+    val baseUrl: String? = null
 ) : Serializable
 
 enum class FcmTransport {
