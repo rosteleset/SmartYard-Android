@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
+import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
@@ -97,6 +98,16 @@ class NotificationFragment : Fragment() {
                     mViewModel.finishedLoading()
                     mLoaded = true
                 }
+            }
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                Intent(Intent.ACTION_VIEW, request?.url).apply {
+                    startActivity(this)
+                }
+                return true
             }
         }
         binding.refreshLayout.setOnRefreshListener {

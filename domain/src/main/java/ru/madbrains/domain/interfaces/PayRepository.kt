@@ -4,6 +4,8 @@ import ru.madbrains.domain.model.response.PayPrepareResponse
 import ru.madbrains.domain.model.response.PayProcessResponse
 import ru.madbrains.domain.model.response.PaymentDoResponse
 import ru.madbrains.domain.model.response.PaymentsListResponse
+import ru.madbrains.domain.model.response.SberRegisterDoReponse
+import ru.madbrains.domain.model.response.SberOrderStatusDoResponse
 
 /**
  * @author Nail Shakurov
@@ -24,4 +26,20 @@ interface PayRepository {
         amount: String,
         orderNumber: String
     ): PaymentDoResponse
+
+    suspend fun sberRegisterDo(
+        userName: String,
+        password: String,
+        language: String,
+        returnUrl: String,
+        failUrl: String,
+        orderNumber: String,
+        amount: Int
+    ): SberRegisterDoReponse
+
+    suspend fun sberOrderStatusDo(
+        userName: String,
+        password: String,
+        orderNumber: String
+    ): SberOrderStatusDoResponse
 }

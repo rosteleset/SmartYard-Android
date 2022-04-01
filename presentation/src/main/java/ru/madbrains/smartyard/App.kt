@@ -36,7 +36,7 @@ class App : Application() {
     }
 
     private fun initYandex() {
-        val apiKey = "686bcc1e-69e5-4412-8d54-3e11e362624a"
+        val apiKey = "your-api-key"
         val config = YandexMetricaConfig.newConfigBuilder(apiKey).build()
         YandexMetrica.activate(applicationContext, config)
         YandexMetrica.enableActivityAutoTracking(this)

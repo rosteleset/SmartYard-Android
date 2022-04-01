@@ -12,14 +12,14 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -42,6 +42,7 @@ import ru.madbrains.smartyard.ui.call.IncomingCallActivity
 import ru.madbrains.smartyard.ui.dpToPx
 import ru.madbrains.smartyard.ui.getBottomNavigationHeight
 import ru.madbrains.smartyard.ui.main.address.event_log.EventLogDetailFragment
+import ru.madbrains.smartyard.ui.main.burger.ExtWebViewFragment
 import ru.madbrains.smartyard.ui.main.notification.NotificationFragment
 import ru.madbrains.smartyard.ui.setupWithNavController
 import timber.log.Timber
@@ -132,6 +133,41 @@ class MainActivity : CommonActivity() {
         intent?.extras?.let {
             parseIntent(it)
         }
+
+        handleIntent(intent)
+
+        //В Android 11 и выше появляется визуальный глюк нижней панели навгации после скрытия виртуальной клавиатуры.
+        //Поэтому, после окончания анимации показа виртуальной клавиатуры, скрываем панель навигации,
+        //а после исчезновения виртуальной клавиатуры - вновь показываем.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            binding.root.setWindowInsetsAnimationCallback(object :
+                WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
+                override fun onProgress(
+                    insets: WindowInsets,
+                    runningAnimations: MutableList<WindowInsetsAnimation>
+                ): WindowInsets {
+                    return insets
+                }
+
+                override fun onStart(
+                    animation: WindowInsetsAnimation,
+                    bounds: WindowInsetsAnimation.Bounds
+                ): WindowInsetsAnimation.Bounds {
+                    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+                    if (!binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
+                        bottomNavigationView.visibility = View.VISIBLE
+                    }
+                    return super.onStart(animation, bounds)
+                }
+
+                override fun onEnd(animation: WindowInsetsAnimation) {
+                    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
+                    if (binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
+                        bottomNavigationView.visibility = View.INVISIBLE
+                    }
+                }
+            })
+        }
     }
 
     private fun dialogForceUpgrade() {
@@ -160,8 +196,10 @@ class MainActivity : CommonActivity() {
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(notificationId)
-        val messageType = bundle.getSerializable(NOTIFICATION_MESSAGE_TYPE) as TypeMessage
-        rootingTabMessage(messageType)
+        val messageType = bundle.getSerializable(NOTIFICATION_MESSAGE_TYPE) as? TypeMessage
+        if (messageType != null) {
+            rootingTabMessage(messageType)
+        }
     }
 
     private fun rootingTabMessage(messageType: TypeMessage) {
@@ -182,6 +220,7 @@ class MainActivity : CommonActivity() {
         intent.extras?.let {
             parseIntent(it)
         }
+        handleIntent(intent)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -386,7 +425,11 @@ class MainActivity : CommonActivity() {
         exitFullscreenListener?.onExitFullscreen()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        if (currentNavController?.value?.currentDestination?.id == R.id.CCTVTrimmerFragment) {
+        if (currentNavController?.value?.currentDestination?.id == R.id.extWebViewFragment) {
+            if ((supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? ExtWebViewFragment)?.goBack() == false) {
+                super.onBackPressed()
+            }
+        } else if (currentNavController?.value?.currentDestination?.id == R.id.CCTVTrimmerFragment) {
             currentNavController?.value?.popBackStack(R.id.CCTVDetailFragment, true)
             currentNavController?.value?.navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
         } else {
@@ -394,6 +437,7 @@ class MainActivity : CommonActivity() {
                 (supportFragmentManager.primaryNavigationFragment?.childFragmentManager
                     ?.fragments?.first() as? EventLogDetailFragment)?.releasePlayer()
             }
+
             super.onBackPressed()
         }
     }
@@ -410,6 +454,26 @@ class MainActivity : CommonActivity() {
 
     fun setExitFullscreenListener(exitFullscreenListener: ExitFullscreenListener?) {
         this.exitFullscreenListener = exitFullscreenListener
+    }
+
+    private fun handleIntent(intent: Intent?) {
+        val appLinkAction = intent?.action
+        val appLinkData: Uri? = intent?.data
+        if (appLinkAction == Intent.ACTION_VIEW) {
+            val clientId = appLinkData?.getQueryParameter("clientId")?.toInt()
+            val orderNumber = appLinkData?.getQueryParameter("orderNumber")
+            if (clientId != null) {
+                Timber.d("__sber intent $appLinkData;  clientId = $clientId;  orderNumber = $orderNumber")
+                if (orderNumber != null) {
+                    mViewModel.sberCompletePayment(orderNumber)
+                }
+                mViewModel.sberPayIntent.postValue(
+                    Event(
+                        MainActivityViewModel.SendSberPay(orderNumber)
+                    )
+                )
+            }
+        }
     }
 
     companion object {

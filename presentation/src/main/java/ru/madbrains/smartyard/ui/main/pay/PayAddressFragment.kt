@@ -58,7 +58,7 @@ class PayAddressFragment : Fragment() {
                 binding.swipeContainer.isRefreshing = false
             }
         )
-        payViewModel.navigateToСontractFragment.observe(
+        payViewModel.navigateToContractFragment.observe(
             viewLifecycleOwner,
             EventObserver {
                 val action = PayAddressFragmentDirections.actionPayFragment2ToPayContractFragment()

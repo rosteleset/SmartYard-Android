@@ -3,16 +3,21 @@ package ru.madbrains.smartyard.ui.main.burger
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import ru.madbrains.domain.interactors.ExtInteractor
 import ru.madbrains.domain.interactors.GeoInteractor
 import ru.madbrains.domain.interactors.IssueInteractor
 import ru.madbrains.domain.interactors.SipInteractor
 import ru.madbrains.domain.model.request.CreateIssuesRequest
+import ru.madbrains.domain.model.request.ExtRequest
 import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
+import ru.madbrains.smartyard.Event
+import ru.madbrains.smartyard.R
 
 class BurgerViewModel(
     private val sipInteractor: SipInteractor,
     geoInteractor: GeoInteractor,
-    issueInteractor: IssueInteractor
+    issueInteractor: IssueInteractor,
+    private val extInteractor: ExtInteractor
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
 
     private val _dialNumber = MutableLiveData<String>()
@@ -20,6 +25,23 @@ class BurgerViewModel(
         get() = _dialNumber
 
     var chosenSupportOption = MutableLiveData<SupportOption>()
+
+    private val _burgerList = MutableLiveData<List<BurgerModel>>()
+    val burgerList: LiveData<List<BurgerModel>>
+      get() = _burgerList
+
+    private val _navigateToFragment = MutableLiveData<Event<Int>>()
+    val navigateToFragment: LiveData<Event<Int>>
+        get() = _navigateToFragment
+
+    data class WebExtension(var basePath: String, var code: String)
+    private val _navigateToWebView = MutableLiveData<Event<WebExtension>>()
+    val navigateToWebView: LiveData<Event<WebExtension>>
+        get() = _navigateToWebView
+
+    init {
+        getBurgerMenu()
+    }
 
     fun getHelpMe() {
         _dialNumber.value = ""
@@ -42,6 +64,68 @@ class BurgerViewModel(
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
             CreateIssuesRequest.TypeAction.ACTION1
         )
+    }
+
+    private fun getBurgerMenu() {
+        viewModelScope.withProgress({false}) {
+            val list = mutableListOf(
+                BurgerModel(
+                    orderId = 100,
+                    iconId = R.drawable.city_camera_burger,
+                    title = "Городские камеры",
+                    onClick = {
+                        _navigateToFragment.value = Event(R.id.action_burgerFragment_to_cityCamerasFragment)
+                    }
+                ),
+                BurgerModel(
+                    orderId = 200,
+                    iconId = R.drawable.address_settings_burger,
+                    title = "Настройки адресов",
+                    onClick = {
+                        _navigateToFragment.value = Event(R.id.action_burgerFragment_to_settingsFragment)
+                    }
+                ),
+                BurgerModel(
+                    orderId = 300,
+                    iconId = R.drawable.common_settings_burger,
+                    title = "Общие настройки",
+                    onClick = {
+                        _navigateToFragment.value = Event(R.id.action_burgerFragment_to_basicSettingsFragment)
+                    }
+                ),
+            )
+
+            try {
+                //загружаем расширения с использованием API методов
+                extInteractor.list()?.let { extList ->
+                    extList.data.forEach { item ->
+                        if (item.extId != null && item.order != null && item.caption != null) {
+                            extInteractor.ext(ExtRequest(item.extId!!))?.let {
+                                list.add(
+                                    BurgerModel(
+                                        orderId = item.order!!,
+                                        iconUrl = item.icon,
+                                        title = item.caption!!,
+                                        onClick = {
+                                            if (it.data.basePath != null && it.data.code != null) {
+                                                _navigateToWebView.value = Event(WebExtension(it.data.basePath!!, it.data.code!!))
+                                            }
+                                        }
+                                    )
+                                )
+                            }
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+
+            }
+
+            list.sortWith(compareBy {
+                it.orderId
+            })
+            _burgerList.value = list
+        }
     }
 
     enum class SupportOption {

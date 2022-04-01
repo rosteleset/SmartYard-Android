@@ -90,7 +90,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnResendСode" />
+            app:layout_constraintTop_toBottomOf="@+id/btnResendCode" />
 
         <TextView
             android:id="@+id/tvError"
@@ -106,7 +106,7 @@
 
 
         <Button
-            android:id="@+id/btnResendСode"
+            android:id="@+id/btnResendCode"
             app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="12sp"
             app:autoSizeMaxTextSize="100sp"

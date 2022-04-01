@@ -60,4 +60,5 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/readme.md
 
-!changelog.txt
+# build
+presentation/lanta/

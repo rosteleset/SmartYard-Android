@@ -41,8 +41,7 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_info">
-            </meta-data>
+                android:resource="@xml/app_widget_info"></meta-data>
         </receiver>
 
         <activity
@@ -71,7 +70,18 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="lanta"
+                    android:pathPrefix="/sber" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".ui.call.IncomingCallActivity"
             android:launchMode="singleTop"
@@ -84,8 +94,7 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=".WidgetActivity"
-            android:theme="@style/Theme.Transparent">
-        </activity>
+            android:theme="@style/Theme.Transparent"></activity>
 
         <service
             android:name=".FirebaseMessagingService"

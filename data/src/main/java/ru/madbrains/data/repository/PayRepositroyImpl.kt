@@ -10,6 +10,8 @@ import ru.madbrains.domain.model.response.PayPrepareResponse
 import ru.madbrains.domain.model.response.PayProcessResponse
 import ru.madbrains.domain.model.response.PaymentDoResponse
 import ru.madbrains.domain.model.response.PaymentsListResponse
+import ru.madbrains.domain.model.response.SberRegisterDoReponse
+import ru.madbrains.domain.model.response.SberOrderStatusDoResponse
 
 /**
  * @author Nail Shakurov
@@ -43,7 +45,7 @@ class PayRepositroyImpl(
         paymentToken: String,
         amount: String,
         orderNumber: String
-    ): PaymentDoResponse? {
+    ): PaymentDoResponse {
         return safeApiCall {
             lantaApi.paymentDo(
                 PaymentDoRequest(
@@ -53,6 +55,42 @@ class PayRepositroyImpl(
                     amount = amount,
                     orderNumber = orderNumber
                 )
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun sberRegisterDo(
+        userName: String,
+        password: String,
+        language: String,
+        returnUrl: String,
+        failUrl: String,
+        orderNumber: String,
+        amount: Int
+    ): SberRegisterDoReponse {
+        return safeApiCall {
+            lantaApi.sberRegisterDo(
+                userName,
+                password,
+                language,
+                returnUrl,
+                failUrl,
+                orderNumber,
+                amount
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun sberOrderStatusDo(
+        userName: String,
+        password: String,
+        orderNumber: String
+    ): SberOrderStatusDoResponse {
+        return safeApiCall {
+            lantaApi.sberOrderStatusDo(
+                userName,
+                password,
+                orderNumber
             ).getResponseBody()
         }
     }

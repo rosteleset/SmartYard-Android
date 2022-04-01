@@ -88,9 +88,29 @@ class EventLogDetailFragment : Fragment() {
             })
             mPlayer?.addVideoListener(object : VideoListener {
                 override fun onRenderedFirstFrame() {
-                    Timber.d("__Q__ renderFirstFrame")
                     super.onRenderedFirstFrame()
                     mPlayerView?.alpha = 1.0f
+                }
+
+                //этот метод нужен для установки нужной высоты вьюшки с видео
+                override fun onVideoSizeChanged(
+                    width: Int,
+                    height: Int,
+                    unappliedRotationDegrees: Int,
+                    pixelWidthHeightRatio: Float
+                ) {
+                    super.onVideoSizeChanged(
+                        width,
+                        height,
+                        unappliedRotationDegrees,
+                        pixelWidthHeightRatio
+                    )
+                    mPlayerView?.let {
+                        if (width > 0 && height > 0) {
+                            val k = it.measuredWidth.toFloat() / width.toFloat()
+                            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (height.toFloat() * k).toInt())
+                        }
+                    }
                 }
             })
             mPlayerView?.player = mPlayer
@@ -113,11 +133,6 @@ class EventLogDetailFragment : Fragment() {
         (binding.rvEventLogDetail.adapter as? EventLogDetailAdapter)?.let { adapter ->
             val (day, index) = adapter.getPlog(position)
             if (day != null && index != null) {
-                (mPlayerView?.parent as? ViewGroup)?.let {
-                    it.removeView(mPlayerView!!)
-                    it.addView(mPlayerView!!, 1)
-                }
-
                 adapter.eventsByDays[day]?.get(index)?.let {eventItem ->
                     val timestampStart = DateTimeUtils.toSqlTimestamp(eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)).time / 1000
                     val duration = EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS

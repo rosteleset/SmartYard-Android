@@ -5,6 +5,8 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.Field
 import ru.madbrains.domain.model.request.AccessRequest
 import ru.madbrains.domain.model.request.ActionIssueRequest
 import ru.madbrains.domain.model.request.AddMyPhoneRequest
@@ -44,6 +46,7 @@ import ru.madbrains.domain.model.request.PlogRequest
 import ru.madbrains.domain.model.request.DisLikeRequest
 import ru.madbrains.domain.model.request.LikeRequest
 import ru.madbrains.domain.model.request.ListFacesRequest
+import ru.madbrains.domain.model.request.ExtRequest
 import ru.madbrains.domain.model.response.AccessResponse
 import ru.madbrains.domain.model.response.ActionIssueResponse
 import ru.madbrains.domain.model.response.AddMyPhoneResponse
@@ -95,6 +98,10 @@ import ru.madbrains.domain.model.response.DisLikeResponse
 import ru.madbrains.domain.model.response.LikeResponse
 import ru.madbrains.domain.model.response.ListFacesResponse
 import ru.madbrains.domain.model.response.CamMapResponse
+import ru.madbrains.domain.model.response.SberRegisterDoReponse
+import ru.madbrains.domain.model.response.SberOrderStatusDoResponse
+import ru.madbrains.domain.model.response.ExtListResponse
+import ru.madbrains.domain.model.response.ExtResponse
 
 interface LantaApi {
     @POST("/api/user/registerPushToken")
@@ -251,6 +258,26 @@ interface LantaApi {
     @POST("https://securepayments.sberbank.ru/payment/google/payment.do")
     suspend fun paymentDo(@Body request: PaymentDoRequest): Response<PaymentDoResponse>
 
+    @FormUrlEncoded
+    @POST("https://securepayments.sberbank.ru/payment/rest/register.do")
+    suspend fun sberRegisterDo(
+        @Field("userName") userName: String,
+        @Field("password") password: String,
+        @Field("language") language: String,
+        @Field("returnUrl") returnUrl: String,
+        @Field("failUrl") failUrl: String,
+        @Field("orderNumber") orderNumber: String,
+        @Field("amount") amount: Int
+    ): Response<SberRegisterDoReponse>
+
+    @FormUrlEncoded
+    @POST("https://securepayments.sberbank.ru/payment/rest/getOrderStatusExtended.do")
+    suspend fun sberOrderStatusDo(
+        @Field("userName") userName: String,
+        @Field("password") password: String,
+        @Field("orderNumber") orderNumber: String
+    ): Response<SberOrderStatusDoResponse>
+
     @POST("/api/user/appVersion")
     suspend fun appVersion(
         @Body request: AppVersionRequest
@@ -278,4 +305,10 @@ interface LantaApi {
 
     @POST("/api/cctv/camMap")
     suspend fun camMap(): Response<CamMapResponse>
+
+    @POST("/api/ext/list")
+    suspend fun extList(): Response<ExtListResponse>
+
+    @POST("/api/ext/ext")
+    suspend fun ext(@Body request: ExtRequest): Response<ExtResponse>
 }

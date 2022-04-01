@@ -201,7 +201,7 @@
             </LinearLayout>
 
             <Button
-                android:id="@+id/btnСheckAvailableServices"
+                android:id="@+id/btnCheckAvailableServices"
                 style="@style/buttonBlueFlooded"
                 android:layout_width="match_parent"
                 android:layout_height="61dp"

@@ -101,6 +101,9 @@
         <action
             android:id="@+id/action_burgerFragment_to_cityCamerasFragment"
             app:destination="@id/cityCamerasMapFragment" />
+        <action
+            android:id="@+id/action_burgerFragment_to_extWebViewFragment"
+            app:destination="@id/extWebViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/cityCamerasMapFragment"
@@ -138,4 +141,28 @@
             android:name="address"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/extWebViewFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.ExtWebViewFragment"
+        android:label="fragment_ext_web_view"
+        tools:layout="@layout/fragment_ext_web_view" >
+        <argument
+            android:name="basePath"
+            app:argType="string" />
+        <argument
+            android:name="code"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_extWebViewFragment_to_extWebBottomFragment"
+            app:destination="@id/extWebBottomFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/extWebBottomFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.ExtWebBottomFragment"
+        android:label="fragment_ext_web_bottom"
+        tools:layout="@layout/fragment_ext_web_bottom" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
 </navigation>

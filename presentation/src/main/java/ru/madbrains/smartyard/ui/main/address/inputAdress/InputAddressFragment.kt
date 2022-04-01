@@ -79,7 +79,7 @@ class InputAddressFragment : Fragment() {
             this.findNavController().popBackStack()
         }
 
-        binding.btnHeckAvailableServices.setOnClickListener {
+        binding.btnCheckAvailableServices.setOnClickListener {
             hideKeyboard(requireActivity())
             mViewModel.getServices(houseId = houseId, address = getAddress())
         }
@@ -169,7 +169,7 @@ class InputAddressFragment : Fragment() {
     }
 
     private fun validateFields(text: String) {
-        binding.btnHeckAvailableServices.isEnabled =
+        binding.btnCheckAvailableServices.isEnabled =
             binding.actvCity.text.isNotEmpty() && binding.actvStreet.text.isNotEmpty() && binding.actvHouse.text.isNotEmpty()
     }
 

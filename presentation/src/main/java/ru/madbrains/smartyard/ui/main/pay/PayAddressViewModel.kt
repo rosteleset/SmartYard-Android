@@ -19,9 +19,9 @@ class PayAddressViewModel(
     val progress: LiveData<Boolean>
         get() = _progress
 
-    private val _navigateToСontractFragment = MutableLiveData<Event<Unit>>()
-    val navigateToСontractFragment: LiveData<Event<Unit>>
-        get() = _navigateToСontractFragment
+    private val _navigateToContractFragment = MutableLiveData<Event<Unit>>()
+    val navigateToContractFragment: LiveData<Event<Unit>>
+        get() = _navigateToContractFragment
 
     private val _selectedItemIndex = MutableLiveData<Int>()
     val selectedItemIndex: LiveData<Int>
@@ -29,7 +29,7 @@ class PayAddressViewModel(
 
     fun navigateToPayContractFragment(position: Int) {
         setIndex(position)
-        _navigateToСontractFragment.value = Event(Unit)
+        _navigateToContractFragment.value = Event(Unit)
     }
 
     fun setIndex(index: Int) {

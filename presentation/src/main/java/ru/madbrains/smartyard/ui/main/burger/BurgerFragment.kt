@@ -8,17 +8,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentBurgerBinding
 import ru.madbrains.smartyard.ui.showStandardAlert
+import timber.log.Timber
 
 class BurgerFragment : Fragment() {
     private var _binding: FragmentBurgerBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: BurgerViewModel by sharedViewModel()
+
+    private lateinit var adapter: ListDelegationAdapter<List<BurgerModel>>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -29,25 +35,24 @@ class BurgerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.cvBurgerCityCameras.setOnClickListener {
-            this.findNavController().navigate(R.id.action_burgerFragment_to_cityCamerasFragment)
-        }
-
-        binding.cvBurgerAddressSettings.setOnClickListener {
-            this.findNavController().navigate(R.id.action_burgerFragment_to_settingsFragment)
-        }
-
-        binding.cvBurgerCommonSettings.setOnClickListener {
-            this.findNavController().navigate(R.id.action_burgerFragment_to_basicSettingsFragment)
-        }
-
         binding.llCallSupport.setOnClickListener {
             viewModel.getHelpMe()
             val dialog = CallToSupportFragment()
             dialog.show(requireActivity().supportFragmentManager, "callToSupport")
         }
 
+        initRecycler()
         setupObservers()
+    }
+
+    private fun initRecycler() {
+        binding.rvBurger.apply {
+            layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        }
+        adapter = ListDelegationAdapter(
+            BurgerDelegate()
+        )
+        binding.rvBurger.adapter = adapter
     }
 
     private fun setupObservers() {
@@ -70,6 +75,28 @@ class BurgerFragment : Fragment() {
                 showStandardAlert(requireContext(), R.string.issue_dialog_caption_0) {
                     this.findNavController().popBackStack()
                 }
+            }
+        )
+
+        viewModel.burgerList.observe(
+            viewLifecycleOwner
+        ) {
+            adapter.items = it
+            adapter.notifyDataSetChanged()
+        }
+
+        viewModel.navigateToFragment.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                this.findNavController().navigate(it)
+            }
+        )
+
+        viewModel.navigateToWebView.observe(
+            viewLifecycleOwner,
+            EventObserver{
+                val action = BurgerFragmentDirections.actionBurgerFragmentToExtWebViewFragment(it.basePath, it.code)
+                this.findNavController().navigate(action)
             }
         )
     }

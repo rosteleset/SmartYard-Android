@@ -24,6 +24,7 @@ import ru.madbrains.smartyard.ui.main.address.qrCode.QrCodeViewModel
 import ru.madbrains.smartyard.ui.main.address.workSoon.courier.WorkSoonCourierViewModel
 import ru.madbrains.smartyard.ui.main.address.workSoon.office.WorkSoonOfficeViewModel
 import ru.madbrains.smartyard.ui.main.burger.BurgerViewModel
+import ru.madbrains.smartyard.ui.main.burger.ExtWebViewModel
 import ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCamerasViewModel
 import ru.madbrains.smartyard.ui.main.chat.ChatViewModel
 import ru.madbrains.smartyard.ui.main.notification.NotificationViewModel
@@ -66,7 +67,7 @@ object PresentationModule {
         viewModel { WorkSoonCourierViewModel(get(), get(), get()) }
         viewModel { DialogDeleteReasonViewModel(get(), get(), get(), get()) }
         viewModel { AvailableServicesViewModel(get(), get(), get()) }
-        viewModel { MainActivityViewModel(get(), get(), get()) }
+        viewModel { MainActivityViewModel(get(), get(), get(), get()) }
         viewModel { ChatViewModel(get()) }
         viewModel { SettingsViewModel(get(), get(), get()) }
         viewModel { AddressViewModel(get(), get(), get(), get(), get()) }
@@ -74,11 +75,12 @@ object PresentationModule {
         viewModel { FaceSettingsViewModel(get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CityCamerasViewModel(handle, get(), get(), get()) }
-        viewModel { BurgerViewModel( get(), get(), get()) }
+        viewModel { BurgerViewModel( get(), get(), get(), get()) }
         viewModel { CCTVTrimmerViewModel(get()) }
         viewModel { PayAddressViewModel(get()) }
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }
+        viewModel { ExtWebViewModel() }
         single { GlobalDataSource() }
     }
 }

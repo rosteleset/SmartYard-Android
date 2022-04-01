@@ -37,9 +37,11 @@ import ru.madbrains.smartyard.ui.main.MainActivity.Companion.LOAD_PAYMENT_DATA_R
 import ru.madbrains.smartyard.ui.main.MainActivityViewModel
 import ru.madbrains.smartyard.ui.main.pay.contract.PayContractFragmentDirections
 import ru.madbrains.smartyard.ui.openUrl
+import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
+import kotlin.Exception
 
 /**
  * @author Nail Shakurov
@@ -136,6 +138,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
         binding.etMoneyBalance.addTextChangedListener {
             it?.let {
                 view.findViewById<RelativeLayout>(R.id.btnPay)?.isEnabled = it.isNotEmpty()
+                binding.btnSber.isEnabled = it.isNotEmpty()
             }
         }
 
@@ -197,6 +200,27 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
                 view.findViewById<RelativeLayout>(R.id.btnPay)?.isClickable = true
             }
         )
+
+        binding.btnSber.setOnClickListener {
+            if (binding.etMoneyBalance.text.toString().toFloat() > 0f) {
+                payBottomSheetDialogViewModel.sberPay(binding.etMoneyBalance.text.toString(),
+                    clientId, requireContext())
+                binding.btnSber.isEnabled = false
+            } else {
+                onError(getString(R.string.payments_error_2))
+            }
+        }
+
+        mMainViewModel.sberPayIntent.observe(
+            viewLifecycleOwner,
+            EventObserver{
+                binding.btnSber.isEnabled = true
+                if (it?.orderNumber?.isNotEmpty() == true) {
+                    onSuccess()
+                } else {
+                    onError(getString(R.string.payments_error_1))
+                }
+            })
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -210,28 +234,34 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private fun possiblyShowGooglePayButton() {
         GooglePayUtils.getIsReadyToPayRequest().let { res ->
             val request = IsReadyToPayRequest.fromJson(res.toString())
-            request?.let { req ->
-                val task = mPaymentsClient.isReadyToPay(req)
-                task.addOnCompleteListener { completedTask ->
-                    completedTask.getResult(ApiException::class.java)?.let {
-                        if (it) {
-                            setUpGooglePayButton()
-                        } else {
-                            view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.GONE
-                        }
-                    }
-                }
+            val task = mPaymentsClient.isReadyToPay(request)
+            task.addOnSuccessListener {
+                setUpGooglePayButton(it)
+            }
+            task.addOnFailureListener {
+                Timber.d("debug_google ${it.message}")
+                setUpGooglePayButton(false)
             }
         }
     }
 
-    private fun setUpGooglePayButton() {
-        view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.VISIBLE
-        view?.findViewById<RelativeLayout>(R.id.btnPay)?.setOnClickListener {
-            if (binding.etMoneyBalance.text.toString().toFloat() > 0f) {
-                requestPayment()
-            } else {
-                onError(getString(R.string.payments_error_2))
+    private fun setUpGooglePayButton(isVisible: Boolean) {
+        if (isVisible) {
+            binding.btnPay
+            view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.VISIBLE
+            view?.findViewById<RelativeLayout>(R.id.btnPay)?.setOnClickListener {
+                if (binding.etMoneyBalance.text.toString().toFloat() > 0f) {
+                    requestPayment()
+                } else {
+                    onError(getString(R.string.payments_error_2))
+                }
+            }
+        } else {
+            view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.GONE
+            dialog?.let { dialog ->
+                val bottomSheet = dialog.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
     }
@@ -256,6 +286,12 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
             PayContractFragmentDirections.actionGlobalErrorButtomSheetDialogFragment(
                 errorText
             )
+        this.findNavController().navigate(action)
+    }
+
+    private fun onSuccess() {
+        this.dismiss()
+        val action = PayContractFragmentDirections.actionGlobalSuccessButtomSheetDialogFragment()
         this.findNavController().navigate(action)
     }
 }

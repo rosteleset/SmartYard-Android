@@ -59,7 +59,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         initRecycler()
-        binding.floatingActionButton?.setOnClickListener {
+        binding.floatingActionButton.setOnClickListener {
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_addressFragment_to_authFragment)
         }

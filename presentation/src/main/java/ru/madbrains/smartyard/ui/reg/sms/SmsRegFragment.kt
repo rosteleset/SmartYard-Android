@@ -104,7 +104,7 @@ class SmsRegFragment : Fragment() {
             mViewModel.confirmCode(phoneNumber, it.toString(), this)
         }
 
-        binding.btnResendOde.setOnClickListener {
+        binding.btnResendCode.setOnClickListener {
             toggleError(false)
             mViewModel.resendCode(phoneNumber)
         }
@@ -120,7 +120,7 @@ class SmsRegFragment : Fragment() {
             viewLifecycleOwner,
             Observer {
                 binding.tvTimer.isVisible = false
-                binding.btnResendOde.isVisible = true
+                binding.btnResendCode.isVisible = true
             }
         )
 
@@ -128,7 +128,7 @@ class SmsRegFragment : Fragment() {
             viewLifecycleOwner,
             Observer {
                 binding.tvTimer.isVisible = true
-                binding.btnResendOde.isVisible = false
+                binding.btnResendCode.isVisible = false
             }
         )
     }

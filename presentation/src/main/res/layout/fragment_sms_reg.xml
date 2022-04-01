@@ -107,7 +107,7 @@
             app:layout_constraintTop_toBottomOf="@id/pin" />
 
         <Button
-            android:id="@+id/btnResendСode"
+            android:id="@+id/btnResendCode"
             style="@style/buttonBlueFlooded"
             android:layout_width="wrap_content"
             android:layout_height="60dp"

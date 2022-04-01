@@ -11,6 +11,7 @@ import ru.madbrains.domain.interactors.IssueInteractor
 import ru.madbrains.domain.interactors.PayInteractor
 import ru.madbrains.domain.interactors.SipInteractor
 import ru.madbrains.domain.interactors.FRSInteractor
+import ru.madbrains.domain.interactors.ExtInteractor
 
 object DomainModule {
 
@@ -22,9 +23,9 @@ object DomainModule {
         factory { InboxInteractor(get()) }
         factory { IssueInteractor(get()) }
         factory { PayInteractor(get()) }
-
         factory { CCTVInteractor(get()) }
         factory { SipInteractor(get()) }
         factory { FRSInteractor(get()) }
+        factory { ExtInteractor(get()) }
     }
 }

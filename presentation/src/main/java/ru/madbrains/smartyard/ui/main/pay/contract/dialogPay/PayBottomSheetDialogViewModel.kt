@@ -1,10 +1,13 @@
 package ru.madbrains.smartyard.ui.main.pay.contract.dialogPay
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.util.Base64
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import ru.madbrains.data.DataModule
 import ru.madbrains.domain.interactors.PayInteractor
 import ru.madbrains.domain.model.CommonError
 import ru.madbrains.domain.model.ErrorStatus
@@ -12,6 +15,7 @@ import ru.madbrains.domain.model.response.ApiResultNull
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.GooglePayUtils
+import timber.log.Timber
 import java.io.UnsupportedEncodingException
 
 /**
@@ -26,15 +30,17 @@ class PayBottomSheetDialogViewModel(
     val navigateToSuccess: LiveData<Event<String>>
         get() = _navigateToSuccess
 
+    private val language = "ru"
     private val returnUrl = "https://lanta-net.ru/"
+    private val sberUrl = "lanta://sber"
 
-    fun pay(token: String, amount: String, clietId: String) {
+    fun pay(token: String, amount: String, clientId: String) {
         viewModelScope.withProgress {
             // цену умножить на 100
             val a = amount.toFloat() * 100
             val rubInKopecks = a.toInt().toString()
             val tokenBase24 = encodeString(token)
-            val payPrepare = payInteractor.payPrepare(clietId, rubInKopecks)
+            val payPrepare = payInteractor.payPrepare(clientId, rubInKopecks)
             val paymentDo = payInteractor.paymentDo(
                 merchant = GooglePayUtils.MERCHANT_NAME,
                 returnUrl = returnUrl,
@@ -42,8 +48,8 @@ class PayBottomSheetDialogViewModel(
                 amount = rubInKopecks,
                 orderNumber = payPrepare.data
             )
-            Log.d("NAIL", "payPrepare: " + payPrepare + "paymentDo: " + paymentDo)
-            if (paymentDo?.success == false && paymentDo?.data == null) {
+            Timber.d("payPrepare: " + payPrepare + "paymentDo: " + paymentDo)
+            if (paymentDo?.success == false && paymentDo.data == null) {
                 globalData.globalErrorsSink.value = Event(
                     CommonError(
                         Throwable(paymentDo.error.message, null),
@@ -57,7 +63,7 @@ class PayBottomSheetDialogViewModel(
                 )
             } else {
                 var process = payInteractor.payProcess(payPrepare.data, paymentDo?.data?.orderId!!)
-                _navigateToSuccess.value = Event(paymentDo?.data?.orderId!!)
+                _navigateToSuccess.value = Event(paymentDo.data?.orderId!!)
             }
         }
     }
@@ -70,6 +76,35 @@ class PayBottomSheetDialogViewModel(
             e.printStackTrace()
         } finally {
             return Base64.encodeToString(data, Base64.DEFAULT)
+        }
+    }
+
+    fun sberPay(amount: String, clientId: String, context: Context) {
+        Timber.d("__sber amount = $amount;  clientId = $clientId")
+        viewModelScope.withProgress {
+            val a = amount.toFloat() * 100
+            val rubInKopecks = a.toInt().toString()
+            val payPrepare = payInteractor.payPrepare(clientId, rubInKopecks)
+            val returnUrl = sberUrl + "?clientId=" + clientId.toInt() + "&orderNumber=" + payPrepare.data
+            val failUrl = sberUrl  + "?clientId=" + clientId.toInt()
+            Timber.d("__sber returnUrl = $returnUrl   failUrl = $failUrl")
+            val sberRegisterDo = payInteractor.sberRegisterDo(
+                DataModule.sberApiUserName,
+                DataModule.sberApiPassword,
+                language,
+                sberUrl + "?clientId=" + clientId.toInt() + "&orderNumber=" + payPrepare.data,
+                sberUrl  + "?clientId=" + clientId.toInt(),
+                payPrepare.data,
+                a.toInt()
+            )
+            if (sberRegisterDo?.formUrl?.isNotEmpty() == true) {
+                synchronized(DataModule.orderNumberToId) {
+                    DataModule.orderNumberToId[payPrepare.data] = sberRegisterDo.orderId ?: ""
+                }
+                val intent = Intent(Intent.ACTION_VIEW)
+                intent.data = Uri.parse(sberRegisterDo.formUrl)
+                context.startActivity(intent)
+            }
         }
     }
 }

@@ -90,7 +90,7 @@ class CodeSmsRestoreFragment : Fragment() {
             }
         }
 
-        binding.btnResendOde.setOnClickListener {
+        binding.btnResendCode.setOnClickListener {
             mViewModel.sentCodeRecovery(contract, contactId)
         }
 
@@ -116,7 +116,7 @@ class CodeSmsRestoreFragment : Fragment() {
             viewLifecycleOwner,
             Observer {
                 binding.tvTimer.isVisible = false
-                binding.btnResendOde.isVisible = true
+                binding.btnResendCode.isVisible = true
             }
         )
 
@@ -124,7 +124,7 @@ class CodeSmsRestoreFragment : Fragment() {
             viewLifecycleOwner,
             Observer {
                 binding.tvTimer.isVisible = true
-                binding.btnResendOde.isVisible = false
+                binding.btnResendCode.isVisible = false
             }
         )
 
