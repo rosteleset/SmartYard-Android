@@ -21,7 +21,7 @@ class ParentListAdapter(setting: ParentListAdapterSetting) : ListDelegationAdapt
 class ParentListAdapterSetting(
     val context: Context,
     val clickOpen: (domophoneId: Int, doorId: Int) -> Unit,
-    val clickPos: (pos: Int) -> Unit,
+    val clickPos: (pos: Int, isExpanded: Boolean) -> Unit,
     val clickItemIssue: (issueModel: IssueModel) -> Unit,
     val clickQrCode: () -> Unit,
     val clickCamera: (model: VideoCameraModel) -> Unit,

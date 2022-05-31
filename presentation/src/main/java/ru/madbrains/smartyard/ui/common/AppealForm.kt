@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import ru.madbrains.smartyard.EventObserver
@@ -42,15 +41,16 @@ class AppealForm @JvmOverloads constructor(
         success: listenerEmpty
     ) {
         mViewModel.loadName(arguments)
-        binding.nameText.addTextChangedListener { this.textChangeListener() }
+        binding.nameText.addTextChangedListener {
+            this.textChangeListener()
+        }
 
         mViewModel.sentName.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.nameText.setText(it.name)
-                binding.patronymicText.setText(it.patronymic)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.nameText.setText(it.name)
+            binding.patronymicText.setText(it.patronymic)
+        }
         mViewModel.localErrorsSink.observe(
             viewLifecycleOwner,
             EventObserver { error ->
@@ -64,7 +64,9 @@ class AppealForm @JvmOverloads constructor(
                 mViewModel.sendName(
                     binding.nameText.text.toString(),
                     binding.patronymicText.text.toString()
-                ) { success() }
+                ) {
+                    success()
+                }
             } else {
                 toggleError(true, R.string.appeal_validation_error)
             }

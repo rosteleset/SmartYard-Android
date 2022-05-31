@@ -29,8 +29,8 @@ android {
         applicationId "ru.madbrains.smartyard"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 36
-        versionName '1.6.26'
+        versionCode 39
+        versionName '1.6.29'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -63,8 +63,8 @@ android {
 }
 
 project.afterEvaluate {
-    preMadbrainsDebugBuild.dependsOn ktlint
-    preLantaDebugBuild.dependsOn ktlint
+    //preMadbrainsDebugBuild.dependsOn ktlint
+    //preLantaDebugBuild.dependsOn ktlint
 }
 
 repositories {

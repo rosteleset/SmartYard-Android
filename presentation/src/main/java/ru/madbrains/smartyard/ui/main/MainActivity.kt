@@ -188,7 +188,8 @@ class MainActivity : CommonActivity() {
             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                 goToGooglePay()
             }
-            .setNegativeButton(android.R.string.no) { dialogInterface: DialogInterface?, _: Int -> }
+            .setNegativeButton(android.R.string.cancel) { _: DialogInterface?, _: Int -> }
+            .show()
     }
 
     private fun parseIntent(bundle: Bundle) {

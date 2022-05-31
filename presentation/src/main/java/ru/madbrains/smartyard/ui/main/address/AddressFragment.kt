@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -31,6 +30,7 @@ import ru.madbrains.smartyard.ui.main.address.adapters.ParentListAdapterSetting
 import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVViewModel
 import ru.madbrains.smartyard.ui.main.address.event_log.EventLogViewModel
 import ru.madbrains.smartyard.ui.main.address.guestAccessDialog.GuestAccessDialogFragment
+import ru.madbrains.smartyard.ui.main.address.models.ParentModel
 import ru.madbrains.smartyard.ui.updateAllWidget
 import timber.log.Timber
 
@@ -84,28 +84,26 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         )
 
         mViewModel.dataList.observe(
-            viewLifecycleOwner,
-            Observer {
-                // val items = ParentDataFactory.getParents(5) + it
-                adapter?.items = it
-                adapter?.notifyDataSetChanged()
-                binding.swipeContainer.isRefreshing = false
-                updateAllWidget(requireContext())
+            viewLifecycleOwner
+        ) {
+            // val items = ParentDataFactory.getParents(5) + it
+            adapter?.items = it
+            adapter?.notifyDataSetChanged()
+            binding.swipeContainer.isRefreshing = false
+            updateAllWidget(requireContext())
 
-                if (binding.floatingActionButton.visibility != View.VISIBLE) {
-                    binding.floatingActionButton.show()
-                }
+            if (binding.floatingActionButton.visibility != View.VISIBLE) {
+                binding.floatingActionButton.show()
             }
-        )
+        }
 
         mViewModel.progress.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!binding.swipeContainer.isRefreshing)
-                    binding.progressBarAddress.isVisible = it
-                binding.swipeContainer.isRefreshing = false
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            if (!binding.swipeContainer.isRefreshing)
+                binding.progressBarAddress.isVisible = it
+            binding.swipeContainer.isRefreshing = false
+        }
 
         mViewModel.navigationToAuth.observe(
             viewLifecycleOwner,
@@ -123,16 +121,25 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                 clickOpen = { domophoneId, doorId ->
                     mViewModel.openDoor(domophoneId, doorId)
                 },
-                clickPos = { position ->
-                    val layoutManager = recyclerView
-                        .layoutManager as LinearLayoutManager
-                    val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_START
+                clickPos = { position, isExpanded ->
+                    if (isExpanded) {
+                        val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                        val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
+                            override fun getVerticalSnapPreference(): Int {
+                                return SNAP_TO_START
+                            }
                         }
+                        smoothScroller.targetPosition = position
+                        layoutManager.startSmoothScroll(smoothScroller)
                     }
-                    smoothScroller.targetPosition = position
-                    layoutManager.startSmoothScroll(smoothScroller)
+                    (adapter?.items?.get(position) as? ParentModel)?.let { parent ->
+                        if (isExpanded) {
+                            mViewModel.expandedHouseId.add(parent.houseId)
+                        } else {
+                            mViewModel.expandedHouseId.remove(parent.houseId)
+                        }
+                        parent.isExpanded = isExpanded
+                    }
                 },
                 clickItemIssue = {
                     if (it.courier) {

@@ -38,8 +38,8 @@ android {
 }
 
 project.afterEvaluate {
-    preDebugBuild.dependsOn ktlint
-    preReleaseBuild.dependsOn ktlint
+    //preDebugBuild.dependsOn ktlint
+    //preReleaseBuild.dependsOn ktlint
 }
 
 

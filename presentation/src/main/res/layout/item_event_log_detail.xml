@@ -183,8 +183,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
                     app:use_artwork="false"
-                    app:use_controller="false"
-                    app:use_sensor_rotation="false" />
+                    app:use_controller="false" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clELDFriend"

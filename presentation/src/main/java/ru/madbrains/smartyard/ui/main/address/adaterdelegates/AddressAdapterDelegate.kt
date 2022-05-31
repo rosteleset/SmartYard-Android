@@ -36,25 +36,31 @@ class AddressAdapterDelegate(private val setting: ParentListAdapterSetting) :
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
     ) {
-        val vh = holder as AddressCameraViewHolder
+        holder as AddressCameraViewHolder
         val parentsModel: ParentModel = items[position] as ParentModel
         holder.textView.text = parentsModel.addressTitle
         holder.recyclerView.apply {
             layoutManager =
                 LinearLayoutManager(holder.recyclerView.context, RecyclerView.VERTICAL, false)
         }
-        holder.coll.collapse(false)
+        if (parentsModel.isExpanded) {
+            holder.coll.expand(false)
+            holder.imageView.setImageResource(R.drawable.ic_arrow_top)
+        } else {
+            holder.coll.collapse(false)
+            holder.imageView.setImageResource(R.drawable.ic_arrow_bottom)
+        }
         holder.itemView.setOnClickListener {
             if (holder.coll.isExpanded) {
                 holder.coll.collapse()
                 holder.imageView.setImageResource(R.drawable.ic_arrow_bottom)
+                setting.clickPos.invoke(position, false)
             } else {
                 holder.coll.expand()
-                holder.coll.setOnExpansionUpdateListener { expansionFraction, state ->
-                    if (expansionFraction == 1F)
-                        setting.clickPos.invoke(
-                            position
-                        )
+                holder.coll.setOnExpansionUpdateListener { expansionFraction, _ ->
+                    if (expansionFraction == 1F) {
+                        setting.clickPos.invoke(position, true)
+                    }
                 }
                 holder.imageView.setImageResource(R.drawable.ic_arrow_top)
             }

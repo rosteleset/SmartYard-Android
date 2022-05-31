@@ -31,6 +31,12 @@ class ExtWebInterface(
     }
 
     @JavascriptInterface
+    fun postloadingFinished() {
+        Timber.d("debug_web Javascript call postloadingFinished")
+        callback?.onPostLoadingFinished()
+    }
+
+    @JavascriptInterface
     fun postRefreshParent(timeout: Int) {
         Timber.d("debug_web Javascript call postRefreshParent")
         viewModel.onPostRefreshParent.postValue(Event(timeout))
@@ -38,28 +44,6 @@ class ExtWebInterface(
 
     companion object {
         const val WEB_INTERFACE_OBJECT = "Android"
-
-        const val JS_INJECTION = """
-            function bearerToken() {
-                return Android.bearerToken();
-            }
-            
-            function postLoadingStarted() {
-                ${WEB_INTERFACE_OBJECT}.postLoadingStarted();
-            }
-            
-            function postloadingFinished() {
-                ${WEB_INTERFACE_OBJECT}.postLoadingFinished();
-            }
-            
-            function postLoadingFinished() {
-                ${WEB_INTERFACE_OBJECT}.postLoadingFinished();
-            }
-            
-            function postRefreshParent(timeout) {
-                ${WEB_INTERFACE_OBJECT}.postRefreshParent(timeout)
-            }
-        """
     }
 
     interface Callback {

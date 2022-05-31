@@ -102,19 +102,6 @@ class ExtWebBottomFragment : BottomSheetDialogFragment() {
                 return true
             }
 
-            override fun shouldInterceptRequest(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): WebResourceResponse? {
-                return if (request?.url?.path?.endsWith("lanta.js") == true) {
-                    WebResourceResponse("text/javascript", "utf-8",
-                        ByteArrayInputStream(ExtWebInterface.JS_INJECTION.toByteArray())
-                    )
-                } else {
-                    super.shouldInterceptRequest(view, request)
-                }
-            }
-
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
 

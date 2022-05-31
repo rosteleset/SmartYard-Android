@@ -673,17 +673,15 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         //двойной тап делает перемотку вперед или назад в зависимости от места двойного тапа: слева - назад, справа - вперед
         binding.zlArchive.setDoubleTapConfirmedListener { x_pos ->
             if (mPlayer?.playbackState == Player.STATE_READY && x_pos != null) {
-                var currentPosition = mPlayer?.currentPosition ?: 0
-                val lastPosition = (mPlayer?.duration ?: 0) - 1
+                var currentPosition = playerCurrentPosition()
                 var seekStep = CCTVTrimmerViewModel.SEEK_STEP
                 if (x_pos.toInt() < binding.zlArchive.width / 2) {
                     seekStep = -seekStep
                 }
                 currentPosition += seekStep
-                if (currentPosition < 0)
-                    currentPosition = 0
-                if (currentPosition > lastPosition)
-                    currentPosition = lastPosition
+                if (currentPosition > playerDuration()) {
+                    currentPosition = playerDuration() - 1
+                }
                 playerSeekTo(currentPosition)
 
                 val ivAnimation: ImageView? = if (seekStep < 0) {

@@ -41,6 +41,8 @@ class AddressViewModel(
     val navigationToAuth: LiveData<Event<Unit>>
         get() = _navigationToAuth
 
+    var expandedHouseId = mutableSetOf<Int>()  // множество развёрнутых адресов
+
     fun openDoor(domophoneId: Int, doorId: Int?) {
         viewModelScope.withProgress {
             authInteractor.openDoor(domophoneId, doorId)
@@ -51,7 +53,6 @@ class AddressViewModel(
     var nextListNoCache = true
 
     init {
-        Timber.d("__Q__ init AddressViewModel")
         getDataList()
     }
 
@@ -78,12 +79,11 @@ class AddressViewModel(
             }
         }
 
-        Timber.d("__Q__ houseIdFlats = $houseIdFlats")
+        Timber.d("debug_mm houseIdFlats = $houseIdFlats")
         return houseIdFlats
     }
 
     fun getDataList(forceRefresh: Boolean = false) {
-        Timber.d("__Q__ call AddressViewModel.getDataList()")
         val noCache = nextListNoCache || forceRefresh
         nextListNoCache = false
         viewModelScope.withProgress(
@@ -107,6 +107,7 @@ class AddressViewModel(
             } else {
                 Timber.d(this.javaClass.simpleName, res.data.size)
                 databaseInteractor.deleteAll()
+                var hasExpanded = false
                 val list: MutableList<DisplayableItem> = (
                     res.data.map { addressItem ->
                         val mutableList = mutableListOf<DisplayableItem>()
@@ -167,11 +168,13 @@ class AddressViewModel(
                                 }
                             )
                         }
+                        hasExpanded = hasExpanded || expandedHouseId.contains(addressItem.houseId)
                         ParentModel(
                             addressItem.address,
                             addressItem.houseId,
                             mutableList,
-                            hasYards
+                            hasYards,
+                            expandedHouseId.contains(addressItem.houseId)
                         )
                     }.toMutableList()
                 )
@@ -179,6 +182,12 @@ class AddressViewModel(
                     {!(it as ParentModel).hasYards},
                     {(it as ParentModel).addressTitle}
                 ))
+                if (!forceRefresh && list.size > 0 && !hasExpanded) {
+                    (list[0] as? ParentModel)?.let { parent ->
+                        expandedHouseId.add(parent.houseId)
+                        parent.isExpanded = true
+                    }
+                }
                 val listConnect = issueInteractor.listConnectIssue()?.data
                 _dataList.value = list.plus(
                     listConnect?.map {

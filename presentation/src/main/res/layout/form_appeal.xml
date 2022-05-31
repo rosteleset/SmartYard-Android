@@ -19,7 +19,6 @@
 
             <EditText
                 android:id="@+id/nameText"
-                android:textCursorDrawable="@drawable/color_cursor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -28,13 +27,13 @@
                 android:background="@drawable/background_edit_text_radius"
                 android:ems="10"
                 android:hint="Имя*"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapSentences"
                 android:padding="16dp"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="18sp" />
 
             <EditText
                 android:id="@+id/patronymicText"
-                android:textCursorDrawable="@drawable/color_cursor"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -43,8 +42,9 @@
                 android:background="@drawable/background_edit_text_radius"
                 android:ems="10"
                 android:hint="@string/appeal_title_patronymic"
-                android:inputType="textPersonName"
+                android:inputType="textPersonName|textCapSentences"
                 android:padding="16dp"
+                android:textCursorDrawable="@drawable/color_cursor"
                 android:textSize="18sp" />
 
             <Button
