@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "978817004542",
+    "firebase_url": "https://smart-yard.firebaseio.com",
+    "project_id": "smart-yard",
+    "storage_bucket": "smart-yard.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:978817004542:android:e6b58404b560bbd6e986af",
+        "android_client_info": {
+          "package_name": "ru.madbrains.smartyard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "978817004542-q7cenibk1rj06ldtgpr7mdlom0n3io23.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8FkZfjep0umNM0TXNGM6IFlpTtKCguUk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "978817004542-q7cenibk1rj06ldtgpr7mdlom0n3io23.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "978817004542-qmli1k2vuhrg2qnrdjibgomej6m3h7f5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "ru.madbrains.smartyard"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

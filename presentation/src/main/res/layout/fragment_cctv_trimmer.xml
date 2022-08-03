@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flVideoPlayback"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.address.cctv_video.CCTVTrimmerFragment">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clVideoPlayback"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_background_address_map"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="28dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="56dp"
+            android:textAlignment="textStart"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:autoSizeMinTextSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/ivBack"
+            tools:text="cameraDate" />
+
+        <LinearLayout
+            android:id="@+id/contentWrap"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="28dp"
+            android:background="@drawable/background_radius_upper_clip"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+
+            <ScrollView
+                android:id="@+id/svContentWrap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white"
+                android:fillViewport="true"
+                tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTab">
+
+                <LinearLayout
+                    android:id="@+id/llControls"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/white"
+                    android:orientation="vertical"
+                    android:paddingBottom="40dp">
+
+                    <FrameLayout
+                        android:id="@+id/videoWrap"
+                        android:layout_width="match_parent"
+                        android:layout_height="222dp"
+                        android:layout_marginStart="@dimen/cctv_trim_page_margin"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="@dimen/cctv_trim_page_margin"
+                        android:background="@drawable/background_radius_video_clip">
+
+                        <ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout
+                            android:id="@+id/zlArchive"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.exoplayer2.ui.PlayerView
+                                android:id="@+id/mPlayerView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:focusable="true"
+                                app:player_layout_id="@layout/fragment_cctv_exoplayer"
+                                app:resize_mode="fixed_height" />
+
+                        </ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout>
+
+                        <ProgressBar
+                            android:id="@+id/mVideoLoader"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center" />
+
+
+                        <ImageView
+                            android:id="@+id/ivBackwardArchive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|center_vertical"
+                            android:layout_marginStart="32dp"
+                            android:alpha="0"
+                            android:src="@drawable/ic_backward_15"
+                            android:visibility="invisible" />
+
+                        <ImageView
+                            android:id="@+id/ivForwardArchive"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical|end"
+                            android:layout_marginEnd="32dp"
+                            android:alpha="0"
+                            android:src="@drawable/ic_forward_15"
+                            android:visibility="invisible" />
+
+                        <ru.madbrains.lib.RangeSlider
+                            android:id="@+id/rangePlayer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="12.7dp"
+                            android:layout_marginEnd="12.7dp"
+                            android:layout_marginBottom="16.7dp"
+                            app:maskColor="@color/white_transparent2"
+                            app:playThumbDrawable="@drawable/ic_cctv_thumb_seek"
+                            app:sliderHeight="35.31dp"
+                            app:trimMode="false"
+                            app:trimThumbDrawable="@drawable/ic_cctv_thumb_trim">
+
+                        </ru.madbrains.lib.RangeSlider>
+
+                        <ImageButton
+                            android:id="@+id/mFullScreens"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginEnd="12dp"
+                            android:background="@drawable/ic_cctv_enter_fullscreen" />
+
+                        <ru.madbrains.lib.RangeSlider
+                            android:id="@+id/rangeTrimmer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom"
+                            android:layout_marginStart="12.7dp"
+                            android:layout_marginEnd="12.7dp"
+                            android:layout_marginBottom="16.7dp"
+                            android:visibility="invisible"
+                            app:maskColor="@color/white_transparent2"
+                            app:playThumbDrawable="@drawable/ic_cctv_thumb_seek"
+                            app:sliderHeight="35.31dp"
+                            app:trimMode="true"
+                            app:trimThumbDrawable="@drawable/ic_cctv_thumb_trim" />
+                    </FrameLayout>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/rvTimeFragmentButtonsWrap"
+                        android:layout_width="match_parent"
+                        android:layout_height="24dp"
+                        android:layout_marginTop="20dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/rvTimeFragmentButtons"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:nestedScrollingEnabled="true"
+
+                            android:orientation="horizontal"
+                            android:overScrollMode="never"
+                            tools:listitem="@layout/item_cctv_time_fragment_button" />
+
+                        <ImageView
+                            android:id="@+id/gradStart"
+                            android:layout_width="@dimen/cctv_trim_page_margin_gradient"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/ic_cctv_time_gradient_start"
+                            android:focusable="false"
+                            app:layout_constraintStart_toStartOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/gradMiddle"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/ic_cctv_time_gradient_middle"
+                            android:focusable="false"
+                            app:layout_constraintStart_toEndOf="@id/gradStart" />
+
+                        <ImageView
+                            android:id="@+id/gradEnd"
+                            android:layout_width="@dimen/cctv_trim_page_margin_gradient"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/ic_cctv_time_gradient_end"
+                            android:focusable="false"
+                            app:layout_constraintEnd_toEndOf="parent" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <LinearLayout
+                        android:id="@+id/panelPlay"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/cctv_trim_page_margin"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="@dimen/cctv_trim_page_margin"
+                        android:orientation="horizontal"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="20dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="start">
+
+                            <TextView
+                                android:id="@+id/tvSpeedDown"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:textColor="@color/grey_100"
+                                android:textSize="20sp"
+                                tools:text="0.5x" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnPlay"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/ic_cctv_p_button" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <TextView
+                                android:id="@+id/tvSpeedUp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:textColor="@color/grey_100"
+                                android:textSize="20sp"
+                                tools:text="1.5x" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/panelTrim"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/cctv_trim_page_margin"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="@dimen/cctv_trim_page_margin"
+                        android:orientation="horizontal"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="start">
+
+                            <ImageButton
+                                android:id="@+id/btnStepMinus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_cctv_minus_15" />
+                        </LinearLayout>
+
+                        <ImageButton
+                            android:id="@+id/btnToPlayMode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/ic_video_camera" />
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_weight="1"
+                            android:gravity="end">
+
+                            <ImageButton
+                                android:id="@+id/btnStepPlus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_cctv_plus_15" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/btnMainAction"
+                        style="@style/buttonBlueFlooded"
+                        android:layout_width="match_parent"
+                        android:layout_height="60dp"
+                        android:layout_marginStart="@dimen/cctv_trim_page_margin"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="@dimen/cctv_trim_page_margin"
+                        android:layout_marginBottom="24dp"
+                        android:enabled="true"
+                        android:paddingTop="18dp"
+                        android:paddingBottom="18dp"
+                        tools:text="@string/cctv_choose_fragment" />
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

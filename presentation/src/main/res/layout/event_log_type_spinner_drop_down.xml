@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:drawableLeft="@drawable/checkbox_selector"
+    android:drawablePadding="24dp"
+    android:gravity="start"
+    android:paddingStart="16dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="16dp"
+    android:paddingBottom="8dp"
+    android:text="Qwerty"
+    android:textColor="@color/black_200"
+    android:textSize="16sp">
+
+</CheckedTextView>

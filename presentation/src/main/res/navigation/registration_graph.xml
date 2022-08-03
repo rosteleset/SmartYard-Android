@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/numberRegFragment">
+
+    <fragment
+        android:id="@+id/numberRegFragment"
+        android:name="ru.madbrains.smartyard.ui.reg.tel.NumberRegFragment"
+        android:label="fragment_number_reg"
+        tools:layout="@layout/fragment_number_reg" >
+        <action
+            android:id="@+id/action_numberRegFragment_to_smsRegFragment"
+            app:destination="@id/smsRegFragment" />
+        <action
+            android:id="@+id/action_numberRegFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
+        <action
+            android:id="@+id/action_numberRegFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/smsRegFragment"
+        android:name="ru.madbrains.smartyard.ui.reg.sms.SmsRegFragment"
+        android:label="SmsRegFragment" >
+        <action
+            android:id="@+id/action_smsRegFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
+        <action
+            android:id="@+id/action_smsRegFragment_to_numberRegFragment"
+            app:destination="@id/numberRegFragment"
+            app:popUpTo="@id/numberRegFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="ru.madbrains.smartyard.ui.main.MainActivity"
+        android:label="MainActivity" >
+        <argument
+            android:name="messageType"
+            app:argType="ru.madbrains.smartyard.FirebaseMessagingService$TypeMessage"
+            android:defaultValue="NO_DEFINE" />
+        <argument android:name="messageId"
+            app:argType="string"
+            app:nullable="true" />
+    </activity>
+    <fragment
+        android:id="@+id/appealFragment"
+        android:name="ru.madbrains.smartyard.ui.reg.appeal.AppealFragment"
+        android:label="fragment_appeal"
+        tools:layout="@layout/fragment_appeal" >
+        <action
+            android:id="@+id/action_appealFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
+    <action
+        android:id="@+id/action_global_numberRegFragment"
+        app:destination="@id/numberRegFragment" />
+
+</navigation>

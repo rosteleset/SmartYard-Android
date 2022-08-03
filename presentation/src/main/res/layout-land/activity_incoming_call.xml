@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.call.IncomingCallActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/ic_background_call"
+        tools:context=".ui.call.IncomingCallActivity">
+
+        <LinearLayout
+            android:id="@+id/mImageViewWrap"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/black"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextureView
+                android:id="@+id/mVideoSip"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/mPeekView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitXY"
+                tools:src="@drawable/ic_placeholder_image" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mPanel"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginBottom="16dp"
+            android:gravity="center|center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/ivFullscreenMinimalize"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guidelineBottom">
+
+            <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                android:id="@+id/mPeekButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/peek"
+                app:buttonBG="@drawable/checkbox_round_state_peek"
+                app:buttonCheckable="true"
+                app:orientationLandscap="true" />
+
+            <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                android:id="@+id/mOpenButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:text="@string/open"
+                app:buttonBG="@drawable/checkbox_round_state_unlock"
+                app:orientationLandscap="true" />
+
+            <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                android:id="@+id/mHangUpButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:text="@string/ignore"
+                app:buttonBG="@drawable/checkbox_round_state_hang"
+                app:orientationLandscap="true" />
+
+            <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                android:id="@+id/mAnswerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:text="@string/answer"
+                android:visibility="visible"
+                app:buttonBG="@drawable/checkbox_round_state_answer"
+                app:orientationLandscap="true" />
+
+            <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                android:id="@+id/mSpeakerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:text=""
+                android:visibility="gone"
+                app:buttonBG="@drawable/checkbox_round_state_speak"
+                app:orientationLandscap="true" />
+
+            <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                android:id="@+id/mOpenedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:text="@string/opened"
+                android:visibility="visible"
+                app:buttonBG="@drawable/checkbox_round_state_unlock"
+                app:orientationLandscap="true" />
+
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/mTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:text="@string/call_on_domophone"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:autoSizeMinTextSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/ivFullscreenMinimalize"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|end"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/mPanel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_minimize" />
+
+        <LinearLayout
+            android:id="@+id/mStatusWrap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:paddingBottom="32dp"
+            app:layout_constraintBottom_toTopOf="@+id/mPanel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/mTitle">
+
+            <TextView
+                android:id="@+id/mStatusText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:autoSizeMinTextSize="10sp"
+                tools:text="Тамбов, ул. Советская 20, кв. 52" />
+
+            <Chronometer
+                android:id="@+id/mCallTimer"
+                style="@style/clock_style"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineBottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.80" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

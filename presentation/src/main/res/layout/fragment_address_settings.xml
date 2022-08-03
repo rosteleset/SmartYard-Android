@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.settings.addressSettings.AddressSettingsFragment"
+    >
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/background_1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="32dp"
+            android:fontFamily="@font/source_sans_pro_bold"
+            android:text="Настройки адреса"
+            android:textColor="@color/white"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            app:autoSizeMinTextSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
+            app:layout_constraintEnd_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ivBack" />
+
+
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="28dp"
+            android:padding="16dp"
+            android:src="@drawable/ic_back_arrow"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ScrollView
+            android:id="@+id/scrollView2"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fillViewport="false"
+            android:translationY="-20dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/white_0"
+                    app:cardCornerRadius="13dp"
+                    app:cardElevation="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvAddressName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="false"
+                            android:layout_weight="1"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingTop="24dp"
+                            android:paddingBottom="24dp"
+                            android:text="г. Тамбов, ул. Советская, 16, кв.4"
+                            android:textColor="@color/black"
+                            android:textSize="18sp" />
+
+
+                        <ImageView
+                            android:id="@+id/ivPencilEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:paddingRight="24dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_pincil_edit" />
+
+                    </LinearLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvNotification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/white_0"
+                    app:cardCornerRadius="13dp"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/clItemNotif"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvTitleNotif"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="false"
+                            android:drawableEnd="@drawable/ic_arrow_top"
+                            android:drawablePadding="24dp"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingTop="24dp"
+                            android:paddingRight="24dp"
+                            android:paddingBottom="24dp"
+                            android:text="Домофон"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+
+                        <net.cachapa.expandablelayout.ExpandableLayout
+                            android:id="@+id/expandableLayoutNotif"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:el_duration="300"
+                            app:el_expanded="true"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvTitleNotif">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <View
+                                    android:id="@+id/view3"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    android:paddingEnd="18dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tvPaperBill"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Получать бумажную квитанцию"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switchPaperBill"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/view3" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchPaperBill"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvPaperBill"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/view3" />
+
+                                <View
+                                    android:id="@+id/vPaperBill"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.615"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
+
+                                <TextView
+                                    android:id="@+id/t333333"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Включить трубку (интерком)"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switchIntercom"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchIntercom"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+
+                                    android:thumb="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/t333333"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vPaperBill"
+                                    app:track="@null" />
+
+                                <View
+                                    android:id="@+id/view2"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.615"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/t333333" />
+
+                                <TextView
+                                    android:id="@+id/textView23"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Принимать вызовы"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switchVoip"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/t333333" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchVoip"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/textView23"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/view2"
+                                    app:track="@null" />
+
+                                <TextView
+                                    android:id="@+id/tvWhiteRabbit"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:drawableRight="@drawable/ic_baseline_help"
+                                    android:drawablePadding="8dp"
+                                    android:gravity="center_vertical"
+                                    android:padding="24dp"
+                                    android:text="@string/settings_white_rabbit"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/view5" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchWhiteRabbit"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvWhiteRabbit"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/view5" />
+
+                                <View
+                                    android:id="@+id/vWhiteRabbit"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.615"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tvWhiteRabbit" />
+
+                                <TextView
+                                    android:id="@+id/tvUseEventLog"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Вести журнал событий"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switchUseEventLog"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/vWhiteRabbit" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchUseEventLog"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvUseEventLog"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vWhiteRabbit" />
+
+                                <View
+                                    android:id="@+id/vUseEventLog"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.615"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tvUseEventLog" />
+
+                                <TextView
+                                    android:id="@+id/tvOwnerEventLog"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Скрыть журнал событий от других пользователей"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switchOwnerEventLog"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/vUseEventLog" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchOwnerEventLog"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvOwnerEventLog"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vUseEventLog" />
+
+                                <View
+                                    android:id="@+id/vOwnerEventLog"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.615"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tvOwnerEventLog" />
+
+                                <TextView
+                                    android:id="@+id/tvUseFRS"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:paddingEnd="4dp"
+                                    android:text="Распознавать лица"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/vOwnerEventLog" />
+
+                                <ImageView
+                                    android:id="@+id/ivUseFRSBeta"
+                                    android:layout_width="24dp"
+                                    android:layout_height="20dp"
+                                    android:layout_marginTop="20dp"
+                                    android:src="@drawable/beta"
+                                    app:layout_constraintStart_toEndOf="@+id/tvUseFRS"
+                                    app:layout_constraintTop_toBottomOf="@id/vOwnerEventLog" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switchUseFRS"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvUseFRS"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vOwnerEventLog" />
+
+                                <View
+                                    android:id="@+id/vUseFRS"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.615"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/tvUseFRS" />
+
+                                <TextView
+                                    android:id="@+id/soundTitle"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="@string/sound"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/tvSoundChoose"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vUseFRS" />
+
+                                <View
+                                    android:id="@+id/view5"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.307"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/textView23" />
+
+                                <View
+                                    android:id="@+id/view6"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.307"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/soundTitle" />
+
+                                <TextView
+                                    android:id="@+id/tvSoundChoose"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:padding="24dp"
+                                    android:textColor="@color/blue"
+                                    app:layout_constraintBottom_toBottomOf="@+id/soundTitle"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vUseFRS"
+                                    tools:text="Def" />
+
+                                <TextView
+                                    android:id="@+id/tvIsSpeaker"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="Громкая связь"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/switch_use_speaker"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@id/view6" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/switch_use_speaker"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+                                    android:thumb="@null"
+                                    android:track="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvIsSpeaker"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/view6" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </net.cachapa.expandablelayout.ExpandableLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/cvDeleteAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/white_0"
+                    app:cardCornerRadius="13dp"
+                    app:cardElevation="0dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="false"
+                        android:gravity="center_vertical"
+                        android:paddingStart="24dp"
+                        android:paddingTop="24dp"
+                        android:paddingBottom="24dp"
+                        android:text="Удалить адрес"
+                        android:textColor="@color/red_100"
+                        android:textSize="18sp" />
+
+                </androidx.cardview.widget.CardView>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>
