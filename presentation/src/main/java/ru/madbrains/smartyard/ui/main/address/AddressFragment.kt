@@ -165,8 +165,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                     }
                 },
                 clickEventLog = {
-                    Timber.d("__Q__ event log clicked: ${it.flats}")
-
                     mEventLog.address = it.address
                     mEventLog.flatsAll = it.flats
                     mEventLog.filterFlat = null

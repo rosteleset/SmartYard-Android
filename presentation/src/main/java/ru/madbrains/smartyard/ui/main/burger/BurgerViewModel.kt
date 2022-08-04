@@ -9,6 +9,7 @@ import ru.madbrains.domain.interactors.IssueInteractor
 import ru.madbrains.domain.interactors.SipInteractor
 import ru.madbrains.domain.model.request.CreateIssuesRequest
 import ru.madbrains.domain.model.request.ExtRequest
+import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.R
@@ -70,14 +71,6 @@ class BurgerViewModel(
         viewModelScope.withProgress({false}) {
             val list = mutableListOf(
                 BurgerModel(
-                    orderId = 100,
-                    iconId = R.drawable.city_camera_burger,
-                    title = "Городские камеры",
-                    onClick = {
-                        _navigateToFragment.value = Event(R.id.action_burgerFragment_to_cityCamerasFragment)
-                    }
-                ),
-                BurgerModel(
                     orderId = 200,
                     iconId = R.drawable.address_settings_burger,
                     title = "Настройки адресов",
@@ -94,6 +87,19 @@ class BurgerViewModel(
                     }
                 ),
             )
+            if (AppFeatures.hasFeature(AppFeatures.Features.CITY_CAMS)) {
+                list.add(
+                    BurgerModel(
+                        orderId = 100,
+                        iconId = R.drawable.city_camera_burger,
+                        title = "Городские камеры",
+                        onClick = {
+                            _navigateToFragment.value =
+                                Event(R.id.action_burgerFragment_to_cityCamerasFragment)
+                        }
+                    )
+                )
+            }
 
             try {
                 //загружаем расширения с использованием API методов

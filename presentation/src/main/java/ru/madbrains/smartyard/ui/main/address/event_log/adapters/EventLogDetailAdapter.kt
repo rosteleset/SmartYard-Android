@@ -21,6 +21,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import ru.madbrains.domain.model.response.Plog
 import ru.madbrains.domain.utils.listenerEmpty
 import ru.madbrains.domain.utils.listenerGeneric
+import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.ui.main.address.event_log.FaceImageView
 import kotlin.math.roundToInt
@@ -140,7 +141,7 @@ class EventLogDetailAdapter(
                     clELDFriend.isVisible = false
                     bELDFriend.setOnClickListener(null)
 
-                    if (eventItem.frsEnabled) {
+                    if (AppFeatures.hasFeature(AppFeatures.Features.FRS) && eventItem.frsEnabled) {
                         eventItem.detailX?.face?.let {face ->
                             tvEventImage.setFaceRect(face.left, face.top, face.width, face.height,
                                 eventItem.eventType == Plog.EVENT_OPEN_BY_FACE)

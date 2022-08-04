@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentAccessAddressBinding
@@ -24,7 +25,7 @@ import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
 import ru.madbrains.smartyard.ui.showStandardAlert
 import ru.madbrains.smartyard.ui.webview_dialog.WebViewDialogFragment
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.util.*
 
 class AccessAddressFragment : Fragment() {
     private var _binding: FragmentAccessAddressBinding? = null
@@ -80,29 +81,28 @@ class AccessAddressFragment : Fragment() {
 
     private fun initObservable() {
         mViewModel.intercom.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (it.doorCode == null) {
-                    binding.llCode.isVisible = false
-                } else {
-                    binding.tvCodeOpen.text = it.doorCode
-                }
-                val c: Calendar = Calendar.getInstance()
-                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                val getCurrentDateTime = sdf.format(c.time)
-                if (getCurrentDateTime <= it.autoOpen) {
-                    binding.btnGuestAccessOpen.isClickable = false
-                    binding.btnGuestAccessOpen.isChecked = true
-                }
-                hideCodeOpen(it.allowDoorCode)
-
-                if (it.frsDisabled == false) {
-                    binding.expLayoutByFace.expand()
-                } else {
-                    binding.expLayoutByFace.collapse()
-                }
+            viewLifecycleOwner
+        ) {
+            if (it.doorCode == null) {
+                binding.llCode.isVisible = false
+            } else {
+                binding.tvCodeOpen.text = it.doorCode
             }
-        )
+            val c: Calendar = Calendar.getInstance()
+            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+            val getCurrentDateTime = sdf.format(c.time)
+            if (getCurrentDateTime <= it.autoOpen) {
+                binding.btnGuestAccessOpen.isClickable = false
+                binding.btnGuestAccessOpen.isChecked = true
+            }
+            hideCodeOpen(it.allowDoorCode)
+
+            if (AppFeatures.hasFeature(AppFeatures.Features.FRS) && it.frsDisabled == false) {
+                binding.expLayoutByFace.expand()
+            } else {
+                binding.expLayoutByFace.collapse()
+            }
+        }
 
         mViewModel.roommate.observe(
             viewLifecycleOwner,

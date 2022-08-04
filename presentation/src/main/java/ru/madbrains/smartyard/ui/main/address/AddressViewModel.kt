@@ -10,6 +10,7 @@ import ru.madbrains.domain.interactors.DatabaseInteractor
 import ru.madbrains.domain.interactors.IssueInteractor
 import ru.madbrains.domain.model.AddressItem
 import ru.madbrains.domain.model.StateButton
+import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.R
@@ -147,7 +148,7 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (addressItem.cctv > 0) {
+                        if (AppFeatures.hasFeature(AppFeatures.Features.CCTV) && addressItem.cctv > 0) {
                             mutableList.add(
                                 VideoCameraModel().apply {
                                     caption = "Видеокамеры"
@@ -157,7 +158,7 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
+                        if (AppFeatures.hasFeature(AppFeatures.Features.EVENTS) && hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
                             mutableList.add(
                                 EventLogModel().apply {
                                     caption = "События"

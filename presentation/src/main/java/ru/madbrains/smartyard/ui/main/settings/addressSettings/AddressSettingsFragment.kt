@@ -15,6 +15,7 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.TF
+import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.string
@@ -186,7 +187,7 @@ class AddressSettingsFragment : Fragment() {
             }
 
             val useFRS = it.frsDisabled
-            if (useFRS == null) {
+            if (!AppFeatures.hasFeature(AppFeatures.Features.FRS) || useFRS == null) {
                 binding.tvUseFRS.isVisible = false
                 binding.ivUseFRSBeta.isVisible = false
                 binding.switchUseFRS.isVisible = false

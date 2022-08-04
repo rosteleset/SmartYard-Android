@@ -28,16 +28,12 @@ import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.madbrains.smartyard.CommonActivity
-import ru.madbrains.smartyard.Event
-import ru.madbrains.smartyard.EventObserver
+import ru.madbrains.smartyard.*
 import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
 import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
 import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_MESSAGE_TYPE
 import ru.madbrains.smartyard.FirebaseMessagingService.TypeMessage
-import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.ActivityMainBinding
-import ru.madbrains.smartyard.reduceToZero
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity
 import ru.madbrains.smartyard.ui.dpToPx
 import ru.madbrains.smartyard.ui.getBottomNavigationHeight
@@ -237,13 +233,21 @@ class MainActivity : CommonActivity() {
      */
     private fun setupBottomNavigationBar(resume: Boolean) {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        val navGraphIds = listOf(
-            R.navigation.address,
-            R.navigation.notification,
-            R.navigation.chat,
-            R.navigation.pay,
-            R.navigation.settings
+        val navGraphIds = mutableListOf<Int>()
+        val checkFeatures = hashMapOf(
+            AppFeatures.Features.MENU_ADDRESS to Pair(R.navigation.address, R.id.address),
+            AppFeatures.Features.MENU_NOTIFICATIONS to Pair(R.navigation.notification, R.id.notification),
+            AppFeatures.Features.MENU_CHAT to Pair(R.navigation.chat, R.id.chat),
+            AppFeatures.Features.MENU_PAYMENT to Pair(R.navigation.pay, R.id.pay),
+            AppFeatures.Features.MENU_ADDITIONAL to Pair(R.navigation.settings, R.id.settings),
         )
+        for ((key, value) in checkFeatures) {
+            if (AppFeatures.hasFeature(key)) {
+                navGraphIds.add(value.first)
+            } else {
+                bottomNavigationView.menu.removeItem(value.second)
+            }
+        }
 
         // Setup the bottom navigation view with a list of navigation graphs
         val controller = bottomNavigationView.setupWithNavController(
