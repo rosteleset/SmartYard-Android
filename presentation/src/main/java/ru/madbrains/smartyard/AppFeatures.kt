@@ -13,7 +13,6 @@ object AppFeatures {
         EVENTS,
         FRS,
         CITY_CAMS,
-        BONUSES,
         ISSUES
     }
 

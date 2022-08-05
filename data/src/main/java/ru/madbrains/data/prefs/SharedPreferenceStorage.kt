@@ -22,7 +22,7 @@ interface PreferenceStorage {
     var appVersion: Int
     var onboardingCompleted: Boolean
     var xDmApiRefresh: Boolean
-    var baseUrl: String?
+    var id: String?
 }
 
 /**
@@ -47,7 +47,7 @@ class SharedPreferenceStorage constructor(
         const val PREF_NOTIFY_SOUND_URI = "PREF_NOTIFY_SOUND_URI"
         const val PREF_ADDRESS_OPTIONS = "PREF_ADDRESS_OPTIONS_2"
         const val PREF_WHERE_IS_CONTRACT_WARNING_SEEN = "PREF_WHERE_IS_CONTRACT_WARNING_SEEN"
-        const val PREF_BASE_URL = "PREF_BASE_URL"
+        const val PREF_ID = "PREF_ID"
     }
 
     private val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -80,7 +80,7 @@ class SharedPreferenceStorage constructor(
     override var xDmApiRefresh: Boolean
         get() = apiRefresh
         set(value) { apiRefresh = value }
-    override var baseUrl by StringPreference(prefs, PREF_BASE_URL, null)
+    override var id by StringPreference(prefs, PREF_ID, null)
 }
 
 class SerializablePreferenceNullable<T>(

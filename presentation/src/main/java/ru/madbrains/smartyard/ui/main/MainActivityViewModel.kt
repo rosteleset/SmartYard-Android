@@ -61,8 +61,6 @@ class MainActivityViewModel(
     }
 
     fun onCreate() {
-        Timber.d("debug_dmm baseUrl from storage: ${mPreferenceStorage.baseUrl}")
-        DataModule.URL = mPreferenceStorage.baseUrl ?: DataModule.URL
         checkAndRegisterFcmToken()
     }
 

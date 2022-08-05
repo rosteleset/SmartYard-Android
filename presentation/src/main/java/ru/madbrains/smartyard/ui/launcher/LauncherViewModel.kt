@@ -12,7 +12,7 @@ import ru.madbrains.smartyard.GenericViewModel
  * Created on 12/05/2020.
  */
 class LauncherViewModel(
-    private val preferenceStorage: PreferenceStorage
+    preferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     private val _launchDestination = MutableLiveData<Event<LaunchDestination>>()

@@ -1,7 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.IssueRepository
 import ru.madbrains.domain.model.request.ActionIssueRequest
 import ru.madbrains.domain.model.request.CreateIssuesRequest
@@ -19,32 +19,32 @@ import timber.log.Timber
  * Created on 01/04/2020.
  */
 class IssueRepositoryImpl(
-    private val lantaApi: LantaApi,
+    private val teledomApi: TeledomApi,
     override val moshi: Moshi
 ) : IssueRepository, BaseRepository(moshi) {
 
     override suspend fun createIssues(request: CreateIssuesRequest): CreateIssuesResponse {
         return safeApiCall {
             Timber.d("__Q__ issue: $request")
-            lantaApi.createIssues(request)
+            teledomApi.createIssues(request)
         }
     }
 
     override suspend fun listConnectIssue(): ListConnectIssueResponse {
         return safeApiCall {
-            lantaApi.listConnectIssue().getResponseBody()
+            teledomApi.listConnectIssue().getResponseBody()
         }
     }
 
     override suspend fun actionIssue(key: String): ActionIssueResponse {
         return safeApiCall {
-            lantaApi.actionIssue(ActionIssueRequest(key)).getResponseBody()
+            teledomApi.actionIssue(ActionIssueRequest(key)).getResponseBody()
         }
     }
 
     override suspend fun comment(comment: String, key: String): CommentResponse {
         return safeApiCall {
-            lantaApi.comment(CommentRequest(comment, key)).getResponseBody()
+            teledomApi.comment(CommentRequest(comment, key)).getResponseBody()
         }
     }
 
@@ -53,7 +53,7 @@ class IssueRepositoryImpl(
         key: String
     ): DeliveryChangeResponse {
         return safeApiCall {
-            lantaApi.deliveryChange(
+            teledomApi.deliveryChange(
                 DeliveryChangeRequest(
                     key = key,
                     customFields = listOf(

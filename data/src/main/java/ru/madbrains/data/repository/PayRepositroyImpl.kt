@@ -1,7 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.PayRepository
 import ru.madbrains.domain.model.request.PayPrepareRequest
 import ru.madbrains.domain.model.request.PayProcessRequest
@@ -18,24 +18,24 @@ import ru.madbrains.domain.model.response.SberOrderStatusDoResponse
  * Created on 19.05.2020.
  */
 class PayRepositroyImpl(
-    private val lantaApi: LantaApi,
+    private val teledomApi: TeledomApi,
     override val moshi: Moshi
 ) : PayRepository, BaseRepository(moshi) {
     override suspend fun getPaymentsList(): PaymentsListResponse {
         return safeApiCall {
-            lantaApi.getPaymentsList().getResponseBody()
+            teledomApi.getPaymentsList().getResponseBody()
         }
     }
 
     override suspend fun payPrepare(clientId: String, amount: String): PayPrepareResponse {
         return safeApiCall {
-            lantaApi.payPrepare(PayPrepareRequest(clientId, amount))
+            teledomApi.payPrepare(PayPrepareRequest(clientId, amount))
         }
     }
 
     override suspend fun payProcess(paymentId: String, sbId: String): PayProcessResponse {
         return safeApiCall {
-            lantaApi.payProcess(PayProcessRequest(paymentId, sbId))
+            teledomApi.payProcess(PayProcessRequest(paymentId, sbId))
         }
     }
 
@@ -47,7 +47,7 @@ class PayRepositroyImpl(
         orderNumber: String
     ): PaymentDoResponse {
         return safeApiCall {
-            lantaApi.paymentDo(
+            teledomApi.paymentDo(
                 PaymentDoRequest(
                     merchant = merchant,
                     returnUrl = returnUrl,
@@ -69,7 +69,7 @@ class PayRepositroyImpl(
         amount: Int
     ): SberRegisterDoReponse {
         return safeApiCall {
-            lantaApi.sberRegisterDo(
+            teledomApi.sberRegisterDo(
                 userName,
                 password,
                 language,
@@ -87,7 +87,7 @@ class PayRepositroyImpl(
         orderNumber: String
     ): SberOrderStatusDoResponse {
         return safeApiCall {
-            lantaApi.sberOrderStatusDo(
+            teledomApi.sberOrderStatusDo(
                 userName,
                 password,
                 orderNumber

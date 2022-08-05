@@ -10,10 +10,15 @@ import ru.madbrains.domain.model.response.RegisterPushTokenResponse
 import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
+import ru.madbrains.domain.model.response.ProvidersListResponse
 
 class AuthInteractor(
     private val repository: AuthRepository
 ) {
+    suspend fun providers(): ProvidersListResponse {
+        return repository.providers()
+    }
+
     suspend fun registerPushToken(token: String): RegisterPushTokenResponse {
         return repository.registerPushToken(token)
     }

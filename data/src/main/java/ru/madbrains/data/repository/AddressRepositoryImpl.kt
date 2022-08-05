@@ -1,7 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.AddressRepository
 import ru.madbrains.domain.model.TF
 import ru.madbrains.domain.model.request.AccessRequest
@@ -39,19 +39,19 @@ import ru.madbrains.domain.model.response.CamMapResponse
  * Created on 06/03/2020.
  */
 class AddressRepositoryImpl(
-    private val lantaApi: LantaApi,
+    private val teledomApi: TeledomApi,
 
     override val moshi: Moshi
 ) : AddressRepository, BaseRepository(moshi) {
     override suspend fun getAddressList(): GetAddressListResponse {
         return safeApiCall {
-            lantaApi.getAddressList().getResponseBody()
+            teledomApi.getAddressList().getResponseBody()
         }
     }
 
     override suspend fun getSettingsList(): GetSettingsListResponse {
         return safeApiCall {
-            lantaApi.getSettingsList().getResponseBody()
+            teledomApi.getSettingsList().getResponseBody()
         }
     }
 
@@ -68,7 +68,7 @@ class AddressRepositoryImpl(
         frsDisabled: TF?
     ): IntercomResponse {
         return safeApiCall {
-            lantaApi.putIntercom(
+            teledomApi.putIntercom(
                 PutIntercomRequest(
                     flatId,
                     Settings(
@@ -89,25 +89,25 @@ class AddressRepositoryImpl(
 
     override suspend fun getIntercom(flatId: Int): IntercomResponse {
         return safeApiCall {
-            lantaApi.getIntercom(GetIntercomRequest(flatId))
+            teledomApi.getIntercom(GetIntercomRequest(flatId))
         }
     }
 
     override suspend fun resetCode(flatId: Int): ResetCodeResponse {
         return safeApiCall {
-            lantaApi.resetCode(ResetCodeRequest(flatId))
+            teledomApi.resetCode(ResetCodeRequest(flatId))
         }
     }
 
     override suspend fun getOffices(): OfficesResponse {
         return safeApiCall {
-            lantaApi.getOffices()
+            teledomApi.getOffices()
         }
     }
 
     override suspend fun recoveryOptions(contract: String): RecoveryOptionsResponse {
         return safeApiCall {
-            lantaApi.recoveryOptions(RecoveryOptionsRequest(contract))
+            teledomApi.recoveryOptions(RecoveryOptionsRequest(contract))
                 .getResponseBody()
         }
     }
@@ -117,7 +117,7 @@ class AddressRepositoryImpl(
         code: String
     ): ConfirmCodeRecoveryResponse {
         return safeApiCall {
-            lantaApi.confirmCodeRecovery(ConfirmCodeRecoveryRequest(contract, code))
+            teledomApi.confirmCodeRecovery(ConfirmCodeRecoveryRequest(contract, code))
                 .getResponseBody()
         }
     }
@@ -127,7 +127,7 @@ class AddressRepositoryImpl(
         contractId: String
     ): SentCodeRecoveryResponse {
         return safeApiCall {
-            lantaApi.sentCodeRecovery(SentCodeRecoveryRequest(contract, contractId))
+            teledomApi.sentCodeRecovery(SentCodeRecoveryRequest(contract, contractId))
                 .getResponseBody()
         }
     }
@@ -136,13 +136,13 @@ class AddressRepositoryImpl(
         url: String
     ): QRResponse {
         return safeApiCall {
-            lantaApi.registerQR(QRRequest(url))
+            teledomApi.registerQR(QRRequest(url))
         }
     }
 
     override suspend fun getRoommate(): RoommateResponse {
         return safeApiCall {
-            lantaApi.getRoommate()
+            teledomApi.getRoommate()
         }
     }
 
@@ -154,26 +154,26 @@ class AddressRepositoryImpl(
         clientId: String?
     ): AccessResponse {
         return safeApiCall {
-            lantaApi.access(AccessRequest(flatId, guestPhone, type, expire, clientId))
+            teledomApi.access(AccessRequest(flatId, guestPhone, type, expire, clientId))
                 .getResponseBody()
         }
     }
 
     override suspend fun resend(flatId: Int, guestPhone: String): ResendResponse {
         return safeApiCall {
-            lantaApi.resend(ResendRequest(flatId, guestPhone)).getResponseBody()
+            teledomApi.resend(ResendRequest(flatId, guestPhone)).getResponseBody()
         }
     }
 
     override suspend fun plogDays(flatId: Int, events: Set<Int>): PlogDaysResponse {
         return safeApiCall {
-            lantaApi.plogDays(PlogDaysRequest(flatId, events.joinToString())).getResponseBody()
+            teledomApi.plogDays(PlogDaysRequest(flatId, events.joinToString())).getResponseBody()
         }
     }
 
     override suspend fun plog(flatId: Int, day: String): PlogResponse {
         return safeApiCall {
-            lantaApi.plog(PlogRequest(flatId, day)).getResponseBody()
+            teledomApi.plog(PlogRequest(flatId, day)).getResponseBody()
         }
     }
 
@@ -184,14 +184,14 @@ class AddressRepositoryImpl(
         notification: String?
     ): AddMyPhoneResponse {
         return safeApiCall {
-            lantaApi.addMyPhone(AddMyPhoneRequest(login, password, comment, notification))
+            teledomApi.addMyPhone(AddMyPhoneRequest(login, password, comment, notification))
                 .getResponseBody()
         }
     }
 
     override suspend fun camMap(): CamMapResponse {
         return safeApiCall {
-            lantaApi.camMap().getResponseBody()
+            teledomApi.camMap().getResponseBody()
         }
     }
 }

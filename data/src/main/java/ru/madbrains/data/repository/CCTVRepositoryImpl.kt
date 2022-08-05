@@ -1,7 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.CCTVRepository
 import ru.madbrains.domain.model.request.CCTVAllRequest
 import ru.madbrains.domain.model.request.CCTVRecDownloadRequest
@@ -19,17 +19,17 @@ import ru.madbrains.domain.model.response.CCTVYoutubeResponse
  * Created on 01/04/2020.
  */
 class CCTVRepositoryImpl(
-    private val lantaApi: LantaApi,
+    private val teledomApi: TeledomApi,
     override val moshi: Moshi
 ) : CCTVRepository, BaseRepository(moshi) {
     override suspend fun getCCTVAll(houseId: Int): CCTVGetResponse? {
         return safeApiCall {
-            lantaApi.getCCTVAll(CCTVAllRequest(houseId)).getResponseBody()
+            teledomApi.getCCTVAll(CCTVAllRequest(houseId)).getResponseBody()
         }
     }
     override suspend fun recDownload(fragmentID: Int): CCTVRecDownloadResponse? {
         return safeApiCall {
-            lantaApi.recDownload(CCTVRecDownloadRequest(fragmentID)).getResponseBody()
+            teledomApi.recDownload(CCTVRecDownloadRequest(fragmentID)).getResponseBody()
         }
     }
 
@@ -39,25 +39,25 @@ class CCTVRepositoryImpl(
         to: String
     ): CCTVRecPrepareResponse? {
         return safeApiCall {
-            lantaApi.recPrepare(CCTVRecPrepareRequest(cameraID, from, to)).getResponseBody()
+            teledomApi.recPrepare(CCTVRecPrepareRequest(cameraID, from, to)).getResponseBody()
         }
     }
 
     override suspend fun loadPeriods(url: String): List<RangeObject>? {
         return safeApiCall {
-            lantaApi.loadPeriods(url).getResponseBody()
+            teledomApi.loadPeriods(url).getResponseBody()
         }
     }
 
     override suspend fun getCCTVOverview(): CCTVCityCameraGetResponse? {
         return safeApiCall {
-            lantaApi.getCCTVOverview().getResponseBody()
+            teledomApi.getCCTVOverview().getResponseBody()
         }
     }
 
     override suspend fun getCCTVYoutube(id: Int?): CCTVYoutubeResponse? {
         return safeApiCall {
-            lantaApi.getCCTVYoutube(CCTVYoutubeRequest(id)).getResponseBody()
+            teledomApi.getCCTVYoutube(CCTVYoutubeRequest(id)).getResponseBody()
         }
     }
 }

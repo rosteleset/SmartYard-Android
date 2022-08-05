@@ -9,8 +9,10 @@ import ru.madbrains.domain.model.response.RegisterPushTokenResponse
 import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
+import ru.madbrains.domain.model.response.ProvidersListResponse
 
 interface AuthRepository {
+    suspend fun providers(): ProvidersListResponse
     suspend fun registerPushToken(token: String): RegisterPushTokenResponse
     suspend fun requestCode(userPhone: String): RequestCodeResponse
     suspend fun confirmCode(userPhone: String, smsCode: String): ConfirmCodeResponse

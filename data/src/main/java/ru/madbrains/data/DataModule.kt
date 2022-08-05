@@ -16,7 +16,7 @@ import ru.madbrains.data.interceptors.SessionInterceptor
 import ru.madbrains.data.local.db.ItemsDatabase
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.data.prefs.SharedPreferenceStorage
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.data.repository.AddressRepositoryImpl
 import ru.madbrains.data.repository.DatabaseRepositoryImpl
 import ru.madbrains.data.repository.SipRepositoryImpl
@@ -45,11 +45,12 @@ import java.util.concurrent.TimeUnit
 
 object DataModule {
 
-    var URL = "https://dm.lanta.me:543"
+    val providersUrl = "https://dm.lanta.me/app_static/settings/prov.json"
+    var URL = "https://dm.lanta.me:543/api"
     private var BASE_URL = "$URL/"
 
-    val sberApiUserName = "lanta-api"
-    val sberApiPassword = "2noL8ThspUTf"
+    val sberApiUserName = ""
+    val sberApiPassword = ""
     val orderNumberToId = hashMapOf<String, String>()
     fun extractOrderId(orderNumber: String): String {
         var r = ""
@@ -114,13 +115,13 @@ object DataModule {
         single { createPreferenceStorage(androidContext()) }
     }
 
-    private fun createApi(client: OkHttpClient, moshi: Moshi): LantaApi {
+    private fun createApi(client: OkHttpClient, moshi: Moshi): TeledomApi {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()
-            .create(LantaApi::class.java)
+            .create(TeledomApi::class.java)
     }
 
     private fun createHttpClient(preferenceStorage: PreferenceStorage): OkHttpClient {

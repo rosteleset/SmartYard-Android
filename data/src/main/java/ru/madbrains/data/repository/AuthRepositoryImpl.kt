@@ -1,7 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.AuthRepository
 import ru.madbrains.domain.model.TF
 import ru.madbrains.domain.model.request.AppVersionRequest
@@ -20,16 +20,23 @@ import ru.madbrains.domain.model.response.RegisterPushTokenResponse
 import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
+import ru.madbrains.domain.model.response.ProvidersListResponse
 
 class AuthRepositoryImpl(
-    private val lantaApi: LantaApi,
+    private val teledomApi: TeledomApi,
     override val moshi: Moshi
 ) : AuthRepository, BaseRepository(moshi) {
+    override suspend fun providers(): ProvidersListResponse {
+        return safeApiCall {
+            teledomApi.providers()
+        }
+    }
+
     override suspend fun registerPushToken(
         token: String
     ): RegisterPushTokenResponse {
         return safeApiCall {
-            lantaApi.registerPushToken(RegisterPushTokenRequest(token)).getResponseBody()
+            teledomApi.registerPushToken(RegisterPushTokenRequest(token)).getResponseBody()
         }
     }
 
@@ -37,7 +44,7 @@ class AuthRepositoryImpl(
         userPhone: String
     ): RequestCodeResponse {
         return safeApiCall {
-            lantaApi.requestCode(RequestCodeRequest(userPhone)).getResponseBody()
+            teledomApi.requestCode(RequestCodeRequest(userPhone)).getResponseBody()
         }
     }
 
@@ -46,7 +53,7 @@ class AuthRepositoryImpl(
         smsCode: String
     ): ConfirmCodeResponse {
         return safeApiCall {
-            lantaApi.confirmCode(ConfirmCodeRequest(userPhone, smsCode))
+            teledomApi.confirmCode(ConfirmCodeRequest(userPhone, smsCode))
         }
     }
 
@@ -64,7 +71,7 @@ class AuthRepositoryImpl(
 //                toResponseBody("application/json".toMediaTypeOrNull())
 //            throw HttpException(Response.error<Any>(422, errorBody))
 
-            lantaApi.sendName(SendNameRequest(name, patronymic)).getResponseBody()
+            teledomApi.sendName(SendNameRequest(name, patronymic)).getResponseBody()
         }
     }
 
@@ -73,24 +80,24 @@ class AuthRepositoryImpl(
         doorId: Int?
     ): OpenDoorResponse {
         return safeApiCall {
-            lantaApi.openDoor(OpenDoorRequest(domophoneId, doorId)).getResponseBody()
+            teledomApi.openDoor(OpenDoorRequest(domophoneId, doorId)).getResponseBody()
         }
     }
 
     override suspend fun getServices(id: Int): GetServicesResponse {
         return safeApiCall {
-            lantaApi.getServices(GetServicesRequest(id)).getResponseBody()
+            teledomApi.getServices(GetServicesRequest(id)).getResponseBody()
         }
     }
 
     override suspend fun appVersion(version: String): AppVersionResponse {
         return safeApiCall {
-            lantaApi.appVersion(AppVersionRequest(version, "android")).getResponseBody()
+            teledomApi.appVersion(AppVersionRequest(version, "android")).getResponseBody()
         }
     }
     override suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse {
         return safeApiCall {
-            lantaApi.userNotification(UserNotificationRequest(money?.value, enable?.value))
+            teledomApi.userNotification(UserNotificationRequest(money?.value, enable?.value))
         }
     }
 }

@@ -1,7 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
-import ru.madbrains.data.remote.LantaApi
+import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.GeoRepository
 import ru.madbrains.domain.model.request.GetAddressRequest
 import ru.madbrains.domain.model.request.GetCoderRequest
@@ -20,42 +20,42 @@ import ru.madbrains.domain.model.response.GetStreetsResponse
  * Created on 11/03/2020.
  */
 class GeoRepositoryImpl(
-    private val lantaApi: LantaApi,
+    private val teledomApi: TeledomApi,
     override val moshi: Moshi
 ) : GeoRepository, BaseRepository(moshi) {
     override suspend fun getServices(id: Int): GetServicesResponse {
         return safeApiCall {
-            lantaApi.getServices(GetServicesRequest(id)).getResponseBody()
+            teledomApi.getServices(GetServicesRequest(id)).getResponseBody()
         }
     }
 
     override suspend fun getAllLocations(): GetAllLocationsResponse {
         return safeApiCall {
-            lantaApi.getAllLocations()
+            teledomApi.getAllLocations()
         }
     }
 
     override suspend fun getStreets(locationId: Int): GetStreetsResponse {
         return safeApiCall {
-            lantaApi.getStreets(GetStreetsRequest(locationId))
+            teledomApi.getStreets(GetStreetsRequest(locationId))
         }
     }
 
     override suspend fun getHouses(streetId: Int): GetHousesResponse {
         return safeApiCall {
-            lantaApi.getHouses(GetHousesRequest(streetId))
+            teledomApi.getHouses(GetHousesRequest(streetId))
         }
     }
 
     override suspend fun getAddress(streetId: Int): GetAddressResponse {
         return safeApiCall {
-            lantaApi.getAddress(GetAddressRequest(streetId))
+            teledomApi.getAddress(GetAddressRequest(streetId))
         }
     }
 
     override suspend fun getCoder(address: String): GetCoderResponse {
         return safeApiCall {
-            lantaApi.getCoder(GetCoderRequest(address))
+            teledomApi.getCoder(GetCoderRequest(address))
         }
     }
 }

@@ -109,13 +109,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val json = JSONObject(data as Map<*, *>).toString()
                         Timber.tag(TAG).d("debug_dmm incoming call json: $json")
                         moshi.adapter(FcmCallData::class.java).fromJson(json)?.let { msg ->
-
-                            msg.baseUrl?.let { baseUrl ->
-                                if (baseUrl.isNotEmpty()) {
-                                    preferenceStorage.baseUrl = baseUrl
-                                    DataModule.URL = baseUrl
-                                }
-                            }
                             waitForLinServiceAndRun(msg) {
                                 it.listenAndGetNotifications(msg)
                             }

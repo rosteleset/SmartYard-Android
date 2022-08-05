@@ -36,7 +36,7 @@ class RegistrationViewModel(
                     )
                 action.messageType = messageType
                 fragment.findNavController().navigate(action)
-                activity?.finish()
+                activity.finish()
             }
         }
     }
