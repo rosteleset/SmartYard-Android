@@ -108,155 +108,155 @@ interface TeledomApi {
     @POST("https://dm.lanta.me/app_static/settings/prov.json")
     suspend fun providers(): ProvidersListResponse
 
-    @POST("/user/registerPushToken")
+    @POST("user/registerPushToken")
     suspend fun registerPushToken(
         @Body request: RegisterPushTokenRequest
     ): Response<RegisterPushTokenResponse>
 
-    @POST("/user/requestCode")
+    @POST("user/requestCode")
     suspend fun requestCode(
         @Body request: RequestCodeRequest
     ): Response<RequestCodeResponse>
 
-    @POST("/user/confirmCode")
+    @POST("user/confirmCode")
     suspend fun confirmCode(
         @Body request: ConfirmCodeRequest
     ): ConfirmCodeResponse
 
-    @POST("/user/sendName")
+    @POST("user/sendName")
     suspend fun sendName(
         @Body request: SendNameRequest
     ): Response<SendNameResponse>
 
-    @POST("/geo/getServices")
+    @POST("geo/getServices")
     suspend fun getServices(
         @Body request: GetServicesRequest
     ): Response<GetServicesResponse>
 
-    @POST("/geo/getAllLocations")
+    @POST("geo/getAllLocations")
     suspend fun getAllLocations(): GetAllLocationsResponse
 
-    @POST("/geo/getStreets")
+    @POST("geo/getStreets")
     suspend fun getStreets(
         @Body request: GetStreetsRequest
     ): GetStreetsResponse
 
-    @POST("/geo/getHouses")
+    @POST("geo/getHouses")
     suspend fun getHouses(
         @Body request: GetHousesRequest
     ): GetHousesResponse
 
-    @POST("/geo/address")
+    @POST("geo/address")
     suspend fun getAddress(@Body requst: GetAddressRequest): GetAddressResponse
 
-    @POST("/geo/coder")
+    @POST("geo/coder")
     suspend fun getCoder(@Body requst: GetCoderRequest): GetCoderResponse
 
-    @POST("/address/openDoor")
+    @POST("address/openDoor")
     suspend fun openDoor(
         @Body request: OpenDoorRequest
     ): Response<OpenDoorResponse>
 
-    @POST("/address/getAddressList")
+    @POST("address/getAddressList")
     suspend fun getAddressList(): Response<GetAddressListResponse>
 
-    @POST("/address/getSettingsList")
+    @POST("address/getSettingsList")
     suspend fun getSettingsList(): Response<GetSettingsListResponse>
 
-    @POST("/address/intercom")
+    @POST("address/intercom")
     suspend fun putIntercom(
         @Body requestPut: PutIntercomRequest
     ): IntercomResponse
 
-    @POST("/address/intercom")
+    @POST("address/intercom")
     suspend fun getIntercom(
         @Body requestPut: GetIntercomRequest
     ): IntercomResponse
 
-    @POST("/address/resetCode")
+    @POST("address/resetCode")
     suspend fun resetCode(
         @Body request: ResetCodeRequest
     ): ResetCodeResponse
 
-    @POST("/address/offices")
+    @POST("address/offices")
     suspend fun getOffices(): OfficesResponse
 
-    @POST("/user/addMyPhone")
+    @POST("user/addMyPhone")
     suspend fun addMyPhone(@Body request: AddMyPhoneRequest): Response<AddMyPhoneResponse>
 
-    @POST("/user/restore")
+    @POST("user/restore")
     suspend fun recoveryOptions(@Body request: RecoveryOptionsRequest): Response<RecoveryOptionsResponse>
 
-    @POST("/user/restore")
+    @POST("user/restore")
     suspend fun sentCodeRecovery(@Body request: SentCodeRecoveryRequest): Response<SentCodeRecoveryResponse>
 
-    @POST("/user/restore")
+    @POST("user/restore")
     suspend fun confirmCodeRecovery(@Body request: ConfirmCodeRecoveryRequest): Response<ConfirmCodeRecoveryResponse>
 
-    @POST("/address/registerQR")
+    @POST("address/registerQR")
     suspend fun registerQR(@Body request: QRRequest): QRResponse
 
-    @POST("/address/access")
+    @POST("address/access")
     suspend fun access(@Body request: AccessRequest): Response<AccessResponse>
 
-    @POST("/address/getSettingsList")
+    @POST("address/getSettingsList")
     suspend fun getRoommate(): RoommateResponse
 
-    @POST("/address/resend")
+    @POST("address/resend")
     suspend fun resend(@Body request: ResendRequest): Response<ResendResponse>
 
-    @POST("/address/plogDays")
+    @POST("address/plogDays")
     suspend fun plogDays(@Body request: PlogDaysRequest): Response<PlogDaysResponse>
 
-    @POST("/address/plog")
+    @POST("address/plog")
     suspend fun plog(@Body request: PlogRequest): Response<PlogResponse>
 
-    @POST("/inbox/inbox")
+    @POST("inbox/inbox")
     suspend fun inbox(): InboxResponse
 
-    @POST("/inbox/unreaded")
+    @POST("inbox/unreaded")
     suspend fun unread(): UnreadedResponse
 
-    @POST("/inbox/delivered")
+    @POST("inbox/delivered")
     suspend fun delivered(@Body request: DeliveredRequest): Response<DeliveredResponse>
 
-    @POST("/issues/create")
+    @POST("issues/create")
     suspend fun createIssues(@Body request: CreateIssuesRequest): CreateIssuesResponse
 
-    @POST("/issues/listConnect")
+    @POST("issues/listConnect")
     suspend fun listConnectIssue(): Response<ListConnectIssueResponse>
 
-    @POST("/issues/action")
+    @POST("issues/action")
     suspend fun actionIssue(@Body request: ActionIssueRequest): Response<ActionIssueResponse>
 
-    @POST("/issues/comment")
+    @POST("issues/comment")
     suspend fun comment(@Body request: CommentRequest): Response<CommentResponse>
 
-    @POST("/issues/action")
+    @POST("issues/action")
     suspend fun deliveryChange(@Body request: DeliveryChangeRequest): Response<DeliveryChangeResponse>
 
-    @POST("/cctv/all")
+    @POST("cctv/all")
     suspend fun getCCTVAll(@Body request: CCTVAllRequest): Response<CCTVGetResponse>
 
-    @POST("/cctv/recPrepare")
+    @POST("cctv/recPrepare")
     suspend fun recPrepare(@Body request: CCTVRecPrepareRequest): Response<CCTVRecPrepareResponse>
 
-    @POST("/cctv/recDownload")
+    @POST("cctv/recDownload")
     suspend fun recDownload(@Body request: CCTVRecDownloadRequest): Response<CCTVRecDownloadResponse>
 
-    @POST("/cctv/overview")
+    @POST("cctv/overview")
     suspend fun getCCTVOverview(): Response<CCTVCityCameraGetResponse>
 
-    @POST("/cctv/youtube")
+    @POST("cctv/youtube")
     suspend fun getCCTVYoutube(@Body request: CCTVYoutubeRequest): Response<CCTVYoutubeResponse>
 
-    @POST("/user/getPaymentsList")
+    @POST("user/getPaymentsList")
     suspend fun getPaymentsList(): Response<PaymentsListResponse>
 
-    @POST("/pay/prepare")
+    @POST("pay/prepare")
     suspend fun payPrepare(@Body request: PayPrepareRequest): PayPrepareResponse
 
-    @POST("/pay/process")
+    @POST("pay/process")
     suspend fun payProcess(@Body request: PayProcessRequest): PayProcessResponse
 
     @POST("https://securepayments.sberbank.ru/payment/google/payment.do")
@@ -282,12 +282,12 @@ interface TeledomApi {
         @Field("orderNumber") orderNumber: String
     ): Response<SberOrderStatusDoResponse>
 
-    @POST("/user/appVersion")
+    @POST("user/appVersion")
     suspend fun appVersion(
         @Body request: AppVersionRequest
     ): Response<AppVersionResponse>
 
-    @POST("/user/notification")
+    @POST("user/notification")
     suspend fun userNotification(
         @Body request: UserNotificationRequest
     ): UserNotificationResponse
@@ -295,24 +295,24 @@ interface TeledomApi {
     @GET
     suspend fun loadPeriods(@Url url: String): Response<List<RangeObject>>
 
-    @POST("/sip/helpMe")
+    @POST("sip/helpMe")
     suspend fun sipHelpMe(): Response<SipHelpMeResponse>
 
-    @POST("/frs/disLike")
+    @POST("frs/disLike")
     suspend fun disLike(@Body request: DisLikeRequest): Response<DisLikeResponse>
 
-    @POST("/frs/like")
+    @POST("frs/like")
     suspend fun like(@Body request: LikeRequest): Response<LikeResponse>
 
-    @POST("/frs/listFaces")
+    @POST("frs/listFaces")
     suspend fun listFaces(@Body request: ListFacesRequest): Response<ListFacesResponse>
 
-    @POST("/cctv/camMap")
+    @POST("cctv/camMap")
     suspend fun camMap(): Response<CamMapResponse>
 
-    @POST("/ext/list")
+    @POST("ext/list")
     suspend fun extList(): Response<ExtListResponse>
 
-    @POST("/ext/ext")
+    @POST("ext/ext")
     suspend fun ext(@Body request: ExtRequest): Response<ExtResponse>
 }

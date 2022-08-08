@@ -68,7 +68,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.google.gms:google-services:4.3.10'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.0'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-rc02"
+        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-rc02'
         classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
     }
 }

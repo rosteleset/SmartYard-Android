@@ -23,7 +23,7 @@ object AppFeatures {
         //меню
         Features.MENU_ADDRESS, Features.MENU_NOTIFICATIONS, Features.MENU_ADDITIONAL,
 
-
+        Features.CCTV
     )
 
     fun hasFeature(feature: Features): Boolean {
