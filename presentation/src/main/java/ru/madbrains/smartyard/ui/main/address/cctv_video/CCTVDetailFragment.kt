@@ -25,6 +25,7 @@ class CCTVDetailFragment : Fragment() {
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 

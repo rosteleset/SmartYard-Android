@@ -93,6 +93,7 @@ class EventLogDetailFragment : Fragment() {
                 }
 
                 //этот метод нужен для установки нужной высоты вьюшки с видео
+                @Deprecated("Deprecated in Java")
                 override fun onVideoSizeChanged(
                     width: Int,
                     height: Int,

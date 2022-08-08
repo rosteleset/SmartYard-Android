@@ -250,6 +250,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         super.onDestroyView()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         requireNotNull(arguments).let {
@@ -704,6 +705,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         
         player.playWhenReady = false
         player.addListener(object : Player.EventListener {
+            @Deprecated("Deprecated in Java")
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int

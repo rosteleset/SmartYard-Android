@@ -138,6 +138,7 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
   /**
    * Proxy for listener
    */
+  @Deprecated("Deprecated in Java")
   override fun setOnNavigationItemSelectedListener(listener: OnNavigationItemSelectedListener?) {
     super.setOnNavigationItemSelectedListener {
       onNavigationItemSelected(it)

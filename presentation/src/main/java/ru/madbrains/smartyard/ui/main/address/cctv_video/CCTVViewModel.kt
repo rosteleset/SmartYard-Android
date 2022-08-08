@@ -43,7 +43,7 @@ class CCTVViewModel(
     private val mPreferenceStorage: PreferenceStorage,
     private val cctvInteractor: CCTVInteractor
 ) : GenericViewModel() {
-    val cctvModel = state.getLiveData<VideoCameraModelP>(cctvModel_Key, null)
+    val cctvModel = state.getLiveData<VideoCameraModelP?>(cctvModel_Key, null)
     val cameraList = state.getLiveData<List<CCTVData>?>(cameraList_Key, null)
     val chosenIndex = state.getLiveData<Int?>(chosenIndex_Key, null)
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)

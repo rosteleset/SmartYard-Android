@@ -28,6 +28,7 @@ class RestoreAccessFragment : Fragment() {
     private var contactName: String = ""
     private var contractNumber = ""
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         activity?.window?.setSoftInputMode(

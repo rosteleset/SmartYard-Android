@@ -61,6 +61,7 @@ class NotificationFragment : Fragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     @SuppressLint("SetJavaScriptEnabled")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

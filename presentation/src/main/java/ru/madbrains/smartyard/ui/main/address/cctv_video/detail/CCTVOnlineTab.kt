@@ -68,6 +68,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         super.onDestroyView()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         Timber.d("debug_dmm __onActivityCreated")
@@ -194,6 +195,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
 
         player.addListener(object : Player.EventListener {
+            @Deprecated("Deprecated in Java")
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int
@@ -362,6 +364,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         (binding.mVideoView.parent as ZoomLayout).resetZoom()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
 

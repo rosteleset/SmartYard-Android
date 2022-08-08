@@ -12,8 +12,8 @@ import ru.madbrains.domain.model.StateButton
 @Dao
 abstract class AddressDao {
 
-    @Query("SELECT * FROM address_door WHERE id = :id")
-    abstract suspend fun getById(id: Long): AddressDoorEntity
+    /*@Query("SELECT * FROM address_door WHERE id = :id")
+    abstract suspend fun getById(id: Long): AddressDoorEntity*/
 
     @Query("SELECT * FROM address_door")
     abstract fun getAll(): List<AddressDoorEntity>
@@ -27,11 +27,11 @@ abstract class AddressDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(addressDoor: AddressDoorEntity): Long
 
-    @Delete
-    abstract suspend fun delete(addressDoor: AddressDoorEntity): Int
+    /*@Delete
+    abstract suspend fun delete(addressDoor: AddressDoorEntity): Int*/
 
-    @Update
-    abstract suspend fun update(addressDoor: AddressDoorEntity)
+    /*@Update
+    abstract suspend fun update(addressDoor: AddressDoorEntity)*/
 
     @Query("UPDATE address_door SET state = :state WHERE id == :id")
     abstract fun updateItemState(state: StateButton, id: Int)

@@ -282,6 +282,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
 
         player.addListener(object : Player.EventListener {
+            @Deprecated("Deprecated in Java")
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int

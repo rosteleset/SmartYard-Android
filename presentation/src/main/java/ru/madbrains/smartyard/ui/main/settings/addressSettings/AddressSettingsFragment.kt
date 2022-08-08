@@ -337,6 +337,7 @@ class AddressSettingsFragment : Fragment() {
         binding.switchUseSpeaker.isChecked = (viewModel.preferenceStorage.addressOptions.getOption(flatId).isSpeaker == true)
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         SoundChooser.getDataFromIntent(context, requestCode, resultCode, data) { tone ->
