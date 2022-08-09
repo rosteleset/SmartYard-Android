@@ -80,7 +80,7 @@ class NumberRegFragment : Fragment() {
             r
         }
 
-        binding.tel3?.addTextChangedListener {
+        binding.tel3.addTextChangedListener {
             checkToSmsReg()
         }
 

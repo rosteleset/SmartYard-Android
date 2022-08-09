@@ -1,13 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.reg.providers.ProvidersFragment">
 
-    <TextView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Hello" />
+        android:layout_height="match_parent">
 
+        <ImageView
+            android:id="@+id/ivBackgroundProviders"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_background_reg_number"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineProviders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.15" />
+
+        <ImageView
+            android:id="@+id/ivMainProviders"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/background_radius_upper"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guidelineProviders" />
+
+        <TextView
+            android:id="@+id/tvChooseProvider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:paddingEnd="14dp"
+            android:text="@string/providers_title"
+            android:textColor="@color/black_200"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/ivMainProviders" />
+
+        <TextView
+            android:id="@+id/tvCaptionProviders"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/providers_caption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvChooseProvider" />
+
+        <EditText
+            android:id="@+id/etFilterProviders"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@drawable/background_edit_text_radius"
+            android:ems="10"
+            android:hint="@string/providers_filter_hint"
+            android:inputType="textPersonName"
+            android:padding="16dp"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvCaptionProviders" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvProviders"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:overScrollMode="never"
+            app:layout_constraintBottom_toTopOf="@id/barrierProviders"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etFilterProviders"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_provider" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierProviders"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="btnChooseProvider"
+            tools:layout_editor_absoluteX="800dp"
+            tools:layout_editor_absoluteY="1175dp" />
+
+        <Button
+            android:id="@+id/btnChooseProvider"
+            style="@style/buttonBlueNoFlooded"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:layout_marginBottom="42dp"
+            android:enabled="false"
+            android:paddingTop="18dp"
+            android:paddingBottom="18dp"
+            android:text="@string/providers_choose"
+            app:layout_constraintBottom_toBottomOf="@+id/ivMainProviders"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rvProviders" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

@@ -105,7 +105,7 @@ import ru.madbrains.domain.model.response.ExtResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
 
 interface TeledomApi {
-    @POST("https://dm.lanta.me/app_static/settings/prov.json")
+    @GET("https://dm.lanta.me/app_static/settings/prov.json")
     suspend fun providers(): ProvidersListResponse
 
     @POST("user/registerPushToken")

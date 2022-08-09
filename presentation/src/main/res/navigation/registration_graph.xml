@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/numberRegFragment">
+    app:startDestination="@id/providersFragment">
 
     <fragment
         android:id="@+id/numberRegFragment"
         android:name="ru.madbrains.smartyard.ui.reg.tel.NumberRegFragment"
         android:label="fragment_number_reg"
-        tools:layout="@layout/fragment_number_reg" >
+        tools:layout="@layout/fragment_number_reg">
         <action
             android:id="@+id/action_numberRegFragment_to_smsRegFragment"
             app:destination="@id/smsRegFragment" />
@@ -23,7 +23,7 @@
     <fragment
         android:id="@+id/smsRegFragment"
         android:name="ru.madbrains.smartyard.ui.reg.sms.SmsRegFragment"
-        android:label="SmsRegFragment" >
+        android:label="SmsRegFragment">
         <action
             android:id="@+id/action_smsRegFragment_to_appealFragment"
             app:destination="@id/appealFragment" />
@@ -36,12 +36,13 @@
     <activity
         android:id="@+id/mainActivity"
         android:name="ru.madbrains.smartyard.ui.main.MainActivity"
-        android:label="MainActivity" >
+        android:label="MainActivity">
         <argument
             android:name="messageType"
-            app:argType="ru.madbrains.smartyard.FirebaseMessagingService$TypeMessage"
-            android:defaultValue="NO_DEFINE" />
-        <argument android:name="messageId"
+            android:defaultValue="NO_DEFINE"
+            app:argType="ru.madbrains.smartyard.FirebaseMessagingService$TypeMessage" />
+        <argument
+            android:name="messageId"
             app:argType="string"
             app:nullable="true" />
     </activity>
@@ -49,7 +50,7 @@
         android:id="@+id/appealFragment"
         android:name="ru.madbrains.smartyard.ui.reg.appeal.AppealFragment"
         android:label="fragment_appeal"
-        tools:layout="@layout/fragment_appeal" >
+        tools:layout="@layout/fragment_appeal">
         <action
             android:id="@+id/action_appealFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
@@ -57,5 +58,17 @@
     <action
         android:id="@+id/action_global_numberRegFragment"
         app:destination="@id/numberRegFragment" />
+    <fragment
+        android:id="@+id/providersFragment"
+        android:name="ru.madbrains.smartyard.ui.reg.providers.ProvidersFragment"
+        android:label="fragment_providers"
+        tools:layout="@layout/fragment_providers">
+        <action
+            android:id="@+id/action_providersFragment_to_numberRegFragment"
+            app:destination="@id/numberRegFragment" />
+        <action
+            android:id="@+id/action_providersFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+    </fragment>
 
 </navigation>

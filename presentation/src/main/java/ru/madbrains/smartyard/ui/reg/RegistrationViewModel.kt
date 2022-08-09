@@ -25,18 +25,20 @@ class RegistrationViewModel(
         messageType: TypeMessage,
         activity: Activity
     ) {
-        if (mPreferenceStorage.authToken != null) {
-            if (mPreferenceStorage.sentName == null) {
-                NavHostFragment.findNavController(fragment)
-                    .navigate(R.id.action_numberRegFragment_to_appealFragment)
-            } else {
-                val action =
-                    NumberRegFragmentDirections.actionNumberRegFragmentToMainActivity(
-                        messageId
-                    )
-                action.messageType = messageType
-                fragment.findNavController().navigate(action)
-                activity.finish()
+        if (mPreferenceStorage.id != null) {
+            if (mPreferenceStorage.authToken != null) {
+                if (mPreferenceStorage.sentName == null) {
+                    NavHostFragment.findNavController(fragment)
+                        .navigate(R.id.action_numberRegFragment_to_appealFragment)
+                } else {
+                    val action =
+                        NumberRegFragmentDirections.actionNumberRegFragmentToMainActivity(
+                            messageId
+                        )
+                    action.messageType = messageType
+                    fragment.findNavController().navigate(action)
+                    activity.finish()
+                }
             }
         }
     }
