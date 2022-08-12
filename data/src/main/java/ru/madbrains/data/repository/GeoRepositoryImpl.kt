@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.GeoRepository
 import ru.madbrains.domain.model.request.GetAddressRequest
@@ -25,37 +26,47 @@ class GeoRepositoryImpl(
 ) : GeoRepository, BaseRepository(moshi) {
     override suspend fun getServices(id: Int): GetServicesResponse {
         return safeApiCall {
-            teledomApi.getServices(GetServicesRequest(id)).getResponseBody()
+            teledomApi.getServices(
+                DataModule.BASE_URL + "geo/getServices",
+                GetServicesRequest(id)).getResponseBody()
         }
     }
 
     override suspend fun getAllLocations(): GetAllLocationsResponse {
         return safeApiCall {
-            teledomApi.getAllLocations()
+            teledomApi.getAllLocations(DataModule.BASE_URL + "geo/getAllLocations")
         }
     }
 
     override suspend fun getStreets(locationId: Int): GetStreetsResponse {
         return safeApiCall {
-            teledomApi.getStreets(GetStreetsRequest(locationId))
+            teledomApi.getStreets(
+                DataModule.BASE_URL + "geo/getStreets",
+                GetStreetsRequest(locationId))
         }
     }
 
     override suspend fun getHouses(streetId: Int): GetHousesResponse {
         return safeApiCall {
-            teledomApi.getHouses(GetHousesRequest(streetId))
+            teledomApi.getHouses(
+                DataModule.BASE_URL + "geo/getHouses",
+                GetHousesRequest(streetId))
         }
     }
 
     override suspend fun getAddress(streetId: Int): GetAddressResponse {
         return safeApiCall {
-            teledomApi.getAddress(GetAddressRequest(streetId))
+            teledomApi.getAddress(
+                DataModule.BASE_URL + "geo/address",
+                GetAddressRequest(streetId))
         }
     }
 
     override suspend fun getCoder(address: String): GetCoderResponse {
         return safeApiCall {
-            teledomApi.getCoder(GetCoderRequest(address))
+            teledomApi.getCoder(
+                DataModule.BASE_URL + "geo/coder",
+                GetCoderRequest(address))
         }
     }
 }

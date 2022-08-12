@@ -41,13 +41,14 @@ import ru.madbrains.domain.interfaces.FRSRepository
 import ru.madbrains.domain.interfaces.ExtRepository
 
 import timber.log.Timber
+import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
 
 object DataModule {
-
-    val providersUrl = "https://dm.lanta.me/app_static/settings/prov.json"
-    var URL = "https://dm.lanta.me:543/api"
-    private var BASE_URL = "$URL/"
+    var BASE_URL = "https://localhost"
 
     val sberApiUserName = ""
     val sberApiPassword = ""
@@ -125,6 +126,18 @@ object DataModule {
     }
 
     private fun createHttpClient(preferenceStorage: PreferenceStorage): OkHttpClient {
+        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
+            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+            }
+
+            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
+            }
+
+            override fun getAcceptedIssuers() = arrayOf<X509Certificate>()
+        })
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+        val sslSocketFactory = sslContext.socketFactory
         val builder = OkHttpClient.Builder()
         with(builder) {
             connectTimeout(30, TimeUnit.SECONDS)
@@ -133,6 +146,7 @@ object DataModule {
             addInterceptor(CommonInterceptor())
             addInterceptor(SessionInterceptor(preferenceStorage))
             addNetworkInterceptor(loggingInterceptor())
+            sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager).hostnameVerifier{_, _ -> true}
         }
         return builder.build()
     }

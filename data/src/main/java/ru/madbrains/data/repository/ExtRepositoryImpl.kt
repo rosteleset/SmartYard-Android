@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.ExtRepository
 import ru.madbrains.domain.model.response.ExtListResponse
@@ -13,13 +14,15 @@ class ExtRepositoryImpl(
 ) : ExtRepository, BaseRepository(moshi) {
     override suspend fun list(): ExtListResponse {
         return safeApiCall {
-            teledomApi.extList().getResponseBody()
+            teledomApi.extList(DataModule.BASE_URL + "ext/list").getResponseBody()
         }
     }
 
     override suspend fun ext(request: ExtRequest): ExtResponse {
         return safeApiCall {
-            teledomApi.ext(request).getResponseBody()
+            teledomApi.ext(
+                DataModule.BASE_URL + "ext/ext",
+                request).getResponseBody()
         }
     }
 }

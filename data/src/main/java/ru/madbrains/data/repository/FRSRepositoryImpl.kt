@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.FRSRepository
 import ru.madbrains.domain.model.request.DisLikeRequest
@@ -16,19 +17,25 @@ class FRSRepositoryImpl(
 ) : FRSRepository, BaseRepository(moshi) {
     override suspend fun disLike(event: String?, flatId: Int?, faceId: Int?): DisLikeResponse {
         return safeApiCall {
-            teledomApi.disLike(DisLikeRequest(event, flatId, faceId)).getResponseBody()
+            teledomApi.disLike(
+                DataModule.BASE_URL + "frs/disLike",
+                DisLikeRequest(event, flatId, faceId)).getResponseBody()
         }
     }
 
     override suspend fun like(event: String, comment: String): LikeResponse {
         return safeApiCall {
-            teledomApi.like(LikeRequest(event, comment)).getResponseBody()
+            teledomApi.like(
+                DataModule.BASE_URL + "frs/like",
+                LikeRequest(event, comment)).getResponseBody()
         }
     }
 
     override suspend fun listFaces(flatId: Int): ListFacesResponse {
         return safeApiCall {
-            teledomApi.listFaces(ListFacesRequest(flatId)).getResponseBody()
+            teledomApi.listFaces(
+                DataModule.BASE_URL + "frs/listFaces",
+                ListFacesRequest(flatId)).getResponseBody()
         }
     }
 }

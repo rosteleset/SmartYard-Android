@@ -269,7 +269,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 }
 
 class SipConfig(
-    var server: String = DataModule.URL,
+    var server: String = DataModule.BASE_URL,
     var port: Int = 54674,
     var username: String = "1002",
     var password: String = "ieNg8oof",

@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.SipRepository
 import ru.madbrains.domain.model.response.SipHelpMeResponse
@@ -11,7 +12,7 @@ class SipRepositoryImpl(
 ) : SipRepository, BaseRepository(moshi) {
     override suspend fun helpMe(): SipHelpMeResponse? {
         return safeApiCall {
-            teledomApi.sipHelpMe().getResponseBody()
+            teledomApi.sipHelpMe(DataModule.BASE_URL + "sip/helpMe").getResponseBody()
         }
     }
 }

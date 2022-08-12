@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.AddressRepository
 import ru.madbrains.domain.model.TF
@@ -45,13 +46,13 @@ class AddressRepositoryImpl(
 ) : AddressRepository, BaseRepository(moshi) {
     override suspend fun getAddressList(): GetAddressListResponse {
         return safeApiCall {
-            teledomApi.getAddressList().getResponseBody()
+            teledomApi.getAddressList(DataModule.BASE_URL + "address/getAddressList").getResponseBody()
         }
     }
 
     override suspend fun getSettingsList(): GetSettingsListResponse {
         return safeApiCall {
-            teledomApi.getSettingsList().getResponseBody()
+            teledomApi.getSettingsList(DataModule.BASE_URL + "address/getSettingsList").getResponseBody()
         }
     }
 
@@ -69,6 +70,7 @@ class AddressRepositoryImpl(
     ): IntercomResponse {
         return safeApiCall {
             teledomApi.putIntercom(
+                DataModule.BASE_URL + "address/intercom",
                 PutIntercomRequest(
                     flatId,
                     Settings(
@@ -89,25 +91,31 @@ class AddressRepositoryImpl(
 
     override suspend fun getIntercom(flatId: Int): IntercomResponse {
         return safeApiCall {
-            teledomApi.getIntercom(GetIntercomRequest(flatId))
+            teledomApi.getIntercom(
+                DataModule.BASE_URL + "address/intercom",
+                GetIntercomRequest(flatId))
         }
     }
 
     override suspend fun resetCode(flatId: Int): ResetCodeResponse {
         return safeApiCall {
-            teledomApi.resetCode(ResetCodeRequest(flatId))
+            teledomApi.resetCode(
+                DataModule.BASE_URL + "address/resetCode",
+                ResetCodeRequest(flatId))
         }
     }
 
     override suspend fun getOffices(): OfficesResponse {
         return safeApiCall {
-            teledomApi.getOffices()
+            teledomApi.getOffices(DataModule.BASE_URL + "address/offices")
         }
     }
 
     override suspend fun recoveryOptions(contract: String): RecoveryOptionsResponse {
         return safeApiCall {
-            teledomApi.recoveryOptions(RecoveryOptionsRequest(contract))
+            teledomApi.recoveryOptions(
+                DataModule.BASE_URL + "user/restore",
+                RecoveryOptionsRequest(contract))
                 .getResponseBody()
         }
     }
@@ -117,7 +125,9 @@ class AddressRepositoryImpl(
         code: String
     ): ConfirmCodeRecoveryResponse {
         return safeApiCall {
-            teledomApi.confirmCodeRecovery(ConfirmCodeRecoveryRequest(contract, code))
+            teledomApi.confirmCodeRecovery(
+                DataModule.BASE_URL + "user/restore",
+                ConfirmCodeRecoveryRequest(contract, code))
                 .getResponseBody()
         }
     }
@@ -127,7 +137,9 @@ class AddressRepositoryImpl(
         contractId: String
     ): SentCodeRecoveryResponse {
         return safeApiCall {
-            teledomApi.sentCodeRecovery(SentCodeRecoveryRequest(contract, contractId))
+            teledomApi.sentCodeRecovery(
+                DataModule.BASE_URL + "user/restore",
+                SentCodeRecoveryRequest(contract, contractId))
                 .getResponseBody()
         }
     }
@@ -136,13 +148,15 @@ class AddressRepositoryImpl(
         url: String
     ): QRResponse {
         return safeApiCall {
-            teledomApi.registerQR(QRRequest(url))
+            teledomApi.registerQR(
+                DataModule.BASE_URL + "address/registerQR",
+                QRRequest(url))
         }
     }
 
     override suspend fun getRoommate(): RoommateResponse {
         return safeApiCall {
-            teledomApi.getRoommate()
+            teledomApi.getRoommate(DataModule.BASE_URL + "address/getSettingsList")
         }
     }
 
@@ -154,26 +168,34 @@ class AddressRepositoryImpl(
         clientId: String?
     ): AccessResponse {
         return safeApiCall {
-            teledomApi.access(AccessRequest(flatId, guestPhone, type, expire, clientId))
+            teledomApi.access(
+                DataModule.BASE_URL + "address/access",
+                AccessRequest(flatId, guestPhone, type, expire, clientId))
                 .getResponseBody()
         }
     }
 
     override suspend fun resend(flatId: Int, guestPhone: String): ResendResponse {
         return safeApiCall {
-            teledomApi.resend(ResendRequest(flatId, guestPhone)).getResponseBody()
+            teledomApi.resend(
+                DataModule.BASE_URL + "address/resend",
+                ResendRequest(flatId, guestPhone)).getResponseBody()
         }
     }
 
     override suspend fun plogDays(flatId: Int, events: Set<Int>): PlogDaysResponse {
         return safeApiCall {
-            teledomApi.plogDays(PlogDaysRequest(flatId, events.joinToString())).getResponseBody()
+            teledomApi.plogDays(
+                DataModule.BASE_URL + "address/plogDays",
+                PlogDaysRequest(flatId, events.joinToString())).getResponseBody()
         }
     }
 
     override suspend fun plog(flatId: Int, day: String): PlogResponse {
         return safeApiCall {
-            teledomApi.plog(PlogRequest(flatId, day)).getResponseBody()
+            teledomApi.plog(
+                DataModule.BASE_URL + "address/plog",
+                PlogRequest(flatId, day)).getResponseBody()
         }
     }
 
@@ -184,14 +206,16 @@ class AddressRepositoryImpl(
         notification: String?
     ): AddMyPhoneResponse {
         return safeApiCall {
-            teledomApi.addMyPhone(AddMyPhoneRequest(login, password, comment, notification))
+            teledomApi.addMyPhone(
+                DataModule.BASE_URL + "user/addMyPhone",
+                AddMyPhoneRequest(login, password, comment, notification))
                 .getResponseBody()
         }
     }
 
     override suspend fun camMap(): CamMapResponse {
         return safeApiCall {
-            teledomApi.camMap().getResponseBody()
+            teledomApi.camMap(DataModule.BASE_URL + "cctv/camMap").getResponseBody()
         }
     }
 }

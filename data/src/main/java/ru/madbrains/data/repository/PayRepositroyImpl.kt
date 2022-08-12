@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.PayRepository
 import ru.madbrains.domain.model.request.PayPrepareRequest
@@ -23,19 +24,23 @@ class PayRepositroyImpl(
 ) : PayRepository, BaseRepository(moshi) {
     override suspend fun getPaymentsList(): PaymentsListResponse {
         return safeApiCall {
-            teledomApi.getPaymentsList().getResponseBody()
+            teledomApi.getPaymentsList(DataModule.BASE_URL + "user/getPaymentsList").getResponseBody()
         }
     }
 
     override suspend fun payPrepare(clientId: String, amount: String): PayPrepareResponse {
         return safeApiCall {
-            teledomApi.payPrepare(PayPrepareRequest(clientId, amount))
+            teledomApi.payPrepare(
+                DataModule.BASE_URL + "pay/prepare",
+                PayPrepareRequest(clientId, amount))
         }
     }
 
     override suspend fun payProcess(paymentId: String, sbId: String): PayProcessResponse {
         return safeApiCall {
-            teledomApi.payProcess(PayProcessRequest(paymentId, sbId))
+            teledomApi.payProcess(
+                DataModule.BASE_URL + "pay/process",
+                PayProcessRequest(paymentId, sbId))
         }
     }
 

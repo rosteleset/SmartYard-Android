@@ -1,6 +1,8 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import retrofit2.http.Url
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.AuthRepository
 import ru.madbrains.domain.model.TF
@@ -21,6 +23,7 @@ import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
+import timber.log.Timber
 
 class AuthRepositoryImpl(
     private val teledomApi: TeledomApi,
@@ -36,7 +39,9 @@ class AuthRepositoryImpl(
         token: String
     ): RegisterPushTokenResponse {
         return safeApiCall {
-            teledomApi.registerPushToken(RegisterPushTokenRequest(token)).getResponseBody()
+            teledomApi.registerPushToken(
+                DataModule.BASE_URL + "user/registerPushToken",
+                RegisterPushTokenRequest(token)).getResponseBody()
         }
     }
 
@@ -44,7 +49,10 @@ class AuthRepositoryImpl(
         userPhone: String
     ): RequestCodeResponse {
         return safeApiCall {
-            teledomApi.requestCode(RequestCodeRequest(userPhone)).getResponseBody()
+            Timber.d("__Q__  requestCode url: ${DataModule.BASE_URL + "user/requestCode"}")
+            teledomApi.requestCode(
+                DataModule.BASE_URL + "user/requestCode",
+                RequestCodeRequest(userPhone)).getResponseBody()
         }
     }
 
@@ -53,7 +61,9 @@ class AuthRepositoryImpl(
         smsCode: String
     ): ConfirmCodeResponse {
         return safeApiCall {
-            teledomApi.confirmCode(ConfirmCodeRequest(userPhone, smsCode))
+            teledomApi.confirmCode(
+                DataModule.BASE_URL + "user/confirmCode",
+                ConfirmCodeRequest(userPhone, smsCode))
         }
     }
 
@@ -71,7 +81,9 @@ class AuthRepositoryImpl(
 //                toResponseBody("application/json".toMediaTypeOrNull())
 //            throw HttpException(Response.error<Any>(422, errorBody))
 
-            teledomApi.sendName(SendNameRequest(name, patronymic)).getResponseBody()
+            teledomApi.sendName(
+                DataModule.BASE_URL + "user/sendName",
+                SendNameRequest(name, patronymic)).getResponseBody()
         }
     }
 
@@ -80,24 +92,32 @@ class AuthRepositoryImpl(
         doorId: Int?
     ): OpenDoorResponse {
         return safeApiCall {
-            teledomApi.openDoor(OpenDoorRequest(domophoneId, doorId)).getResponseBody()
+            teledomApi.openDoor(
+                DataModule.BASE_URL + "address/openDoor",
+                OpenDoorRequest(domophoneId, doorId)).getResponseBody()
         }
     }
 
     override suspend fun getServices(id: Int): GetServicesResponse {
         return safeApiCall {
-            teledomApi.getServices(GetServicesRequest(id)).getResponseBody()
+            teledomApi.getServices(
+                DataModule.BASE_URL + "geo/getServices",
+                GetServicesRequest(id)).getResponseBody()
         }
     }
 
     override suspend fun appVersion(version: String): AppVersionResponse {
         return safeApiCall {
-            teledomApi.appVersion(AppVersionRequest(version, "android")).getResponseBody()
+            teledomApi.appVersion(
+                DataModule.BASE_URL + "user/appVersion",
+                AppVersionRequest(version, "android")).getResponseBody()
         }
     }
     override suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse {
         return safeApiCall {
-            teledomApi.userNotification(UserNotificationRequest(money?.value, enable?.value))
+            teledomApi.userNotification(
+                DataModule.BASE_URL + "user/notification",
+                UserNotificationRequest(money?.value, enable?.value))
         }
     }
 }

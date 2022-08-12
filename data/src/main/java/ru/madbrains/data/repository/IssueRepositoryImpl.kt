@@ -1,6 +1,7 @@
 package ru.madbrains.data.repository
 
 import com.squareup.moshi.Moshi
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.remote.TeledomApi
 import ru.madbrains.domain.interfaces.IssueRepository
 import ru.madbrains.domain.model.request.ActionIssueRequest
@@ -26,25 +27,31 @@ class IssueRepositoryImpl(
     override suspend fun createIssues(request: CreateIssuesRequest): CreateIssuesResponse {
         return safeApiCall {
             Timber.d("__Q__ issue: $request")
-            teledomApi.createIssues(request)
+            teledomApi.createIssues(
+                DataModule.BASE_URL + "issues/create",
+                request)
         }
     }
 
     override suspend fun listConnectIssue(): ListConnectIssueResponse {
         return safeApiCall {
-            teledomApi.listConnectIssue().getResponseBody()
+            teledomApi.listConnectIssue(DataModule.BASE_URL + "issues/listConnect").getResponseBody()
         }
     }
 
     override suspend fun actionIssue(key: String): ActionIssueResponse {
         return safeApiCall {
-            teledomApi.actionIssue(ActionIssueRequest(key)).getResponseBody()
+            teledomApi.actionIssue(
+                DataModule.BASE_URL + "issues/action",
+                ActionIssueRequest(key)).getResponseBody()
         }
     }
 
     override suspend fun comment(comment: String, key: String): CommentResponse {
         return safeApiCall {
-            teledomApi.comment(CommentRequest(comment, key)).getResponseBody()
+            teledomApi.comment(
+                DataModule.BASE_URL + "issues/comment",
+                CommentRequest(comment, key)).getResponseBody()
         }
     }
 
@@ -54,14 +61,14 @@ class IssueRepositoryImpl(
     ): DeliveryChangeResponse {
         return safeApiCall {
             teledomApi.deliveryChange(
+                DataModule.BASE_URL + "issues/action",
                 DeliveryChangeRequest(
                     key = key,
                     customFields = listOf(
                         DeliveryChangeRequest.CustomField(value = value)
                     )
                 )
-            )
-                .getResponseBody()
+            ).getResponseBody()
         }
     }
 }

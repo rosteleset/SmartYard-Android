@@ -12,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.afterTextChanged
 import ru.madbrains.smartyard.databinding.FragmentProvidersBinding
-import timber.log.Timber
 
 class ProvidersFragment : Fragment() {
     private var _binding: FragmentProvidersBinding? = null
@@ -20,8 +19,8 @@ class ProvidersFragment : Fragment() {
 
     private val mViewModel by viewModel<ProvidersViewModel>()
     private lateinit var adapter: ProvidersAdapter
-    private var providerId: String? = null
-    private var providerBaseUrl: String? = null
+    private var providerId = ""
+    private var providerBaseUrl = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,7 +46,7 @@ class ProvidersFragment : Fragment() {
         }
 
         binding.btnChooseProvider.setOnClickListener {
-            mViewModel.goToNext(requireActivity(), this)
+            mViewModel.goToNext(this, providerId, providerBaseUrl)
         }
     }
 
@@ -74,7 +73,7 @@ class ProvidersFragment : Fragment() {
             adapter = ProvidersAdapter(it) { id, baseUrl ->
                 providerId = id
                 providerBaseUrl = baseUrl
-                binding.btnChooseProvider.isEnabled = true
+                binding.btnChooseProvider.isEnabled = providerId.isNotEmpty() && providerBaseUrl.isNotEmpty()
             }
             binding.rvProviders.adapter = adapter
             binding.rvProviders.addItemDecoration(
@@ -95,8 +94,8 @@ class ProvidersFragment : Fragment() {
             }
             adapter.notifyDataSetChanged()
             binding.btnChooseProvider.isEnabled = false
-            providerId = null
-            providerBaseUrl = null
+            providerId = ""
+            providerBaseUrl = ""
         }
     }
 }
