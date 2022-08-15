@@ -11,6 +11,7 @@ import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
+import ru.madbrains.domain.model.response.ProviderConfigResponse
 
 class AuthInteractor(
     private val repository: AuthRepository
@@ -54,5 +55,9 @@ class AuthInteractor(
 
     suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse {
         return repository.userNotification(money, enable)
+    }
+
+    suspend fun getOptions(): ProviderConfigResponse {
+        return repository.getOptions()
     }
 }

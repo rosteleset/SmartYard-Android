@@ -28,6 +28,8 @@ import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.madbrains.data.DataModule
+import ru.madbrains.domain.model.response.ProviderConfig
 import ru.madbrains.smartyard.*
 import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
 import ru.madbrains.smartyard.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
@@ -89,26 +91,34 @@ class MainActivity : CommonActivity() {
 
         binding.bottomNav.itemIconTintList = null
 
-        showBadge(this, binding.bottomNav, R.id.notification, "")
+        if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+            showBadge(this, binding.bottomNav, R.id.notification, "")
+        }
         mViewModel.onCreate()
 
         mViewModel.badge.observe(
-            this,
-            Observer { badge ->
-                if (badge) showBadge(this, binding.bottomNav, R.id.notification, "") else removeBadge()
+            this
+        ) { badge ->
+            if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+                if (badge) {
+                    showBadge(this, binding.bottomNav, R.id.notification, "")
+                } else {
+                    removeBadge()
+                }
             }
-        )
+        }
 
         mViewModel.chat.observe(
-            this,
-            Observer { chat ->
+            this
+        ) { chat ->
+            if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
                 if (chat) {
                     showBadge(this, binding.bottomNav, R.id.chat, "")
                 } else {
                     removeBadge(R.id.chat)
                 }
             }
-        )
+        }
 
         mViewModel.updateToAppNavigateDialog.observe(
             this,
@@ -235,14 +245,14 @@ class MainActivity : CommonActivity() {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
         val navGraphIds = mutableListOf<Int>()
         val checkFeatures = hashMapOf(
-            AppFeatures.Features.MENU_ADDRESS to Pair(R.navigation.address, R.id.address),
-            AppFeatures.Features.MENU_NOTIFICATIONS to Pair(R.navigation.notification, R.id.notification),
-            AppFeatures.Features.MENU_CHAT to Pair(R.navigation.chat, R.id.chat),
-            AppFeatures.Features.MENU_PAYMENT to Pair(R.navigation.pay, R.id.pay),
-            AppFeatures.Features.MENU_ADDITIONAL to Pair(R.navigation.settings, R.id.settings),
+            ProviderConfig.MAIN_MENU_ADDRESSES to Pair(R.navigation.address, R.id.address),
+            ProviderConfig.MAIN_MENU_NOTIFICATIONS to Pair(R.navigation.notification, R.id.notification),
+            ProviderConfig.MAIN_MENU_CHAT to Pair(R.navigation.chat, R.id.chat),
+            ProviderConfig.MAIN_MENU_PAYMENTS to Pair(R.navigation.pay, R.id.pay),
+            ProviderConfig.MAIN_MENU_ADDITIONAL to Pair(R.navigation.settings, R.id.settings),
         )
         for ((key, value) in checkFeatures) {
-            if (AppFeatures.hasFeature(key)) {
+            if (DataModule.providerConfig.mainMenu?.contains(key) == true) {
                 navGraphIds.add(value.first)
             } else {
                 bottomNavigationView.menu.removeItem(value.second)

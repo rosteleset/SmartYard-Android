@@ -10,6 +10,7 @@ import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
+import ru.madbrains.domain.model.response.ProviderConfigResponse
 
 interface AuthRepository {
     suspend fun providers(): ProvidersListResponse
@@ -21,4 +22,5 @@ interface AuthRepository {
     suspend fun getServices(id: Int): GetServicesResponse
     suspend fun appVersion(version: String): AppVersionResponse
     suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse
+    suspend fun getOptions(): ProviderConfigResponse
 }

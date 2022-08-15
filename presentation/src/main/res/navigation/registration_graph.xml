@@ -69,6 +69,9 @@
         <action
             android:id="@+id/action_providersFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_providersFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
     </fragment>
 
 </navigation>

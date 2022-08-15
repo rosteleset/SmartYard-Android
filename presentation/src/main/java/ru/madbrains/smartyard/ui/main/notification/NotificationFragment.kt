@@ -23,6 +23,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.madbrains.data.DataModule
+import ru.madbrains.domain.model.response.ProviderConfig
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.FirebaseMessagingService
 import ru.madbrains.smartyard.R
@@ -122,7 +124,9 @@ class NotificationFragment : Fragment() {
                     it.code,
                     "text/html", "UTF-8", null
                 )
-                (activity as MainActivity).removeBadge()
+                if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+                    (activity as MainActivity).removeBadge()
+                }
             }
         )
         mViewModel.progress.observe(

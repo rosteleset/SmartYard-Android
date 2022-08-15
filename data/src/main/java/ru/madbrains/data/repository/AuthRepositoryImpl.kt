@@ -23,6 +23,7 @@ import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
+import ru.madbrains.domain.model.response.ProviderConfigResponse
 import timber.log.Timber
 
 class AuthRepositoryImpl(
@@ -113,11 +114,18 @@ class AuthRepositoryImpl(
                 AppVersionRequest(version, "android")).getResponseBody()
         }
     }
+
     override suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse {
         return safeApiCall {
             teledomApi.userNotification(
                 DataModule.BASE_URL + "user/notification",
                 UserNotificationRequest(money?.value, enable?.value))
+        }
+    }
+
+    override suspend fun getOptions(): ProviderConfigResponse {
+        return safeApiCall {
+            teledomApi.getOptions(DataModule.BASE_URL + "ext/options")
         }
     }
 }

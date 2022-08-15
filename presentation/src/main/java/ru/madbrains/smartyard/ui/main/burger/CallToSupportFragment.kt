@@ -6,10 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import ru.madbrains.smartyard.AppFeatures
+import ru.madbrains.data.DataModule
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentCallToSupportBinding
-import timber.log.Timber
 
 class CallToSupportFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCallToSupportBinding? = null
@@ -35,7 +34,7 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        if (AppFeatures.hasFeature(AppFeatures.Features.ISSUES)) {
+        if (DataModule.providerConfig.hasIssues) {
             binding.llOrderCallback.visibility = View.VISIBLE
             binding.llOrderCallback.setOnClickListener {
                 viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)

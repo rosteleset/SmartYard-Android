@@ -39,6 +39,7 @@ import ru.madbrains.domain.interfaces.IssueRepository
 import ru.madbrains.domain.interfaces.PayRepository
 import ru.madbrains.domain.interfaces.FRSRepository
 import ru.madbrains.domain.interfaces.ExtRepository
+import ru.madbrains.domain.model.response.ProviderConfig
 
 import timber.log.Timber
 import java.security.cert.X509Certificate
@@ -48,7 +49,8 @@ import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 object DataModule {
-    var BASE_URL = "https://localhost"
+    var BASE_URL = "https://localhost/"
+    var providerConfig = ProviderConfig()
 
     val sberApiUserName = ""
     val sberApiPassword = ""

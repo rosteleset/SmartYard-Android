@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import ru.madbrains.smartyard.AppFeatures
+import ru.madbrains.data.DataModule
 import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentAccessAddressBinding
@@ -97,7 +97,7 @@ class AccessAddressFragment : Fragment() {
             }
             hideCodeOpen(it.allowDoorCode)
 
-            if (AppFeatures.hasFeature(AppFeatures.Features.FRS) && it.frsDisabled == false) {
+            if (DataModule.providerConfig.hasFRS && it.frsDisabled == false) {
                 binding.expLayoutByFace.expand()
             } else {
                 binding.expLayoutByFace.collapse()

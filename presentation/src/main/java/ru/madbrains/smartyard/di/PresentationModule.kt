@@ -48,7 +48,7 @@ object PresentationModule {
         viewModel { LauncherViewModel(get()) }
         viewModel { ProvidersViewModel(get(), get()) }
         viewModel { OnboardingViewModel(get()) }
-        viewModel { RegistrationViewModel(get(), get()) }
+        viewModel { RegistrationViewModel(get(), get(), get()) }
         viewModel { SmsRegViewModel(get(), get()) }
         viewModel { NumberRegViewModel(get(), get()) }
         viewModel { AppealFormViewModel(get(), get()) }

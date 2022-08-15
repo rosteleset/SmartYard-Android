@@ -103,6 +103,7 @@ import ru.madbrains.domain.model.response.SberOrderStatusDoResponse
 import ru.madbrains.domain.model.response.ExtListResponse
 import ru.madbrains.domain.model.response.ExtResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
+import ru.madbrains.domain.model.response.ProviderConfigResponse
 
 interface TeledomApi {
     @GET("https://192.168.13.39:9091/prov.json")
@@ -380,4 +381,7 @@ interface TeledomApi {
     suspend fun ext(
         @Url url: String,
         @Body request: ExtRequest): Response<ExtResponse>
+
+    @POST
+    suspend fun getOptions(@Url url: String): ProviderConfigResponse
 }

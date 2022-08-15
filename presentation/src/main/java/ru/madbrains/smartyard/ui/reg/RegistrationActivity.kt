@@ -4,7 +4,9 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import androidx.core.view.ViewCompat
+import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.madbrains.domain.model.CommonErrorThrowable
 import ru.madbrains.smartyard.CommonActivity
 import ru.madbrains.smartyard.FirebaseMessagingService
 import ru.madbrains.smartyard.FirebaseMessagingService.TypeMessage
@@ -26,6 +28,14 @@ class RegistrationActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+
+        runBlocking {
+            try {
+                mViewModel.getProviderConfig()
+            } catch (e: CommonErrorThrowable) {
+            }
+        }
+
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -34,9 +44,9 @@ class RegistrationActivity : CommonActivity() {
             intentParse(it)
         }
 
-        mViewModel.onStart(supportFragmentManager.findFragmentById(R.id.navFragment)!!, messageId, messageType, activity = this)
+        mViewModel.onStart(supportFragmentManager.findFragmentById(R.id.navFragment)!!, messageId, messageType, activity = this@RegistrationActivity)
 
-        val bottomNavHeight = getBottomNavigationHeight(this)
+        val bottomNavHeight = getBottomNavigationHeight(this@RegistrationActivity)
         ViewCompat.setOnApplyWindowInsetsListener(binding.frameLayout) { _, insets ->
             ViewCompat.onApplyWindowInsets(
                 binding.frameLayout,

@@ -3,13 +3,13 @@ package ru.madbrains.smartyard.ui.main.burger
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import ru.madbrains.data.DataModule
 import ru.madbrains.domain.interactors.ExtInteractor
 import ru.madbrains.domain.interactors.GeoInteractor
 import ru.madbrains.domain.interactors.IssueInteractor
 import ru.madbrains.domain.interactors.SipInteractor
 import ru.madbrains.domain.model.request.CreateIssuesRequest
 import ru.madbrains.domain.model.request.ExtRequest
-import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.R
@@ -87,7 +87,7 @@ class BurgerViewModel(
                     }
                 ),
             )
-            if (AppFeatures.hasFeature(AppFeatures.Features.CITY_CAMS)) {
+            if (DataModule.providerConfig.hasCityCams) {
                 list.add(
                     BurgerModel(
                         orderId = 100,

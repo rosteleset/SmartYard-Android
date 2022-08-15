@@ -3,6 +3,7 @@ package ru.madbrains.smartyard.ui.main.address
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import ru.madbrains.data.DataModule
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.interactors.AddressInteractor
 import ru.madbrains.domain.interactors.AuthInteractor
@@ -10,7 +11,6 @@ import ru.madbrains.domain.interactors.DatabaseInteractor
 import ru.madbrains.domain.interactors.IssueInteractor
 import ru.madbrains.domain.model.AddressItem
 import ru.madbrains.domain.model.StateButton
-import ru.madbrains.smartyard.AppFeatures
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.R
@@ -148,7 +148,7 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (AppFeatures.hasFeature(AppFeatures.Features.CCTV) && addressItem.cctv > 0) {
+                        if (DataModule.providerConfig.hasCCTV && addressItem.cctv > 0) {
                             mutableList.add(
                                 VideoCameraModel().apply {
                                     caption = "Видеокамеры"
@@ -158,7 +158,7 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (AppFeatures.hasFeature(AppFeatures.Features.EVENTS) && hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
+                        if (DataModule.providerConfig.hasEvents && hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
                             mutableList.add(
                                 EventLogModel().apply {
                                     caption = "События"
