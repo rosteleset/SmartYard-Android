@@ -10,7 +10,6 @@ import com.google.gson.Gson
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.domain.model.CommonError
-
 import ru.madbrains.domain.model.response.Name
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel

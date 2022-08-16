@@ -104,6 +104,7 @@ import ru.madbrains.domain.model.response.ExtListResponse
 import ru.madbrains.domain.model.response.ExtResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
 import ru.madbrains.domain.model.response.ProviderConfigResponse
+import ru.madbrains.domain.model.response.AuthTypesResponse
 
 interface TeledomApi {
     @GET("https://192.168.13.39:9091/prov.json")
@@ -384,4 +385,7 @@ interface TeledomApi {
 
     @POST
     suspend fun getOptions(@Url url: String): ProviderConfigResponse
+
+    @POST
+    suspend fun authTypes(@Url url: String): AuthTypesResponse
 }

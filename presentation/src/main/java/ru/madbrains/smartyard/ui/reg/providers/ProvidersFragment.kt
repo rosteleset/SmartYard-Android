@@ -9,7 +9,7 @@ import android.view.WindowManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.afterTextChanged
 import ru.madbrains.smartyard.databinding.FragmentProvidersBinding
 
@@ -17,7 +17,7 @@ class ProvidersFragment : Fragment() {
     private var _binding: FragmentProvidersBinding? = null
     private val binding get() = _binding!!
 
-    private val mViewModel by viewModel<ProvidersViewModel>()
+    private val mViewModel by sharedViewModel<ProvidersViewModel>()
     private lateinit var adapter: ProvidersAdapter
     private var providerId = ""
     private var providerBaseUrl = ""
@@ -77,10 +77,7 @@ class ProvidersFragment : Fragment() {
             }
             binding.rvProviders.adapter = adapter
             binding.rvProviders.addItemDecoration(
-                DividerItemDecoration(
-                    context,
-                    DividerItemDecoration.VERTICAL
-                )
+                DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
             )
         }
     }

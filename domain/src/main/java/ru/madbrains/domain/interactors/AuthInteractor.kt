@@ -12,6 +12,7 @@ import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
 import ru.madbrains.domain.model.response.ProviderConfigResponse
+import ru.madbrains.domain.model.response.AuthTypesResponse
 
 class AuthInteractor(
     private val repository: AuthRepository
@@ -59,5 +60,9 @@ class AuthInteractor(
 
     suspend fun getOptions(): ProviderConfigResponse {
         return repository.getOptions()
+    }
+
+    suspend fun authTypes(): AuthTypesResponse {
+        return repository.authTypes()
     }
 }

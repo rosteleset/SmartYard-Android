@@ -1,4 +1,4 @@
-package ru.madbrains.smartyard.ui.reg.providers
+package ru.madbrains.smartyard.ui.reg.auth_types
 
 import android.app.Activity
 import android.view.LayoutInflater
@@ -8,50 +8,48 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import ru.madbrains.smartyard.R
-import timber.log.Timber
 
-class ProvidersAdapterDelegate(
+class AuthTypesAdapterDelegate(
     var activity: Activity,
-    private val clickListener: (id: String, baseUrl: String) -> Unit
-) : AdapterDelegate<List<ProviderModel>>() {
+    private val clickListener: (methodId: String) -> Unit
+) : AdapterDelegate<List<AuthTypesModel>>() {
     private var checkedPosition = -1
     private val inflater: LayoutInflater = activity.layoutInflater
 
-    override fun isForViewType(items: List<ProviderModel>, position: Int): Boolean {
+    override fun isForViewType(items: List<AuthTypesModel>, position: Int): Boolean {
         return true
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        return ProviderItemViewHolder(inflater.inflate(R.layout.item_provider, parent, false))
+        return AuthTypeItemVH(inflater.inflate(R.layout.item_auth_type, parent, false))
     }
 
     override fun onBindViewHolder(
-        items: List<ProviderModel>,
+        items: List<AuthTypesModel>,
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
     ) {
-        val vh = holder as ProviderItemViewHolder
-        val providerItem = items[position]
+        val vh = holder as AuthTypeItemVH
+        val authItem = items[position]
         vh.apply {
-            tvTitle.text = providerItem.name
+            tvTitle.text = authItem.name
             checkbox.isClickable = false
-            checkbox.isChecked = providerItem.isChecked
+            checkbox.isChecked = authItem.isChecked
             holder.itemView.setOnClickListener {
                 if (checkedPosition >= 0 && checkedPosition != position) {
                     items[checkedPosition].isChecked = false
                     bindingAdapter?.notifyItemChanged(checkedPosition)
                 }
-                checkbox.isChecked = true
-                checkedPosition = position
-                clickListener.invoke(providerItem.id, providerItem.baseUrl)
             }
+            checkbox.isChecked = true
+            checkedPosition = position
+            clickListener.invoke(authItem.methodId)
         }
     }
 
-    internal class ProviderItemViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    internal class AuthTypeItemVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val tvTitle: TextView = itemView.findViewById(R.id.title)
         val checkbox: CheckBox = itemView.findViewById(R.id.checkBox)
     }

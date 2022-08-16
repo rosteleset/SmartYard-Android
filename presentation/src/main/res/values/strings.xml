@@ -249,10 +249,15 @@
     <string name="city_camera_youtube_msg">Не удалось запустить приложение YouTube</string>
 
     <!-- Выбор провайдера -->
-    <string name="providers_title">Выберите провайдера</string>
+    <string name="providers_title">Провайдер услуг</string>
     <string name="providers_caption">Пожалуйста, выберите вашего поставщика услуг из списка или воспользуйтесь поиском.</string>
     <string name="providers_filter_hint">Введите название провайдера</string>
-    <string name="providers_choose">Выбрать</string>
+    <string name="providers_choose">Далее</string>
+
+    <!-- Выбор способа авторизации -->
+    <string name="auth_types_title">Способ авторизации</string>
+    <string name="auth_types_caption">Пожалуйста, выберите удобный вам способ авторизации из списка.</string>
+    <string name="auth_types_choose">Далее</string>
 
     <string name="request_record_title">Запросить запись</string>
     <string name="request_record_date">Дата записи: %s</string>
