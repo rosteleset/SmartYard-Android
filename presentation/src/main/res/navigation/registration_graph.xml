@@ -72,18 +72,6 @@
         <action
             android:id="@+id/action_providersFragment_to_appealFragment"
             app:destination="@id/appealFragment" />
-        <action
-            android:id="@+id/action_providersFragment_to_authTypesFragment"
-            app:destination="@id/authTypesFragment" />
-    </fragment>
-    <fragment
-        android:id="@+id/authTypesFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.auth_types.AuthTypesFragment"
-        android:label="fragment_auth_types"
-        tools:layout="@layout/fragment_auth_types" >
-        <action
-            android:id="@+id/action_authTypesFragment_to_numberRegFragment"
-            app:destination="@id/numberRegFragment" />
     </fragment>
 
 </navigation>

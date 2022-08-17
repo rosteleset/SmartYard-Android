@@ -11,6 +11,7 @@ import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.p8
 import ru.madbrains.smartyard.ui.reg.sms.SmsRegFragment
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -23,7 +24,7 @@ class NumberRegViewModel(
 
     fun requestSmsCode(phone: String, fragment: Fragment) {
         viewModelScope.withProgress({ false }) {
-            mInteractor.requestCode(phone.p8)
+            val res = mInteractor.requestCode(phone.p8)
             goToNext(phone, fragment)
         }
     }

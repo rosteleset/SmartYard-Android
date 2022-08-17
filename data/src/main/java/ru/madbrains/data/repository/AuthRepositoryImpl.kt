@@ -23,7 +23,6 @@ import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
 import ru.madbrains.domain.model.response.ProvidersListResponse
 import ru.madbrains.domain.model.response.ProviderConfigResponse
-import ru.madbrains.domain.model.response.AuthTypesResponse
 
 class AuthRepositoryImpl(
     private val teledomApi: TeledomApi,
@@ -124,12 +123,6 @@ class AuthRepositoryImpl(
     override suspend fun getOptions(): ProviderConfigResponse {
         return safeApiCall {
             teledomApi.getOptions(DataModule.BASE_URL + "ext/options")
-        }
-    }
-
-    override suspend fun authTypes(): AuthTypesResponse {
-        return safeApiCall {
-            teledomApi.authTypes(DataModule.BASE_URL + "user/authTypes")
         }
     }
 }

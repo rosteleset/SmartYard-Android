@@ -5,9 +5,6 @@ import com.squareup.moshi.Json
 typealias ProviderConfigResponse = ApiResult<ProviderConfig>?
 
 data class ProviderConfig(
-    //типы авторизации (по умолчанию через СМС)
-    @Json(name = "authTypes") val authTypes: MutableList<String>? = mutableListOf(AUTH_TYPE_SMS),
-
     //основное меню приложения (по умолчанию адреса, уведомления, дополнительно)
     @Json(name = "mainMenu") val mainMenu: MutableList<String>? = mutableListOf(
         MAIN_MENU_ADDRESSES,
