@@ -28,7 +28,7 @@ class ProvidersViewModel(
     }
 
     private fun getProviders() {
-        viewModelScope.launchSimple {
+        viewModelScope.withProgress {
             val res = authInteractor.providers()
             providersList.postValue(res?.data)
         }

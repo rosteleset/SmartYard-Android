@@ -79,7 +79,6 @@ open class GenericViewModel : ViewModel(), KoinComponent {
     }
 
     protected fun checkAndRegisterFcmToken() {
-
         Timber.d("debug_dmm call checkAndRegisterFcmToken()")
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
@@ -119,6 +118,7 @@ open class GenericViewModel : ViewModel(), KoinComponent {
     fun logout() {
         viewModelScope.withProgress {
             logout.postValue(Event(true))
+            mPreferenceStorage.providerId = null
             mPreferenceStorage.authToken = null
             mPreferenceStorage.sentName = null
             mPreferenceStorage.fcmTokenRegistered = null

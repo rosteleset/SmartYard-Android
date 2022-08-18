@@ -10,8 +10,10 @@ import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.p8
+import ru.madbrains.smartyard.ui.reg.outgoing_call.OutgoingCallFragment
 import ru.madbrains.smartyard.ui.reg.sms.SmsRegFragment
 import timber.log.Timber
+import kotlin.random.Random
 
 /**
  * @author Nail Shakurov
@@ -25,7 +27,18 @@ class NumberRegViewModel(
     fun requestSmsCode(phone: String, fragment: Fragment) {
         viewModelScope.withProgress({ false }) {
             val res = mInteractor.requestCode(phone.p8)
-            goToNext(phone, fragment)
+            if (res?.data?.confirmationNumbers == null) {
+                goToNext(phone, fragment)
+            } else {
+                mPreferenceStorage.phone = phone
+                val callNumber = res.data.confirmationNumbers!![Random.nextInt(0, res.data.confirmationNumbers!!.size)]
+                NavHostFragment.findNavController(fragment).navigate(
+                    R.id.action_numberRegFragment_to_outgoingCallFragment,
+                    bundleOf(
+                        OutgoingCallFragment.KEY_PHONE_NUMBER to phone,
+                        OutgoingCallFragment.KEY_CALL_NUMBER to callNumber)
+                )
+            }
         }
     }
 

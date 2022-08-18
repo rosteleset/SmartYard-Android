@@ -128,6 +128,12 @@ interface TeledomApi {
     ): ConfirmCodeResponse
 
     @POST
+    suspend fun checkPhone(
+        @Url url: String,
+        @Body request: RequestCodeRequest
+    ): ConfirmCodeResponse
+
+    @POST
     suspend fun sendName(
         @Url url: String,
         @Body request: SendNameRequest

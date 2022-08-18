@@ -19,6 +19,9 @@
         <action
             android:id="@+id/action_numberRegFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_numberRegFragment_to_outgoingCallFragment"
+            app:destination="@id/outgoingCallFragment" />
     </fragment>
     <fragment
         android:id="@+id/smsRegFragment"
@@ -72,6 +75,18 @@
         <action
             android:id="@+id/action_providersFragment_to_appealFragment"
             app:destination="@id/appealFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/outgoingCallFragment"
+        android:name="ru.madbrains.smartyard.ui.reg.outgoing_call.OutgoingCallFragment"
+        android:label="fragment_outgoing_call"
+        tools:layout="@layout/fragment_outgoing_call" >
+        <action
+            android:id="@+id/action_outgoingCallFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
+        <action
+            android:id="@+id/action_outgoingCallFragment_to_numberRegFragment"
+            app:destination="@id/numberRegFragment" />
     </fragment>
 
 </navigation>

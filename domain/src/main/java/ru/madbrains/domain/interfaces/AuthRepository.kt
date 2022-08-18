@@ -17,6 +17,7 @@ interface AuthRepository {
     suspend fun registerPushToken(token: String): RegisterPushTokenResponse
     suspend fun requestCode(userPhone: String): RequestCodeResponse
     suspend fun confirmCode(userPhone: String, smsCode: String): ConfirmCodeResponse
+    suspend fun checkPhone(userPhone: String): ConfirmCodeResponse
     suspend fun sendName(name: String, patronymic: String?): SendNameResponse
     suspend fun openDoor(domophoneId: Int, doorId: Int?): OpenDoorResponse
     suspend fun getServices(id: Int): GetServicesResponse

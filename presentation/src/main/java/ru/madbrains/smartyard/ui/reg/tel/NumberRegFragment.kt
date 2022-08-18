@@ -115,8 +115,4 @@ class NumberRegFragment : Fragment() {
             }
         }
     }
-
-    companion object {
-        const val KEY_AUTH_METHOD_ID = "auth_method_id"
-    }
 }

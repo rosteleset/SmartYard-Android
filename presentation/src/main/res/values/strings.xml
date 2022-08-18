@@ -254,10 +254,18 @@
     <string name="providers_filter_hint">Введите название провайдера</string>
     <string name="providers_choose">Далее</string>
 
-    <!-- Выбор способа авторизации -->
-    <string name="auth_types_title">Способ авторизации</string>
-    <string name="auth_types_caption">Пожалуйста, выберите удобный вам способ авторизации из списка.</string>
-    <string name="auth_types_choose">Далее</string>
+    <!-- Авторизация исходящим звонком -->
+    <string name="outgoing_call_caption_1">
+        Нам необходимо убедиться\n
+        что номер %s действительно ваш.
+    </string>
+    <string name="outgoing_call_change_number">Исправить номер телефона</string>
+    <string name="outgoing_call_caption_2">Сделайте бесплатный звонок на номер</string>
+    <string name="outgoing_call_caption_3">
+        Чтобы мы могли подтвердить,\n
+        что это ваш номер
+    </string>
+    <string name="outgoing_call_make_call">Позвонить</string>
 
     <string name="request_record_title">Запросить запись</string>
     <string name="request_record_date">Дата записи: %s</string>

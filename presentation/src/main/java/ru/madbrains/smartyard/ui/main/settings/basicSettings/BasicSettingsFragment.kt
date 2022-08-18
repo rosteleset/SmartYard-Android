@@ -7,11 +7,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.madbrains.data.DataModule
+import ru.madbrains.domain.model.response.ProviderConfig
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.drawable
 import ru.madbrains.smartyard.databinding.FragmentBasicSettingsBinding
@@ -101,6 +104,11 @@ class BasicSettingsFragment : Fragment() {
                 updateAllWidget(requireContext())
             }
         )
+
+        if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == false) {
+            binding.cvNotifications.isVisible = false
+        }
+
         mViewModel.sentName.observe(
             viewLifecycleOwner
         ) {

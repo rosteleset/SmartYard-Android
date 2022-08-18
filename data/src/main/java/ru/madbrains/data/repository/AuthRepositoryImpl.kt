@@ -65,6 +65,16 @@ class AuthRepositoryImpl(
         }
     }
 
+    override suspend fun checkPhone(
+        userPhone: String
+    ): ConfirmCodeResponse {
+        return safeApiCall {
+            teledomApi.checkPhone(
+                DataModule.BASE_URL + "user/checkPhone",
+                RequestCodeRequest(userPhone))
+        }
+    }
+
     override suspend fun sendName(
         name: String,
         patronymic: String?

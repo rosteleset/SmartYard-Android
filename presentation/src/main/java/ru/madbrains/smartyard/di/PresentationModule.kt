@@ -39,6 +39,7 @@ import ru.madbrains.smartyard.ui.main.settings.basicSettings.BasicSettingsViewMo
 import ru.madbrains.smartyard.ui.main.settings.faceSettings.FaceSettingsViewModel
 import ru.madbrains.smartyard.ui.onboarding.OnboardingViewModel
 import ru.madbrains.smartyard.ui.reg.RegistrationViewModel
+import ru.madbrains.smartyard.ui.reg.outgoing_call.OutgoingCallViewModel
 import ru.madbrains.smartyard.ui.reg.sms.SmsRegViewModel
 import ru.madbrains.smartyard.ui.reg.tel.NumberRegViewModel
 import ru.madbrains.smartyard.ui.reg.providers.ProvidersViewModel
@@ -47,6 +48,7 @@ object PresentationModule {
     fun create() = module {
         viewModel { LauncherViewModel(get()) }
         viewModel { ProvidersViewModel(get(), get()) }
+        viewModel { OutgoingCallViewModel(get(), get()) }
         viewModel { OnboardingViewModel(get()) }
         viewModel { RegistrationViewModel(get(), get(), get()) }
         viewModel { SmsRegViewModel(get(), get()) }

@@ -35,6 +35,10 @@ class AuthInteractor(
         return repository.confirmCode(userPhone, smsCode)
     }
 
+    suspend fun checkPhone(userPhone: String) : ConfirmCodeResponse {
+        return repository.checkPhone(userPhone)
+    }
+
     suspend fun sendName(name: String, patronymic: String?): SendNameResponse {
         return repository.sendName(name, patronymic)
     }
