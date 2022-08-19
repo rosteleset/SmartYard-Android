@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/numberRegFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.tel.NumberRegFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.tel.NumberRegFragment"
         android:label="fragment_number_reg"
         tools:layout="@layout/fragment_number_reg">
         <action
@@ -25,7 +25,7 @@
     </fragment>
     <fragment
         android:id="@+id/smsRegFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.sms.SmsRegFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment"
         android:label="SmsRegFragment">
         <action
             android:id="@+id/action_smsRegFragment_to_appealFragment"
@@ -38,12 +38,12 @@
     </fragment>
     <activity
         android:id="@+id/mainActivity"
-        android:name="ru.madbrains.smartyard.ui.main.MainActivity"
+        android:name="com.sesameware.smartyard_oem.ui.main.MainActivity"
         android:label="MainActivity">
         <argument
             android:name="messageType"
             android:defaultValue="NO_DEFINE"
-            app:argType="ru.madbrains.smartyard.FirebaseMessagingService$TypeMessage" />
+            app:argType="com.sesameware.smartyard_oem.FirebaseMessagingService$TypeMessage" />
         <argument
             android:name="messageId"
             app:argType="string"
@@ -51,7 +51,7 @@
     </activity>
     <fragment
         android:id="@+id/appealFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.appeal.AppealFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.appeal.AppealFragment"
         android:label="fragment_appeal"
         tools:layout="@layout/fragment_appeal">
         <action
@@ -63,7 +63,7 @@
         app:destination="@id/numberRegFragment" />
     <fragment
         android:id="@+id/providersFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.providers.ProvidersFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragment"
         android:label="fragment_providers"
         tools:layout="@layout/fragment_providers">
         <action
@@ -78,7 +78,7 @@
     </fragment>
     <fragment
         android:id="@+id/outgoingCallFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.outgoing_call.OutgoingCallFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallFragment"
         android:label="fragment_outgoing_call"
         tools:layout="@layout/fragment_outgoing_call" >
         <action

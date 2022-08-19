@@ -87,7 +87,7 @@
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:background="@drawable/background_radius_video_clip">
 
-                        <ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout
+                        <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
                             android:id="@+id/zlArchive"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
@@ -101,7 +101,7 @@
                                 app:player_layout_id="@layout/fragment_cctv_exoplayer"
                                 app:resize_mode="fixed_height" />
 
-                        </ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout>
+                        </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
 
                         <ProgressBar
                             android:id="@+id/mVideoLoader"
@@ -130,7 +130,7 @@
                             android:src="@drawable/ic_forward_15"
                             android:visibility="invisible" />
 
-                        <ru.madbrains.lib.RangeSlider
+                        <com.sesameware.lib.RangeSlider
                             android:id="@+id/rangePlayer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
@@ -144,7 +144,7 @@
                             app:trimMode="false"
                             app:trimThumbDrawable="@drawable/ic_cctv_thumb_trim">
 
-                        </ru.madbrains.lib.RangeSlider>
+                        </com.sesameware.lib.RangeSlider>
 
                         <ImageButton
                             android:id="@+id/mFullScreens"
@@ -155,7 +155,7 @@
                             android:layout_marginEnd="12dp"
                             android:background="@drawable/ic_cctv_enter_fullscreen" />
 
-                        <ru.madbrains.lib.RangeSlider
+                        <com.sesameware.lib.RangeSlider
                             android:id="@+id/rangeTrimmer"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"

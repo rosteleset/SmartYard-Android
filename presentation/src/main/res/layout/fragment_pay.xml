@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_200"
-    tools:context="ru.madbrains.smartyard.ui.main.pay.PayAddressFragment">
+    tools:context="com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment">
 
     <TextView
         android:id="@+id/tvTitlePay"

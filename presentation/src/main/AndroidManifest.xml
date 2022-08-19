@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="ru.madbrains.smartyard">
+    package="com.sesameware.smartyard_oem">
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -78,7 +78,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="lanta"
+                    android:scheme="sesameware"
                     android:pathPrefix="/sber" />
             </intent-filter>
         </activity>

@@ -6,6 +6,6 @@
     app:startDestination="@id/chatFragment2">
     <fragment
         android:id="@+id/chatFragment2"
-        android:name="ru.madbrains.smartyard.ui.main.chat.ChatFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.chat.ChatFragment"
         android:label="ChatFragment" />
 </navigation>

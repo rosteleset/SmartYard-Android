@@ -1,0 +1,68 @@
+package com.sesameware.smartyard_oem.ui.reg.tel
+
+import android.app.Activity
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.viewModelScope
+import androidx.navigation.fragment.NavHostFragment
+import com.sesameware.data.prefs.PreferenceStorage
+import com.sesameware.domain.interactors.AuthInteractor
+import com.sesameware.smartyard_oem.GenericViewModel
+import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.p8
+import com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallFragment
+import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
+import timber.log.Timber
+import kotlin.random.Random
+
+/**
+ * @author Nail Shakurov
+ * Created on 2020-02-05.
+ */
+class NumberRegViewModel(
+    private val mInteractor: AuthInteractor,
+    private val mPreferenceStorage: PreferenceStorage
+) : GenericViewModel() {
+
+    fun requestSmsCode(phone: String, fragment: Fragment) {
+        viewModelScope.withProgress({ false }) {
+            val res = mInteractor.requestCode(phone.p8)
+            if (res?.data?.confirmationNumbers == null) {
+                goToNext(phone, fragment)
+            } else {
+                mPreferenceStorage.phone = phone
+                val callNumber = res.data.confirmationNumbers!![Random.nextInt(0, res.data.confirmationNumbers!!.size)]
+                NavHostFragment.findNavController(fragment).navigate(
+                    R.id.action_numberRegFragment_to_outgoingCallFragment,
+                    bundleOf(
+                        OutgoingCallFragment.KEY_PHONE_NUMBER to phone,
+                        OutgoingCallFragment.KEY_CALL_NUMBER to callNumber)
+                )
+            }
+        }
+    }
+
+    fun goToNext(phone: String, fragment: Fragment) {
+        mPreferenceStorage.phone = phone
+        NavHostFragment.findNavController(fragment)
+            .navigate(
+                R.id.action_numberRegFragment_to_smsRegFragment,
+                bundleOf(
+                    SmsRegFragment.KEY_PHONE_NUMBER to phone
+                )
+            )
+    }
+
+    fun onStart(fragment: Fragment, activity: Activity) {
+        if (mPreferenceStorage.authToken != null) {
+            if (mPreferenceStorage.sentName == null) {
+                NavHostFragment.findNavController(fragment)
+                    .navigate(R.id.action_numberRegFragment_to_appealFragment)
+            } else {
+                NavHostFragment.findNavController(fragment)
+                    .navigate(R.id.action_numberRegFragment_to_mainActivity)
+                activity.finish()
+            }
+        }
+    }
+}

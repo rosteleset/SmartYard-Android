@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ru.madbrains.smartyard.ui.main.pay.contract.webview.PayWebViewFragment">
+    tools:context="com.sesameware.smartyard_oem.ui.main.pay.contract.webview.PayWebViewFragment">
 
     <WebView
         android:id="@+id/webView"

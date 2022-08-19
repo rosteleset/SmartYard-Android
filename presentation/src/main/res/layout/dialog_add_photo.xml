@@ -37,7 +37,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <ru.madbrains.smartyard.ui.main.address.event_log.FaceImageView
+            <com.sesameware.smartyard_oem.ui.main.address.event_log.FaceImageView
                 android:id="@+id/ivAddFacePhoto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

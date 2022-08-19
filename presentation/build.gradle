@@ -41,7 +41,7 @@ android {
         }
     }
     defaultConfig {
-        applicationId "ru.madbrains.smartyard"
+        applicationId "com.sesameware.smartyard_oem"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
         versionCode 41
@@ -67,11 +67,8 @@ android {
 
 
     productFlavors {
-        madbrains {
-            applicationId "ru.madbrains.smartyard"
-        }
-        lanta {
-            applicationId "ru.lanta.net.smartyard"
+        sesameware {
+            applicationId "com.sesameware.smartyard_oem"
         }
     }
 
@@ -81,8 +78,7 @@ android {
 }
 
 project.afterEvaluate {
-    //preMadbrainsDebugBuild.dependsOn ktlint
-    //preLantaDebugBuild.dependsOn ktlint
+    //preSesamewareDebugBuild.dependsOn ktlint
 }
 
 repositories {

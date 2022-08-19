@@ -101,7 +101,7 @@
                 app:layout_constraintTop_toTopOf="parent">
 
 
-                <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mPeekButton"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -118,7 +118,7 @@
                     android:gravity="center" />
 
 
-                <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mAnswerButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -127,7 +127,7 @@
                     android:visibility="visible"
                     app:buttonBG="@drawable/checkbox_round_state_answer" />
 
-                <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mSpeakerButton"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -145,7 +145,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mTopRow">
 
-                <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mHangUpButton"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -154,7 +154,7 @@
                     android:text="@string/ignore"
                 />
 
-                <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mOpenedButton"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -164,7 +164,7 @@
                     tools:visibility="visible"
                     android:visibility="invisible"
                     />
-                <ru.madbrains.smartyard.ui.call.IncomingButtonView
+                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mOpenButton"
                     android:layout_width="0dp"
                     android:layout_weight="1"

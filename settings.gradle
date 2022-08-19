@@ -1,2 +1,2 @@
 include ':presentation', ':data', ':domain', ':lib'
-rootProject.name='smart-yard-android'
+rootProject.name='smartyard-oem-android'

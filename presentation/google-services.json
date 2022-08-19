@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "978817004542",
-    "firebase_url": "https://smart-yard.firebaseio.com",
-    "project_id": "smart-yard",
-    "storage_bucket": "smart-yard.appspot.com"
+    "project_number": "193678453910",
+    "project_id": "smartyard-oem-android",
+    "storage_bucket": "smartyard-oem-android.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:978817004542:android:e6b58404b560bbd6e986af",
+        "mobilesdk_app_id": "1:193678453910:android:906aecb01eab1d84c966b7",
         "android_client_info": {
-          "package_name": "ru.madbrains.smartyard"
+          "package_name": "com.sesameware.smartyard_oem"
         }
       },
       "oauth_client": [
         {
-          "client_id": "978817004542-q7cenibk1rj06ldtgpr7mdlom0n3io23.apps.googleusercontent.com",
+          "client_id": "193678453910-0mu2fpkcef65hfp2ck4ftlekgp44glpt.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyA8FkZfjep0umNM0TXNGM6IFlpTtKCguUk"
+          "current_key": "AIzaSyApFMLLVe9p5x7faR57V0AFL4ls1lgDLoY"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "978817004542-q7cenibk1rj06ldtgpr7mdlom0n3io23.apps.googleusercontent.com",
+              "client_id": "193678453910-0mu2fpkcef65hfp2ck4ftlekgp44glpt.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "978817004542-qmli1k2vuhrg2qnrdjibgomej6m3h7f5.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "ru.madbrains.smartyard"
-              }
             }
           ]
         }

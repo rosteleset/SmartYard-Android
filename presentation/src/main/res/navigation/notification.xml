@@ -6,7 +6,7 @@
     app:startDestination="@id/notificationFragment">
     <fragment
         android:id="@+id/notificationFragment"
-        android:name="ru.madbrains.smartyard.ui.main.notification.NotificationFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment"
         android:label="fragment_notification"
         tools:layout="@layout/fragment_notification" />
 </navigation>

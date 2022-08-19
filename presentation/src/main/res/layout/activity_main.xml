@@ -24,7 +24,7 @@
 
     </RelativeLayout>
 
-    <ru.madbrains.smartyard.ui.main.MorphBottomNavigationView
+    <com.sesameware.smartyard_oem.ui.main.MorphBottomNavigationView
         android:id="@+id/bottom_nav"
         style="@style/BottomNavigationView"
         android:layout_width="match_parent"

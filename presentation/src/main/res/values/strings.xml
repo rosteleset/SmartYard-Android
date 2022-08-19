@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Main -->
-    <string name="app_name">LanTa</string>
+    <string name="app_name">Teledom</string>
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
 
