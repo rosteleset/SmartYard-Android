@@ -6,7 +6,7 @@ typealias ProviderConfigResponse = ApiResult<ProviderConfig>?
 
 data class ProviderConfig(
     //основное меню приложения (по умолчанию адреса, уведомления, дополнительно)
-    @Json(name = "mainMenu") val mainMenu: MutableList<String>? = mutableListOf(
+    @Json(name = MAIN_MENU) val mainMenu: MutableList<String>? = mutableListOf(
         MAIN_MENU_ADDRESSES,
         //MAIN_MENU_NOTIFICATIONS,
         MAIN_MENU_ADDITIONAL),
@@ -54,12 +54,8 @@ data class ProviderConfig(
         get() = _hasPayments == "t"
 
     companion object {
-        //типы авторизации
-        const val AUTH_TYPE_SMS = "sms"
-        const val AUTH_TYPE_OUTGOING_CALL = "outgoingCall"
-        const val AUTH_TYPE_INCOMING_CALL = "incomingCall"
-
         //основное меню приложения
+        const val MAIN_MENU = "mainMenu"
         const val MAIN_MENU_ADDRESSES = "addresses"
         const val MAIN_MENU_NOTIFICATIONS = "notifications"
         const val MAIN_MENU_CHAT = "chat"
@@ -85,7 +81,7 @@ data class ProviderConfig(
         const val HAS_PAYMENTS = "payments"
 
         //URL для платежей
-        const val PAYMENTS_URL = "paymentsUtl"
+        const val PAYMENTS_URL = "paymentsUrl"
 
         //номер телефона техподдержки
         const val SUPPORT_PHONE = "supportPhone"
