@@ -106,7 +106,11 @@ import com.sesameware.domain.model.response.ProvidersListResponse
 import com.sesameware.domain.model.response.ProviderConfigResponse
 
 interface TeledomApi {
-    @GET("https://192.168.13.39:9091/prov.json")
+    //для теста
+    //@GET("https://192.168.13.39:9091/prov.json")
+
+    //для прода
+    @GET("https://dm.lanta.me/app_static/settings/prov.json")
     suspend fun providers(): ProvidersListResponse
 
     @POST

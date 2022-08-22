@@ -109,6 +109,13 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val json = JSONObject(data as Map<*, *>).toString()
                         Timber.tag(TAG).d("debug_dmm incoming call json: $json")
                         moshi.adapter(FcmCallData::class.java).fromJson(json)?.let { msg ->
+                            //если пришло значение в поле hash, то параметры pass, live, image игнорируются
+                            //и вычисляются из hash
+                            msg.hash?.let { hash ->
+                                msg.pass = hash
+                                msg.live = "${DataModule.BASE_URL}call/live/$hash"
+                                msg.image = "${DataModule.BASE_URL}call/camshot/$hash"
+                            }
                             waitForLinServiceAndRun(msg) {
                                 it.listenAndGetNotifications(msg)
                             }

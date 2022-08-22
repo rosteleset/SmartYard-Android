@@ -8,17 +8,18 @@ data class FcmCallData(
     val port: String,
     val transport: FcmTransport,
     val extension: String,
-    val pass: String,
+    var pass: String = "",
     val dtmf: String,
-    val image: String,
-    val live: String,
+    var image: String = "",
+    var live: String = "",
     val timestamp: String,
     val ttl: Int,
     val callerId: String,
     val flatId: Int,
+    val flatNumber: String,
     val stun: String? = null,
     val stun_transport: String? = null,
-    val baseUrl: String? = null
+    val hash: String? = null,
 ) : Serializable
 
 enum class FcmTransport {
