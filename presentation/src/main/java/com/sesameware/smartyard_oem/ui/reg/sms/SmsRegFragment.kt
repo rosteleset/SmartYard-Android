@@ -11,10 +11,10 @@ import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.domain.model.ErrorStatus
+import com.sesameware.domain.model.response.AuthMethod
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentSmsRegBinding
@@ -30,6 +30,7 @@ class SmsRegFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var phoneNumber: String = ""
+    private var authMethod = AuthMethod.SMS_CODE
 
     private val mViewModel by viewModel<SmsRegViewModel>()
 
@@ -80,11 +81,23 @@ class SmsRegFragment : Fragment() {
 
         requireNotNull(arguments).run {
             phoneNumber = requireNotNull(getString(KEY_PHONE_NUMBER))
+            authMethod = AuthMethod.getType(getString(KEY_AUTH_METHOD) ?: "")
         }
 
         binding.tvTel.text = String.format(
-            getString(R.string.reg_sms_code_tel), phoneNumber
-        )
+            getString(
+                when (authMethod) {
+                    AuthMethod.FLASH_CALL -> R.string.reg_flash_call_code_tel
+                    else -> R.string.reg_sms_code_tel
+                }
+            ), phoneNumber)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.pin.setAutofillHints(when (authMethod) {
+                AuthMethod.FLASH_CALL -> ""
+                else -> "AUTOFILL_HINT_SMS_OTP"
+            })
+        }
 
         binding.tvCorrectNumberTel.setOnClickListener {
             this.findNavController().navigate(R.id.action_smsRegFragment_to_numberRegFragment)
@@ -111,27 +124,24 @@ class SmsRegFragment : Fragment() {
         }
 
         mViewModel.time.observe(
-            viewLifecycleOwner,
-            Observer { time ->
-                binding.tvTimer.text = getString(R.string.reg_sms_send_code_repeat, time)
-            }
-        )
+            viewLifecycleOwner
+        ) { time ->
+            binding.tvTimer.text = getString(R.string.reg_sms_send_code_repeat, time)
+        }
 
         mViewModel.resendTimerUp.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.tvTimer.isVisible = false
-                binding.btnResendCode.isVisible = true
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.tvTimer.isVisible = false
+            binding.btnResendCode.isVisible = true
+        }
 
         mViewModel.resendTimerStarted.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.tvTimer.isVisible = true
-                binding.btnResendCode.isVisible = false
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.tvTimer.isVisible = true
+            binding.btnResendCode.isVisible = false
+        }
     }
 
     private fun togglePinLineColor(error: Boolean) {
@@ -155,5 +165,6 @@ class SmsRegFragment : Fragment() {
         const val KEY_PHONE_NUMBER = "phone_number"
         const val KEY_NAME = "name"
         const val KEY_PATRONYMIC = "patronymic"
+        const val KEY_AUTH_METHOD = "method"
     }
 }

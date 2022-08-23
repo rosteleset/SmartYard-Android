@@ -100,7 +100,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             messageId ?: "",
                             title ?: "",
                             message ?: "",
-                            messageType ?: "",
+                            messageType,
                             badge ?: 0
                         )
                     }
@@ -139,7 +139,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             messageId ?: "",
                             title ?: "",
                             message ?: "",
-                            messageType ?: "",
+                            messageType,
                             badge ?: 0
                         )
                     }

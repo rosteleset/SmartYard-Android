@@ -83,24 +83,26 @@ class AccessAddressFragment : Fragment() {
         mViewModel.intercom.observe(
             viewLifecycleOwner
         ) {
-            if (it.doorCode == null) {
-                binding.llCode.isVisible = false
-            } else {
-                binding.tvCodeOpen.text = it.doorCode
-            }
-            val c: Calendar = Calendar.getInstance()
-            val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-            val getCurrentDateTime = sdf.format(c.time)
-            if (getCurrentDateTime <= it.autoOpen) {
-                binding.btnGuestAccessOpen.isClickable = false
-                binding.btnGuestAccessOpen.isChecked = true
-            }
-            hideCodeOpen(it.allowDoorCode)
+            it?.let {
+                if (it.doorCode == null) {
+                    binding.llCode.isVisible = false
+                } else {
+                    binding.tvCodeOpen.text = it.doorCode
+                }
+                val c: Calendar = Calendar.getInstance()
+                val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+                val getCurrentDateTime = sdf.format(c.time)
+                if (getCurrentDateTime <= it.autoOpen) {
+                    binding.btnGuestAccessOpen.isClickable = false
+                    binding.btnGuestAccessOpen.isChecked = true
+                }
+                hideCodeOpen(it.allowDoorCode)
 
-            if (DataModule.providerConfig.hasFRS && it.frsDisabled == false) {
-                binding.expLayoutByFace.expand()
-            } else {
-                binding.expLayoutByFace.collapse()
+                if (DataModule.providerConfig.hasFRS && it.frsDisabled == false) {
+                    binding.expLayoutByFace.expand()
+                } else {
+                    binding.expLayoutByFace.collapse()
+                }
             }
         }
 
@@ -139,11 +141,12 @@ class AccessAddressFragment : Fragment() {
         )
 
         mViewModel.resetCode.observe(
-            viewLifecycleOwner,
-            Observer {
+            viewLifecycleOwner
+        ) {
+            it?.let {
                 binding.tvCodeOpen.text = it.code.toString()
             }
-        )
+        }
 
         binding.ivRefreshCode.setOnClickListener {
             mViewModel.resetCode(flatId)
@@ -267,7 +270,7 @@ class AccessAddressFragment : Fragment() {
         builder
             .setMessage(resources.getString(R.string.setting_dialog_delete_title))
             .setPositiveButton(resources.getString(R.string.setting_dialog_delete_yes)) { _, _ ->
-                mViewModel.deleteRooomate(flatId, number, clientId)
+                mViewModel.deleteRoommate(flatId, number, clientId)
             }
             .setNegativeButton(resources.getString(R.string.setting_dialog_delete_no)) { _, _ ->
                 returnTransition

@@ -60,7 +60,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         if (provider != null && fcmData != null) {
             mLinphone = provider
             mFcmCallData = fcmData
-            intentParse(intent)
+            intentParse()
             observeChanges()
             checkAndRequestCallPermissions()
             mLinphone.setNativeVideoWindowId(binding.mVideoSip)
@@ -187,7 +187,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.let { intentParse(it) }
+        intent?.let { intentParse() }
     }
 
     private fun resetView(data: FcmCallData) {
@@ -196,7 +196,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         binding.mStatusText.text = data.callerId
     }
 
-    private fun intentParse(intent: Intent) {
+    private fun intentParse() {
         resetView(mFcmCallData)
     }
 
@@ -218,7 +218,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private fun answerCall() {
         if (!binding.mAnswerButton.isSelected && mLinphone.dtmfIsSent.value != true) {
             binding.mAnswerButton.isSelected = true
-            mLinphone.acceptCall(binding.mVideoSip)
+            mLinphone.acceptCall()
         }
     }
 

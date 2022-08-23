@@ -45,7 +45,7 @@ open class GenericViewModel : ViewModel(), KoinComponent {
         query: suspend CoroutineScope.() -> Unit
     ): Job {
         return this.launch(
-            context + CoroutineExceptionHandler { _, exception ->
+            context + CoroutineExceptionHandler { _, _ ->
                 progress?.postValue(false)
             }
         ) {

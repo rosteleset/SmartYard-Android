@@ -134,7 +134,7 @@ class LinphoneService : Service() {
         mCore?.let { core ->
             core.start()
             Factory.instance().enableLogCollection(LogCollectionState.EnabledWithoutPreviousLogHandler)
-            Factory.instance().loggingService.setListener { logService, domain, lev, message ->
+            Factory.instance().loggingService.setListener { _, _, _, message ->
                 Timber.i("debug_dmm message: $message")
             }
             core.clearAllAuthInfo()

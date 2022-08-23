@@ -10,7 +10,7 @@ import com.sesameware.domain.model.response.Settings.Roommate
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import java.text.SimpleDateFormat
-import java.util.Calendar
+import java.util.*
 
 /**
  * @author Nail Shakurov
@@ -20,9 +20,9 @@ class AccessAddressViewModel(
     private val addressInteractor: AddressInteractor,
     val preferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
-    var intercom = MutableLiveData<Intercom>()
+    var intercom = MutableLiveData<Intercom?>()
 
-    var resetCode = MutableLiveData<Code>()
+    var resetCode = MutableLiveData<Code?>()
 
     var roommate = MutableLiveData<List<Roommate>>()
 
@@ -40,7 +40,7 @@ class AccessAddressViewModel(
     fun guestAccessOpen(flatId: Int) {
         val cal: Calendar = Calendar.getInstance()
         cal.add(Calendar.HOUR_OF_DAY, 1)
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         dateFormat.timeZone = cal.timeZone
         val autoOpen = dateFormat.format(cal.time)
         viewModelScope.withProgress {
@@ -62,9 +62,9 @@ class AccessAddressViewModel(
 
     fun getRoommateAndIntercom(flatId: Int) {
         viewModelScope.withProgress {
-            val roommat = addressInteractor.getRoommate()
-            val roommateResponse = roommat.data.first { it.flatId == flatId }
-            roommate.postValue(roommateResponse.roommates)
+            val roommate = addressInteractor.getRoommate()
+            val roommateResponse = roommate.data.first { it.flatId == flatId }
+            this@AccessAddressViewModel.roommate.postValue(roommateResponse.roommates)
 
             preferenceStorage.xDmApiRefresh = true
             val dataIntercom = addressInteractor.getIntercom(flatId)
@@ -79,7 +79,7 @@ class AccessAddressViewModel(
         }
     }
 
-    fun deleteRooomate(flatId: Int, number: String, clientId: String) {
+    fun deleteRoommate(flatId: Int, number: String, clientId: String) {
         viewModelScope.withProgress {
             addressInteractor.access(flatId, number, null, "2001-01-01 00:00:00", clientId)
             operationRoommate.postValue(Unit)

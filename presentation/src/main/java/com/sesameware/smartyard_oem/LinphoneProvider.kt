@@ -81,7 +81,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
             when (cState.state) {
                 CallStateSimple.INCOMING -> {
-                    call?.let { _call ->
+                    call?.let { _ ->
                         fcmData?.let { data ->
                             if (!isAppVisible()) {
                                 sendCallNotification(data, service, preferenceStorage)
@@ -152,7 +152,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         currentRingtone?.stop()
     }
 
-    fun acceptCall(videoWindow: TextureView) {
+    fun acceptCall() {
         core.currentCall?.let { call ->
             val params = core.createCallParams(call)
             params?.enableVideo(true)

@@ -7,12 +7,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
+import com.sesameware.domain.model.response.AuthMethod
+import com.sesameware.domain.model.response.RequestCode
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.p8
 import com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallFragment
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
-import timber.log.Timber
 import kotlin.random.Random
 
 /**
@@ -23,15 +24,24 @@ class NumberRegViewModel(
     private val mInteractor: AuthInteractor,
     private val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
+    private var authMethod = AuthMethod.SMS_CODE
+    private var callNumber = ""
 
     fun requestSmsCode(phone: String, fragment: Fragment) {
         viewModelScope.withProgress({ false }) {
             val res = mInteractor.requestCode(phone.p8)
-            if (res?.data?.confirmationNumbers == null) {
-                goToNext(phone, fragment)
-            } else {
-                mPreferenceStorage.phone = phone
-                val callNumber = res.data.confirmationNumbers!![Random.nextInt(0, res.data.confirmationNumbers!!.size)]
+            authMethod = res?.data?.method ?: AuthMethod.SMS_CODE
+            res?.data?.confirmationNumbers?.let {
+                callNumber = it[Random.nextInt(0, it.size)]
+            }
+            goToNext(phone, fragment)
+        }
+    }
+
+    fun goToNext(phone: String, fragment: Fragment) {
+        mPreferenceStorage.phone = phone
+        when (authMethod) {
+            AuthMethod.OUTGOING_CALL -> {
                 NavHostFragment.findNavController(fragment).navigate(
                     R.id.action_numberRegFragment_to_outgoingCallFragment,
                     bundleOf(
@@ -39,18 +49,27 @@ class NumberRegViewModel(
                         OutgoingCallFragment.KEY_CALL_NUMBER to callNumber)
                 )
             }
+            AuthMethod.FLASH_CALL -> {
+                NavHostFragment.findNavController(fragment)
+                    .navigate(
+                        R.id.action_numberRegFragment_to_smsRegFragment,
+                        bundleOf(
+                            SmsRegFragment.KEY_PHONE_NUMBER to phone,
+                            SmsRegFragment.KEY_AUTH_METHOD to RequestCode.AUTH_METHOD_FLASH_CALL
+                        )
+                    )
+            }
+            else -> {
+                NavHostFragment.findNavController(fragment)
+                    .navigate(
+                        R.id.action_numberRegFragment_to_smsRegFragment,
+                        bundleOf(
+                            SmsRegFragment.KEY_PHONE_NUMBER to phone,
+                            SmsRegFragment.KEY_AUTH_METHOD to RequestCode.AUTH_METHOD_SMS_CODE
+                        )
+                    )
+            }
         }
-    }
-
-    fun goToNext(phone: String, fragment: Fragment) {
-        mPreferenceStorage.phone = phone
-        NavHostFragment.findNavController(fragment)
-            .navigate(
-                R.id.action_numberRegFragment_to_smsRegFragment,
-                bundleOf(
-                    SmsRegFragment.KEY_PHONE_NUMBER to phone
-                )
-            )
     }
 
     fun onStart(fragment: Fragment, activity: Activity) {
