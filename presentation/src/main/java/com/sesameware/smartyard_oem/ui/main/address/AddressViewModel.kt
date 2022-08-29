@@ -148,7 +148,7 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (DataModule.providerConfig.hasCCTV && addressItem.cctv > 0) {
+                        if (addressItem.cctv > 0) {
                             mutableList.add(
                                 VideoCameraModel().apply {
                                     caption = "Видеокамеры"
@@ -158,7 +158,7 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (DataModule.providerConfig.hasEvents && hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
+                        if (addressItem.hasPlog && hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
                             mutableList.add(
                                 EventLogModel().apply {
                                     caption = "События"

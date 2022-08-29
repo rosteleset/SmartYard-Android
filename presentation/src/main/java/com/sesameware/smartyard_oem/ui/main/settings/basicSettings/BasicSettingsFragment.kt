@@ -96,18 +96,15 @@ class BasicSettingsFragment : Fragment() {
             dialog.show(parentFragmentManager, "")
         }
         mViewModel.logout.observe(
-            viewLifecycleOwner,
-            Observer {
-                NavHostFragment.findNavController(this)
-                    .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
-                activity?.finish()
-                updateAllWidget(requireContext())
-            }
-        )
-
-        if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == false) {
-            binding.cvNotifications.isVisible = false
+            viewLifecycleOwner
+        ) {
+            NavHostFragment.findNavController(this)
+                .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
+            activity?.finish()
+            updateAllWidget(requireContext())
         }
+
+        binding.cvNotifications.isVisible = DataModule.providerConfig.hasNotification
 
         mViewModel.sentName.observe(
             viewLifecycleOwner
@@ -115,17 +112,15 @@ class BasicSettingsFragment : Fragment() {
             binding.tvUserName.text = "${it.name} ${firstCharacter(it.patronymic)}"
         }
         mViewModel.isPushSetting.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.swShowNotify.isChecked = it
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.swShowNotify.isChecked = it
+        }
         mViewModel.isPushMoneySetting.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.sBalanse.isChecked = it
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.sBalanse.isChecked = it
+        }
     }
 
     @Deprecated("Deprecated in Java")

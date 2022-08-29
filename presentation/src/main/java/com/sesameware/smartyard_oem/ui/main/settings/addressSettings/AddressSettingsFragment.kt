@@ -187,7 +187,7 @@ class AddressSettingsFragment : Fragment() {
             }
 
             val useFRS = it.frsDisabled
-            if (!DataModule.providerConfig.hasFRS || useFRS == null) {
+            if (useFRS == null) {
                 binding.tvUseFRS.isVisible = false
                 binding.ivUseFRSBeta.isVisible = false
                 binding.switchUseFRS.isVisible = false

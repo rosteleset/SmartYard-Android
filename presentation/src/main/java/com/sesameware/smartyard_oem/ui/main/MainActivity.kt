@@ -91,7 +91,7 @@ class MainActivity : CommonActivity() {
 
         binding.bottomNav.itemIconTintList = null
 
-        if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+        if (DataModule.providerConfig.hasNotification) {
             showBadge(this, binding.bottomNav, R.id.notification, "")
         }
         mViewModel.onCreate()
@@ -99,7 +99,7 @@ class MainActivity : CommonActivity() {
         mViewModel.badge.observe(
             this
         ) { badge ->
-            if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+            if (DataModule.providerConfig.hasNotification) {
                 if (badge) {
                     showBadge(this, binding.bottomNav, R.id.notification, "")
                 } else {
@@ -111,7 +111,7 @@ class MainActivity : CommonActivity() {
         mViewModel.chat.observe(
             this
         ) { chat ->
-            if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+            if (DataModule.providerConfig.hasNotification) {
                 if (chat) {
                     showBadge(this, binding.bottomNav, R.id.chat, "")
                 } else {
@@ -244,20 +244,25 @@ class MainActivity : CommonActivity() {
     private fun setupBottomNavigationBar(resume: Boolean) {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
         val navGraphIds = mutableListOf<Int>()
-        val checkFeatures = hashMapOf(
-            ProviderConfig.MAIN_MENU_ADDRESSES to Pair(R.navigation.address, R.id.address),
-            ProviderConfig.MAIN_MENU_NOTIFICATIONS to Pair(R.navigation.notification, R.id.notification),
-            ProviderConfig.MAIN_MENU_CHAT to Pair(R.navigation.chat, R.id.chat),
-            ProviderConfig.MAIN_MENU_PAYMENTS to Pair(R.navigation.pay, R.id.pay),
-            ProviderConfig.MAIN_MENU_ADDITIONAL to Pair(R.navigation.settings, R.id.settings),
-        )
-        for ((key, value) in checkFeatures) {
-            if (DataModule.providerConfig.mainMenu?.contains(key) == true) {
-                navGraphIds.add(value.first)
-            } else {
-                bottomNavigationView.menu.removeItem(value.second)
-            }
+
+        //основное меню
+        navGraphIds.add(R.navigation.address)  //вкладка адреса есть всегда
+        if (DataModule.providerConfig.hasNotification) {
+            navGraphIds.add(R.navigation.notification)
+        } else {
+            bottomNavigationView.menu.removeItem(R.id.notification)
         }
+        if (DataModule.providerConfig.hasChat) {
+            navGraphIds.add(R.navigation.chat)
+        } else {
+            bottomNavigationView.menu.removeItem(R.id.chat)
+        }
+        if (DataModule.providerConfig.hasPayments) {
+            navGraphIds.add(R.navigation.pay)
+        } else {
+            bottomNavigationView.menu.removeItem(R.id.pay)
+        }
+        navGraphIds.add(R.navigation.settings)  //вкладка дополнительно есть всегда
 
         // Setup the bottom navigation view with a list of navigation graphs
         val controller = bottomNavigationView.setupWithNavController(

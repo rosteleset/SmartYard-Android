@@ -98,7 +98,7 @@ class AccessAddressFragment : Fragment() {
                 }
                 hideCodeOpen(it.allowDoorCode)
 
-                if (DataModule.providerConfig.hasFRS && it.frsDisabled == false) {
+                if (it.frsDisabled == false) {
                     binding.expLayoutByFace.expand()
                 } else {
                     binding.expLayoutByFace.collapse()

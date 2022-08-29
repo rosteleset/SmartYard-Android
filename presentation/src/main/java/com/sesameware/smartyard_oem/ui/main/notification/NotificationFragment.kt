@@ -124,7 +124,7 @@ class NotificationFragment : Fragment() {
                     it.code,
                     "text/html", "UTF-8", null
                 )
-                if (DataModule.providerConfig.mainMenu?.contains(ProviderConfig.MAIN_MENU_NOTIFICATIONS) == true) {
+                if (DataModule.providerConfig.hasNotification) {
                     (activity as MainActivity).removeBadge()
                 }
             }

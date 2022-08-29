@@ -141,7 +141,7 @@ class EventLogDetailAdapter(
                     clELDFriend.isVisible = false
                     bELDFriend.setOnClickListener(null)
 
-                    if (DataModule.providerConfig.hasFRS && eventItem.frsEnabled) {
+                    if (eventItem.frsEnabled) {
                         eventItem.detailX?.face?.let {face ->
                             tvEventImage.setFaceRect(face.left, face.top, face.width, face.height,
                                 eventItem.eventType == Plog.EVENT_OPEN_BY_FACE)

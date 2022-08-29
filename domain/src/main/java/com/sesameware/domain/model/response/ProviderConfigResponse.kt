@@ -5,23 +5,14 @@ import com.squareup.moshi.Json
 typealias ProviderConfigResponse = ApiResult<ProviderConfig>?
 
 data class ProviderConfig(
-    //основное меню приложения (по умолчанию адреса, уведомления, дополнительно)
-    @Json(name = MAIN_MENU) val mainMenu: MutableList<String>? = mutableListOf(
-        MAIN_MENU_ADDRESSES,
-        //MAIN_MENU_NOTIFICATIONS,
-        MAIN_MENU_ADDITIONAL),
+    //уведомления
+    @Json(name = HAS_NOTIFICATIONS) val _hasNotifications: String? = "f",
 
-    //видеонаблюдение (по умолчанию нет)
-    @Json(name = HAS_CCTV) val _hasCCTV: String? = "f",
+    //чат
+    @Json(name = HAS_CHAT) val _hasChat: String? = "f",
 
     //городские камеры (по умолчанию нет)
     @Json(name = HAS_CITY_CAMS) val _hasCityCams: String? = "f",
-
-    //события (по умолчанию нет)
-    @Json(name = HAS_EVENTS) val _hasEvents: String? = "f",
-
-    //система распознавания лиц (по умолчанию нет)
-    @Json(name = HAS_FRS) val _hasFRS: String? = "f",
 
     //работа с заявками (по умолчанию нет)
     @Json(name = HAS_ISSUES) val _hasIssues: String? = "f",
@@ -35,17 +26,14 @@ data class ProviderConfig(
     //номер телефона техподдержки
     @Json(name = SUPPORT_PHONE) val supportPhone: String? = null,
 ) {
-    val hasCCTV: Boolean
-        get() = _hasCCTV == "t"
+    val hasNotification: Boolean
+        get() = _hasNotifications == "t"
+
+    val hasChat: Boolean
+        get() = _hasChat == "t"
 
     val hasCityCams: Boolean
         get() = _hasCityCams == "t"
-
-    val hasEvents: Boolean
-        get() = _hasEvents == "t"
-
-    val hasFRS: Boolean
-        get() = _hasFRS == "t"
 
     val hasIssues: Boolean
         get() = _hasIssues == "t"
@@ -54,25 +42,14 @@ data class ProviderConfig(
         get() = _hasPayments == "t"
 
     companion object {
-        //основное меню приложения
-        const val MAIN_MENU = "mainMenu"
-        const val MAIN_MENU_ADDRESSES = "addresses"
-        const val MAIN_MENU_NOTIFICATIONS = "notifications"
-        const val MAIN_MENU_CHAT = "chat"
-        const val MAIN_MENU_PAYMENTS = "payments"
-        const val MAIN_MENU_ADDITIONAL = "additional"
+        //уведомления
+        const val HAS_NOTIFICATIONS = "notifications"
 
-        //видеонаблюдение
-        const val HAS_CCTV = "cctv"
+        //чат
+        const val HAS_CHAT = "chat"
 
         //городские камеры
         const val HAS_CITY_CAMS = "cityCams"
-
-        //события
-        const val HAS_EVENTS = "events"
-
-        //события
-        const val HAS_FRS = "frs"
 
         //работа с заявками
         const val HAS_ISSUES = "issues"
