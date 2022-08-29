@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.sesameware.data.DataModule
 import com.sofit.onlinechatsdk.ChatView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -59,6 +60,8 @@ class ChatFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mChatView?.run {
+            setId(DataModule.providerConfig.chatOptions?.id ?: "")
+            domain = (DataModule.providerConfig.chatOptions?.domain ?: "")
             clientId = mViewModel.getClientIdHash()
             language = "ru"
             callJsSetClientInfo(mViewModel.getJsClientInfo())

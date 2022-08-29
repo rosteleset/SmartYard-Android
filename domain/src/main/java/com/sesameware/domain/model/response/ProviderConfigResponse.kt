@@ -25,6 +25,9 @@ data class ProviderConfig(
 
     //номер телефона техподдержки
     @Json(name = SUPPORT_PHONE) val supportPhone: String? = null,
+
+    //настройки чата
+    @Json(name = CHAT_OPTIONS) val chatOptions: ChatOptions? = null,
 ) {
     val hasNotification: Boolean
         get() = _hasNotifications == "t"
@@ -40,6 +43,12 @@ data class ProviderConfig(
 
     val hasPayments: Boolean
         get() = _hasPayments == "t"
+
+    data class ChatOptions(
+        @Json(name = CHAT_ID) val id: String? = null,
+        @Json(name = CHAT_DOMAIN) val domain: String? = null,
+        @Json(name = CHAT_TOKEN) val token: String? = null,
+    )
 
     companion object {
         //уведомления
@@ -62,5 +71,11 @@ data class ProviderConfig(
 
         //номер телефона техподдержки
         const val SUPPORT_PHONE = "supportPhone"
+
+        //настройки чата
+        const val CHAT_OPTIONS = "chatOptions"
+        const val CHAT_ID = "id"
+        const val CHAT_DOMAIN = "domain"
+        const val CHAT_TOKEN = "token"
     }
 }
