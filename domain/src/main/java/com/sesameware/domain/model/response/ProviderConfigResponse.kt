@@ -42,7 +42,7 @@ data class ProviderConfig(
         get() = _hasIssues == "t"
 
     val hasPayments: Boolean
-        get() = _hasPayments == "t"
+        get() = _hasPayments == "t" || paymentsUrl?.isNotEmpty() == true
 
     data class ChatOptions(
         @Json(name = CHAT_ID) val id: String? = null,
