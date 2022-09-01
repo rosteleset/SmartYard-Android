@@ -52,7 +52,6 @@ buildscript {
         dexter = '6.2.2'
         playServicesWallet = '19.1.0'
         exoPlayer = '2.14.2'
-        mobmetricalib = '3.13.1'
         installreferrer = '2.2'
         recyclerView = '1.2.1'
         preference_version = "1.2.0"

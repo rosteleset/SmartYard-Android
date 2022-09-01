@@ -6,7 +6,7 @@ typealias ProviderConfigResponse = ApiResult<ProviderConfig>?
 
 data class ProviderConfig(
     //уведомления
-    @Json(name = HAS_NOTIFICATIONS) val _hasNotifications: String? = "f",
+    @Json(name = HAS_NOTIFICATIONS) val _hasNotifications: String? = "t",
 
     //чат
     @Json(name = HAS_CHAT) val _hasChat: String? = "f",
