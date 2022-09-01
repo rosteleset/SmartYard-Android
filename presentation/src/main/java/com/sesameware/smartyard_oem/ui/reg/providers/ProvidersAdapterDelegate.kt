@@ -14,7 +14,7 @@ import timber.log.Timber
 
 class ProvidersAdapterDelegate(
     var activity: Activity,
-    private val clickListener: (id: String, baseUrl: String) -> Unit
+    private val clickListener: (id: String, providerName: String, baseUrl: String) -> Unit
 ) : AdapterDelegate<List<ProviderModel>>() {
     private var checkedPosition = -1
     private val inflater: LayoutInflater = activity.layoutInflater
@@ -46,7 +46,7 @@ class ProvidersAdapterDelegate(
                 }
                 checkbox.isChecked = true
                 checkedPosition = position
-                clickListener.invoke(providerItem.id, providerItem.baseUrl)
+                clickListener.invoke(providerItem.id, providerItem.name, providerItem.baseUrl)
             }
         }
     }

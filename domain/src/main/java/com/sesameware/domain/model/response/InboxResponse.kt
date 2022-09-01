@@ -10,7 +10,7 @@ typealias InboxResponse = ApiResult<Inbox>
 
 data class Inbox(
     @Json(name = "basePath")
-    val basePath: String = "", // https://dm.lanta.me/
+    val basePath: String = "",
     @Json(name = "code")
     val code: String = "" // <!DOCTYPE html><html lang="ru"><head>..
 )

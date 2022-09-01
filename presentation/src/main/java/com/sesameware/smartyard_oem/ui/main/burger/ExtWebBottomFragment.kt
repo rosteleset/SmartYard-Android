@@ -15,7 +15,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentExtWebBottomBinding
 import timber.log.Timber
-import java.io.ByteArrayInputStream
 
 class ExtWebBottomFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentExtWebBottomBinding? = null
@@ -51,7 +50,7 @@ class ExtWebBottomFragment : BottomSheetDialogFragment() {
         binding.root.requestLayout()
     }
 
-    //пересчитваем высоту WebView для правильной работы скроллинга
+    //пересчитываем высоту WebView для правильной работы скроллинга
     private fun changeLayout() {
         val position = IntArray(2)
         binding.wvExtBottom.getLocationOnScreen(position)

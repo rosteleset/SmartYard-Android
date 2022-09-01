@@ -66,4 +66,14 @@
             android:name="url"
             app:argType="string" />
     </fragment>
+    <dialog
+        android:id="@+id/extWebBottomFragment2"
+        android:name="com.sesameware.smartyard_oem.ui.main.burger.ExtWebBottomFragment"
+        android:label="extWebBottomFragment2"
+        tools:layout="@layout/fragment_ext_web_bottom">
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
+    <action android:id="@+id/action_global_extWebBottomFragment2" app:destination="@id/extWebBottomFragment2" />
 </navigation>

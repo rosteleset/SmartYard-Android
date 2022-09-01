@@ -20,6 +20,7 @@ class ProvidersFragment : Fragment() {
     private val mViewModel by viewModel<ProvidersViewModel>()
     private lateinit var adapter: ProvidersAdapter
     private var providerId = ""
+    private var providerName = ""
     private var providerBaseUrl = ""
 
     override fun onCreateView(
@@ -46,7 +47,7 @@ class ProvidersFragment : Fragment() {
         }
 
         binding.btnChooseProvider.setOnClickListener {
-            mViewModel.goToNext(this, providerId, providerBaseUrl)
+            mViewModel.goToNext(this, providerId, providerName, providerBaseUrl)
         }
     }
 
@@ -70,8 +71,9 @@ class ProvidersFragment : Fragment() {
     private fun initRecycler() {
         activity?.let {
             binding.rvProviders.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
-            adapter = ProvidersAdapter(it) { id, baseUrl ->
+            adapter = ProvidersAdapter(it) { id, name, baseUrl ->
                 providerId = id
+                providerName = name
                 providerBaseUrl = baseUrl
                 binding.btnChooseProvider.isEnabled = providerId.isNotEmpty() && providerBaseUrl.isNotEmpty()
             }

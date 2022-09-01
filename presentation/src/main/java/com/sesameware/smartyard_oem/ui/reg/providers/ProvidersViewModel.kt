@@ -1,5 +1,6 @@
 package com.sesameware.smartyard_oem.ui.reg.providers
 
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -10,6 +11,7 @@ import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.response.Provider
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.reg.tel.NumberRegFragment
 
 class ProvidersViewModel(
     private val mPreferenceStorage: PreferenceStorage,
@@ -21,10 +23,12 @@ class ProvidersViewModel(
         getProviders()
     }
 
-    fun goToNext(fragment: Fragment, providerId: String, providerBaseUrl: String) {
+    fun goToNext(fragment: Fragment, providerId: String, providerName: String, providerBaseUrl: String) {
         DataModule.BASE_URL = providerBaseUrl + if (!providerBaseUrl.endsWith("/")) "/" else ""
         mPreferenceStorage.providerId = providerId
-        NavHostFragment.findNavController(fragment).navigate(R.id.action_providersFragment_to_numberRegFragment)
+        NavHostFragment.findNavController(fragment).navigate(R.id.action_providersFragment_to_numberRegFragment,
+            bundleOf(NumberRegFragment.KEY_PROVIDER_NAME to providerName)
+        )
     }
 
     private fun getProviders() {

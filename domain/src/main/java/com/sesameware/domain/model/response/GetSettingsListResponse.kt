@@ -6,27 +6,27 @@ typealias GetSettingsListResponse = ApiResult<List<Settings>>?
 
 data class Settings(
     @Json(name = "address")
-    val address: String = "", // Тамбов, ул. Уборевича, дом 7, кв 1
+    val address: String = "",
     @Json(name = "clientId")
-    val clientId: String = "", // 75549
+    val clientId: String = "",
     @Json(name = "clientName")
-    val clientName: String = "", // Пупкин Василий Алибабаевич (6c:3b:6b:4c:73:c5)
+    val clientName: String = "",
     @Json(name = "contractName")
-    val contractName: String = "", // ФЛ-70392/18
+    val contractName: String = "",
     @Json(name = "contractOwner")
-    val contractOwner: String = "", // t
+    val contractOwner: String = "",
     @Json(name = "flatId")
-    val flatId: Int = -1, // 1
+    val flatId: Int = -1,
     @Json(name = "flatNumber")
     val flatNumber: String = "",
     @Json(name = "flatOwner")
-    val flatOwner: String = "", // t
+    val flatOwner: String = "",
     @Json(name = "hasGates")
-    val hasGates: String = "", // t
+    val hasGates: String = "",
     @Json(name = "houseId")
-    val houseId: Int = -1, // 6556
+    val houseId: Int = -1,
     @Json(name = "lcab")
-    val lcab: String?, // https://lc.lanta.me/?auth=ZjcwMzkyOmQ2Mjg3ZjdlMDVjYzU2ODM0MmM5ZDUwOGU4ZDg2Njll
+    val lcab: String?,
     @Json(name = "roommates")
     val roommates: List<Roommate> = listOf(),
     @Json(name = "services")
@@ -36,10 +36,10 @@ data class Settings(
 ) {
     data class Roommate(
         @Json(name = "expire")
-        val expire: String = "", // 3001-01-01 00:00:00
+        val expire: String = "",
         @Json(name = "phone")
-        val phone: String = "", // 79876317574
+        val phone: String = "",
         @Json(name = "type")
-        val type: String = "" // inner
+        val type: String = ""
     )
 }

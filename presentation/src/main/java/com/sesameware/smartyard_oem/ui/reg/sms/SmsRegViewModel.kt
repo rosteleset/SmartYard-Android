@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.CommonError
@@ -53,6 +54,12 @@ class SmsRegViewModel(
         }) {
             val res = mInteractor.confirmCode(phone.p8, code)
             mPreferenceStorage.authToken = res.data.accessToken
+
+            //получение настроек
+            mInteractor.getOptions()?.let { result ->
+                DataModule.providerConfig = result.data
+            }
+
             val name: Name = if (res.data.names is Boolean)
                 Name("", "")
             else

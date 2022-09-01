@@ -14,7 +14,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.databinding.FragmentExtWebViewBinding
 import timber.log.Timber
-import java.io.ByteArrayInputStream
 
 class ExtWebViewFragment : Fragment() {
     private var _binding: FragmentExtWebViewBinding? = null
@@ -107,10 +106,10 @@ class ExtWebViewFragment : Fragment() {
                 //пытаемся получить URL
                 val href = view?.handler?.obtainMessage()
                 view?.requestFocusNodeHref(href)
-                val url = href?.data?.getString("url");
+                val url = href?.data?.getString("url")
                 //Timber.d("debug_web onCreateWindow: isDialog = $isDialog   url = $url")
                 if (url?.isNotEmpty() == true) {
-                    val action = ExtWebViewFragmentDirections.actionExtWebViewFragmentToExtWebBottomFragment(url)
+                    val action = BurgerFragmentDirections.actionGlobalExtWebBottomFragment(url)
                     findNavController().navigate(action)
                 }
                 return false
@@ -193,11 +192,15 @@ class ExtWebViewFragment : Fragment() {
                 handler.postDelayed({
                     //binding.wvExt.reload()
                     binding.wvExt.url?.let { url ->
-                        val newUrl = url + if (!url.contains("forceRefresh", true)) {
+
+                        //пока отключил forceRefresh
+                        /*val newUrl = url + if (!url.contains("forceRefresh", true)) {
                             "&forceRefresh=1"
                         } else {
                             ""
-                        }
+                        }*/
+                        val newUrl = url
+
                         Timber.d("debug_web reload parent url = $newUrl")
                         binding.wvExt.clearCache(true)
                         binding.wvExt.evaluateJavascript("document.location.replace('$newUrl');") {}
