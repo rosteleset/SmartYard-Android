@@ -25,10 +25,9 @@ class ProvidersViewModel(
 
     fun goToNext(fragment: Fragment, providerId: String, providerName: String, providerBaseUrl: String) {
         DataModule.BASE_URL = providerBaseUrl + if (!providerBaseUrl.endsWith("/")) "/" else ""
+        DataModule.providerName = providerName
         mPreferenceStorage.providerId = providerId
-        NavHostFragment.findNavController(fragment).navigate(R.id.action_providersFragment_to_numberRegFragment,
-            bundleOf(NumberRegFragment.KEY_PROVIDER_NAME to providerName)
-        )
+        NavHostFragment.findNavController(fragment).navigate(R.id.action_providersFragment_to_numberRegFragment)
     }
 
     private fun getProviders() {

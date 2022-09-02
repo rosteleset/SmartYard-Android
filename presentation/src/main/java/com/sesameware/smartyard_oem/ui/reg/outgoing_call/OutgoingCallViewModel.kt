@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem.ui.reg.outgoing_call
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import com.sesameware.data.DataModule
 import kotlinx.coroutines.*
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
@@ -28,6 +29,12 @@ class OutgoingCallViewModel(
                         Name("", "")
                     else
                         Gson().fromJson(Gson().toJson(res.data.names), Name::class.java)
+
+                    //получение настроек
+                    authInteractor.getOptions()?.let { result ->
+                        DataModule.providerConfig = result.data
+                    }
+
                     phoneConfirmed.postValue(Pair(true, name))
 
                     break

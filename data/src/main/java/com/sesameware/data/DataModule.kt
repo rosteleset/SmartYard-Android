@@ -51,6 +51,7 @@ import javax.net.ssl.X509TrustManager
 object DataModule {
     var BASE_URL = "https://localhost/"
     var providerConfig = ProviderConfig()
+    var providerName = ""
 
     val sberApiUserName = ""
     val sberApiPassword = ""

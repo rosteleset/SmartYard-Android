@@ -55,6 +55,7 @@ class RegistrationViewModel(
             authInteractor.providers()?.data?.forEach {
                 if (it.id == pId) {
                     DataModule.BASE_URL = it.baseUrl + if (!it.baseUrl.endsWith("/")) "/" else ""
+                    DataModule.providerName = it.name
                     authInteractor.getOptions()?.let { result ->
                         DataModule.providerConfig = result.data
                     }
