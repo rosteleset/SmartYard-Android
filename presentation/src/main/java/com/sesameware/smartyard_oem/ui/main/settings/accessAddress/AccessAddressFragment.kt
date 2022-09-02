@@ -40,7 +40,7 @@ class AccessAddressFragment : Fragment() {
 
     private var flatId: Int = 0
     private var address: String = ""
-    private var contractOwner: Boolean = false
+    private var flatOwner: Boolean = false
     private var hasGates: Boolean = false
     private var clientId: String = ""
 
@@ -155,8 +155,8 @@ class AccessAddressFragment : Fragment() {
 
     private fun checkHide() {
         // скрываем постоянный доступ к адресу
-        binding.cvPermanentAccessAddress.isVisible = contractOwner
-        binding.tvTitlePermanentAccessAddress.isVisible = contractOwner
+        binding.cvPermanentAccessAddress.isVisible = flatOwner
+        binding.tvTitlePermanentAccessAddress.isVisible = flatOwner
 
         // Если hasGates = false, то скрываем временный доступ
         binding.tvTitleAccessBarrierGate.isVisible = hasGates
@@ -173,7 +173,7 @@ class AccessAddressFragment : Fragment() {
         arguments?.let {
             flatId = AccessAddressFragmentArgs.fromBundle(it).flatId
             address = AccessAddressFragmentArgs.fromBundle(it).address
-            contractOwner = AccessAddressFragmentArgs.fromBundle(it).contractOwner
+            flatOwner = AccessAddressFragmentArgs.fromBundle(it).flatOwner
             hasGates = AccessAddressFragmentArgs.fromBundle(it).hasGates
             clientId = AccessAddressFragmentArgs.fromBundle(it).clientId
         }

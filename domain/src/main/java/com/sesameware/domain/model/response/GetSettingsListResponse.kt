@@ -14,15 +14,15 @@ data class Settings(
     @Json(name = "contractName")
     val contractName: String = "",
     @Json(name = "contractOwner")
-    val contractOwner: String = "",
+    val _contractOwner: String = "",
     @Json(name = "flatId")
     val flatId: Int = -1,
     @Json(name = "flatNumber")
     val flatNumber: String = "",
     @Json(name = "flatOwner")
-    val flatOwner: String = "",
+    val _flatOwner: String = "",
     @Json(name = "hasGates")
-    val hasGates: String = "",
+    val _hasGates: String = "",
     @Json(name = "houseId")
     val houseId: Int = -1,
     @Json(name = "lcab")
@@ -32,8 +32,17 @@ data class Settings(
     @Json(name = "services")
     val services: List<String> = listOf(),
     @Json(name = "hasPlog")
-    val hasPlog: String = ""
+    val _hasPlog: String = ""
 ) {
+    val hasGates: Boolean
+        get() = _hasGates == "t"
+
+    val hasPlog: Boolean
+        get() = _hasPlog == "t"
+
+    val flatOwner: Boolean
+        get() = _flatOwner == "t" || _contractOwner == "t"
+
     data class Roommate(
         @Json(name = "expire")
         val expire: String = "",

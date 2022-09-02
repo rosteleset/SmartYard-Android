@@ -63,7 +63,7 @@ class AddressViewModel(
         val flatToNumber = hashMapOf<Int, String>()
         res?.data?.forEach { settingItem ->
             flatToNumber[settingItem.flatId] = settingItem.flatNumber
-            if (settingItem.hasPlog == "t") {
+            if (settingItem.hasPlog) {
                 (houseFlats.getOrPut(settingItem.houseId) {mutableSetOf()}).add(settingItem.flatId)
             }
         }

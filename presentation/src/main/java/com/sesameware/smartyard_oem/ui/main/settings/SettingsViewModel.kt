@@ -115,11 +115,10 @@ class SettingsViewModel(
                         settingItem.houseId,
                         settingItem.flatId,
                         settingItem.clientId,
-                        settingItem.contractOwner.contains("t"),
                         settingItem.flatOwner,
                         settingItem.services,
                         settingItem.lcab,
-                        settingItem.hasGates.contains("t"),
+                        settingItem.hasGates,
                         expandedFlatId.contains(settingItem.flatId)
                     )
                 }

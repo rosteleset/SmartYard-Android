@@ -38,7 +38,7 @@ class AddressSettingsFragment : Fragment() {
     private var flatId: Int = 0
     private var clientId: String = ""
     private var isKey: Boolean = false
-    private var contractOwner: Boolean = false
+    private var flatOwner: Boolean = false
 
     private val mAddressVM by sharedViewModel<AddressViewModel>()
     private val mSettingsVM by sharedViewModel<SettingsViewModel>()
@@ -58,7 +58,7 @@ class AddressSettingsFragment : Fragment() {
             mSetting = AddressSettingsFragmentArgs.fromBundle(it)
         }
         binding.cvDeleteAddress.setOnClickListener {
-            if (contractOwner) {
+            if (flatOwner) {
                 val dialog = DialogDeleteReasonFragment()
                 dialog.setTargetFragment(this, 0)
                 dialog.onDeleteReasonListener =
@@ -123,7 +123,7 @@ class AddressSettingsFragment : Fragment() {
         flatId = mSetting.flatId
         clientId = mSetting.clientId
         isKey = mSetting.isKey
-        contractOwner = mSetting.contractOwner
+        flatOwner = mSetting.flatOwner
 
         // Значение домофона
         binding.cvNotification.isVisible = isKey
@@ -193,7 +193,7 @@ class AddressSettingsFragment : Fragment() {
                 binding.switchUseFRS.isVisible = false
                 binding.vUseFRS.isVisible = false
             } else {
-                if (!contractOwner) {
+                if (!flatOwner) {
                     //не владелец квартиры, запрещаем переключатель распознавания лиц и делаем настройку попупрозрачной
                     binding.tvUseFRS.alpha = FRS_DISABLED_ALPHA
                     binding.ivUseFRSBeta.alpha = FRS_DISABLED_ALPHA

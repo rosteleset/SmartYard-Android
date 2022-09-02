@@ -121,18 +121,18 @@ class SettingsFragment : Fragment() {
         adapter = ListDelegationAdapter(
             SettingsAddressDelegate(
                 requireActivity(),
-                { address, flatId, isKey, contractOwner, clientId ->
+                { address, flatId, isKey, flatOwner, clientId ->
                     val action =
                         SettingsFragmentDirections.actionSettingsFragmentToAddressSettingsFragment("")
                     action.address = address
                     action.flatId = flatId
                     action.isKey = isKey
-                    action.contractOwner = contractOwner
+                    action.flatOwner = flatOwner
                     action.clientId = clientId
                     this.findNavController().navigate(action)
                 },
                 mViewModel::getAccess,
-                { address, flatId, contractOwner, hasGates, clientId ->
+                { address, flatId, flatOwner, hasGates, clientId ->
                     val action =
                         SettingsFragmentDirections.actionSettingsFragmentToAccessAddressFragment(
                             "",
@@ -140,7 +140,7 @@ class SettingsFragment : Fragment() {
                         )
                     action.address = address
                     action.flatId = flatId
-                    action.contractOwner = contractOwner
+                    action.flatOwner = flatOwner
                     action.hasGates = hasGates
                     action.clientId = clientId
                     this.findNavController().navigate(action)

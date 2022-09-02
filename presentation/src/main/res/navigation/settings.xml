@@ -49,7 +49,7 @@
             android:id="@+id/action_addressSettingsFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <argument
-            android:name="contractOwner"
+            android:name="flatOwner"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
@@ -68,7 +68,7 @@
             android:defaultValue="-1"
             app:argType="integer" />
         <argument
-            android:name="contractOwner"
+            android:name="flatOwner"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument

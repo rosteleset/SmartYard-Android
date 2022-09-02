@@ -23,9 +23,9 @@ import timber.log.Timber
 // isKey = Домофон
 class SettingsAddressDelegate(
     var activity: Activity,
-    private val settingAddressListener: (address: String, flatId: Int, isKey: Boolean, contractOwner: Boolean, clientId: String) -> Unit,
+    private val settingAddressListener: (address: String, flatId: Int, isKey: Boolean, flatOwner: Boolean, clientId: String) -> Unit,
     private val clickItem: (serviceType: Services, model: SettingsAddressModel, isCon: Boolean) -> Unit,
-    private val provideAccessListener: (address: String, flatId: Int, contractOwner: Boolean, hasGate: Boolean, clientId: String) -> Unit,
+    private val provideAccessListener: (address: String, flatId: Int, flatOwner: Boolean, hasGate: Boolean, clientId: String) -> Unit,
     private val clickPos: (pos: Int, isExpanded: Boolean) -> Unit
 ) :
     AdapterDelegate<List<SettingsAddressModel>>() {
@@ -59,7 +59,7 @@ class SettingsAddressDelegate(
                 openUrl(activity, lcab ?: "")
             }
             // скрываем тарелочки
-            hideBlockServices(contractOwner, holder)
+            hideBlockServices(flatOwner, holder)
             if (lcab == null) {
                 // нет ссылки на лк
                 hideBlockLcab(false, holder)
@@ -76,11 +76,11 @@ class SettingsAddressDelegate(
             }
 
             holder.llProvideAccess.setOnClickListener {
-                provideAccessListener.invoke(address, flatId, contractOwner, hasGates, clientId)
+                provideAccessListener.invoke(address, flatId, flatOwner, hasGates, clientId)
             }
 
             holder.llSettingAddress.setOnClickListener {
-                settingAddressListener.invoke(address, flatId, isKey, contractOwner, clientId)
+                settingAddressListener.invoke(address, flatId, isKey, flatOwner, clientId)
             }
         }
         if (settingsAddressModel.isExpanded) {
