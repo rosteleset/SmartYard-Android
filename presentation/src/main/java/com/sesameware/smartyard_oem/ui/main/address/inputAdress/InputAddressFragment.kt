@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -67,7 +66,6 @@ class InputAddressFragment : Fragment() {
         binding.actvHouse.setOnItemClickListener() { parent, _, position, id ->
             val selectedItem = parent.adapter.getItem(position) as HousesData?
             binding.actvHouse.setText(selectedItem?.number)
-            houseId = selectedItem?.houseId
         }
     }
 
@@ -95,46 +93,40 @@ class InputAddressFragment : Fragment() {
         )
 
         mViewModel.cityList.observe(
-            viewLifecycleOwner,
-            Observer {
-                cityAdapter.addData(it)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            cityAdapter.addData(it)
+        }
 
         mViewModel.progressCity.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.progressCity.isVisible = it
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.progressCity.isVisible = it
+        }
 
         mViewModel.progressStreet.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.progressStreet.isVisible = it
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.progressStreet.isVisible = it
+        }
 
         mViewModel.progressHouse.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding.progressHouse.isVisible = it
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            binding.progressHouse.isVisible = it
+        }
 
         mViewModel.streetList.observe(
-            viewLifecycleOwner,
-            Observer {
-                streetAdapter.addData(it)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            streetAdapter.addData(it)
+        }
 
         mViewModel.houseList.observe(
-            viewLifecycleOwner,
-            Observer {
-                houseAdapter.addData(it)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            houseAdapter.addData(it)
+        }
 
         mViewModel.confirmError.observe(
             viewLifecycleOwner,
@@ -161,7 +153,7 @@ class InputAddressFragment : Fragment() {
         )
         binding.actvCity.afterTextChanged(this::validateFields)
         binding.actvStreet.afterTextChanged(this::validateFields)
-        binding.actvHouse.afterTextChanged(this::validateFields)
+        binding.actvHouse.afterTextChanged(this::validateHouse)
         // etApartment.afterTextChanged(this::validateFields)
         binding.tvQrCode.setOnClickListener {
             NavHostFragment.findNavController(this)
@@ -172,6 +164,18 @@ class InputAddressFragment : Fragment() {
     private fun validateFields(text: String) {
         binding.btnCheckAvailableServices.isEnabled =
             binding.actvCity.text.isNotEmpty() && binding.actvStreet.text.isNotEmpty() && binding.actvHouse.text.isNotEmpty()
+    }
+
+    private fun validateHouse(text: String) {
+        houseId = null
+        mViewModel.houseList.value?.forEach {
+            if (it.number == text) {
+                houseId = it.houseId
+                return@forEach
+            }
+        }
+
+        validateFields(text)
     }
 
     private fun getAddress() =
