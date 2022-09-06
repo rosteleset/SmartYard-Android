@@ -82,27 +82,25 @@ class SettingsFragment : Fragment() {
         }
 
         mViewModel.dataList.observe(
-            viewLifecycleOwner,
-            Observer {
-                adapter.items = it
-                adapter.notifyDataSetChanged()
-                binding.swipeContainer.isRefreshing = false
+            viewLifecycleOwner
+        ) {
+            adapter.items = it
+            adapter.notifyDataSetChanged()
+            binding.swipeContainer.isRefreshing = false
 
-                if (binding.floatingActionButton.visibility != View.VISIBLE) {
-                    binding.floatingActionButton.show()
-                }
+            if (binding.floatingActionButton.visibility != View.VISIBLE) {
+                binding.floatingActionButton.show()
             }
-        )
+        }
 
         mViewModel.progress.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!binding.swipeContainer.isRefreshing) {
-                    binding.progressBar.isVisible = it
-                }
-                binding.swipeContainer.isRefreshing = false
+            viewLifecycleOwner
+        ) {
+            if (!binding.swipeContainer.isRefreshing) {
+                binding.progressBar.isVisible = it
             }
-        )
+            binding.swipeContainer.isRefreshing = false
+        }
 
         mViewModel.dialogService.observe(
             viewLifecycleOwner,
