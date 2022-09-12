@@ -33,7 +33,7 @@ class LinphoneService : Service() {
             Log.e(ioe)
         }
 
-        //Factory.instance().setDebugMode(true, "__Q__")
+        //Factory.instance().setDebugMode(true, "__L__")
 
         val core = Factory.instance().createCore("$basePath/$FILE", "$basePath/$FOLDER", this)
         mCore = core
