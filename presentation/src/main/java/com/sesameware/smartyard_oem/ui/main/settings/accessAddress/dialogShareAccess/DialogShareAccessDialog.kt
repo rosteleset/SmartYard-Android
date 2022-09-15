@@ -81,7 +81,7 @@ class DialogShareAccessDialog() :
                 "+7 ([000]) [000]-[00]-[00]",
                 affineFormats, AffinityCalculationStrategy.PREFIX,
                 object : MaskedTextChangedListener.ValueListener {
-                    override fun onTextChanged(maskFilled: Boolean, @NonNull extractedValue: String, @NonNull formattedText: String) {
+                    override fun onTextChanged(maskFilled: Boolean, @NonNull extractedValue: String, @NonNull formattedValue: String) {
                         binding.btnDone.isEnabled = maskFilled
                         contactModel.number = "7$extractedValue"
                     }

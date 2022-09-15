@@ -63,7 +63,7 @@ class GuestAccessDialogFragment : DialogFragment() {
         try {
             onGuestAccessListener = targetFragment as OnGuestAccessListener?
         } catch (e: ClassCastException) {
-            Timber.d("onAttach: ClassCastException : " + e.message)
+            Timber.d("onAttach: ClassCastException : %s", e.message)
         }
     }
 

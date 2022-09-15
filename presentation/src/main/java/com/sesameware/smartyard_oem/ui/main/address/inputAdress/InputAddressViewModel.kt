@@ -84,7 +84,7 @@ class InputAddressViewModel(private val geoInteractor: GeoInteractor) : GenericV
                 if (res?.data?.isEmpty() != false)
                     navigationToNoNetwork.postValue(Event(address))
                 else {
-                    servicesList.postValue(Event(res.data ?: emptyList()))
+                    servicesList.postValue(Event(res.data))
                     // navigationToNoNetwork.postValue(Event(address))
                 }
             }

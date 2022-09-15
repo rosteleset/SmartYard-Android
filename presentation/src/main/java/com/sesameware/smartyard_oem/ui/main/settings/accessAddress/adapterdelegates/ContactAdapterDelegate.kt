@@ -64,8 +64,8 @@ class ContactAdapterDelegate(
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
     ) {
-        val vh = holder as AddressCameraViewHolder
-        holder?.apply {
+        holder as AddressCameraViewHolder
+        holder.apply {
             val item: ContactModel = items[position]
             activity.applicationContext?.let {
                 var infoContact: Contact? = null
@@ -137,7 +137,7 @@ class ContactAdapterDelegate(
                 try {
                     val inputStream: InputStream? = Contacts.openContactPhotoInputStream(
                         context.contentResolver,
-                        ContentUris.withAppendedId(Contacts.CONTENT_URI, contactId!!.toLong())
+                        ContentUris.withAppendedId(Contacts.CONTENT_URI, contactId.toLong())
                     )
                     if (inputStream != null) {
                         photo = BitmapFactory.decodeStream(inputStream)

@@ -128,7 +128,7 @@ class MainActivityViewModel(
     //Проверям статусы оплат. Если оплата успешна завершена, то дёргаем api метод.
     fun sberCheckPayments() {
         viewModelScope.withProgress({false}, null) {
-            var orders = hashMapOf<String, String>()
+            var orders: HashMap<String, String>
             synchronized(DataModule.orderNumberToId) {
                 orders = HashMap(DataModule.orderNumberToId)
             }

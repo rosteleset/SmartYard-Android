@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.widget.RemoteViews
 import org.koin.core.component.KoinComponent
 import com.sesameware.smartyard_oem.R
@@ -30,7 +31,7 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         val rv = RemoteViews(context.packageName, R.layout.app_widget)
         setUpdateTV(rv, context, appWidgetId)
         setList(rv, context, appWidgetId)
-        setListClick(rv, context, appWidgetId)
+        setListClick(rv, context)
         appWidgetManager.updateAppWidget(appWidgetId, rv)
         appWidgetManager.notifyAppWidgetViewDataChanged(
             appWidgetId,
@@ -63,14 +64,13 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
 
     private fun setListClick(
         rv: RemoteViews,
-        context: Context?,
-        appWidgetId: Int
+        context: Context?
     ) {
         val listClickIntent = Intent(context, WidgetProvider::class.java)
         listClickIntent.action = ACTION_ON_CLICK
         val listClickPIntent = PendingIntent.getBroadcast(
             context, 0,
-            listClickIntent, 0
+            listClickIntent, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
         )
         rv.setPendingIntentTemplate(R.id.lvList, listClickPIntent)
     }

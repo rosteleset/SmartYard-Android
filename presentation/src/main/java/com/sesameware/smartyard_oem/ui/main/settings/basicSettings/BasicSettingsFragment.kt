@@ -47,10 +47,10 @@ class BasicSettingsFragment : Fragment() {
         binding.cvExit.setOnClickListener {
             showDialog()
         }
-        binding.swShowNotify.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.swShowNotify.setOnCheckedChangeListener { _, isChecked ->
             mViewModel.setPushSetting(isChecked)
         }
-        binding.sBalanse.setOnCheckedChangeListener { buttonView, isChecked ->
+        binding.sBalanse.setOnCheckedChangeListener { _, isChecked ->
             mViewModel.setPushMoneySetting(isChecked)
         }
         binding.tvSoundChoose.setOnClickListener {

@@ -33,7 +33,7 @@ class ReasonDelegateAdapter : AdapterDelegate<List<ReasonModel>>() {
         val vh = holder as VideoCameraViewHolder
         val reasonModel: ReasonModel = items[position]
         vh.tvTitle.text = reasonModel.name
-        vh.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+        vh.checkBox.setOnCheckedChangeListener { _, isChecked ->
             items[position].check = isChecked
         }
     }

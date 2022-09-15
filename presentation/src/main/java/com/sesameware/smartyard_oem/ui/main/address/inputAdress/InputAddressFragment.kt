@@ -45,7 +45,7 @@ class InputAddressFragment : Fragment() {
     private fun initAutoCompleteTextView() {
         cityAdapter = CityAdapter(requireContext(), layout.simple_list_item_1, mutableListOf())
         binding.actvCity.setAdapter(cityAdapter)
-        binding.actvCity.setOnItemClickListener() { parent, _, position, id ->
+        binding.actvCity.setOnItemClickListener() { parent, _, position, _ ->
             val selectItem = parent.adapter.getItem(position) as LocationData
             binding.actvCity.setText(selectItem.name)
             mViewModel.getStreet(selectItem.locationId)
@@ -54,7 +54,7 @@ class InputAddressFragment : Fragment() {
         streetAdapter =
             StreetAdapter(requireContext(), layout.simple_list_item_1, mutableListOf())
         binding.actvStreet.setAdapter(streetAdapter)
-        binding.actvStreet.setOnItemClickListener() { parent, _, position, id ->
+        binding.actvStreet.setOnItemClickListener() { parent, _, position, _ ->
             val selectedItem = parent.adapter.getItem(position) as StreetsData?
             binding.actvStreet.setText(selectedItem?.name)
             mViewModel.getHouses(selectedItem?.streetId ?: 0)
@@ -63,7 +63,7 @@ class InputAddressFragment : Fragment() {
         houseAdapter =
             HousesAdapter(requireContext(), layout.simple_list_item_1, mutableListOf())
         binding.actvHouse.setAdapter(houseAdapter)
-        binding.actvHouse.setOnItemClickListener() { parent, _, position, id ->
+        binding.actvHouse.setOnItemClickListener() { parent, _, position, _ ->
             val selectedItem = parent.adapter.getItem(position) as HousesData?
             binding.actvHouse.setText(selectedItem?.number)
         }

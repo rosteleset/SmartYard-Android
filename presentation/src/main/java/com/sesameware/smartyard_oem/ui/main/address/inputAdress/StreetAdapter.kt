@@ -10,6 +10,7 @@ import android.widget.Filterable
 import android.widget.TextView
 import androidx.annotation.LayoutRes
 import com.sesameware.domain.model.response.StreetsData
+import java.util.*
 
 /**
  * @author Nail Shakurov
@@ -55,13 +56,13 @@ class StreetAdapter(
             }
 
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
-                val queryString = charSequence?.toString()?.toLowerCase()
+                val queryString = charSequence?.toString()?.lowercase(Locale.getDefault())
                 val filterResults = FilterResults()
                 filterResults.values = if (queryString == null || queryString.isEmpty())
                     list
                 else
                     list.filter {
-                        it.name.toLowerCase().contains(queryString)
+                        it.name.lowercase(Locale.getDefault()).contains(queryString)
                     }
                 return filterResults
             }

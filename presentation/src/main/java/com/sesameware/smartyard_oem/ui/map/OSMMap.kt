@@ -38,7 +38,7 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
         view.maxZoomLevel = MAX_ZOOM.toDouble()
         view.zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
         view.setMultiTouchControls(true)
-        map?.addOnFirstLayoutListener { v, left, top, right, bottom ->
+        map?.addOnFirstLayoutListener { _, _, _, _, _ ->
             onLayout()
         }
         return view
@@ -81,7 +81,7 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
     }
 
     override fun placeMarkers(list: List<MarkerData>, moveTo: Boolean, instant: Boolean, bBox: BoundingBox?) {
-        list.forEachIndexed { index: Int, it: MarkerData ->
+        list.forEachIndexed { _: Int, it: MarkerData ->
             val marker = it.toMarkerWithIndex()
             map?.overlays?.add(marker)
         }

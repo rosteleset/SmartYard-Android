@@ -500,7 +500,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             viewLifecycleOwner,
             EventObserver {
                 binding.rangePlayer.slider.setIntervalPlayer(it.interval)
-                mPlayer?.changeVideoSource(context, it)
+                changeVideoSource(it)
             }
         )
         mViewModel.changeTrimInterval.observe(
@@ -646,7 +646,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         super.onStart()
         mPlayer = createPlayer(binding.mPlayerView)
         mCurrentPlaybackData?.run {
-            mPlayer?.changeVideoSource(requireContext(), this)
+            changeVideoSource(this)
         }
     }
 
@@ -751,7 +751,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
                         mPlayer = createPlayer(binding.mPlayerView)
                         mCurrentPlaybackData?.run {
-                            mPlayer?.changeVideoSource(requireContext(), this)
+                            changeVideoSource(this)
                         }
                         mViewModel.restoreSeek()
                         if (mExoPlayerView == null) {
@@ -818,8 +818,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
     }
 
-    private fun SimpleExoPlayer.changeVideoSource(
-        context: Context,
+    private fun changeVideoSource(
         data: CCTVTrimmerViewModel.PlayerIntervalChangeData
     ) {
         mCurrentPlaybackData = data
@@ -855,7 +854,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         } else {
             mPlayer = createPlayer(binding.mPlayerView)
             mCurrentPlaybackData?.run {
-                mPlayer?.changeVideoSource(requireContext(), this)
+                changeVideoSource(this)
             }
             mViewModel.restoreSeek()
             if (mExoPlayerView == null) {

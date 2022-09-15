@@ -39,8 +39,8 @@ class EventLogParentAdapter(
         private val rvChildren: RecyclerView = itemView.findViewById(R.id.rvEventLogChildren)
 
         fun onBind(position: Int) {
-            tvDay.text = eventsDay[position].format(DateTimeFormatter.ofPattern("eeee, d MMMM")).capitalize(
-                Locale.getDefault())
+            tvDay.text = eventsDay[position].format(DateTimeFormatter.ofPattern("eeee, d MMMM"))
+                .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             val lm = LinearLayoutManager(itemView.context)
             rvChildren.layoutManager = lm
             val adapter = EventLogChildAdapter(eventsByDays[eventsDay[position]]?.toList() ?: listOf()) {

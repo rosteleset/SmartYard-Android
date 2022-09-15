@@ -17,7 +17,7 @@ class OutgoingCallViewModel(
 ) : GenericViewModel() {
     val phoneConfirmed = MutableLiveData(Pair(false, Name("", "")))
 
-    fun startRepeatingCheckPhone(fragment: Fragment, userPhone: String): Job {
+    fun startRepeatingCheckPhone(userPhone: String): Job {
         return CoroutineScope(Dispatchers.IO).launch {
             var isDone = false
             while (isActive && !isDone) {

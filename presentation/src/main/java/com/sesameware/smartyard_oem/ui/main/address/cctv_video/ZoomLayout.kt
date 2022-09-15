@@ -12,17 +12,17 @@ class MyGestureDetector(
     private var doubleTapListener: (x: Float?) -> Unit = {},
     private var longPressListener: () -> Unit = {}
 ) : GestureDetector.SimpleOnGestureListener() {
-    override fun onSingleTapConfirmed(e: MotionEvent?): Boolean {
+    override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
         singleTapListener.invoke()
         return super.onSingleTapConfirmed(e)
     }
 
-    override fun onDoubleTap(e: MotionEvent?): Boolean {
-        doubleTapListener.invoke(e?.x)
+    override fun onDoubleTap(e: MotionEvent): Boolean {
+        doubleTapListener.invoke(e.x)
         return super.onDoubleTap(e)
     }
 
-    override fun onLongPress(e: MotionEvent?) {
+    override fun onLongPress(e: MotionEvent) {
         longPressListener.invoke()
         return super.onLongPress(e)
     }

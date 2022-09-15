@@ -3,9 +3,9 @@
 buildscript { 
 
     ext {
-        compileSdkVersion = 31
+        compileSdkVersion = 33
         minSdkVersion = 21
-        targetSdkVersion = 31
+        targetSdkVersion = 33
         kotlinVersion = '1.7.10'
         kotlinReflect = '1.7.10'
         appCompatVersion = '1.4.2'

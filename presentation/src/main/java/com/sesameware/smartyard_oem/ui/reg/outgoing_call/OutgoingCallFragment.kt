@@ -70,7 +70,7 @@ class OutgoingCallFragment : Fragment() {
             }
         }
 
-        jobCheckPhone = mViewModel.startRepeatingCheckPhone(this, phoneNumber)
+        jobCheckPhone = mViewModel.startRepeatingCheckPhone(phoneNumber)
 
         mViewModel.phoneConfirmed.observe(viewLifecycleOwner) {
             if (it.first) {

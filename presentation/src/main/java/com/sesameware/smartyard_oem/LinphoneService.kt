@@ -82,7 +82,7 @@ class LinphoneService : Service() {
                 nat.stunServer = stun
                 nat.stunServerUsername = turnUsername
 
-                when (turnTransport.toLowerCase(Locale.getDefault())) {
+                when (turnTransport.lowercase(Locale.getDefault())) {
                     "tcp" -> {
                         nat.enableUdpTurnTransport(false)
                         nat.enableTcpTurnTransport(true)

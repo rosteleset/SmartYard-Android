@@ -1,6 +1,5 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail
 
-import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
@@ -145,12 +144,12 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
     }
 
-    private fun setupObserve(context: Context) {
+    private fun setupObserve() {
         mCCTVViewModel.chosenCamera.observe(
             viewLifecycleOwner
         ) {
             it?.run {
-                changeVideoSource(context, hls)
+                changeVideoSource(hls)
             }
         }
 
@@ -278,7 +277,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         return player
     }
 
-    private fun changeVideoSource(context: Context, hls_url: String) {
+    private fun changeVideoSource(hls_url: String) {
         mPlayer?.let { player ->
             binding.mProgress.visibility = View.VISIBLE
             player.setMediaItem(MediaItem.fromUri(Uri.parse(hls_url)))
@@ -297,7 +296,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     fun initPlayer() {
         if (mPlayer == null && view != null) {
             mPlayer = createPlayer(binding.mVideoView, binding.mProgress)
-            setupObserve(requireContext())
+            setupObserve()
             binding.videoWrap.clipToOutline = true
         }
     }

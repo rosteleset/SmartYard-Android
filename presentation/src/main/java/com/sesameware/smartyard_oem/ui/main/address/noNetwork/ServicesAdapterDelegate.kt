@@ -36,7 +36,7 @@ class ServicesAdapterDelegate(
         with(holder as VideoCameraViewHolder) {
             this.tvTitle.text = items[position].name
             this.checkBox.setOnClickListener { click.invoke() }
-            this.checkBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            this.checkBox.setOnCheckedChangeListener { _, isChecked ->
                 items[position].check = isChecked
             }
         }

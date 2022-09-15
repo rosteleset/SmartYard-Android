@@ -39,7 +39,7 @@ class PayContractPagerAdapter(
             tvBalance.text = account.getBalanceToRub()
             tvRecommendedMoney.text = account.getPayAdviceToRub()
             tvOpenUserAccount.setOnClickListener {
-                openUrl(activity, account.lcab ?: "")
+                openUrl(activity, account.lcab)
             }
             if (account.lcab.isEmpty()) tvOpenUserAccount.isVisible = false
             btnPay.setOnClickListener {

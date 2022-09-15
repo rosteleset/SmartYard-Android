@@ -43,7 +43,7 @@ class AvailableAdapterDelegate(private var clickCheckBox: () -> Unit) :
                 tvDescription.isEnabled = false
                 tvTitle.isEnabled = false
             }
-            checkbox.setOnCheckedChangeListener { buttonView, isChecked ->
+            checkbox.setOnCheckedChangeListener { _, isChecked ->
                 items[position].check = isChecked
             }
             checkbox.setOnClickListener {

@@ -1,7 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main.burger.cityCameras
 
 import android.content.ActivityNotFoundException
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -94,7 +93,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         binding.zlCityCamera.setSingleTapConfirmeListener {
             if (mPlayer?.playbackState == Player.STATE_IDLE) {
-                changeVideoSource(requireContext(), viewModel.chosenCamera.value?.hls ?: "")
+                changeVideoSource(viewModel.chosenCamera.value?.hls ?: "")
             }
         }
 
@@ -242,7 +241,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         lifecycleScope.launch(Dispatchers.IO) {
             delay(delayMs)
             withContext(Dispatchers.Main) {
-                changeVideoSource(requireContext(), viewModel.chosenCamera.value?.hls ?: "")
+                changeVideoSource(viewModel.chosenCamera.value?.hls ?: "")
             }
         }
     }
@@ -365,7 +364,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         return player
     }
 
-    private fun changeVideoSource(context: Context, hls_url: String) {
+    private fun changeVideoSource(hls_url: String) {
         if (hls_url.isEmpty()) {
             return
         }

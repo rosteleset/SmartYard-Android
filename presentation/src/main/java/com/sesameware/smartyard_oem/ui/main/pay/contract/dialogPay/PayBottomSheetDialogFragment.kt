@@ -110,7 +110,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            val contractPayName = args.contractPayName
+            args.contractPayName
             val contractName = args.contractName
             val payAdvice = args.payAdvice
             val lcabPay = args.lcabPay
@@ -176,13 +176,17 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
                             val paymentData = PaymentData.getFromIntent(it)
                             try {
                                 val token =
-                                    JSONObject(paymentData?.toJson()).getJSONObject("paymentMethodData")
-                                        .getJSONObject("tokenizationData").getString("token")
-                                payBottomSheetDialogViewModel.pay(
-                                    token,
-                                    binding.etMoneyBalance.text.toString(),
-                                    clientId
-                                )
+                                    paymentData?.toJson()?.let { it1 ->
+                                        JSONObject(it1).getJSONObject("paymentMethodData")
+                                            .getJSONObject("tokenizationData").getString("token")
+                                    }
+                                if (token != null) {
+                                    payBottomSheetDialogViewModel.pay(
+                                        token,
+                                        binding.etMoneyBalance.text.toString(),
+                                        clientId
+                                    )
+                                }
                             } catch (e: JSONException) {
                                 e.printStackTrace()
                             }
@@ -271,13 +275,11 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
         view?.findViewById<RelativeLayout>(R.id.btnPay)?.isClickable = false
         val paymentDataRequestJson = GooglePayUtils.getPaymentDataRequest(binding.etMoneyBalance.text.toString()) ?: return
         val request = PaymentDataRequest.fromJson(paymentDataRequestJson.toString())
-        if (request != null) {
-            AutoResolveHelper.resolveTask(
-                mPaymentsClient.loadPaymentData(request),
-                requireActivity(),
-                LOAD_PAYMENT_DATA_REQUEST_CODE
-            )
-        }
+        AutoResolveHelper.resolveTask(
+            mPaymentsClient.loadPaymentData(request),
+            requireActivity(),
+            LOAD_PAYMENT_DATA_REQUEST_CODE
+        )
     }
 
     private fun onError(errorText: String) {

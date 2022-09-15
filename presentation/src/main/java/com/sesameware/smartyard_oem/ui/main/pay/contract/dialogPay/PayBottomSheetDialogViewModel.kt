@@ -62,7 +62,7 @@ class PayBottomSheetDialogViewModel(
                     )
                 )
             } else {
-                var process = payInteractor.payProcess(payPrepare.data, paymentDo?.data?.orderId!!)
+                payInteractor.payProcess(payPrepare.data, paymentDo?.data?.orderId!!)
                 _navigateToSuccess.value = Event(paymentDo.data?.orderId!!)
             }
         }

@@ -23,6 +23,7 @@ import com.sesameware.smartyard_oem.ui.main.address.cctv_video.AvailableRange
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVDetailFragment
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CalendarDayBinder
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.isDateInAvailableRanges
+import java.util.*
 
 class CCTVArchiveTab : Fragment() {
     private var _binding: FragmentCctvDetailArchiveBinding? = null
@@ -140,12 +141,14 @@ class CCTVArchiveTab : Fragment() {
             clickOnDate = this::clickOnDate
         )
 
-        binding.archiveCalendar.monthScrollListener = {
-            updateModButtons(it.yearMonth)
-            binding.monthTitle.text = if (it.year == endDate.year) {
-                titleSameYearFormatter.format(it.yearMonth).capitalize()
+        binding.archiveCalendar.monthScrollListener = { calendarMonth ->
+            updateModButtons(calendarMonth.yearMonth)
+            binding.monthTitle.text = if (calendarMonth.year == endDate.year) {
+                titleSameYearFormatter.format(calendarMonth.yearMonth)
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             } else {
-                titleFormatter.format(it.yearMonth).capitalize()
+                titleFormatter.format(calendarMonth.yearMonth)
+                    .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
             }
         }
 

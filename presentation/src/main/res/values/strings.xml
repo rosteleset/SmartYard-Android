@@ -187,7 +187,7 @@
     <string name="cancel">Отменить</string>
 
     <!-- IncomingCallActivity -->
-    <string name="reject">Отклонить</string>
+    <string name="reject">Завершить</string>
     <string name="ignore">Игнорировать</string>
     <string name="opened">Открыто</string>
     <string name="open">Открыть</string>
