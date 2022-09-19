@@ -9,19 +9,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.res.Resources
-import android.graphics.Bitmap
+import android.graphics.*
 import android.graphics.BlendMode.SRC_ATOP
-import android.graphics.BlendModeColorFilter
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.PorterDuff.Mode
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
@@ -46,10 +41,6 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.model.FcmCallData
 import com.sesameware.domain.utils.listenerEmpty
@@ -59,6 +50,10 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
@@ -289,15 +284,15 @@ fun sendCallNotification(
 ) {
     context.run {
         val notId = prefs.notificationData.currentCallId
-        val channelId = CHANNEL_ID
         val intent = Intent(this, IncomingCallActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             putExtra(FCM_DATA, data)
         }
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent,
                 if (VERSION.SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT)
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+
+        val notificationBuilder = NotificationCompat.Builder(this, FirebaseMessagingService.CHANNEL_CALLS_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
             .setContentTitle(getString(R.string.call))
@@ -305,11 +300,12 @@ fun sendCallNotification(
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSound(null)  //отключаем звук уведомления, так как он запускается при успешном sip соединении
+            .setVibrate(FirebaseMessagingService.CALL_VIBRATION_PATTERN)  //задаём шаблон вибрации
             .setTimeoutAfter(30000)
             .setContentIntent(pendingIntent)
             .setWhen(System.currentTimeMillis())
             .setFullScreenIntent(pendingIntent, true)
-            // .setDeleteIntent()
             .setShowWhen(true)
 
         val notificationManager =
@@ -317,19 +313,24 @@ fun sendCallNotification(
 
         if (VERSION.SDK_INT >= VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
-                FirebaseMessagingService.TITLE,
+                FirebaseMessagingService.CHANNEL_CALLS_ID,
+                FirebaseMessagingService.CHANNEL_CALLS_TITLE,
                 NotificationManager.IMPORTANCE_HIGH
             )
+
+            //задаём шаблон вибрации
+            channel.vibrationPattern = FirebaseMessagingService.CALL_VIBRATION_PATTERN
+
+            //отключаем звук уведомления, так как он запускается при успешном sip соединении
+            channel.setSound(null, null)
+
             notificationManager.createNotificationChannel(channel)
         }
 
-        notificationManager.notify(notId, notificationBuilder.build())
+        val notification = notificationBuilder.build()
+        notification.flags = notification.flags or Notification.FLAG_INSISTENT
+        notificationManager.notify(notId, notification)
     }
-}
-
-fun getChannelId(string: String): String {
-    return CHANNEL_ID + string.replace(" ", "_")
 }
 
 fun updateAllWidget(context: Context) {

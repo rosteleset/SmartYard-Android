@@ -3,8 +3,10 @@ package com.sesameware.smartyard_oem
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
+import android.media.AudioManager
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.os.Build
 import android.view.TextureView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
@@ -41,6 +43,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     val dtmfIsSent = MutableLiveData(false)
     val finishCallActivity = MutableLiveData<Event<Unit>>()
     var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
+
+    private var shouldVibrate = false
 
     private var mCoreListener = object : CoreListenerStub() {
         override fun onRegistrationStateChanged(
@@ -140,16 +144,27 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         Timber.d("debug_dmm ring.uri: ${ring.uri}")
 
         currentRingtone = RingtoneManager.getRingtone(service, ring.uri)
+        val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notification = notificationManager.getNotificationChannel(FirebaseMessagingService.CHANNEL_CALLS_ID)
+            shouldVibrate = notification?.shouldVibrate() ?: false
+        }
         fcmData = pendingData
         connect(pendingData)
     }
 
     private fun startRinging() {
         currentRingtone?.play()
+        if (shouldVibrate) {
+            mAudioManager.vibrator?.vibrate(FirebaseMessagingService.CALL_VIBRATION_PATTERN, 0)
+        }
     }
 
     fun stopRinging() {
         currentRingtone?.stop()
+        if (shouldVibrate) {
+            mAudioManager.vibrator?.cancel()
+        }
     }
 
     fun acceptCall() {

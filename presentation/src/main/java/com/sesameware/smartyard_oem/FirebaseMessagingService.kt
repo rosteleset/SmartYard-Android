@@ -46,7 +46,6 @@ import com.sesameware.domain.model.FcmCallData
 import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
-import com.sesameware.smartyard_oem.ui.getChannelId
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
@@ -61,6 +60,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     private val context: Context get() = this
 
     private val TAG = "notification"
+    //val CHANNEL_INBOX_ID = context.getString(R.string.default_notification_channel_id)
+    val CHANNEL_INBOX_ID = "channel_inbox"
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.tag(TAG).d("debug_dmm remoteMessage: from ${remoteMessage.from}; ttl = ${remoteMessage.ttl}")
@@ -225,7 +226,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         Timber.d("debug_dmm soundUri: $soundUri")
 
-        val channelId = getChannelId(tone.getToneTitle(this))
         val intent = Intent(this, MainActivity::class.java)
         intent.action = Intent.ACTION_MAIN
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -248,12 +248,13 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 this,
                 0,
                 intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_CANCEL_CURRENT
             )
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_INBOX_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle(title)
             .setContentText(message)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setSound(soundUri)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -264,8 +265,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                channelId,
-                TITLE,
+                CHANNEL_INBOX_ID,
+                CHANNEL_INBOX_TITLE,
                 NotificationManager.IMPORTANCE_HIGH
             )
             val audioAttributes = AudioAttributes.Builder()
@@ -280,7 +281,10 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     }
 
     companion object {
-        const val TITLE = "title"
+        const val CHANNEL_INBOX_TITLE = "Сообщения"
+        const val CHANNEL_CALLS_ID = "channel_calls"
+        const val CHANNEL_CALLS_TITLE = "Входящие звонки"
+        val CALL_VIBRATION_PATTERN = longArrayOf(0, 1000, 1000)
         const val NOTIFICATION_MESSAGE_ID = "messageId"
         const val NOTIFICATION_MESSAGE_TYPE = "messageType"
         const val NOTIFICATION_BADGE = "badge"
