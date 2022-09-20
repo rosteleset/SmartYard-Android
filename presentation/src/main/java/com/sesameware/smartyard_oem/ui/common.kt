@@ -175,14 +175,12 @@ fun firstCharacter(text: String?): String {
 }
 
 fun openUrl(activity: Activity?, url: String) {
-    activity?.let {
-        it.startActivity(
-            Intent(
-                ACTION_VIEW,
-                Uri.parse(url)
-            )
+    activity?.startActivity(
+        Intent(
+            ACTION_VIEW,
+            Uri.parse(url)
         )
-    }
+    )
 }
 
 enum class Type(var value: String) {
@@ -311,24 +309,8 @@ fun sendCallNotification(
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                FirebaseMessagingService.CHANNEL_CALLS_ID,
-                FirebaseMessagingService.CHANNEL_CALLS_TITLE,
-                NotificationManager.IMPORTANCE_HIGH
-            )
-
-            //задаём шаблон вибрации
-            channel.vibrationPattern = FirebaseMessagingService.CALL_VIBRATION_PATTERN
-
-            //отключаем звук уведомления, так как он запускается при успешном sip соединении
-            channel.setSound(null, null)
-
-            notificationManager.createNotificationChannel(channel)
-        }
-
         val notification = notificationBuilder.build()
-        notification.flags = notification.flags or Notification.FLAG_INSISTENT
+        notification.flags = notification.flags or Notification.FLAG_INSISTENT  //зацикленная вибрация и звук при уведомлении
         notificationManager.notify(notId, notification)
     }
 }

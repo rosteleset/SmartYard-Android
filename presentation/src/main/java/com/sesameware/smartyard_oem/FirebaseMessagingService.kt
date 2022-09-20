@@ -19,12 +19,10 @@
 
 package com.sesameware.smartyard_oem
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
@@ -60,8 +58,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
     private val context: Context get() = this
 
     private val TAG = "notification"
-    //val CHANNEL_INBOX_ID = context.getString(R.string.default_notification_channel_id)
-    val CHANNEL_INBOX_ID = "channel_inbox"
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.tag(TAG).d("debug_dmm remoteMessage: from ${remoteMessage.from}; ttl = ${remoteMessage.ttl}")
@@ -223,7 +219,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         val tone = SoundChooser.getChosenTone(this, RingtoneManager.TYPE_NOTIFICATION, null, preferenceStorage)
         val soundUri = tone.uri
-
         Timber.d("debug_dmm soundUri: $soundUri")
 
         val intent = Intent(this, MainActivity::class.java)
@@ -255,32 +250,18 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             .setContentTitle(title)
             .setContentText(message)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-            .setSound(soundUri)
+            .setSound(soundUri)  // используется для Андроид версии ниже 8.0
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_INBOX_ID,
-                CHANNEL_INBOX_TITLE,
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            val audioAttributes = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                .build()
-            channel.setSound(soundUri, audioAttributes)
-            notificationManager.createNotificationChannel(channel)
-        }
-
         notificationManager.notify(notId, notificationBuilder.build())
     }
 
     companion object {
+        const val CHANNEL_INBOX_ID = "channel_inbox"
         const val CHANNEL_INBOX_TITLE = "Сообщения"
         const val CHANNEL_CALLS_ID = "channel_calls"
         const val CHANNEL_CALLS_TITLE = "Входящие звонки"

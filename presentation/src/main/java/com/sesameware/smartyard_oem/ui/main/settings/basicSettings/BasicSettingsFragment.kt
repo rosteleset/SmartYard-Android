@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem.ui.main.settings.basicSettings
 import android.app.AlertDialog
 import android.content.Intent
 import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -105,6 +106,14 @@ class BasicSettingsFragment : Fragment() {
         }
 
         binding.cvNotifications.isVisible = DataModule.providerConfig.hasNotification
+
+        // для Андроид версии 8.0 и выше отключаем настройку звука уведомлений,
+        // так как для этого используются настройки категорий уведомлений
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.soundTitle.isVisible = false
+            binding.pdSound.isVisible = false
+            binding.tvSoundChoose.isVisible = false
+        }
 
         mViewModel.sentName.observe(
             viewLifecycleOwner
