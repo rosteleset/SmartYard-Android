@@ -140,7 +140,7 @@ class ProgressDialog {
         return frameLayout
     }
 
-    fun setColorFilter(drawable: Drawable, color: Int) {
+    private fun setColorFilter(drawable: Drawable, color: Int) {
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             drawable.colorFilter = BlendModeColorFilter(color, SRC_ATOP)
         } else {
@@ -179,14 +179,12 @@ fun firstCharacter(text: String?): String {
 }
 
 fun openUrl(activity: Activity?, url: String) {
-    activity?.let {
-        it.startActivity(
-            Intent(
-                ACTION_VIEW,
-                Uri.parse(url)
-            )
+    activity?.startActivity(
+        Intent(
+            ACTION_VIEW,
+            Uri.parse(url)
         )
-    }
+    )
 }
 
 enum class Type(var value: String) {
@@ -288,14 +286,19 @@ fun sendCallNotification(
 ) {
     context.run {
         val notId = prefs.notificationData.currentCallId
-        val channelId = CHANNEL_ID
         val intent = Intent(this, IncomingCallActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             putExtra(FCM_DATA, data)
         }
-        val pendingIntent =
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+        val pendingIntent = PendingIntent.getActivity(this, 0, intent,
+            if (VERSION.SDK_INT >= VERSION_CODES.M) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+
+        val notificationBuilder = NotificationCompat.Builder(this, FirebaseMessagingService.CHANNEL_CALLS_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
             .setContentTitle(getString(R.string.call))
@@ -303,31 +306,22 @@ fun sendCallNotification(
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSound(null)  //отключаем звук уведомления, так как он запускается при успешном sip соединении
+            .setVibrate(FirebaseMessagingService.CALL_VIBRATION_PATTERN)  //задаём шаблон вибрации
             .setTimeoutAfter(30000)
             .setContentIntent(pendingIntent)
             .setWhen(System.currentTimeMillis())
             .setFullScreenIntent(pendingIntent, true)
-            // .setDeleteIntent()
+            .setOngoing(true)
             .setShowWhen(true)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                FirebaseMessagingService.TITLE,
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
-
-        notificationManager.notify(notId, notificationBuilder.build())
+        val notification = notificationBuilder.build()
+        notification.flags = notification.flags or Notification.FLAG_INSISTENT  //зацикленная вибрация и звук при уведомлении
+        notificationManager.notify(notId, notification)
     }
-}
-
-fun getChannelId(string: String): String {
-    return CHANNEL_ID + string.replace(" ", "_")
 }
 
 fun updateAllWidget(context: Context) {
@@ -422,8 +416,6 @@ fun createIconWithText(
 private inline fun <T : Enum<T>> T.toInt(): Int = this.ordinal
 
 private inline fun <reified T : Enum<T>> Int.toEnum(): T = enumValues<T>()[this]
-
-private const val CHANNEL_ID = "smartyard_v6_"
 
 //Анимация: fade in, затем fade out
 fun animationFadeInFadeOut(view: View?) {

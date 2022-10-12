@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
  * @author Nail Shakurov
  * Created on 28.04.2020.
  */
-data class DeliveryСhangeRequest(
+data class DeliveryChangeRequest(
     @Json(name = "action")
     val action: String = "Jelly.Способ доставки", // Jelly.Способ доставки
     @Json(name = "customFields")

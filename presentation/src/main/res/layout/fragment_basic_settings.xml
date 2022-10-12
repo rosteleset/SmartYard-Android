@@ -189,7 +189,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:padding="24dp"
-                                    android:text="Показывать уведомления"
+                                    android:text="Получать уведомления"
                                     android:textColor="@color/black"
                                     app:layout_constraintEnd_toStartOf="@+id/swShowNotify"
                                     app:layout_constraintStart_toStartOf="parent"

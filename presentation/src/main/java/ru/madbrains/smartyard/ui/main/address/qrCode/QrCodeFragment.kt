@@ -118,7 +118,7 @@ class QrCodeFragment :
             setImageQueueDepth(40)
         }.build()
         imageAnalysis = ImageAnalysis(analyzerConfig)
-        imageAnalysis.analyzer = MLQRcodeAnalyzer(this, this)
+        imageAnalysis.analyzer = MLQRCodeAnalyzer(this, this)
         CameraX.bindToLifecycle(this, preview, imageAnalysis)
     }
 

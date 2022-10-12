@@ -81,27 +81,25 @@ class SettingsFragment : Fragment() {
         }
 
         mViewModel.dataList.observe(
-            viewLifecycleOwner,
-            Observer {
-                adapter.items = it
-                adapter.notifyDataSetChanged()
-                binding.swipeContainer.isRefreshing = false
+            viewLifecycleOwner
+        ) {
+            adapter.items = it
+            adapter.notifyDataSetChanged()
+            binding.swipeContainer.isRefreshing = false
 
-                if (binding.floatingActionButton.visibility != View.VISIBLE) {
-                    binding.floatingActionButton.show()
-                }
+            if (binding.floatingActionButton.visibility != View.VISIBLE) {
+                binding.floatingActionButton.show()
             }
-        )
+        }
 
         mViewModel.progress.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!binding.swipeContainer.isRefreshing) {
-                    binding.progressBar.isVisible = it
-                }
-                binding.swipeContainer.isRefreshing = false
+            viewLifecycleOwner
+        ) {
+            if (!binding.swipeContainer.isRefreshing) {
+                binding.progressBar.isVisible = it
             }
-        )
+            binding.swipeContainer.isRefreshing = false
+        }
 
         mViewModel.dialogService.observe(
             viewLifecycleOwner,
@@ -117,7 +115,7 @@ class SettingsFragment : Fragment() {
         binding.rvSettings.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
-        adapter = ListDelegationAdapter<List<SettingsAddressModel>>(
+        adapter = ListDelegationAdapter(
             SettingsAddressDelegate(
                 requireActivity(),
                 { address, flatId, isKey, contractOwner, clientId ->
@@ -144,16 +142,25 @@ class SettingsFragment : Fragment() {
                     action.clientId = clientId
                     this.findNavController().navigate(action)
                 },
-                { position ->
-                    val layoutManager = binding.rvSettings
-                        .layoutManager as LinearLayoutManager
-                    val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
-                        override fun getVerticalSnapPreference(): Int {
-                            return SNAP_TO_START
+                { position, isExpanded ->
+                    if (isExpanded) {
+                        val layoutManager = binding.rvSettings.layoutManager as LinearLayoutManager
+                        val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
+                            override fun getVerticalSnapPreference(): Int {
+                                return SNAP_TO_START
+                            }
                         }
+                        smoothScroller.targetPosition = position
+                        layoutManager.startSmoothScroll(smoothScroller)
                     }
-                    smoothScroller.targetPosition = position
-                    layoutManager.startSmoothScroll(smoothScroller)
+                    adapter.items?.get(position)?.let {
+                        if (isExpanded) {
+                            mViewModel.expandedFlatId.add(it.flatId)
+                        } else {
+                            mViewModel.expandedFlatId.remove(it.flatId)
+                        }
+                        it.isExpanded = isExpanded
+                    }
                 }
             )
         )

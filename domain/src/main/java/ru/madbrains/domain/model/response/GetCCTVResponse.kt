@@ -18,8 +18,8 @@ val targetZoneId: ZoneId = ZoneId.of("GMT+3")
 data class CCTVData(
     @Json(name = "id") val id: Int,
     @Json(name = "name") val name: String,
-    @Json(name = "lat") val latitude: Double,
-    @Json(name = "lon") val longitude: Double,
+    @Json(name = "lat") val latitude: Double?,
+    @Json(name = "lon") val longitude: Double?,
     @Json(name = "token") val token: String,
     @Json(name = "url") val url: String
 ) : Parcelable {

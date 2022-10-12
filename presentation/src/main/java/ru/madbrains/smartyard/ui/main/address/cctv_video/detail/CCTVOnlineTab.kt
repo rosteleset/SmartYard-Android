@@ -16,7 +16,6 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -34,7 +33,6 @@ import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentCctvDetailOnlineBinding
 import ru.madbrains.smartyard.ui.main.ExitFullscreenListener
 import ru.madbrains.smartyard.ui.main.MainActivity
-import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment
 import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVViewModel
 import ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout
 import ru.madbrains.smartyard.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
@@ -148,27 +146,25 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
     private fun setupObserve(context: Context) {
         mCCTVViewModel.chosenCamera.observe(
-            viewLifecycleOwner,
-            Observer {
-                it?.run {
-                    changeVideoSource(context, hls)
-                }
+            viewLifecycleOwner
+        ) {
+            it?.run {
+                changeVideoSource(context, hls)
             }
-        )
+        }
 
         mCCTVViewModel.stateFullScreen.observe(
-            viewLifecycleOwner,
-            Observer {
-                mExoPlayerFullscreen = it
-                if (mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
-                    if (it) {
-                        setFullscreenMode()
-                    } else {
-                        setNormalMode()
-                    }
+            viewLifecycleOwner
+        ) {
+            mExoPlayerFullscreen = it
+            if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
+                if (it) {
+                    setFullscreenMode()
+                } else {
+                    setNormalMode()
                 }
             }
-        )
+        }
     }
 
     private fun createPlayer(
@@ -181,6 +177,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         val player  = SimpleExoPlayer.Builder(requireContext())
             .setTrackSelector(trackSelector)
             .build()
+
+        //для теста
         //player.addAnalyticsListener(EventLogger(trackSelector))
 
         videoView.player = player
@@ -335,6 +333,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
     override fun onExitFullscreen() {
         if (mExoPlayerFullscreen) {
+            mCCTVViewModel.fullScreen(false)
+            mExoPlayerFullscreen = false
             setNormalMode()
         }
     }
@@ -352,7 +352,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
         Timber.d("debug_dmm __onResume, is fragment hidden = $isHidden")
 
-        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
+        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
             initPlayer()
             Timber.d("debug_dmm __CCTVOnlineTab: $this")
         }

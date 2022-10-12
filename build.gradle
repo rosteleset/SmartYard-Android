@@ -5,7 +5,7 @@ buildscript {
     ext {
         compileSdkVersion = 31
         minSdkVersion = 21
-        targetSdkVersion = 30
+        targetSdkVersion = 31
         kotlinVersion = '1.6.21'
         kotlinReflect = '1.6.21'
         appCompatVersion = '1.4.1'
@@ -52,7 +52,6 @@ buildscript {
         dexter = '6.2.2'
         playServicesWallet = '19.1.0'
         exoPlayer = '2.14.2'
-        mobmetricalib = '3.13.1'
         installreferrer = '2.2'
         recyclerView = '1.2.1'
         preference_version = "1.2.0"
@@ -64,11 +63,11 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
+        classpath 'com.android.tools.build:gradle:7.3.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.14'
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.0'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-rc01"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-rc02"
         classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
     }
 }

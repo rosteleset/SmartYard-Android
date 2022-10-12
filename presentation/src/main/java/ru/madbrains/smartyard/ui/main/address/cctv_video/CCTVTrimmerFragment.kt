@@ -234,7 +234,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         (activity as? MainActivity)?.setUserInteractionListener(this)
         _binding = FragmentCctvTrimmerBinding.inflate(inflater, container, false)
         return binding.root
@@ -255,9 +255,16 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         requireNotNull(arguments).let {
             chosenDate = CCTVTrimmerFragmentArgs.fromBundle(it).chosenDate
         }
+
         val camera = mCCTVViewModel.chosenCamera.value
+
+        //для теста
+        Timber.d("debug_dmm ActivityCreated: $camera")
+
         val initialThumb = mCCTVViewModel.initialThumb
-        mViewModel.initialize(requireNotNull(camera), initialThumb)
+        camera?.let { cam ->
+            mViewModel.initialize(cam, initialThumb)
+        }
         context?.let { context ->
             setupUi(context)
             setupObserve(context)

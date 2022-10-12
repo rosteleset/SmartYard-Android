@@ -3,10 +3,12 @@ package ru.madbrains.smartyard.ui.main.settings.basicSettings
 import android.app.AlertDialog
 import android.content.Intent
 import android.media.RingtoneManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
@@ -93,14 +95,22 @@ class BasicSettingsFragment : Fragment() {
             dialog.show(parentFragmentManager, "")
         }
         mViewModel.logout.observe(
-            viewLifecycleOwner,
-            Observer {
-                NavHostFragment.findNavController(this)
-                    .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
-                activity?.finish()
-                updateAllWidget(requireContext())
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            NavHostFragment.findNavController(this)
+                .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
+            activity?.finish()
+            updateAllWidget(requireContext())
+        }
+
+        // для Андроид версии 8.0 и выше отключаем настройку звука уведомлений,
+        // так как для этого используются настройки категорий уведомлений
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            binding.soundTitle.isVisible = false
+            binding.pdSound.isVisible = false
+            binding.tvSoundChoose.isVisible = false
+        }
+
         mViewModel.sentName.observe(
             viewLifecycleOwner
         ) {

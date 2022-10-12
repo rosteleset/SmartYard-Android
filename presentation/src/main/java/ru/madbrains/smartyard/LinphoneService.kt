@@ -33,7 +33,7 @@ class LinphoneService : Service() {
             Log.e(ioe)
         }
 
-        //Factory.instance().setDebugMode(true, "__Q__")
+        //Factory.instance().setDebugMode(true, "__L__")
 
         val core = Factory.instance().createCore("$basePath/$FILE", "$basePath/$FOLDER", this)
         mCore = core
@@ -82,7 +82,7 @@ class LinphoneService : Service() {
                 nat.stunServer = stun
                 nat.stunServerUsername = turnUsername
 
-                when (turnTransport.toLowerCase(Locale.getDefault())) {
+                when (turnTransport.lowercase(Locale.getDefault())) {
                     "tcp" -> {
                         nat.enableUdpTurnTransport(false)
                         nat.enableTcpTurnTransport(true)

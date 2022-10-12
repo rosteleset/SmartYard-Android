@@ -19,7 +19,7 @@ import ru.madbrains.domain.model.request.ConfirmCodeRecoveryRequest
 import ru.madbrains.domain.model.request.ConfirmCodeRequest
 import ru.madbrains.domain.model.request.CreateIssuesRequest
 import ru.madbrains.domain.model.request.DeliveredRequest
-import ru.madbrains.domain.model.request.DeliveryСhangeRequest
+import ru.madbrains.domain.model.request.DeliveryChangeRequest
 import ru.madbrains.domain.model.request.GetAddressRequest
 import ru.madbrains.domain.model.request.GetCoderRequest
 import ru.madbrains.domain.model.request.GetHousesRequest
@@ -40,7 +40,7 @@ import ru.madbrains.domain.model.request.ResetCodeRequest
 import ru.madbrains.domain.model.request.SendNameRequest
 import ru.madbrains.domain.model.request.SentCodeRecoveryRequest
 import ru.madbrains.domain.model.request.UserNotificationRequest
-import ru.madbrains.domain.model.request.СommentRequest
+import ru.madbrains.domain.model.request.CommentRequest
 import ru.madbrains.domain.model.request.PlogDaysRequest
 import ru.madbrains.domain.model.request.PlogRequest
 import ru.madbrains.domain.model.request.DisLikeRequest
@@ -226,10 +226,10 @@ interface LantaApi {
     suspend fun actionIssue(@Body request: ActionIssueRequest): Response<ActionIssueResponse>
 
     @POST("api/issues/comment")
-    suspend fun comment(@Body request: СommentRequest): Response<CommentResponse>
+    suspend fun comment(@Body request: CommentRequest): Response<CommentResponse>
 
     @POST("api/issues/action")
-    suspend fun deliveryChange(@Body request: DeliveryСhangeRequest): Response<DeliveryChangeResponse>
+    suspend fun deliveryChange(@Body request: DeliveryChangeRequest): Response<DeliveryChangeResponse>
 
     @POST("api/cctv/all")
     suspend fun getCCTVAll(@Body request: CCTVAllRequest): Response<CCTVGetResponse>

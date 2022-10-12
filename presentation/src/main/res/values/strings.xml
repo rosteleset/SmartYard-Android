@@ -4,6 +4,7 @@
     <string name="app_name">LanTa</string>
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
+    <string name="default_notification_channel_id">channel_inbox</string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Выход из приложения</string>
@@ -182,7 +183,7 @@
     <string name="cancel">Отменить</string>
 
     <!-- IncomingCallActivity -->
-    <string name="reject">Отклонить</string>
+    <string name="reject">Завершить</string>
     <string name="ignore">Игнорировать</string>
     <string name="opened">Открыто</string>
     <string name="open">Открыть</string>

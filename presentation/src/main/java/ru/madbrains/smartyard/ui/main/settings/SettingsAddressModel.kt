@@ -14,5 +14,6 @@ data class SettingsAddressModel(
     var flatOwner: String,
     var services: List<String>,
     var lcab: String?,
-    var hasGates: Boolean
+    var hasGates: Boolean,
+    var isExpanded: Boolean = false
 )

@@ -347,38 +347,40 @@ class EventLogDetailFragment : Fragment() {
             }
 
             (binding.rvEventLogDetail.adapter as EventLogDetailAdapter).also { adapter ->
-                adapter.eventsDay =
-                    mViewModel.eventDaysFilter.map { it.day }.subList(0, lastLoadedIndex + 1)
-                adapter.eventsByDays = mViewModel.eventsByDaysFilter
-                if (prevLoadedIndex < 0) {
-                    adapter.notifyDataSetChanged()
-                    mViewModel.currentEventItem?.let { currentItem ->
-                        val p =
-                            mViewModel.getEventItemCountTillDay(currentItem.first.plusDays(1)) + currentItem.second
-                        (binding.rvEventLogDetail.layoutManager as? LinearLayoutManager)?.let { layoutManager ->
-                            layoutManager.scrollToPosition(p)
-                            binding.rvEventLogDetail.doOnPreDraw {
-                                val targetView =
-                                    layoutManager.findViewByPosition(p) ?: return@doOnPreDraw
-                                val distanceToFinalSnap = snapHelper?.calculateDistanceToFinalSnap(
-                                    layoutManager,
-                                    targetView
-                                ) ?: return@doOnPreDraw
-                                if (p > 0) {
-                                    layoutManager.scrollToPositionWithOffset(
-                                        p,
-                                        -distanceToFinalSnap[0]
-                                    )
+                if (mViewModel.eventDaysFilter.isNotEmpty()) {
+                    adapter.eventsDay =
+                        mViewModel.eventDaysFilter.map { it.day }.subList(0, lastLoadedIndex + 1)
+                    adapter.eventsByDays = mViewModel.eventsByDaysFilter
+                    if (prevLoadedIndex < 0) {
+                        adapter.notifyDataSetChanged()
+                        mViewModel.currentEventItem?.let { currentItem ->
+                            val p =
+                                mViewModel.getEventItemCountTillDay(currentItem.first.plusDays(1)) + currentItem.second
+                            (binding.rvEventLogDetail.layoutManager as? LinearLayoutManager)?.let { layoutManager ->
+                                layoutManager.scrollToPosition(p)
+                                binding.rvEventLogDetail.doOnPreDraw {
+                                    val targetView =
+                                        layoutManager.findViewByPosition(p) ?: return@doOnPreDraw
+                                    val distanceToFinalSnap = snapHelper?.calculateDistanceToFinalSnap(
+                                        layoutManager,
+                                        targetView
+                                    ) ?: return@doOnPreDraw
+                                    if (p > 0) {
+                                        layoutManager.scrollToPositionWithOffset(
+                                            p,
+                                            -distanceToFinalSnap[0]
+                                        )
+                                    }
                                 }
                             }
                         }
+                    } else {
+                        val day1 = mViewModel.eventDaysFilter[prevLoadedIndex].day
+                        val count1 = mViewModel.getEventItemCountTillDay(day1)
+                        val day2 = mViewModel.eventDaysFilter[lastLoadedIndex].day
+                        val count2 = mViewModel.getEventItemCountTillDay(day2)
+                        adapter.notifyItemRangeChanged(count1, count2 - count1)
                     }
-                } else {
-                    val day1 = mViewModel.eventDaysFilter[prevLoadedIndex].day
-                    val count1 = mViewModel.getEventItemCountTillDay(day1)
-                    val day2 = mViewModel.eventDaysFilter[lastLoadedIndex].day
-                    val count2 = mViewModel.getEventItemCountTillDay(day2)
-                    adapter.notifyItemRangeChanged(count1, count2 - count1)
                 }
             }
 

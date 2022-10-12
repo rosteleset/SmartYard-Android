@@ -34,6 +34,8 @@ class SettingsViewModel(
 
     val phone = MutableLiveData<String>()
 
+    var expandedFlatId = mutableSetOf<Int>()  // множество развёрнутых настроек квартир
+
     //учитывать ли кэш при следующем запросе списка адресов для настройки
     var nextListNoCache = true
 
@@ -117,7 +119,8 @@ class SettingsViewModel(
                         settingItem.flatOwner,
                         settingItem.services,
                         settingItem.lcab,
-                        settingItem.hasGates.contains("t")
+                        settingItem.hasGates.contains("t"),
+                        expandedFlatId.contains(settingItem.flatId)
                     )
                 }
             )

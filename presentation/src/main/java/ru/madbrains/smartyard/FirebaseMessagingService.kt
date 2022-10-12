@@ -19,12 +19,10 @@
 
 package ru.madbrains.smartyard
 
-import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
@@ -46,7 +44,6 @@ import ru.madbrains.domain.model.FcmCallData
 import ru.madbrains.domain.utils.listenerGeneric
 import ru.madbrains.smartyard.ui.SoundChooser
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
-import ru.madbrains.smartyard.ui.getChannelId
 import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
 import ru.madbrains.smartyard.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
@@ -225,7 +222,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         Timber.d("debug_dmm soundUri: $soundUri")
 
-        val channelId = getChannelId(tone.getToneTitle(this))
         val intent = Intent(this, MainActivity::class.java)
         intent.action = Intent.ACTION_MAIN
         intent.addCategory(Intent.CATEGORY_LAUNCHER)
@@ -248,13 +244,14 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 this,
                 0,
                 intent,
-                PendingIntent.FLAG_CANCEL_CURRENT
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_CANCEL_CURRENT
             )
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
+        val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_INBOX_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
             .setContentTitle(title)
             .setContentText(message)
-            .setSound(soundUri)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setSound(soundUri)  // используется для Андроид версии ниже 8.0
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
@@ -262,25 +259,15 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                TITLE,
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            val audioAttributes = AudioAttributes.Builder()
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_RINGTONE)
-                .build()
-            channel.setSound(soundUri, audioAttributes)
-            notificationManager.createNotificationChannel(channel)
-        }
-
         notificationManager.notify(notId, notificationBuilder.build())
     }
 
     companion object {
-        const val TITLE = "title"
+        const val CHANNEL_INBOX_ID = "channel_inbox"
+        const val CHANNEL_INBOX_TITLE = "Сообщения"
+        const val CHANNEL_CALLS_ID = "channel_calls"
+        const val CHANNEL_CALLS_TITLE = "Входящие звонки"
+        val CALL_VIBRATION_PATTERN = longArrayOf(0, 1000, 1000)
         const val NOTIFICATION_MESSAGE_ID = "messageId"
         const val NOTIFICATION_MESSAGE_TYPE = "messageType"
         const val NOTIFICATION_BADGE = "badge"

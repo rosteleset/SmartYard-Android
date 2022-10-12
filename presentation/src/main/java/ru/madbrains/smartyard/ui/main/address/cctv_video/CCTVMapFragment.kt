@@ -75,6 +75,4 @@ class CCTVMapFragment : MapFragment() {
             )
         }
     }
-
-    private fun setupObserve() {}
 }

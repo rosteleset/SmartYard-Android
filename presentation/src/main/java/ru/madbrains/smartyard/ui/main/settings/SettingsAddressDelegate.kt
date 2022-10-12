@@ -26,7 +26,7 @@ class SettingsAddressDelegate(
     private val settingAddressListener: (address: String, flatId: Int, isKey: Boolean, contractOwner: Boolean, clientId: String) -> Unit,
     private val clickItem: (serviceType: Services, model: SettingsAddressModel, isCon: Boolean) -> Unit,
     private val provideAccessListener: (address: String, flatId: Int, contractOwner: Boolean, hasGate: Boolean, clientId: String) -> Unit,
-    private val clickPos: (pos: Int) -> Unit
+    private val clickPos: (pos: Int, isExpanded: Boolean) -> Unit
 ) :
     AdapterDelegate<List<SettingsAddressModel>>() {
 
@@ -75,9 +75,6 @@ class SettingsAddressDelegate(
                 hideBlockAccess(isKey, holder)
             }
 
-            // нет домофона скрываем доступ
-            // hideBlockAccess(isKey, holder)
-
             holder.llProvideAccess.setOnClickListener {
                 provideAccessListener.invoke(address, flatId, contractOwner, hasGates, clientId)
             }
@@ -86,20 +83,24 @@ class SettingsAddressDelegate(
                 settingAddressListener.invoke(address, flatId, isKey, contractOwner, clientId)
             }
         }
-        holder.coll.collapse(false)
-        holder.imageView.setImageResource(R.drawable.ic_arrow_bottom)
+        if (settingsAddressModel.isExpanded) {
+            holder.coll.expand(false)
+            holder.imageView.setImageResource(R.drawable.ic_arrow_top)
+        } else {
+            holder.coll.collapse(false)
+            holder.imageView.setImageResource(R.drawable.ic_arrow_bottom)
+        }
         holder.itemView.setOnClickListener {
             if (holder.coll.isExpanded) {
                 holder.coll.collapse()
                 holder.imageView.setImageResource(R.drawable.ic_arrow_bottom)
+                clickPos.invoke(position, false)
             } else {
                 holder.coll.expand()
                 holder.imageView.setImageResource(R.drawable.ic_arrow_top)
-                holder.coll.setOnExpansionUpdateListener { expansionFraction, state ->
+                holder.coll.setOnExpansionUpdateListener { expansionFraction, _ ->
                     if (expansionFraction == 1F)
-                        clickPos.invoke(
-                            position
-                        )
+                        clickPos.invoke(position, true)
                 }
             }
         }

@@ -130,7 +130,7 @@ fun LatLng.toGeoPoint(): GeoPoint {
     return GeoPoint(latitude, longitude)
 }
 fun CCTVData.toLatLng(): LatLng {
-    return LatLng(latitude, longitude)
+    return LatLng(latitude ?: 0.0, longitude ?: 0.0)
 }
 fun CCTVCityCameraData.toLatLng(): LatLng {
     return LatLng(latitude ?: 0.0, longitude ?: 0.0)

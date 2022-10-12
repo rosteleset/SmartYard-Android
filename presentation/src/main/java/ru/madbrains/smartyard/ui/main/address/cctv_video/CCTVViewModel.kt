@@ -3,7 +3,6 @@ package ru.madbrains.smartyard.ui.main.address.cctv_video
 import android.graphics.Bitmap
 import android.media.MediaMetadataRetriever
 import android.os.Parcelable
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
@@ -18,13 +17,12 @@ import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.interactors.CCTVInteractor
 import ru.madbrains.domain.model.response.CCTVData
 import ru.madbrains.domain.model.response.RangeObject
+import ru.madbrains.domain.model.response.targetZoneId
 import ru.madbrains.domain.utils.listenerEmpty
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
-import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment.Companion.ARCHIVE_TAB_POSITION
-import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment.Companion.ONLINE_TAB_POSITION
 import ru.madbrains.smartyard.ui.main.address.models.interfaces.VideoCameraModelP
-import timber.log.Timber
+import java.util.*
 
 @Parcelize
 data class AvailableRange(
@@ -53,8 +51,14 @@ class CCTVViewModel(
     var stateFullScreen = MutableLiveData<Boolean>()
     var closedRangeCalendar = MutableLiveData<Event<ClosedRange<LocalDate>>>()
 
+    var endDate: LocalDate = LocalDate.now(targetZoneId)
+    var startDate: LocalDate = endDate.minusDays(minusDate)
+
     //доступные интервалы архива для выбранной камеры
     var availableRanges = mutableListOf<AvailableRange>()
+
+    //время последнего запроса списка камер; используется для (не)кэшированного запроса
+    private var lastGetCamerasCall: LocalDateTime? = null
 
     fun fullScreen(flag: Boolean) {
         stateFullScreen.value = flag
@@ -64,7 +68,7 @@ class CCTVViewModel(
 
     private fun getDateTime(s: Long): String? {
         return try {
-            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd")
+            val sdf = java.text.SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
             val date = java.util.Date(s * 1000)
             sdf.format(date)
         } catch (e: Exception) {
@@ -72,11 +76,16 @@ class CCTVViewModel(
         }
     }
 
-    fun loadPeriod() {
-        viewModelScope.withProgress {
+    private fun loadPeriod() {
+        viewModelScope.withProgress({ false }, null) {
             chosenCamera.value?.let {
+                availableRanges.clear()
                 val url = it.url + "/recording_status.json?from=1525186456&token=" + it.token
-                val loadPeriods = cctvInteractor.loadPeriods(url)?.first()?.ranges ?: emptyList()
+                val loadPeriods = try {
+                    cctvInteractor.loadPeriods(url)?.first()?.ranges ?: emptyList()
+                } catch (e: Throwable) {
+                    emptyList()
+                }
 
                 //для теста
                 /*val loadPeriods = mutableListOf<RangeObject.Range>()
@@ -86,9 +95,7 @@ class CCTVViewModel(
                 loadPeriods.add(RangeObject.Range(2700, 1610538300))*/
 
                 //заполняем периоды архива, которые есть на сервере
-                availableRanges.clear()
                 loadPeriods.forEach {period ->
-
                     //для теста
                     /*if (availableRanges.size == 0) {
                         period.from = 1602475470
@@ -115,10 +122,38 @@ class CCTVViewModel(
 
     fun getCameras(model: VideoCameraModelP, onComplete: listenerEmpty) {
         viewModelScope.withProgress {
+            //управление кэшированием запроса
+            //этот запрос точно должен быть некэшированным, если предыдущий был дольше, чем NO_CACHE_INTERVAL_HOURS часов назад
+            //или предыдущий запрос был до смены токена авторизации камер, который происходит раз в сутки в CAM_TOKEN_RENEW_SCHEDULER_HOUR часов
+            lastGetCamerasCall?.let {
+                val now = LocalDateTime.now()
+                if (it.plusHours(NO_CACHE_INTERVAL_HOURS) < now) {
+                    mPreferenceStorage.xDmApiRefresh = true
+                    return@let
+                }
+                if (it.dayOfMonth == now.dayOfMonth
+                    && it.hour < CAM_TOKEN_RENEW_SCHEDULER_HOUR && CAM_TOKEN_RENEW_SCHEDULER_HOUR < now.hour) {
+                    mPreferenceStorage.xDmApiRefresh = true
+                    return@let
+                }
+                if (it.dayOfMonth < now.dayOfMonth && it.hour < CAM_TOKEN_RENEW_SCHEDULER_HOUR) {
+                    mPreferenceStorage.xDmApiRefresh = true
+                    return@let
+                }
+            }
+            if (lastGetCamerasCall == null) {
+                mPreferenceStorage.xDmApiRefresh = true
+            }
+            val xDmApiRefresh = mPreferenceStorage.xDmApiRefresh
             cctvInteractor.getCCTV(model.houseId)?.let {
-                state.set(cameraList_Key, it)
+                if (xDmApiRefresh) {
+                    lastGetCamerasCall = LocalDateTime.now()
+                }
+                state.set(cameraList_Key, it.filter { camera ->
+                    camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
+                })
                 state.set(cctvModel_Key, model)
-                chooseCamera(0)
+                //chooseCamera(0)
                 onComplete()
             }
         }
@@ -129,6 +164,7 @@ class CCTVViewModel(
         cameraList.value?.get(index)?.let { camera ->
             state.set(chosenCamera_Key, camera)
             downloadMaskImage(camera.preview)
+            loadPeriod()
         }
     }
 
@@ -153,6 +189,16 @@ class CCTVViewModel(
         private const val cameraList_Key = "cameraList_Key"
         private const val chosenIndex_Key = "chosenIndex_Key"
         private const val chosenCamera_Key = "chosenCamera_Key"
+
+        const val ONLINE_TAB_POSITION = 0
+        const val ARCHIVE_TAB_POSITION = 1
+        private const val minusDate = 6L
+
+        //час обновления токена авторизации для камер
+        private const val CAM_TOKEN_RENEW_SCHEDULER_HOUR = 4
+
+        //интервал в часах, спустя который запрос списка камер должен быть некэшированным (должен быть меньше 24)
+        private const val NO_CACHE_INTERVAL_HOURS = 1L
 
         @Throws(Exception::class)
         fun downloadPreview(url: String): Bitmap? {

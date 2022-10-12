@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -212,12 +211,15 @@ class AddressSettingsFragment : Fragment() {
         }
 
         viewModel.deleteRoommate.observe(
-            viewLifecycleOwner,
-            Observer {
-                NavHostFragment.findNavController(this)
-                    .navigate(R.id.action_addressSettingsFragment_to_settingsFragment)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            mSettingsVM.expandedFlatId.remove(flatId)
+            mSettingsVM.getDataList(true)
+            mAddressVM.getDataList(true)
+
+            NavHostFragment.findNavController(this)
+                .navigate(R.id.action_addressSettingsFragment_to_settingsFragment)
+        }
 
         binding.switchIntercom.setOnCheckedChangeListener { compoundButton, check ->
             if (!compoundButton.isPressed) {

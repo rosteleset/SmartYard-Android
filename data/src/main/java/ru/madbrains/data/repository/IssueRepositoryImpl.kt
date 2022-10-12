@@ -5,8 +5,8 @@ import ru.madbrains.data.remote.LantaApi
 import ru.madbrains.domain.interfaces.IssueRepository
 import ru.madbrains.domain.model.request.ActionIssueRequest
 import ru.madbrains.domain.model.request.CreateIssuesRequest
-import ru.madbrains.domain.model.request.DeliveryСhangeRequest
-import ru.madbrains.domain.model.request.СommentRequest
+import ru.madbrains.domain.model.request.DeliveryChangeRequest
+import ru.madbrains.domain.model.request.CommentRequest
 import ru.madbrains.domain.model.response.ActionIssueResponse
 import ru.madbrains.domain.model.response.CreateIssuesResponse
 import ru.madbrains.domain.model.response.DeliveryChangeResponse
@@ -44,7 +44,7 @@ class IssueRepositoryImpl(
 
     override suspend fun comment(comment: String, key: String): CommentResponse {
         return safeApiCall {
-            lantaApi.comment(СommentRequest(comment, key)).getResponseBody()
+            lantaApi.comment(CommentRequest(comment, key)).getResponseBody()
         }
     }
 
@@ -54,10 +54,10 @@ class IssueRepositoryImpl(
     ): DeliveryChangeResponse {
         return safeApiCall {
             lantaApi.deliveryChange(
-                DeliveryСhangeRequest(
+                DeliveryChangeRequest(
                     key = key,
                     customFields = listOf(
-                        DeliveryСhangeRequest.CustomField(value = value)
+                        DeliveryChangeRequest.CustomField(value = value)
                     )
                 )
             )

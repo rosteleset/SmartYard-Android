@@ -18,9 +18,7 @@ import android.view.*
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import androidx.core.view.isVisible
+import androidx.core.view.*
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -142,6 +140,7 @@ class MainActivity : CommonActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             binding.root.setWindowInsetsAnimationCallback(object :
                 WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
+
                 override fun onProgress(
                     insets: WindowInsets,
                     runningAnimations: MutableList<WindowInsetsAnimation>
@@ -154,16 +153,18 @@ class MainActivity : CommonActivity() {
                     bounds: WindowInsetsAnimation.Bounds
                 ): WindowInsetsAnimation.Bounds {
                     val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-                    if (!binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
-                        bottomNavigationView.visibility = View.VISIBLE
+                    if (binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
+                        && binding.bottomNav.selectedItemId == R.id.chat) {
+                        bottomNavigationView.visibility = View.INVISIBLE
                     }
                     return super.onStart(animation, bounds)
                 }
 
                 override fun onEnd(animation: WindowInsetsAnimation) {
                     val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-                    if (binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
-                        bottomNavigationView.visibility = View.INVISIBLE
+                    if (!binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
+                        && binding.bottomNav.selectedItemId == R.id.chat) {
+                        bottomNavigationView.visibility = View.VISIBLE
                     }
                 }
             })
@@ -254,13 +255,6 @@ class MainActivity : CommonActivity() {
             resume = resume
         )
 
-        // Whenever the selected controller changes, setup the action bar.
-        controller.observe(
-            this,
-            Observer { navController ->
-                // setupActionBarWithNavController(navController)
-            }
-        )
         currentNavController = controller
         mViewModel.bottomNavigateTo.observe(
             this,
@@ -284,6 +278,7 @@ class MainActivity : CommonActivity() {
                 View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
                 View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
         }
+
         binding.bottomNav.isVisible = false
     }
 
@@ -292,6 +287,7 @@ class MainActivity : CommonActivity() {
         binding.navHostContainer.post {
             binding.navHostContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
         }
+
         binding.bottomNav.isVisible = true
     }
 

@@ -2,8 +2,6 @@ package ru.madbrains.smartyard
 
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.yandex.metrica.YandexMetrica
-import com.yandex.metrica.YandexMetricaConfig
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
 import ru.madbrains.smartyard.di.Modules
@@ -17,7 +15,6 @@ class App : Application() {
         super.onCreate()
         initKoin()
         initLogger()
-        initYandex()
         AndroidThreeTen.init(this)
     }
 
@@ -33,13 +30,6 @@ class App : Application() {
             Timber.plant(Timber.DebugTree())
         }
         //Timber.plant(Timber.DebugTree())
-    }
-
-    private fun initYandex() {
-        val apiKey = "your-api-key"
-        val config = YandexMetricaConfig.newConfigBuilder(apiKey).build()
-        YandexMetrica.activate(applicationContext, config)
-        YandexMetrica.enableActivityAutoTracking(this)
     }
 
     companion object {
