@@ -3,7 +3,6 @@ package com.sesameware.smartyard_oem.ui.main.address
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
@@ -80,7 +79,7 @@ class AddressViewModel(
             }
         }
 
-        Timber.d("debug_mm houseIdFlats = $houseIdFlats")
+        Timber.d("debug_dmm houseIdFlats = $houseIdFlats")
         return houseIdFlats
     }
 

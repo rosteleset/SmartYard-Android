@@ -195,7 +195,6 @@ class EventLogViewModel(
         val days = mutableListOf<LocalDate>()
         var canBreak = false
         var canBreak2 = (currentEventDayFilter == null)
-        Timber.d("__Q__ $canBreak  $canBreak2  $currentEventDayFilter")
         while (_lastLoadedDayFilterIndex < _eventDaysFilter.size - 1) {
             _lastLoadedDayFilterIndex++
 

@@ -2,6 +2,7 @@ package com.sesameware.smartyard_oem.ui.main.address.event_log.adapters
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.util.Base64
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -119,19 +120,37 @@ class EventLogDetailAdapter(
                     pvEventVideo.clipToOutline = true
 
                     if (eventItem.preview?.isNotEmpty() == true) {
-                        Glide.with(tvEventImage)
-                            .asBitmap()
-                            .load(eventItem.preview)
-                            .transform(RoundedCorners(tvEventImage.resources.getDimensionPixelSize(R.dimen.event_log_detail_corner)))
-                            .into(object : CustomTarget<Bitmap>(){
-                                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                                    tvEventImage.setImageBitmap(resource)
-                                }
+                        when (eventItem.previewType) {
+                            Plog.PREVIEW_FLUSSONIC, Plog.PREVIEW_FRS -> Glide.with(tvEventImage)
+                                .asBitmap()
+                                .load(eventItem.preview)
+                                .transform(RoundedCorners(tvEventImage.resources.getDimensionPixelSize(R.dimen.event_log_detail_corner)))
+                                .into(object : CustomTarget<Bitmap>(){
+                                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                        tvEventImage.setImageBitmap(resource)
+                                    }
 
-                                override fun onLoadCleared(placeholder: Drawable?) {
-                                }
+                                    override fun onLoadCleared(placeholder: Drawable?) {
+                                    }
 
-                            })
+                                })
+                            Plog.PREVIEW_BASE64 -> {
+                                val image = Base64.decode(eventItem.preview, Base64.DEFAULT)
+                                Glide.with(tvEventImage)
+                                    .asBitmap()
+                                    .load(image)
+                                    .transform(RoundedCorners(tvEventImage.resources.getDimensionPixelSize(R.dimen.event_log_detail_corner)))
+                                    .into(object : CustomTarget<Bitmap>(){
+                                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                                            tvEventImage.setImageBitmap(resource)
+                                        }
+
+                                        override fun onLoadCleared(placeholder: Drawable?) {
+                                        }
+
+                                    })
+                            }
+                        }
                     } else {
                         tvEventImage.setImageResource(android.R.color.transparent)
                     }

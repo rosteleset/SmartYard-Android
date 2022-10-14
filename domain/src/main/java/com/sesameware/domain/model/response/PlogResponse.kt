@@ -17,7 +17,7 @@ data class Plog(
     @Json(name = "mechanizmaDescription") val mechanizmaDescription: String, // описание нагрузки (двери)
     @Json(name = "event") val eventType: Int, // тип события
     @Json(name = "preview") val preview: String? = null, // url картинки
-    @Json(name = "previewType") val previewType: Int, // тип картинки (0 - нет, 1 - flussonic, 2 - FRS)
+    @Json(name = "previewType") val previewType: Int, // тип картинки (0 - нет, 1 - flussonic, 2 - FRS, 3 - base64)
     @Json(name = "detail") val detail: String? = null, // детализация (старый вариант, не используем)
     @Json(name = "detailX") val detailX: DetailX? = null, // детализация события
     var address: String = "", // адрес события для показа
@@ -71,6 +71,10 @@ data class Plog(
         const val EVENT_OPEN_BY_FACE = 5
         const val EVENT_OPEN_BY_CODE = 6
         const val EVENT_OPEN_GATES_BY_CALL = 7
+
+        const val PREVIEW_FLUSSONIC = 1
+        const val PREVIEW_FRS = 2
+        const val PREVIEW_BASE64 = 3
 
         const val FLAG_CAN_LIKE = "canLike"
         const val FLAG_CAN_DISLIKE = "canDislike"
