@@ -42,13 +42,6 @@ class RegistrationViewModel(
         }
     }
 
-    fun delivered(messageId: String) {
-        viewModelScope.withProgress({ false }) {
-            inboxInteractor.delivered(messageId)
-            Timber.tag(TAG).d("delivered")
-        }
-    }
-
     suspend fun getProviderConfig() {
         val pId = mPreferenceStorage.providerId
         if (pId?.isNotEmpty() == true) {

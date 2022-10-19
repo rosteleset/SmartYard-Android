@@ -14,9 +14,6 @@ import com.sesameware.smartyard_oem.GenericViewModel
 class NotificationViewModel(
     private val inboxInteractor: InboxInteractor
 ) : GenericViewModel() {
-
-    val TAG = NotificationViewModel::class.simpleName
-
     val loaded = MutableLiveData<Event<Inbox>>()
 
     val progress = MutableLiveData<Boolean>()
@@ -30,12 +27,6 @@ class NotificationViewModel(
             val res = inboxInteractor.inbox()
             loaded.postValue(Event(res.data))
             progress.postValue(false)
-        }
-    }
-
-    fun delivered(messageId: String) {
-        viewModelScope.withProgress {
-            inboxInteractor.delivered(messageId)
         }
     }
 

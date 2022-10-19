@@ -18,7 +18,6 @@ import com.sesameware.domain.model.request.CCTVYoutubeRequest
 import com.sesameware.domain.model.request.ConfirmCodeRecoveryRequest
 import com.sesameware.domain.model.request.ConfirmCodeRequest
 import com.sesameware.domain.model.request.CreateIssuesRequest
-import com.sesameware.domain.model.request.DeliveredRequest
 import com.sesameware.domain.model.request.DeliveryChangeRequest
 import com.sesameware.domain.model.request.GetAddressRequest
 import com.sesameware.domain.model.request.GetCoderRequest
@@ -57,7 +56,6 @@ import com.sesameware.domain.model.response.CCTVRecPrepareResponse
 import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
 import com.sesameware.domain.model.response.CreateIssuesResponse
-import com.sesameware.domain.model.response.DeliveredResponse
 import com.sesameware.domain.model.response.DeliveryChangeResponse
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetAddressResponse
@@ -256,11 +254,6 @@ interface TeledomApi {
 
     @POST
     suspend fun unread(@Url url: String): UnreadedResponse
-
-    @POST
-    suspend fun delivered(
-        @Url url: String,
-        @Body request: DeliveredRequest): Response<DeliveredResponse>
 
     @POST
     suspend fun createIssues(

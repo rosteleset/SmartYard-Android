@@ -86,12 +86,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val badge = get("badge")?.toInt()
                         val title = remoteMessage.notification?.title
                         val message = remoteMessage.notification?.body
-                        GlobalScope.launch {
-                            Timber.tag(TAG).d("delivered run: %s", messageId)
-                            messageId?.let {
-                                inboxInteractor.delivered(it)
-                            }
-                        }
 
                         sendNotificationInbox(
                             messageId ?: "",
@@ -125,12 +119,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val badge = get("badge")?.toInt()
                         val title = remoteMessage.notification?.title
                         val message = remoteMessage.notification?.body
-                        GlobalScope.launch {
-                            Timber.tag(TAG).d("delivered run: %s", messageId)
-                            messageId?.let {
-                                inboxInteractor.delivered(it)
-                            }
-                        }
 
                         sendNotificationInbox(
                             messageId ?: "",
@@ -150,12 +138,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val badge = get("badge")?.toInt()
                         val title = remoteMessage.notification?.title
                         val message = remoteMessage.notification?.body
-                        GlobalScope.launch {
-                            Timber.tag(TAG).d("delivered run: %s", messageId)
-                            messageId?.let {
-                                inboxInteractor.delivered(it)
-                            }
-                        }
 
                         sendNotificationInbox(
                             messageId ?: "",

@@ -24,9 +24,7 @@ import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.data.DataModule
-import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.smartyard_oem.EventObserver
-import com.sesameware.smartyard_oem.FirebaseMessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNotificationBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
@@ -140,18 +138,11 @@ class NotificationFragment : Fragment() {
     private var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             mViewModel.loadInbox()
-            intent?.extras?.let {
-                intentParse(it)
-            }
+            intentParse()
         }
     }
 
-    private fun intentParse(bundle: Bundle) {
-        val messageId =
-            bundle.getString(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID, "")
-        if (messageId.isNotEmpty()) {
-            mViewModel.delivered(messageId)
-        }
+    private fun intentParse() {
         cancelNotificationAll()
     }
 

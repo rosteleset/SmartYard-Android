@@ -74,10 +74,6 @@ class RegistrationActivity : CommonActivity() {
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(notificationId)
 
-        if (messageId.isNotEmpty()) {
-            mViewModel.delivered(messageId)
-        }
-
         Timber.tag(RegistrationActivity::class.simpleName)
             .d("Intent parse: %s %s %s", messageId, messageType, notificationId)
     }

@@ -1,6 +1,5 @@
 package com.sesameware.domain.interfaces
 
-import com.sesameware.domain.model.response.DeliveredResponse
 import com.sesameware.domain.model.response.InboxResponse
 import com.sesameware.domain.model.response.UnreadedResponse
 
@@ -10,8 +9,5 @@ import com.sesameware.domain.model.response.UnreadedResponse
  */
 interface InboxRepository {
     suspend fun inbox(): InboxResponse
-
     suspend fun unread(): UnreadedResponse
-
-    suspend fun delivered(messageId: String): DeliveredResponse
 }

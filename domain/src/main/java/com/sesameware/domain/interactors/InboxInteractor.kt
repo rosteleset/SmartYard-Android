@@ -1,7 +1,6 @@
 package com.sesameware.domain.interactors
 
 import com.sesameware.domain.interfaces.InboxRepository
-import com.sesameware.domain.model.response.DeliveredResponse
 import com.sesameware.domain.model.response.InboxResponse
 import com.sesameware.domain.model.response.UnreadedResponse
 
@@ -19,9 +18,5 @@ class InboxInteractor(
 
     suspend fun unread(): UnreadedResponse {
         return repository.unread()
-    }
-
-    suspend fun delivered(messageId: String): DeliveredResponse {
-        return repository.delivered(messageId)
     }
 }
