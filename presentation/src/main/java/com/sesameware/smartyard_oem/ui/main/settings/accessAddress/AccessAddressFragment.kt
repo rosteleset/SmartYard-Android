@@ -14,11 +14,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAccessAddressBinding
 import com.sesameware.smartyard_oem.ui.Type
+import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapterdelegates.ContactAdapterDelegate
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
@@ -55,7 +55,7 @@ class AccessAddressFragment : Fragment() {
 
     private fun initAddContact() {
         binding.tvAddBarrierGate.setOnClickListener {
-            val dialog = DialogShareAccessDialog()
+            val dialog = DialogShareAccessDialog(requireActivity() as? MainActivity)
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
                     override fun onDone(contactModel: ContactModel) {
@@ -67,7 +67,7 @@ class AccessAddressFragment : Fragment() {
         }
 
         binding.tvPermanentAccessAddress.setOnClickListener {
-            val dialog = DialogShareAccessDialog()
+            val dialog = DialogShareAccessDialog(requireActivity() as? MainActivity)
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
                     override fun onDone(contactModel: ContactModel) {
