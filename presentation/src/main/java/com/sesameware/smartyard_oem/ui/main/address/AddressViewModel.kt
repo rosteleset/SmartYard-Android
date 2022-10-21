@@ -157,16 +157,18 @@ class AddressViewModel(
                                 }
                             )
                         }
-                        if (addressItem.hasPlog && hasYards && houseIdFlats[addressItem.houseId]?.size != 0) {
-                            mutableList.add(
-                                EventLogModel().apply {
-                                    caption = "События"
-                                    counter = 0
-                                    houseId = addressItem.houseId
-                                    address = addressItem.address
-                                    flats = houseIdFlats[addressItem.houseId]?.toList() ?: listOf()
-                                }
-                            )
+                        houseIdFlats[addressItem.houseId]?.let { list ->
+                            if (addressItem.hasPlog && hasYards && list.isNotEmpty()) {
+                                mutableList.add(
+                                    EventLogModel().apply {
+                                        caption = "События"
+                                        counter = 0
+                                        houseId = addressItem.houseId
+                                        address = addressItem.address
+                                        flats = list
+                                    }
+                                )
+                            }
                         }
                         hasExpanded = hasExpanded || expandedHouseId.contains(addressItem.houseId)
                         ParentModel(
