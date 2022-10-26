@@ -20,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -79,6 +78,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private val hideVideoControllersRunnable = Runnable {
         hideVideoControllers()
     }
+
+    private var canRenewToken = true
 
     //список временных интервалов архива, которые есть на сервере, внутри выбранного пользователем интервала просмотра архива
     private var archiveRanges = mutableListOf<TimeInterval>()
@@ -503,6 +504,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 changeVideoSource(it)
             }
         )
+
         mViewModel.changeTrimInterval.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -510,64 +512,66 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 generateTrimmerRanges(it.interval)
             }
         )
+
         mViewModel.shiftPickerPosition.observe(
             viewLifecycleOwner,
             EventObserver {
                 binding.rangeTrimmer.slider.shiftPickerPositionByMs(it)
             }
         )
+
         mViewModel.playState.observe(
-            viewLifecycleOwner,
-            Observer { playing ->
-                binding.btnPlay.isSelected = playing
-                mPlayer?.playWhenReady = playing
-            }
-        )
+            viewLifecycleOwner
+        ) { playing ->
+            binding.btnPlay.isSelected = playing
+            mPlayer?.playWhenReady = playing
+        }
+
         mViewModel.playSpeed.observe(
-            viewLifecycleOwner,
-            Observer { num ->
-                if (num == MAX_SPEED_UP_VALUE) {
-                    binding.tvSpeedUp.text = ""
-                } else {
-                    val speedUpText = (num * 2).clamp(0.25, 32.0)
-                        .toString().removeTrailingZeros()
-                    binding.tvSpeedUp.text =
-                        getString(
-                            R.string.cctv_speed_template,
-                            speedUpText
-                        )
-                }
-                if (num == MIN_SPEED_DOWN_VALUE) {
-                    binding.tvSpeedDown.text = ""
-                } else {
-                    val speedDownText = (num * 0.5).clamp(0.125, 8.0)
-                        .toString().removeTrailingZeros()
-                    binding.tvSpeedDown.text =
-                        getString(
-                            R.string.cctv_speed_template,
-                            speedDownText
-                        )
-                }
-                mPlayer?.setPlaybackParameters(PlaybackParameters(num.toFloat()))
+            viewLifecycleOwner
+        ) { num ->
+            if (num == MAX_SPEED_UP_VALUE) {
+                binding.tvSpeedUp.text = ""
+            } else {
+                val speedUpText = (num * 2).clamp(0.25, 32.0)
+                    .toString().removeTrailingZeros()
+                binding.tvSpeedUp.text =
+                    getString(
+                        R.string.cctv_speed_template,
+                        speedUpText
+                    )
             }
-        )
+            if (num == MIN_SPEED_DOWN_VALUE) {
+                binding.tvSpeedDown.text = ""
+            } else {
+                val speedDownText = (num * 0.5).clamp(0.125, 8.0)
+                    .toString().removeTrailingZeros()
+                binding.tvSpeedDown.text =
+                    getString(
+                        R.string.cctv_speed_template,
+                        speedDownText
+                    )
+            }
+            mPlayer?.setPlaybackParameters(PlaybackParameters(num.toFloat()))
+        }
+
         mViewModel.videoLoaderVisible.observe(
             viewLifecycleOwner,
             EventObserver { visible ->
                 binding.mVideoLoader.show(visible)
             }
         )
+
         mViewModel.uiMode.observe(
-            viewLifecycleOwner,
-            Observer { mode ->
-                mode?.run {
-                    when (this) {
-                        CCTVTrimmerViewModel.UiMode.Trim -> setTrimMode(true)
-                        CCTVTrimmerViewModel.UiMode.Play -> setTrimMode(false)
-                    }
+            viewLifecycleOwner
+        ) { mode ->
+            mode?.run {
+                when (this) {
+                    CCTVTrimmerViewModel.UiMode.Trim -> setTrimMode(true)
+                    CCTVTrimmerViewModel.UiMode.Play -> setTrimMode(false)
                 }
             }
-        )
+        }
 
         mViewModel.restoreSeek.observe(
             viewLifecycleOwner,
@@ -585,6 +589,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 mViewModel.savePlayerState(playerCurrentPosition())
             }
         )
+
         mViewModel.alertEvent.observe(
             viewLifecycleOwner,
             EventObserver { type ->
@@ -599,36 +604,49 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 }
             }
         )
+
         mViewModel.playerMaskImages.observe(
             viewLifecycleOwner,
             EventObserver { images ->
                 binding.rangePlayer.setMaskImages(images)
             }
         )
+
         mViewModel.trimmerMaskImages.observe(
             viewLifecycleOwner,
             EventObserver { images ->
                 binding.rangeTrimmer.setMaskImages(images)
             }
         )
+
         mViewModel.trimmerPreviewImage.observe(
-            viewLifecycleOwner,
-            Observer { image ->
-                view?.findViewById<ImageView>(R.id.mPreview)?.setImageBitmap(image)
-            }
-        )
+            viewLifecycleOwner
+        ) { image ->
+            view?.findViewById<ImageView>(R.id.mPreview)?.setImageBitmap(image)
+        }
 
         mCCTVViewModel.stateFullScreen.observe(
-            viewLifecycleOwner,
-            Observer {
-                mExoPlayerFullscreen = it
-                if (it) {
-                    setFullscreenMode()
-                } else {
-                    setNormalMode()
+            viewLifecycleOwner
+        ) {
+            mExoPlayerFullscreen = it
+            if (it) {
+                setFullscreenMode()
+            } else {
+                setNormalMode()
+            }
+        }
+
+        mCCTVViewModel.chosenCamera.observe(
+            viewLifecycleOwner
+        ) {
+            it?.run {
+                val initialThumb = mCCTVViewModel.initialThumb
+                mViewModel.initialize(this, initialThumb)
+                mCurrentPlaybackData?.run {
+                    changeVideoSource(this)
                 }
             }
-        )
+        }
     }
 
     private fun setTrimMode(active: Boolean) {
@@ -653,7 +671,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private fun createPlayer(
         videoView: PlayerView
     ): SimpleExoPlayer {
-        Timber.d("debug_dmm create")
+        Timber.d("debug_dmm createPlayer()")
 
         val trackSelector = DefaultTrackSelector(requireContext())
         val player  = SimpleExoPlayer.Builder(requireContext())
@@ -711,6 +729,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 playbackState: Int
             ) {
                 if (playbackState == Player.STATE_READY) {
+                    canRenewToken = true
                     mPlayer?.videoFormat?.let {
                         if (it.width > 0 && it.height > 0) {
                             (binding.mPlayerView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
@@ -738,7 +757,16 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 mViewModel.showVideoLoader(false)
 
                 if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    mViewModel.showGlobalError(error.sourceException)
+                    if (canRenewToken) {
+                        canRenewToken = false
+
+                        //перезапрашиваем список камер
+                        mCCTVViewModel.cctvModel.value?.let {
+                            mCCTVViewModel.refreshCameras(it)
+                        }
+                    } else {
+                        mCCTVViewModel.showGlobalError(error.sourceException)
+                    }
                 }
 
                 if (error.type == ExoPlaybackException.TYPE_RENDERER) {
@@ -838,7 +866,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     private fun releasePlayer() {
-        Timber.d("debug_dmm release")
+        Timber.d("debug_dmm releasePlayer()")
         mPlayer?.stop()
         mPlayer?.release()
         mPlayer = null

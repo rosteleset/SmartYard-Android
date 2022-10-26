@@ -50,6 +50,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private var lpVideoWrap: ViewGroup.LayoutParams? = null
     private var playerResizeMode: Int = 0
 
+    private var canRenewToken = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -67,10 +69,10 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         super.onDestroyView()
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        Timber.d("debug_dmm __onActivityCreated")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Timber.d("debug_dmm __onViewCreated")
         setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
     }
 
@@ -171,7 +173,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         videoView: PlayerView,
         progressView: ProgressBar
     ): SimpleExoPlayer {
-        Timber.d("debug_dmm create")
+        Timber.d("debug_dmm createPlayer()")
 
         val trackSelector = DefaultTrackSelector(requireContext())
         val player  = SimpleExoPlayer.Builder(requireContext())
@@ -194,12 +196,12 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
 
         player.addListener(object : Player.EventListener {
-            @Deprecated("Deprecated in Java")
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int
             ) {
                 if (playbackState == Player.STATE_READY) {
+                    canRenewToken = true
                     mPlayer?.videoFormat?.let {
                         if (it.width > 0 && it.height > 0) {
                             (binding.mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
@@ -221,7 +223,16 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
             override fun onPlayerError(error: ExoPlaybackException) {
                 if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    mCCTVViewModel.showGlobalError(error.sourceException)
+                    if (canRenewToken) {
+                        canRenewToken = false
+
+                        //перезапрашиваем список камер
+                        mCCTVViewModel.cctvModel.value?.let {
+                            mCCTVViewModel.refreshCameras(it)
+                        }
+                    } else {
+                        mCCTVViewModel.showGlobalError(error.sourceException)
+                    }
                 }
 
                 if (error.type == ExoPlaybackException.TYPE_RENDERER) {
@@ -235,7 +246,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             }
 
             override fun onTracksChanged(trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray) {
+                                         trackSelections: TrackSelectionArray) {
                 super.onTracksChanged(trackGroups, trackSelections)
 
                 if (!forceVideoTrack) {
@@ -256,8 +267,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                                     for (j in 0 until rendererTrackGroups[i].length) {
                                         if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
                                             mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                                (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
+                                            (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
+                                                    maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
                                             tracks.add(j)
                                         }
                                     }
@@ -286,7 +297,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     fun releasePlayer() {
-        Timber.d("debug_dmm release")
+        Timber.d("debug_dmm releasePlayer()")
         Timber.d("debug_dmm mPlayer = $mPlayer")
         mPlayer?.stop()
         mPlayer?.release()
@@ -334,6 +345,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
     override fun onExitFullscreen() {
         if (mExoPlayerFullscreen) {
+            mCCTVViewModel.fullScreen(false)
+            mExoPlayerFullscreen = false
             setNormalMode()
         }
     }

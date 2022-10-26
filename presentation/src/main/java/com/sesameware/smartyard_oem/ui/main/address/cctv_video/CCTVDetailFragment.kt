@@ -11,7 +11,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.threeten.bp.LocalDate
-import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailBinding
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.TabAdapter
@@ -24,23 +23,6 @@ class CCTVDetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        Timber.d("debug_dmm __onActivityCreated")
-        mCCTVViewModel.closedRangeCalendar.observe(
-            viewLifecycleOwner,
-            EventObserver {
-                mCCTVViewModel.startDate = it.start
-                mCCTVViewModel.endDate = it.endInclusive
-                setupUi(childFragmentManager)
-            }
-        )
-        setupUi(childFragmentManager)
-        setupObserve()
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -55,6 +37,8 @@ class CCTVDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Timber.d("debug_dmm onViewCreated")
+        setupUi(childFragmentManager)
+        setupObserve()
     }
 
     private fun setupUi(fm: FragmentManager
@@ -72,7 +56,7 @@ class CCTVDetailFragment : Fragment() {
         )
 
         adapter.addFragment(
-            CCTVArchiveTab.newInstance(mCCTVViewModel.startDate, mCCTVViewModel.endDate, mCCTVViewModel.availableRanges),
+            CCTVArchiveTab.newInstance(),
             resources.getString(R.string.cctv_detail_tab_archive)
         )
         binding.viewPager.adapter = adapter
