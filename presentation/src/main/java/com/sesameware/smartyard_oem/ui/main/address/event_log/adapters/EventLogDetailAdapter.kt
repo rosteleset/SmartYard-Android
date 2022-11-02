@@ -110,6 +110,9 @@ class EventLogDetailAdapter(
                         Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> {
                             tvEventUnansweredCall.isVisible = false
                             tvEventAnsweredCall.isVisible = true
+                            val txt = tvEventAnsweredCall.text.toString() +
+                                ", дверь " + if (eventItem.detailX?.opened == true) "открыли" else "не открыли"
+                            tvEventAnsweredCall.text = txt
                         }
                         else -> {
                             tvEventUnansweredCall.isVisible = false
