@@ -162,29 +162,26 @@ class EventLogDetailAdapter(
                     clELDFriend.isVisible = false
                     bELDFriend.setOnClickListener(null)
 
-                    if (eventItem.frsEnabled) {
-                        eventItem.detailX?.face?.let {face ->
-                            tvEventImage.setFaceRect(face.left, face.top, face.width, face.height,
-                                eventItem.eventType == Plog.EVENT_OPEN_BY_FACE)
-                        }
+                    eventItem.detailX?.face?.let {face ->
+                        tvEventImage.setFaceRect(face.left, face.top, face.width, face.height,
+                            eventItem.eventType == Plog.EVENT_OPEN_BY_FACE)
+                    }
 
-                        if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_DISLIKE) == true
-                            && eventItem.eventType == Plog.EVENT_OPEN_BY_FACE) {
-                            clELDFoe.isVisible = true
-                            bELDFoe.setOnClickListener {
+                    if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_DISLIKE) == true
+                        && eventItem.eventType == Plog.EVENT_OPEN_BY_FACE) {
+                        clELDFoe.isVisible = true
+                        bELDFoe.setOnClickListener {
+                            friendOrFoeCallback(Triple(position, day, index))
+                        }
+                    } else {
+                        if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_LIKE) == true
+                            && eventItem.eventType != Plog.EVENT_OPEN_BY_FACE) {
+                            clELDFriend.isVisible = true
+                            bELDFriend.setOnClickListener {
                                 friendOrFoeCallback(Triple(position, day, index))
-                            }
-                        } else {
-                            if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_LIKE) == true
-                                && eventItem.eventType != Plog.EVENT_OPEN_BY_FACE) {
-                                clELDFriend.isVisible = true
-                                bELDFriend.setOnClickListener {
-                                    friendOrFoeCallback(Triple(position, day, index))
-                                }
                             }
                         }
                     }
-
                 }
             }
 
