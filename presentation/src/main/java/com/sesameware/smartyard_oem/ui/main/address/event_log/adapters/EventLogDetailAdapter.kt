@@ -19,7 +19,6 @@ import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.ui.PlayerView
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
-import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.domain.utils.listenerGeneric
