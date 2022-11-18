@@ -7,18 +7,14 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.*
 import android.widget.EditText
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.DialogFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.redmadrobot.inputmask.MaskedTextChangedListener
 import com.redmadrobot.inputmask.MaskedTextChangedListener.Companion.installOn
 import com.redmadrobot.inputmask.helper.AffinityCalculationStrategy
-import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.DialogShareAccessBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
@@ -56,46 +52,6 @@ class DialogShareAccessDialog(private val mainActivity: MainActivity? = null) :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        //В Android 11 и выше появляется визуальный глюк нижней панели навгации после скрытия виртуальной клавиатуры.
-        //Поэтому, после окончания анимации показа виртуальной клавиатуры, скрываем панель навигации,
-        //а после исчезновения виртуальной клавиатуры - вновь показываем.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            binding.root.setWindowInsetsAnimationCallback(object : WindowInsetsAnimation.Callback(
-                DISPATCH_MODE_STOP
-            ) {
-                override fun onProgress(
-                    insets: WindowInsets,
-                    runningAnimations: MutableList<WindowInsetsAnimation>
-                ): WindowInsets {
-                    return insets
-                }
-
-                override fun onStart(
-                    animation: WindowInsetsAnimation,
-                    bounds: WindowInsetsAnimation.Bounds
-                ): WindowInsetsAnimation.Bounds {
-                    mainActivity?.let {
-                        val bottomNavigationView = it.findViewById<BottomNavigationView>(R.id.bottom_nav)
-                        if (binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
-                            && it.binding.bottomNav.selectedItemId == R.id.settings) {
-                            bottomNavigationView.visibility = View.INVISIBLE
-                        }
-                    }
-                    return super.onStart(animation, bounds)
-                }
-
-                override fun onEnd(animation: WindowInsetsAnimation) {
-                    mainActivity?.let {
-                        val bottomNavigationView = it.findViewById<BottomNavigationView>(R.id.bottom_nav)
-                        if (!binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())
-                            && it.binding.bottomNav.selectedItemId == R.id.settings) {
-                            bottomNavigationView.visibility = View.VISIBLE
-                        }
-                    }
-                }
-            })
-        }
 
         binding.btnDone.setOnClickListener {
             onDialogServiceListener?.onDone(contactModel)

@@ -169,7 +169,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
                         override fun onLoadCleared(placeholder: Drawable?) {
                         }
-
                     })
                 binding.mPeekView.visibility = View.VISIBLE
             }

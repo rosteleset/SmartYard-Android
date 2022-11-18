@@ -14,7 +14,6 @@ import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.wallet.AutoResolveHelper
 import com.google.android.gms.wallet.IsReadyToPayRequest
@@ -41,7 +40,6 @@ import timber.log.Timber
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 import java.util.regex.PatternSyntaxException
-import kotlin.Exception
 
 /**
  * @author Nail Shakurov

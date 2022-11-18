@@ -12,14 +12,12 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -140,39 +138,6 @@ class MainActivity : CommonActivity() {
         }
 
         handleIntent(intent)
-
-        //В Android 11 и выше появляется визуальный глюк нижней панели навгации после скрытия виртуальной клавиатуры.
-        //Поэтому, после окончания анимации показа виртуальной клавиатуры, скрываем панель навигации,
-        //а после исчезновения виртуальной клавиатуры - вновь показываем.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            binding.root.setWindowInsetsAnimationCallback(object :
-                WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
-                override fun onProgress(
-                    insets: WindowInsets,
-                    runningAnimations: MutableList<WindowInsetsAnimation>
-                ): WindowInsets {
-                    return insets
-                }
-
-                override fun onStart(
-                    animation: WindowInsetsAnimation,
-                    bounds: WindowInsetsAnimation.Bounds
-                ): WindowInsetsAnimation.Bounds {
-                    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-                    if (!binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
-                        bottomNavigationView.visibility = View.VISIBLE
-                    }
-                    return super.onStart(animation, bounds)
-                }
-
-                override fun onEnd(animation: WindowInsetsAnimation) {
-                    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-                    if (binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
-                        bottomNavigationView.visibility = View.INVISIBLE
-                    }
-                }
-            })
-        }
     }
 
     private fun dialogForceUpgrade() {

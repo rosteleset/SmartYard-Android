@@ -40,13 +40,12 @@ class PayContractFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         payViewModel.selectedItemIndex.observe(
-            viewLifecycleOwner,
-            Observer {
-                payAddressModel = payViewModel.addressList.value?.peekContent()!![it ?: 0]
-                binding.tvAddress.text = payAddressModel?.address
-                setupPager()
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            payAddressModel = payViewModel.addressList.value?.peekContent()!![it ?: 0]
+            binding.tvAddress.text = payAddressModel?.address
+            setupPager()
+        }
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
