@@ -330,6 +330,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     override fun onPause() {
         super.onPause()
         mSensorManager?.unregisterListener(this)
+        mLinphone.mAudioManager.routeAudioToEarPiece()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
