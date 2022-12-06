@@ -135,10 +135,9 @@ class EventLogDetailFragment : Fragment() {
             val (day, index) = adapter.getPlog(position)
             if (day != null && index != null) {
                 adapter.eventsByDays[day]?.get(index)?.let {eventItem ->
-                    val timestampStart = DateTimeUtils.toSqlTimestamp(eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)).time / 1000
-                    val duration = EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS
                     mViewModel.camMapData[eventItem.objectId]?.let { data ->
-                        videoUrl = "${data.url}/index-$timestampStart-$duration.m3u8?token=${data.token}"
+                        videoUrl = data.getHlsAt(eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS),
+                            EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS)
                         Timber.d("__Q__  playVideo media $videoUrl  mPlayer = $mPlayer")
                         mPlayer?.setMediaItem(MediaItem.fromUri(videoUrl))
                         mPlayer?.prepare()

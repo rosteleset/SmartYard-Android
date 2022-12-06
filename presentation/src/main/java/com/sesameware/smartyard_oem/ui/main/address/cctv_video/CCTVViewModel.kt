@@ -16,6 +16,7 @@ import org.threeten.bp.ZoneId
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.model.response.CCTVData
+import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.model.response.targetZoneId
 import com.sesameware.domain.utils.listenerEmpty
@@ -77,9 +78,14 @@ class CCTVViewModel(
         viewModelScope.withProgress({ false }, null) {
             chosenCamera.value?.let {
                 availableRanges.clear()
-                val url = it.url + "/recording_status.json?from=1525186456&token=" + it.token
                 val loadPeriods = try {
-                    cctvInteractor.loadPeriods(url)?.first()?.ranges ?: emptyList()
+                    when (it.serverType) {
+                        MediaServerType.NIMBLE -> cctvInteractor.ranges(it.id)?.first()?.ranges ?: emptyList()
+                        else -> {
+                            val url = it.url + "/recording_status.json?from=1525186456&token=" + it.token
+                            cctvInteractor.loadPeriods(url)?.first()?.ranges ?: emptyList()
+                        }
+                    }
                 } catch (e: Throwable) {
                     emptyList()
                 }

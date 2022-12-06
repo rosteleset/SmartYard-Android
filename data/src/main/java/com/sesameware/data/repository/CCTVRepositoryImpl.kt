@@ -8,12 +8,14 @@ import com.sesameware.domain.model.request.CCTVAllRequest
 import com.sesameware.domain.model.request.CCTVRecDownloadRequest
 import com.sesameware.domain.model.request.CCTVRecPrepareRequest
 import com.sesameware.domain.model.request.CCTVYoutubeRequest
+import com.sesameware.domain.model.request.CCTVRangesRequest
 import com.sesameware.domain.model.response.CCTVGetResponse
 import com.sesameware.domain.model.response.CCTVRecDownloadResponse
 import com.sesameware.domain.model.response.CCTVRecPrepareResponse
 import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.model.response.CCTVYoutubeResponse
+import com.sesameware.domain.model.response.CCTVRangesResponse
 
 /**
  * @author Nail Shakurov
@@ -67,6 +69,14 @@ class CCTVRepositoryImpl(
             teledomApi.getCCTVYoutube(
                 DataModule.BASE_URL + "cctv/youtube",
                 CCTVYoutubeRequest(id)).getResponseBody()
+        }
+    }
+
+    override suspend fun ranges(cameraID: Int): CCTVRangesResponse? {
+        return safeApiCall {
+            teledomApi.ranges(
+                DataModule.BASE_URL + "cctv/ranges",
+                CCTVRangesRequest(cameraID)).getResponseBody()
         }
     }
 }

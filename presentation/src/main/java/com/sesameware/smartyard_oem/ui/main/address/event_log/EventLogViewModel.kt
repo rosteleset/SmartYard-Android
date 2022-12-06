@@ -9,8 +9,13 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.FRSInteractor
+import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.Plog
+import com.sesameware.domain.model.response.targetZoneId
 import com.sesameware.smartyard_oem.GenericViewModel
+import org.threeten.bp.DateTimeUtils
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import timber.log.Timber
 
 data class Flat(
@@ -26,8 +31,18 @@ data class EventDayData(
 
 data class DoorphoneData(
     val url: String,
-    val token: String
-)
+    val token: String,
+    val serverType: MediaServerType
+) {
+    fun getHlsAt(time: LocalDateTime, durationSeconds: Long): String {
+        val zoned = time.atZone(targetZoneId).withZoneSameInstant(ZoneId.systemDefault())
+        val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
+        return when (serverType) {
+            MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
+            else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
+        }
+    }
+}
 
 class EventLogViewModel(
     private val addressInteractor: AddressInteractor,
@@ -81,7 +96,7 @@ class EventLogViewModel(
             val data = hashMapOf<Int, DoorphoneData>()
             val result = addressInteractor.camMap()
             result?.data?.forEach {
-                data[it.id] = DoorphoneData(it.url, it.token)
+                data[it.id] = DoorphoneData(it.url, it.token, it.serverType)
             }
             withContext(Dispatchers.Main) {
                 camMapData = HashMap(data)

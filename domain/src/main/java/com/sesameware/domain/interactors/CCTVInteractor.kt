@@ -49,4 +49,8 @@ class CCTVInteractor(
     suspend fun getCCTVYoutube(id: Int?): List<CCTVYoutubeData>? {
         return repository.getCCTVYoutube(id)?.data
     }
+
+    suspend fun ranges(cameraID: Int): List<RangeObject>? {
+        return repository.ranges(cameraID)?.data
+    }
 }

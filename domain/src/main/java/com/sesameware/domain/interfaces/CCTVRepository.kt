@@ -6,6 +6,7 @@ import com.sesameware.domain.model.response.CCTVRecDownloadResponse
 import com.sesameware.domain.model.response.CCTVRecPrepareResponse
 import com.sesameware.domain.model.response.CCTVYoutubeResponse
 import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
+import com.sesameware.domain.model.response.CCTVRangesResponse
 import com.sesameware.domain.model.response.RangeObject
 
 /**
@@ -19,4 +20,5 @@ interface CCTVRepository {
     suspend fun loadPeriods(@Url url: String): List<RangeObject>?
     suspend fun getCCTVOverview(): CCTVCityCameraGetResponse?
     suspend fun getCCTVYoutube(id: Int?): CCTVYoutubeResponse?
+    suspend fun ranges(cameraID: Int): CCTVRangesResponse?
 }
