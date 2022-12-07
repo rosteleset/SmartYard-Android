@@ -78,5 +78,6 @@ data class Plog(
 
         const val FLAG_CAN_LIKE = "canLike"
         const val FLAG_CAN_DISLIKE = "canDislike"
+        const val FLAG_LIKED = "liked"
     }
 }

@@ -44,8 +44,8 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 13
-        versionName '1.0.13'
+        versionCode 14
+        versionName '1.0.14'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

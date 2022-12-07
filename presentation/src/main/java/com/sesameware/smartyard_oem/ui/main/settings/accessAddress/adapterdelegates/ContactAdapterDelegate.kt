@@ -129,7 +129,7 @@ class ContactAdapterDelegate(
             if (cursor.moveToFirst()) {
                 contactName = cursor.getString(0)
                 contactId =
-                    cursor.getString(cursor.getColumnIndexOrThrow(ContactsContract.PhoneLookup._ID))
+                    cursor.getString(cursor.getColumnIndexOrThrow(PhoneLookup._ID))
             }
             cursor.close()
 
@@ -142,7 +142,6 @@ class ContactAdapterDelegate(
                     if (inputStream != null) {
                         photo = BitmapFactory.decodeStream(inputStream)
                     }
-                    assert(inputStream != null)
                     inputStream?.close()
                 } catch (e: IOException) {
                     e.printStackTrace()
