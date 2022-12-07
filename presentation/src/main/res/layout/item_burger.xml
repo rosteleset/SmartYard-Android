@@ -31,6 +31,7 @@
                 android:layout_weight="0"
                 android:paddingStart="24dp"
                 android:paddingEnd="12dp"
+                app:tint="#6D7A8A"
                 app:srcCompat="@drawable/address_settings_burger" />
 
             <TextView
