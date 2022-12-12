@@ -11,6 +11,9 @@
         <action
             android:id="@+id/action_payFragment2_to_payContractFragment"
             app:destination="@id/payContractFragment" />
+        <action
+            android:id="@+id/action_payFragment2_to_customWebViewFragment"
+            app:destination="@id/customWebViewFragment" />
     </fragment>
     <fragment
         android:id="@+id/payContractFragment"
@@ -66,14 +69,38 @@
             android:name="url"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/customWebViewFragment"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
+        android:label="fragment_custom_web_view"
+        tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="basePath"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="hasBackButton"
+            app:argType="boolean"
+            android:defaultValue="true" />
+        <action
+            android:id="@+id/action_customWebViewFragment_to_customWebBottomFragment"
+            app:destination="@id/customWebBottomFragment" />
+    </fragment>
     <dialog
-        android:id="@+id/extWebBottomFragment2"
-        android:name="com.sesameware.smartyard_oem.ui.main.burger.ExtWebBottomFragment"
-        android:label="extWebBottomFragment2"
-        tools:layout="@layout/fragment_ext_web_bottom">
+        android:id="@+id/customWebBottomFragment"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebBottomFragment"
+        android:label="fragment_custom_web_bottom"
+        tools:layout="@layout/fragment_custom_web_bottom" >
         <argument
             android:name="url"
             app:argType="string" />
     </dialog>
-    <action android:id="@+id/action_global_extWebBottomFragment2" app:destination="@id/extWebBottomFragment2" />
 </navigation>

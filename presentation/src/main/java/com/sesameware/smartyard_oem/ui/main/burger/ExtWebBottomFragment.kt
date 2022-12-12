@@ -13,16 +13,19 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.databinding.FragmentCustomWebBottomBinding
 import com.sesameware.smartyard_oem.databinding.FragmentExtWebBottomBinding
+import com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebChromeClient
+import com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebInterface
+import com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewClient
 import timber.log.Timber
 
 class ExtWebBottomFragment : BottomSheetDialogFragment() {
-    private var _binding: FragmentExtWebBottomBinding? = null
+    //private var _binding: FragmentExtWebBottomBinding? = null
+    private var _binding: FragmentCustomWebBottomBinding? = null
     private val binding get() = _binding!!
     private var url: String? = null
     private var hostName: String = ""
-
-    private val viewModel: ExtWebViewModel by sharedViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +33,7 @@ class ExtWebBottomFragment : BottomSheetDialogFragment() {
         setStyle(STYLE_NORMAL, R.style.AppBottomSheetDialogTheme)
         
         arguments?.let {
-            url = ExtWebBottomFragmentArgs.fromBundle(it).url
+            //url = ExtWebBottomFragmentArgs.fromBundle(it).url
             hostName = Uri.parse(url)?.host ?: ""
         }
     }
@@ -39,7 +42,8 @@ class ExtWebBottomFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentExtWebBottomBinding.inflate(inflater, container, false)
+        //_binding = FragmentExtWebBottomBinding.inflate(inflater, container, false)
+        _binding = FragmentCustomWebBottomBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -79,7 +83,7 @@ class ExtWebBottomFragment : BottomSheetDialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.wvExtBottom.settings.javaScriptEnabled = true
+        /*binding.wvExtBottom.settings.javaScriptEnabled = true
         binding.wvExtBottom.webChromeClient = object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
                 Timber.d("debug_web console: ${consoleMessage?.message()}")
@@ -164,6 +168,49 @@ class ExtWebBottomFragment : BottomSheetDialogFragment() {
             Timber.d("debug_web webView height = ${binding.wvExtBottom.height}")
         }*/
 
+        binding.wvExtBottom.clearCache(true)
+        disableSomeEvents()*/
+
+        binding.wvExtBottom.settings.javaScriptEnabled = true
+        //binding.wvExtBottom.webChromeClient = CustomWebChromeClient(null, this)
+        //binding.wvExtBottom.webViewClient = CustomWebViewClient(null, this)
+        binding.wvExtBottom.addJavascriptInterface(CustomWebInterface(object : CustomWebInterface.Callback {
+            override fun onPostLoadingStarted() {
+                requireActivity().runOnUiThread {
+                    binding.pbWebViewBottom.visibility = View.VISIBLE
+                }
+            }
+
+            override fun onPostLoadingFinished() {
+                requireActivity().runOnUiThread {
+                    binding.pbWebViewBottom.visibility = View.INVISIBLE
+                }
+            }
+        }), CustomWebInterface.WEB_INTERFACE_OBJECT)
+
+        dialog?.let {
+            val bottomSheet = it.findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            val behavior = BottomSheetBehavior.from(bottomSheet)
+            behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                override fun onStateChanged(bottomSheet: View, newState: Int) {
+                    Timber.d("debug_web newState = $newState")
+                    if (newState == BottomSheetBehavior.STATE_COLLAPSED) {
+                        changeLayout()
+                    } else if (newState != BottomSheetBehavior.STATE_SETTLING && newState != BottomSheetBehavior.STATE_DRAGGING) {
+                        setDefaultLayout()
+                    }
+                }
+
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    //ничего не делаем
+                }
+            })
+            it.setOnShowListener {
+                behavior.state = BottomSheetBehavior.STATE_COLLAPSED
+            }
+        }
+
+        binding.wvExtBottom.loadUrl(url ?: "")
         binding.wvExtBottom.clearCache(true)
         disableSomeEvents()
     }

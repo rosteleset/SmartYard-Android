@@ -7,5 +7,6 @@
     </debug-overrides>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">openptmap.org</domain>
+        <domain includeSubdomains="true">192.168.13.39</domain>
     </domain-config>
 </network-security-config>

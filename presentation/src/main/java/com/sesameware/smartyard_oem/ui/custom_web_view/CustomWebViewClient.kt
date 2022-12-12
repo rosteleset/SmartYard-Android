@@ -1,0 +1,156 @@
+package com.sesameware.smartyard_oem.ui.custom_web_view
+
+import android.content.Intent
+import android.graphics.Bitmap
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
+import android.webkit.WebResourceRequest
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.findNavController
+import com.sesameware.smartyard_oem.R
+import org.koin.ext.clearQuotes
+import timber.log.Timber
+
+class CustomWebViewClient(
+    private val fragment: CustomWebViewFragment? = null,
+    private val bottomFragment: CustomWebBottomFragment? = null
+
+) : WebViewClient() {
+    private var pageTitle = ""
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+        request?.url?.toString()?.let { url ->
+            if (!(url.startsWith("http:") || url.startsWith("https:"))
+                || url.contains(ANCHOR_EXTERNAL)) {
+                Intent(Intent.ACTION_VIEW, request.url).apply {
+                    fragment?.requireActivity()?.startActivity(this)
+                }
+
+                return true
+            } else {
+                if (url.contains(ANCHOR_PUSH)) {
+                    if (bottomFragment != null) {
+                        bottomFragment.dismiss()
+                        val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
+                        f?.findNavController()?.navigate(R.id.customWebViewFragment,
+                            Bundle().apply {
+                                putString(CustomWebViewFragment.BASE_PATH, url)
+                                putString(CustomWebViewFragment.CODE, "")
+                                putString(CustomWebViewFragment.TITLE, (f.binding.wvExt.webViewClient as CustomWebViewClient).pageTitle)
+                                putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                            })
+
+                        return true
+                    }
+
+                    fragment?.findNavController()?.navigate(R.id.customWebViewFragment,
+                        Bundle().apply {
+                            putString(CustomWebViewFragment.BASE_PATH, url)
+                            putString(CustomWebViewFragment.CODE, "")
+                            putString(CustomWebViewFragment.TITLE, pageTitle)
+                            putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                        })
+
+                    return true
+                }
+
+                if (url.contains(ANCHOR_REPLACE)) {
+                    if (bottomFragment != null) {
+                        bottomFragment.dismiss()
+                        val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
+                        if (f != null) {
+                            val option = NavOptions.Builder()
+                                .setPopUpTo(R.id.customWebViewFragment, true)
+                                .build()
+                            f.findNavController().navigate(R.id.customWebViewFragment,
+                                Bundle().apply {
+                                    putString(CustomWebViewFragment.BASE_PATH, url)
+                                    putString(CustomWebViewFragment.CODE, "")
+                                    putString(CustomWebViewFragment.TITLE, f.binding.tvEWVTitle.text.toString())
+                                    putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, f.hasBackButton)
+                                }, option)
+                        }
+
+                        return true
+                    }
+
+                    val option = NavOptions.Builder()
+                        .setPopUpTo(R.id.customWebViewFragment, true)
+                        .build()
+                    fragment?.findNavController()?.navigate(R.id.customWebViewFragment,
+                        Bundle().apply {
+                            putString(CustomWebViewFragment.BASE_PATH, url)
+                            putString(CustomWebViewFragment.CODE, "")
+                            putString(CustomWebViewFragment.TITLE, fragment.binding.tvEWVTitle.text.toString())
+                            putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                        }, option)
+
+                    return true
+                }
+
+                if (url.contains(ANCHOR_POPUP)) {
+                    fragment?.findNavController()?.navigate(R.id.customWebBottomFragment,
+                        Bundle().apply {
+                            putString(CustomWebBottomFragment.URL, url)
+                        })
+
+                    bottomFragment?.dismiss()
+                    bottomFragment?.findNavController()?.navigate(R.id.customWebBottomFragment,
+                        Bundle().apply {
+                            putString(CustomWebBottomFragment.URL, url)
+                        })
+
+                    return true
+                }
+
+                if (url.contains(ANCHOR_CLOSE)) {
+                    bottomFragment?.dismiss()
+                    Intent(Intent.ACTION_VIEW, request.url).apply {
+                        fragment?.requireActivity()?.startActivity(this)
+                    }
+
+                    return true
+                }
+
+                return false
+            }
+        }
+
+        return false
+    }
+
+    override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+        super.onPageStarted(view, url, favicon)
+
+        Timber.d("debug_web onPageStarted = $url")
+    }
+
+    override fun onPageFinished(view: WebView?, url: String?) {
+        super.onPageFinished(view, url)
+
+        Timber.d("debug_web onPageFinished = $url")
+        fragment?.binding?.wvExt?.evaluateJavascript("document.title") {
+            pageTitle = it.clearQuotes()
+        }
+
+        /*if (bottomFragment != null) {
+            //"костыль" с отсроченным вызовом пересчёта высоты WebView для правильной работы скроллинга
+            Handler().postDelayed({
+                bottomFragment.changeLayout()
+            }, 800)
+        }*/
+    }
+
+    companion object {
+        const val ANCHOR_PUSH = "#smart-yard-push"
+        const val ANCHOR_REPLACE = "#smart-yard-replace"
+        const val ANCHOR_EXTERNAL = "#smart-yard-external"
+        const val ANCHOR_POPUP = "#smart-yard-popup"
+        const val ANCHOR_CLOSE = "#smart-yard-close"
+    }
+}

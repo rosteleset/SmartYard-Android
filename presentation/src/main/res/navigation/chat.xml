@@ -7,5 +7,31 @@
     <fragment
         android:id="@+id/chatFragment2"
         android:name="com.sesameware.smartyard_oem.ui.main.chat.ChatFragment"
-        android:label="ChatFragment" />
+        android:label="ChatFragment" >
+        <action
+            android:id="@+id/action_chatFragment2_to_customWebViewFragment2"
+            app:destination="@id/customWebViewFragment2" />
+    </fragment>
+    <fragment
+        android:id="@+id/customWebViewFragment2"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
+        android:label="fragment_custom_web_view"
+        tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="basePath"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="hasBackButton"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
 </navigation>
