@@ -19,7 +19,6 @@ import android.view.View
 import android.view.WindowManager
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.target.CustomTarget
@@ -134,9 +133,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun observeChanges() {
-        mLinphone.registrationState.observe(this, Observer { observeRegistrationState(it) })
-        mLinphone.callState.observe(this, Observer { observeCallState(it) })
-        mLinphone.dtmfIsSent.observe(this, Observer { setDoorState(it) })
+        mLinphone.registrationState.observe(this) { observeRegistrationState(it) }
+        mLinphone.callState.observe(this) { observeCallState(it) }
+        mLinphone.dtmfIsSent.observe(this) { setDoorState(it) }
         mLinphone.finishCallActivity.observe(
             this,
             EventObserver {
@@ -331,6 +330,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         super.onPause()
         mSensorManager?.unregisterListener(this)
         mLinphone.mAudioManager.routeAudioToEarPiece()
+    }
+
+    override fun onStop() {
+        hangUp()
+        super.onStop()
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
