@@ -4,43 +4,4 @@
     <color name="colorPrimary">#00FF00</color>
     <color name="colorPrimaryDark">#00FF00</color>
     <color name="colorAccent">#00FF00</color>
-
-    <!-- BLUE -->
-    <color name="blue">#298BFF</color>
-    <color name="blue_200">#0075FF</color>
-
-    <!-- WHITE -->
-    <color name="white_0">#FFFFFF</color>
-    <color name="white">#F0F0F1</color>
-    <color name="white_transparent">#aaF0F0F1</color>
-    <color name="white_transparent2">#4DFFFFFF</color>
-    <color name="white_100">#FFFFFF</color>
-    <color name="white_200">#F3F4FA</color>
-    <color name="white_300">#B9BABE</color>
-
-    <!-- BLACK -->
-    <color name="black">#000000</color>
-    <color name="black_200">#28323E</color>
-
-    <!-- GREY -->
-    <color name="grey_100">#6D7A8A</color>
-
-    <!-- RED -->
-    <color name="red_pressed">#D03B30</color>
-    <color name="red_100">#FF3B30</color>
-
-    <!-- Green -->
-    <color name="green_pressed">#1F9062</color>
-    <color name="green_100">#1FBC62</color>
-
-    <!-- Yellow -->
-    <color name="yellow_100">#FFE38E</color>
-
-    <color name="calendar_black">#D9000000</color>
-    <color name="calendar_grey">#BEBEBE</color>
-    <color name="calendar_white">#D9FFFFFF</color>
-    <color name="calendar_blue">#1973E8</color>
-    <color name="calendar_blue_light">#D2E3FC</color>
-    <color name="calendar_toolbar_color">#607D8B</color>
-    <color name="calendar_statusbar_color">#455A64</color>
 </resources>
