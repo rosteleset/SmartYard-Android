@@ -31,7 +31,7 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         val rv = RemoteViews(context.packageName, R.layout.app_widget)
         setUpdateTV(rv, context, appWidgetId)
         setList(rv, context, appWidgetId)
-        setListClick(rv, context)
+        setListClick(rv, context, appWidgetId)
         appWidgetManager.updateAppWidget(appWidgetId, rv)
         appWidgetManager.notifyAppWidgetViewDataChanged(
             appWidgetId,
@@ -49,7 +49,12 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         updIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
         val updPIntent = PendingIntent.getBroadcast(
             context,
-            appWidgetId, updIntent, 0
+            //Для API 31+ у PendingIntent надо обязательно указать флаг FLAG_MUTABLE или FLAG_IMMUTABLE
+            appWidgetId, updIntent, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            } else {
+                0
+            }
         )
         rv.setOnClickPendingIntent(R.id.tvUpdate, updPIntent)
     }
@@ -64,13 +69,19 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
 
     private fun setListClick(
         rv: RemoteViews,
-        context: Context?
+        context: Context?,
+        appWidgetId: Int
     ) {
         val listClickIntent = Intent(context, WidgetProvider::class.java)
         listClickIntent.action = ACTION_ON_CLICK
         val listClickPIntent = PendingIntent.getBroadcast(
             context, 0,
-            listClickIntent, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT
+            //Для API 31+ у PendingIntent надо обязательно указать флаг FLAG_MUTABLE или FLAG_IMMUTABLE
+            listClickIntent, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            } else {
+                0
+            }
         )
         rv.setPendingIntentTemplate(R.id.lvList, listClickPIntent)
     }
