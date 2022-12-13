@@ -27,13 +27,14 @@ data class ProviderConfig(
     @Json(name = SUPPORT_PHONE) val supportPhone: String? = null,
 
     //настройки чата
+    @Json(name = CHAT_URL) val chatUrl: String? = null,
     @Json(name = CHAT_OPTIONS) val chatOptions: ChatOptions? = null,
 ) {
     val hasNotification: Boolean
         get() = _hasNotifications == "t"
 
     val hasChat: Boolean
-        get() = _hasChat == "t"
+        get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
 
     val hasCityCams: Boolean
         get() = _hasCityCams == "t"
@@ -73,6 +74,7 @@ data class ProviderConfig(
         const val SUPPORT_PHONE = "supportPhone"
 
         //настройки чата
+        const val CHAT_URL = "chatUrl"
         const val CHAT_OPTIONS = "chatOptions"
         const val CHAT_ID = "id"
         const val CHAT_DOMAIN = "domain"

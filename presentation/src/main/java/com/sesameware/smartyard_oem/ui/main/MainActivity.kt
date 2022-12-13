@@ -37,7 +37,6 @@ import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.dpToPx
 import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogDetailFragment
-import com.sesameware.smartyard_oem.ui.main.burger.ExtWebViewFragment
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment
 import com.sesameware.smartyard_oem.ui.setupWithNavController
 import timber.log.Timber
@@ -410,11 +409,7 @@ class MainActivity : CommonActivity() {
         exitFullscreenListener?.onExitFullscreen()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        if (currentNavController?.value?.currentDestination?.id == R.id.extWebViewFragment) {
-            if ((supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? ExtWebViewFragment)?.goBack() == false) {
-                super.onBackPressed()
-            }
-        } else if (currentNavController?.value?.currentDestination?.id == R.id.CCTVTrimmerFragment) {
+        if (currentNavController?.value?.currentDestination?.id == R.id.CCTVTrimmerFragment) {
             currentNavController?.value?.popBackStack(R.id.CCTVDetailFragment, true)
             currentNavController?.value?.navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
         } else {

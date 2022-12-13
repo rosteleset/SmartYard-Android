@@ -35,7 +35,9 @@ class PayAddressFragment : Fragment() {
 
         isWeb = DataModule.providerConfig.hasPayments && DataModule.providerConfig.paymentsUrl?.isNotEmpty() == true
         if (isWeb) {
-            val action = PayAddressFragmentDirections.actionPayFragment2ToCustomWebViewFragment(
+            val action = PayAddressFragmentDirections.actionPayFragment2ToCustomWebViewFragmentPay(
+                R.id.customWebViewFragmentPay,
+                R.id.customWebBottomFragmentPay,
                 DataModule.providerConfig.paymentsUrl,
                 null,
                 resources.getString(R.string.pay_web_title)

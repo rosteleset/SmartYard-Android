@@ -9,14 +9,20 @@
         android:name="com.sesameware.smartyard_oem.ui.main.chat.ChatFragment"
         android:label="ChatFragment" >
         <action
-            android:id="@+id/action_chatFragment2_to_customWebViewFragment2"
-            app:destination="@id/customWebViewFragment2" />
+            android:id="@+id/action_chatFragment2_to_customWebViewFragmentChat"
+            app:destination="@id/customWebViewFragmentChat" />
     </fragment>
     <fragment
-        android:id="@+id/customWebViewFragment2"
+        android:id="@+id/customWebViewFragmentChat"
         android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
         android:label="fragment_custom_web_view"
         tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
         <argument
             android:name="basePath"
             app:argType="string"
@@ -34,4 +40,19 @@
             app:argType="boolean"
             android:defaultValue="true" />
     </fragment>
+    <dialog
+        android:id="@+id/customWebBottomFragmentChat"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebBottomFragment"
+        android:label="fragment_custom_web_bottom"
+        tools:layout="@layout/fragment_custom_web_bottom" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
 </navigation>

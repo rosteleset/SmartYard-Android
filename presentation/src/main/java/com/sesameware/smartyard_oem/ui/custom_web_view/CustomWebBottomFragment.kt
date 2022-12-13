@@ -6,16 +6,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebBottomBinding
-import timber.log.Timber
 
 class CustomWebBottomFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCustomWebBottomBinding? = null
     val binding get() = _binding!!
 
+    private var fragmentId: Int = 0
+    private var popupId: Int = 0
     private var url = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,6 +24,8 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         setStyle(STYLE_NORMAL, R.style.AppBottomSheetDialogTheme)
 
         arguments?.let {
+            fragmentId = it.getInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+            popupId = it.getInt(CustomWebViewFragment.POPUP_ID, popupId)
             url = it.getString(URL, url)
         }
     }
@@ -42,7 +44,7 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
 
         binding.wvExtBottom.settings.javaScriptEnabled = true
         binding.wvExtBottom.webChromeClient = CustomWebChromeClient(null, this)
-        binding.wvExtBottom.webViewClient = CustomWebViewClient(null, this)
+        binding.wvExtBottom.webViewClient = CustomWebViewClient(fragmentId, popupId, null, this)
         binding.wvExtBottom.addJavascriptInterface(CustomWebInterface(object : CustomWebInterface.Callback {
             override fun onPostLoadingStarted() {
                 requireActivity().runOnUiThread {
@@ -120,14 +122,8 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
+        const val FRAGMENT_ID = "fragmentId"
+        const val POPUP_ID = "popupId"
         const val URL = "url"
-
-        @JvmStatic
-        fun newInstance(url: String) =
-            CustomWebBottomFragment().apply {
-                arguments = Bundle().apply {
-                    putString(URL, url)
-                }
-            }
     }
 }

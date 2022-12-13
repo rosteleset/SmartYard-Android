@@ -102,8 +102,8 @@
             android:id="@+id/action_burgerFragment_to_cityCamerasFragment"
             app:destination="@id/cityCamerasMapFragment" />
         <action
-            android:id="@+id/action_burgerFragment_to_extWebViewFragment"
-            app:destination="@id/extWebViewFragment" />
+            android:id="@+id/action_burgerFragment_to_customWebViewFragmentSettings"
+            app:destination="@id/customWebViewFragmentSettings" />
     </fragment>
     <fragment
         android:id="@+id/cityCamerasMapFragment"
@@ -142,24 +142,46 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/extWebViewFragment"
-        android:name="com.sesameware.smartyard_oem.ui.main.burger.ExtWebViewFragment"
-        android:label="fragment_ext_web_view"
-        tools:layout="@layout/fragment_ext_web_view" >
+        android:id="@+id/customWebViewFragmentSettings"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
+        android:label="fragment_custom_web_view"
+        tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
         <argument
             android:name="basePath"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="code"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="hasBackButton"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
     <dialog
-        android:id="@+id/extWebBottomFragment"
-        android:name="com.sesameware.smartyard_oem.ui.main.burger.ExtWebBottomFragment"
-        android:label="fragment_ext_web_bottom"
-        tools:layout="@layout/fragment_ext_web_bottom" >
+        android:id="@+id/customWebBottomFragmentSettings"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebBottomFragment"
+        android:label="fragment_custom_web_bottom"
+        tools:layout="@layout/fragment_custom_web_bottom" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
         <argument
             android:name="url"
             app:argType="string" />
-    </dialog><action android:id="@+id/action_global_extWebBottomFragment" app:destination="@id/extWebBottomFragment"/>
+    </dialog>
 </navigation>

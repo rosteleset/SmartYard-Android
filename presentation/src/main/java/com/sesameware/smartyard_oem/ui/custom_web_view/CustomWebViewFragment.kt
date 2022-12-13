@@ -13,6 +13,8 @@ class CustomWebViewFragment : Fragment() {
     private var _binding: FragmentCustomWebViewBinding? = null
     val binding get() = _binding!!
 
+    private var fragmentId: Int = 0
+    private var popupId: Int = 0
     private var basePath: String? = null
     private var code: String? = null
     private var title = ""
@@ -20,7 +22,10 @@ class CustomWebViewFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         arguments?.let {
+            fragmentId = it.getInt(FRAGMENT_ID, fragmentId)
+            popupId = it.getInt(POPUP_ID, popupId)
             basePath = it.getString(BASE_PATH)
             code = it.getString(CODE)
             title = it.getString(TITLE, title)
@@ -46,7 +51,7 @@ class CustomWebViewFragment : Fragment() {
         binding.wvExt.settings.javaScriptCanOpenWindowsAutomatically = true
         binding.wvExt.settings.setSupportMultipleWindows(true)
         binding.wvExt.webChromeClient = CustomWebChromeClient(this, null)
-        binding.wvExt.webViewClient = CustomWebViewClient(this, null)
+        binding.wvExt.webViewClient = CustomWebViewClient(fragmentId, popupId, this, null)
         binding.wvExt.addJavascriptInterface(CustomWebInterface(object : CustomWebInterface.Callback {
             override fun onPostLoadingStarted() {
                 requireActivity().runOnUiThread {
@@ -90,20 +95,11 @@ class CustomWebViewFragment : Fragment() {
     }
 
     companion object {
+        const val FRAGMENT_ID = "fragmentId"
+        const val POPUP_ID = "popupId"
         const val BASE_PATH = "basePath"
         const val CODE = "code"
         const val TITLE = "title"
         const val HAS_BACK_BUTTON = "hasBackButton"
-
-        @JvmStatic
-        fun newInstance(basePath: String, code: String, title: String, hasBackButton: Boolean) =
-            CustomWebViewFragment().apply {
-                arguments = Bundle().apply {
-                    putString(BASE_PATH, basePath)
-                    putString(CODE, code)
-                    putString(TITLE, title)
-                    putBoolean(HAS_BACK_BUTTON, hasBackButton)
-                }
-            }
     }
 }

@@ -4,18 +4,18 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.sesameware.smartyard_oem.R
 import org.koin.ext.clearQuotes
 import timber.log.Timber
 
 class CustomWebViewClient(
+    private val fragmentId: Int,
+    private val popupId: Int,
     private val fragment: CustomWebViewFragment? = null,
     private val bottomFragment: CustomWebBottomFragment? = null
 
@@ -37,8 +37,10 @@ class CustomWebViewClient(
                     if (bottomFragment != null) {
                         bottomFragment.dismiss()
                         val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
-                        f?.findNavController()?.navigate(R.id.customWebViewFragment,
+                        f?.findNavController()?.navigate(fragmentId,
                             Bundle().apply {
+                                putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                                putInt(CustomWebViewFragment.POPUP_ID, popupId)
                                 putString(CustomWebViewFragment.BASE_PATH, url)
                                 putString(CustomWebViewFragment.CODE, "")
                                 putString(CustomWebViewFragment.TITLE, (f.binding.wvExt.webViewClient as CustomWebViewClient).pageTitle)
@@ -48,8 +50,11 @@ class CustomWebViewClient(
                         return true
                     }
 
-                    fragment?.findNavController()?.navigate(R.id.customWebViewFragment,
+                    fragment?.findNavController()?.navigate(
+                        fragmentId,
                         Bundle().apply {
+                            putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                            putInt(CustomWebViewFragment.POPUP_ID, popupId)
                             putString(CustomWebViewFragment.BASE_PATH, url)
                             putString(CustomWebViewFragment.CODE, "")
                             putString(CustomWebViewFragment.TITLE, pageTitle)
@@ -65,10 +70,12 @@ class CustomWebViewClient(
                         val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
                         if (f != null) {
                             val option = NavOptions.Builder()
-                                .setPopUpTo(R.id.customWebViewFragment, true)
+                                .setPopUpTo(fragmentId, true)
                                 .build()
-                            f.findNavController().navigate(R.id.customWebViewFragment,
+                            f.findNavController().navigate(fragmentId,
                                 Bundle().apply {
+                                    putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                                    putInt(CustomWebViewFragment.POPUP_ID, popupId)
                                     putString(CustomWebViewFragment.BASE_PATH, url)
                                     putString(CustomWebViewFragment.CODE, "")
                                     putString(CustomWebViewFragment.TITLE, f.binding.tvEWVTitle.text.toString())
@@ -80,10 +87,12 @@ class CustomWebViewClient(
                     }
 
                     val option = NavOptions.Builder()
-                        .setPopUpTo(R.id.customWebViewFragment, true)
+                        .setPopUpTo(fragmentId, true)
                         .build()
-                    fragment?.findNavController()?.navigate(R.id.customWebViewFragment,
+                    fragment?.findNavController()?.navigate(fragmentId,
                         Bundle().apply {
+                            putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                            putInt(CustomWebViewFragment.POPUP_ID, popupId)
                             putString(CustomWebViewFragment.BASE_PATH, url)
                             putString(CustomWebViewFragment.CODE, "")
                             putString(CustomWebViewFragment.TITLE, fragment.binding.tvEWVTitle.text.toString())
@@ -94,14 +103,22 @@ class CustomWebViewClient(
                 }
 
                 if (url.contains(ANCHOR_POPUP)) {
-                    fragment?.findNavController()?.navigate(R.id.customWebBottomFragment,
-                        Bundle().apply {
-                            putString(CustomWebBottomFragment.URL, url)
-                        })
+                    if (bottomFragment != null) {
+                        bottomFragment.dismiss()
+                        bottomFragment.findNavController().navigate(popupId,
+                            Bundle().apply {
+                                putInt(CustomWebBottomFragment.FRAGMENT_ID, fragmentId)
+                                putInt(CustomWebBottomFragment.POPUP_ID, popupId)
+                                putString(CustomWebBottomFragment.URL, url)
+                            })
 
-                    bottomFragment?.dismiss()
-                    bottomFragment?.findNavController()?.navigate(R.id.customWebBottomFragment,
+                        return true
+                    }
+
+                    fragment?.findNavController()?.navigate(popupId,
                         Bundle().apply {
+                            putInt(CustomWebBottomFragment.FRAGMENT_ID, fragmentId)
+                            putInt(CustomWebBottomFragment.POPUP_ID, popupId)
                             putString(CustomWebBottomFragment.URL, url)
                         })
 
@@ -111,7 +128,7 @@ class CustomWebViewClient(
                 if (url.contains(ANCHOR_CLOSE)) {
                     bottomFragment?.dismiss()
                     Intent(Intent.ACTION_VIEW, request.url).apply {
-                        fragment?.requireActivity()?.startActivity(this)
+                        bottomFragment?.requireActivity()?.startActivity(this)
                     }
 
                     return true

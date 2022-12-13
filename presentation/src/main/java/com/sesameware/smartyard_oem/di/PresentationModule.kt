@@ -24,7 +24,6 @@ import com.sesameware.smartyard_oem.ui.main.address.qrCode.QrCodeViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.courier.WorkSoonCourierViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.office.WorkSoonOfficeViewModel
 import com.sesameware.smartyard_oem.ui.main.burger.BurgerViewModel
-import com.sesameware.smartyard_oem.ui.main.burger.ExtWebViewModel
 import com.sesameware.smartyard_oem.ui.main.burger.cityCameras.CityCamerasViewModel
 import com.sesameware.smartyard_oem.ui.main.chat.ChatViewModel
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationViewModel
@@ -84,7 +83,6 @@ object PresentationModule {
         viewModel { PayAddressViewModel(get()) }
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }
-        viewModel { ExtWebViewModel() }
         single { GlobalDataSource() }
     }
 }

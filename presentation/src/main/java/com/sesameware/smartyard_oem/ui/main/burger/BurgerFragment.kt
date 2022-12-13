@@ -16,7 +16,6 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentBurgerBinding
 import com.sesameware.smartyard_oem.ui.showStandardAlert
-import timber.log.Timber
 
 class BurgerFragment : Fragment() {
     private var _binding: FragmentBurgerBinding? = null
@@ -95,7 +94,12 @@ class BurgerFragment : Fragment() {
         viewModel.navigateToWebView.observe(
             viewLifecycleOwner,
             EventObserver{
-                val action = BurgerFragmentDirections.actionBurgerFragmentToExtWebViewFragment(it.basePath, it.code)
+                val action = BurgerFragmentDirections.actionBurgerFragmentToCustomWebViewFragmentSettings(
+                    R.id.customWebViewFragmentSettings,
+                    R.id.customWebBottomFragmentSettings,
+                    it.basePath,
+                    it.code,
+                    resources.getString(R.string.title_burger))
                 this.findNavController().navigate(action)
             }
         )
