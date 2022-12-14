@@ -61,10 +61,14 @@ android {
     productFlavors {
         teledom {
             applicationId "com.sesameware.smartyard_oem"
+            buildConfigField "String", "PROVIDER_NAME", "\"\""
+            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
         freedom1 {
             applicationId "com.freedom1.freedom_isp"
+            buildConfigField "String", "PROVIDER_NAME", "\"Фридом\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.freedom1.ru/mobile\""
         }
     }
 

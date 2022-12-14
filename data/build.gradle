@@ -29,10 +29,12 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
         }
     }
 }

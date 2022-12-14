@@ -30,8 +30,6 @@ class RegistrationActivity : CommonActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
-        BuildConfig.
-
         runBlocking {
             try {
                 mViewModel.getProviderConfig()

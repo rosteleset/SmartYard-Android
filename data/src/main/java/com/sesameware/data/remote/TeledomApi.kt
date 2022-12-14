@@ -1,5 +1,6 @@
 package com.sesameware.data.remote
 
+import com.sesameware.data.BuildConfig
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -11,7 +12,7 @@ import com.sesameware.domain.model.request.*
 import com.sesameware.domain.model.response.*
 
 interface TeledomApi {
-    @GET("https://isdn.lanta.me/providers.json")
+    @GET(BuildConfig.PROVIDERS_URL)
     suspend fun providers(): ProvidersListResponse
 
     @POST
