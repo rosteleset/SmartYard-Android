@@ -96,7 +96,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:piv_animationType="worm"
-            app:piv_selectedColor="#298BFF"
+            app:piv_selectedColor="@color/brandColor"
             app:piv_unselectedColor="#DBDDE3"
             attrs:piv_padding="24dp"
             attrs:piv_radius="8dp" />

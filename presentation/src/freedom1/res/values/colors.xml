@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- MAIN -->
-    <color name="colorPrimary">#00FF00</color>
-    <color name="colorPrimaryDark">#00FF00</color>
-    <color name="colorAccent">#00FF00</color>
+    <color name="colorPrimary">#20FF04</color>
+    <color name="colorPrimaryDark">#20FF04</color>
+    <color name="colorAccent">#20FF04</color>
+    <color name="brandColor">#518704</color>
+
+    <!-- BLUE -->
+    <color name="blue">#518704</color>
+    <color name="blue_200">#20FF04</color>
 </resources>

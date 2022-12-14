@@ -7,6 +7,7 @@ import androidx.core.view.ViewCompat
 import kotlinx.coroutines.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.domain.model.CommonErrorThrowable
+import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.FirebaseMessagingService
 import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
@@ -28,6 +29,8 @@ class RegistrationActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
+
+        BuildConfig.
 
         runBlocking {
             try {
