@@ -2,6 +2,7 @@ package com.sesameware.smartyard_oem.ui.map
 
 import android.Manifest
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
@@ -51,39 +52,48 @@ class MapProvider @JvmOverloads constructor(
         onInit: listenerGeneric<SimpleMap>? = null
     ) {
         context.applicationContext?.let { context ->
-            requestPermission(
-                arrayListOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE),
-                context,
-                onGranted = {
-                    configOsm(context)
-                    map?.let {
-                        it.onStop()
-                        it.onDestroy()
-                    }
-                    val map = OSMMap(settings)
-                    this.map = map
-                    val view = map.create(
-                        onInit = {
-                            map.move(settings.initCoord, DEFAULT_ZOOM, instant = true)
-                        },
-                        onLayout = {
-                            onInit?.invoke(map)
-                        }
-                    )
-                    addView(view)
-                    mProgress = ProgressDialog().getView(context, true)
-                    addView(mProgress)
-                },
-                onDenied = {
-                    showStandardAlert(
-                        fragment.requireContext(),
-                        context.getString(R.string.error_map_permission),
-                        ""
-                    ) {
-                        fragment.findNavController().popBackStack()
-                    }
+            val granted = {
+                configOsm(context)
+                map?.let {
+                    it.onStop()
+                    it.onDestroy()
                 }
-            )
+                val map = OSMMap(settings)
+                this.map = map
+                val view = map.create(
+                    onInit = {
+                        map.move(settings.initCoord, DEFAULT_ZOOM, instant = true)
+                    },
+                    onLayout = {
+                        onInit?.invoke(map)
+                    }
+                )
+                addView(view)
+                mProgress = ProgressDialog().getView(context, true)
+                addView(mProgress)
+            }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                //Для Android 10+ не запрашиваем разрешения
+                //Для Android 13+ запрос на разрешение WRITE_EXTERNAL_STORAGE всегда выдаёт false
+                granted()
+            } else {
+                requestPermission(
+                    arrayListOf(Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                    context,
+                    onGranted = {
+                        granted()
+                    },
+                    onDenied = {
+                        showStandardAlert(
+                            fragment.requireContext(),
+                            context.getString(R.string.error_map_permission),
+                            ""
+                        ) {
+                            fragment.findNavController().popBackStack()
+                        }
+                    }
+                )
+            }
         }
     }
 }

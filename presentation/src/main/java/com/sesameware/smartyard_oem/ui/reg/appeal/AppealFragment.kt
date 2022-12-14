@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem.ui.reg.appeal
 
 import android.Manifest
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,16 +44,19 @@ class AppealFragment : Fragment() {
 
         binding.mForm.initialize(viewLifecycleOwner, R.string.next, arguments) {
             this.findNavController().navigate(R.id.action_appealFragment_to_mainActivity)
+            val permissions = arrayListOf(
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.WRITE_CONTACTS,
+                Manifest.permission.CAMERA,
+                Manifest.permission.RECORD_AUDIO,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            )
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
             requestPermission(
-                arrayListOf(
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_EXTERNAL_STORAGE,
-                    Manifest.permission.READ_CONTACTS,
-                    Manifest.permission.WRITE_CONTACTS,
-                    Manifest.permission.CAMERA,
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                ),
+                permissions,
                 requireContext(),
                 onGranted = {
                 },
