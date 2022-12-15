@@ -30,7 +30,7 @@
         <layer-list>
             <item>
                 <shape>
-                    <stroke android:width="1dp" android:color="@color/blue_200" />
+                    <stroke android:width="1dp" android:color="@color/brand_pressed" />
                     <padding android:bottom="1dp" android:left="1dp" android:right="1dp" android:top="1dp" />
 
                     <corners android:radius="12dp" />

@@ -44,24 +44,22 @@ abstract class CommonActivity : AppCompatActivity() {
             }
         )
         mViewModel.globalData.progressVisibility.observe(
-            this,
-            Observer { bool ->
-                if (bool) {
-                    progressDialog.showDialog()
-                } else {
-                    progressDialog.dismissDialog()
-                }
+            this
+        ) { bool ->
+            if (bool) {
+                progressDialog.showDialog()
+            } else {
+                progressDialog.dismissDialog()
             }
-        )
+        }
 
         mViewModel.logout.observe(
-            this,
-            Observer {
-                this.finish()
-                val intent = Intent(this, RegistrationActivity::class.java)
-                startActivity(intent)
-                updateAllWidget(this)
-            }
-        )
+            this
+        ) {
+            this.finish()
+            val intent = Intent(this, RegistrationActivity::class.java)
+            startActivity(intent)
+            updateAllWidget(this)
+        }
     }
 }

@@ -6,8 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.CookieManager
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
+import com.sesameware.smartyard_oem.ui.dpToPx
+import timber.log.Timber
 
 class CustomWebViewFragment : Fragment() {
     private var _binding: FragmentCustomWebViewBinding? = null
@@ -65,23 +69,47 @@ class CustomWebViewFragment : Fragment() {
                 }
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
-        binding.wvExt.clearCache(true)
+        binding.wvExt.clearCache(false)
         disableSomeEvents()
 
-        if (code.isNullOrEmpty()) {
-            binding.wvExt.loadUrl(basePath ?: "")
+        if (savedInstanceState != null) {
+            binding.wvExt.restoreState(savedInstanceState)
         } else {
-            binding.wvExt.loadDataWithBaseURL(basePath, code!!, "text/html", "utf-8", null)
-        }
+            if (code.isNullOrEmpty()) {
+                binding.wvExt.loadUrl(basePath ?: "")
+            } else {
+                binding.wvExt.loadDataWithBaseURL(basePath, code!!, "text/html", "utf-8", null)
+            }
 
-        binding.ivEWVBack.setOnClickListener {
-            if (binding.tvEWVTitle.text.isNotEmpty()) {
-                findNavController().popBackStack()
+            binding.ivEWVBack.setOnClickListener {
+                if (binding.tvEWVTitle.text.isNotEmpty()) {
+                    findNavController().popBackStack()
+                }
+            }
+
+            binding.tvEWVTitle.text = title
+            if (hasBackButton) {
+                binding.ivEWVBack.visibility = View.VISIBLE
+            } else {
+                binding.ivEWVBack.visibility = View.INVISIBLE
+                val lp = binding.flExtWebView.layoutParams as ConstraintLayout.LayoutParams
+                lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+                lp.topMargin = dpToPx(24).toInt()
+                binding.flExtWebView.layoutParams = lp
+                binding.flExtWebView.requestLayout()
             }
         }
+    }
 
-        binding.tvEWVTitle.text = title
-        binding.ivEWVBack.visibility = if (hasBackButton) View.VISIBLE else View.INVISIBLE
+    override fun onDestroy() {
+        CookieManager.getInstance().apply {
+            Timber.d("debug_web cookie: ${getCookie(basePath)}")
+            setAcceptCookie(true)
+            acceptCookie()
+            flush()
+        }
+
+        super.onDestroy()
     }
 
     private fun disableSomeEvents() {

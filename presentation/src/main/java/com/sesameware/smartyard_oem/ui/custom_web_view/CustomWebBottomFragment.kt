@@ -83,7 +83,7 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         }*/
 
         binding.wvExtBottom.loadUrl(url)
-        binding.wvExtBottom.clearCache(true)
+        binding.wvExtBottom.clearCache(false)
         disableSomeEvents()
     }
 

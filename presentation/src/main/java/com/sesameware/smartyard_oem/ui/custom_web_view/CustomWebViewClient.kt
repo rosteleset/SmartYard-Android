@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
 import android.os.Bundle
+import android.webkit.CookieManager
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -153,6 +154,12 @@ class CustomWebViewClient(
         Timber.d("debug_web onPageFinished = $url")
         fragment?.binding?.wvExt?.evaluateJavascript("document.title") {
             pageTitle = it.clearQuotes()
+        }
+        CookieManager.getInstance().apply {
+            Timber.d("debug_web cookie: ${getCookie(url)}")
+            setAcceptCookie(true)
+            acceptCookie()
+            flush()
         }
 
         /*if (bottomFragment != null) {

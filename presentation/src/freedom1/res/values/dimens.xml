@@ -1,0 +1,5 @@
+<resources>
+    <!-- logo -->
+    <dimen name="logo_width_onboarding">186dp</dimen>
+    <dimen name="logo_height_onboarding">91dp</dimen>
+</resources>

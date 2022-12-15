@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- MAIN -->
-    <color name="colorPrimary">#20FF04</color>
-    <color name="colorPrimaryDark">#20FF04</color>
-    <color name="colorAccent">#20FF04</color>
+    <color name="colorPrimary">#518704</color>
+    <color name="colorPrimaryDark">#518704</color>
+    <color name="colorAccent">#518704</color>
     <color name="brandColor">#518704</color>
 
-    <!-- BLUE -->
+    <!-- BRAND colors -->
     <color name="blue">#518704</color>
-    <color name="blue_200">#20FF04</color>
+    <color name="blue_200">#518704</color>
+    <color name="brand_pressed">#6D7A8A</color>
 </resources>

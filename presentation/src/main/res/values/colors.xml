@@ -6,9 +6,10 @@
     <color name="colorAccent">#0075FF</color>
     <color name="brandColor">#298BFF</color>
 
-    <!-- BLUE -->
+    <!-- BRAND colors -->
     <color name="blue">#298BFF</color>
     <color name="blue_200">#0075FF</color>
+    <color name="brand_pressed">#0075FF</color>
 
     <!-- WHITE -->
     <color name="white_0">#FFFFFF</color>

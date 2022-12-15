@@ -8,8 +8,8 @@
     android:layout_height="match_parent">
 
     <ImageView
-        android:layout_width="140dp"
-        android:layout_height="56dp"
+        android:layout_width="@dimen/logo_width_onboarding"
+        android:layout_height="@dimen/logo_height_onboarding"
         android:layout_marginTop="24dp"
         android:src="@drawable/ic_logo"
         app:layout_constraintBottom_toTopOf="@+id/constraintLayout"
