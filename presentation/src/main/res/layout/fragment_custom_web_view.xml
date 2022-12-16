@@ -38,8 +38,8 @@
             app:layout_constraintStart_toEndOf="@+id/ivEWVBack"
             app:layout_constraintTop_toTopOf="@+id/ivEWVBack" />
 
-        <FrameLayout
-            android:id="@+id/flExtWebView"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/srlCustomWebView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
@@ -55,7 +55,7 @@
                 android:layout_height="match_parent">
 
             </WebView>
-        </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

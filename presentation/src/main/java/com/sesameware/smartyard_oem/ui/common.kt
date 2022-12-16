@@ -141,7 +141,7 @@ class ProgressDialog {
         progressBar.layoutParams = lp
 
         setColorFilter(
-            progressBar.indeterminateDrawable, ContextCompat.getColor(context, R.color.blue_200)
+            progressBar.indeterminateDrawable, ContextCompat.getColor(context, R.color.global_progress_bar_color)
         )
 
         frameLayout.addView(progressBar)

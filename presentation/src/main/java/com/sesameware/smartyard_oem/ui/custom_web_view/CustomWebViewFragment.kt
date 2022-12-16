@@ -49,7 +49,7 @@ class CustomWebViewFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.flExtWebView.clipToOutline = true
+        binding.srlCustomWebView.clipToOutline = true
         binding.wvExt.clipToOutline = true
         binding.wvExt.settings.javaScriptEnabled = true
         binding.wvExt.settings.javaScriptCanOpenWindowsAutomatically = true
@@ -70,6 +70,10 @@ class CustomWebViewFragment : Fragment() {
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
         binding.wvExt.clearCache(false)
+        binding.srlCustomWebView.setOnRefreshListener {
+            binding.srlCustomWebView.isRefreshing = false
+            binding.wvExt.reload()
+        }
         disableSomeEvents()
 
         if (savedInstanceState != null) {
@@ -92,24 +96,25 @@ class CustomWebViewFragment : Fragment() {
                 binding.ivEWVBack.visibility = View.VISIBLE
             } else {
                 binding.ivEWVBack.visibility = View.INVISIBLE
-                val lp = binding.flExtWebView.layoutParams as ConstraintLayout.LayoutParams
+                val lp = binding.srlCustomWebView.layoutParams as ConstraintLayout.LayoutParams
                 lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
                 lp.topMargin = dpToPx(24).toInt()
-                binding.flExtWebView.layoutParams = lp
-                binding.flExtWebView.requestLayout()
+                binding.srlCustomWebView.layoutParams = lp
+                binding.srlCustomWebView.requestLayout()
             }
         }
     }
 
-    override fun onDestroy() {
+    override fun onPause() {
+        super.onPause()
+
+        Timber.d("debug_web call onPause")
         CookieManager.getInstance().apply {
-            Timber.d("debug_web cookie: ${getCookie(basePath)}")
+            Timber.d("debug_web onPause cookie: ${getCookie(basePath)}")
             setAcceptCookie(true)
             acceptCookie()
             flush()
         }
-
-        super.onDestroy()
     }
 
     private fun disableSomeEvents() {
