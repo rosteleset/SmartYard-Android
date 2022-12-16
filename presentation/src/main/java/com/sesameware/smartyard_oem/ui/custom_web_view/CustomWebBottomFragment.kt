@@ -18,6 +18,8 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
     private var popupId: Int = 0
     private var url = ""
 
+    private var stateBundle: Bundle? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -82,9 +84,34 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
             }
         }*/
 
-        binding.wvExtBottom.loadUrl(url)
-        binding.wvExtBottom.clearCache(false)
+
+        if (stateBundle != null) {
+            binding.wvExtBottom.restoreState(stateBundle!!)
+        } else {
+            binding.wvExtBottom.loadUrl(url)
+        }
+
+        binding.wvExtBottom.clearCache(true)
         disableSomeEvents()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        saveState()
+        CookieManager.getInstance().apply {
+            setAcceptCookie(true)
+            acceptCookie()
+            flush()
+        }
+    }
+
+    private fun saveState() {
+        if (stateBundle == null) {
+            stateBundle = Bundle()
+        }
+
+        binding.wvExtBottom.saveState(stateBundle!!)
     }
 
     //костыль: пересчитываем высоту WebView для правильной работы скроллинга

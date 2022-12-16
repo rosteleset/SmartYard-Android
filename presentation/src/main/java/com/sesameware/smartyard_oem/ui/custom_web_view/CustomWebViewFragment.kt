@@ -11,7 +11,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.navigation.fragment.findNavController
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
 import com.sesameware.smartyard_oem.ui.dpToPx
-import timber.log.Timber
 
 class CustomWebViewFragment : Fragment() {
     private var _binding: FragmentCustomWebViewBinding? = null
@@ -23,6 +22,8 @@ class CustomWebViewFragment : Fragment() {
     private var code: String? = null
     private var title = ""
     var hasBackButton = true
+
+    private var stateBundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,52 +70,59 @@ class CustomWebViewFragment : Fragment() {
                 }
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
-        binding.wvExt.clearCache(false)
+        binding.wvExt.clearCache(true)
         binding.srlCustomWebView.setOnRefreshListener {
             binding.srlCustomWebView.isRefreshing = false
             binding.wvExt.reload()
         }
         disableSomeEvents()
 
-        if (savedInstanceState != null) {
-            binding.wvExt.restoreState(savedInstanceState)
+        if (stateBundle != null) {
+            binding.wvExt.restoreState(stateBundle!!)
         } else {
             if (code.isNullOrEmpty()) {
                 binding.wvExt.loadUrl(basePath ?: "")
             } else {
                 binding.wvExt.loadDataWithBaseURL(basePath, code!!, "text/html", "utf-8", null)
             }
+        }
 
-            binding.ivEWVBack.setOnClickListener {
-                if (binding.tvEWVTitle.text.isNotEmpty()) {
-                    findNavController().popBackStack()
-                }
+        binding.ivEWVBack.setOnClickListener {
+            if (binding.tvEWVTitle.text.isNotEmpty()) {
+                findNavController().popBackStack()
             }
+        }
 
-            binding.tvEWVTitle.text = title
-            if (hasBackButton) {
-                binding.ivEWVBack.visibility = View.VISIBLE
-            } else {
-                binding.ivEWVBack.visibility = View.INVISIBLE
-                val lp = binding.srlCustomWebView.layoutParams as ConstraintLayout.LayoutParams
-                lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-                lp.topMargin = dpToPx(24).toInt()
-                binding.srlCustomWebView.layoutParams = lp
-                binding.srlCustomWebView.requestLayout()
-            }
+        binding.tvEWVTitle.text = title
+        if (hasBackButton) {
+            binding.ivEWVBack.visibility = View.VISIBLE
+        } else {
+            binding.ivEWVBack.visibility = View.INVISIBLE
+            val lp = binding.srlCustomWebView.layoutParams as ConstraintLayout.LayoutParams
+            lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            lp.topMargin = dpToPx(24).toInt()
+            binding.srlCustomWebView.layoutParams = lp
+            binding.srlCustomWebView.requestLayout()
         }
     }
 
     override fun onPause() {
         super.onPause()
 
-        Timber.d("debug_web call onPause")
+        saveState()
         CookieManager.getInstance().apply {
-            Timber.d("debug_web onPause cookie: ${getCookie(basePath)}")
             setAcceptCookie(true)
             acceptCookie()
             flush()
         }
+    }
+
+    private fun saveState() {
+        if (stateBundle == null) {
+            stateBundle = Bundle()
+        }
+
+        binding.wvExt.saveState(stateBundle!!)
     }
 
     private fun disableSomeEvents() {
