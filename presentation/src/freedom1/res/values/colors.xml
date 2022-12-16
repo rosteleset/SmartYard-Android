@@ -10,4 +10,6 @@
     <color name="blue">#518704</color>
     <color name="blue_200">#518704</color>
     <color name="brand_pressed">#6D7A8A</color>
+
+    <color name="global_progress_bar_color">#053701</color>
 </resources>
