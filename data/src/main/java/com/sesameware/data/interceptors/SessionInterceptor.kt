@@ -1,5 +1,6 @@
 package com.sesameware.data.interceptors
 
+import com.sesameware.data.BuildConfig
 import okhttp3.Interceptor
 import okhttp3.Response
 import com.sesameware.data.prefs.PreferenceStorage
@@ -16,6 +17,7 @@ class SessionInterceptor constructor(
         private const val KEY_TOKEN = "Authorization"
         private const val VALUE_TOKEN = "Bearer %s"
         private const val X_DM_API_REFRESH = "X-Dm-Api-Refresh"
+        private const val USER_AGENT = "User-Agent"
     }
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -26,6 +28,10 @@ class SessionInterceptor constructor(
 
         if (!token.isNullOrBlank()) {
             tokenRequest.addHeader(KEY_TOKEN, String.format(VALUE_TOKEN, token))
+        }
+
+        if (!BuildConfig.USER_AGENT.isNullOrBlank()) {
+            tokenRequest.addHeader(USER_AGENT, BuildConfig.USER_AGENT)
         }
 
         if (preferenceStorage.xDmApiRefresh) {

@@ -4,6 +4,7 @@ import android.webkit.JavascriptInterface
 import com.sesameware.data.prefs.PreferenceStorage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import timber.log.Timber
 
 class CustomWebInterface(private val callback: Callback? = null) : KoinComponent {
     private val preferenceStorage: PreferenceStorage by inject()

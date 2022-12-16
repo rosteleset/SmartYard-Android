@@ -52,6 +52,10 @@ class CustomWebViewFragment : Fragment() {
 
         binding.srlCustomWebView.clipToOutline = true
         binding.wvExt.clipToOutline = true
+        binding.wvExt.settings.allowContentAccess = true
+        binding.wvExt.settings.allowFileAccess = true
+        binding.wvExt.settings.domStorageEnabled = true
+        binding.wvExt.settings.databaseEnabled = true
         binding.wvExt.settings.javaScriptEnabled = true
         binding.wvExt.settings.javaScriptCanOpenWindowsAutomatically = true
         binding.wvExt.settings.setSupportMultipleWindows(true)
