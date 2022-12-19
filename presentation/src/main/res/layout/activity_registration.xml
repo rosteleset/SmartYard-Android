@@ -8,7 +8,7 @@
     android:fitsSystemWindows="true"
     tools:context=".ui.main.MainActivity">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navFragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"

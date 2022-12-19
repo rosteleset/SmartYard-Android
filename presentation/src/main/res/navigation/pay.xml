@@ -6,15 +6,18 @@
     app:startDestination="@id/payFragment2">
     <fragment
         android:id="@+id/payFragment2"
-        android:name="ru.madbrains.smartyard.ui.main.pay.PayAddressFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment"
         android:label="PayFragment" >
         <action
             android:id="@+id/action_payFragment2_to_payContractFragment"
             app:destination="@id/payContractFragment" />
+        <action
+            android:id="@+id/action_payFragment2_to_customWebViewFragmentPay"
+            app:destination="@id/customWebViewFragmentPay" />
     </fragment>
     <fragment
         android:id="@+id/payContractFragment"
-        android:name="ru.madbrains.smartyard.ui.main.pay.contract.PayContractFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.PayContractFragment"
         android:label="fragment_pay_contract"
         tools:layout="@layout/fragment_pay_contract" >
         <action
@@ -23,7 +26,7 @@
     </fragment>
     <dialog
         android:id="@+id/payBottomSheetDialogFragment"
-        android:name="ru.madbrains.smartyard.ui.main.pay.contract.dialogPay.PayBottomSheetDialogFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.dialogPay.PayBottomSheetDialogFragment"
         android:label="PayBottomSheetDialogFragment" >
         <argument
             android:name="contractPayName"
@@ -46,11 +49,11 @@
     </dialog>
     <dialog
         android:id="@+id/successButtomSheetDialogFragment"
-        android:name="ru.madbrains.smartyard.ui.main.pay.contract.dialogSuccessfully.SuccessButtomSheetDialogFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.dialogSuccessfully.SuccessButtomSheetDialogFragment"
         android:label="SuccessButtomSheetDialogFragment" /><action android:id="@+id/action_global_successButtomSheetDialogFragment" app:destination="@id/successButtomSheetDialogFragment"/>
     <dialog
         android:id="@+id/errorButtomSheetDialogFragment"
-        android:name="ru.madbrains.smartyard.ui.main.pay.contract.dialogError.ErrorBottomSheetDialogFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.dialogError.ErrorBottomSheetDialogFragment"
         android:label="ErrorButtomSheetDialogFragment" >
         <argument
             android:name="textError"
@@ -59,11 +62,54 @@
     <action android:id="@+id/action_global_errorButtomSheetDialogFragment" app:destination="@id/errorButtomSheetDialogFragment" />
     <fragment
         android:id="@+id/payWebViewFragment"
-        android:name="ru.madbrains.smartyard.ui.main.pay.contract.webview.PayWebViewFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.webview.PayWebViewFragment"
         android:label="fragment_pay_web_view"
         tools:layout="@layout/fragment_pay_web_view" >
         <argument
             android:name="url"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/customWebViewFragmentPay"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
+        android:label="fragment_custom_web_view"
+        tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
+        <argument
+            android:name="basePath"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="hasBackButton"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <dialog
+        android:id="@+id/customWebBottomFragmentPay"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebBottomFragment"
+        android:label="fragment_custom_web_bottom"
+        tools:layout="@layout/fragment_custom_web_bottom" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
 </navigation>

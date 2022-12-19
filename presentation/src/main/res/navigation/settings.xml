@@ -6,7 +6,7 @@
     app:startDestination="@id/burgerFragment">
     <fragment
         android:id="@+id/settingsFragment"
-        android:name="ru.madbrains.smartyard.ui.main.settings.SettingsFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings">
         <action
@@ -21,7 +21,7 @@
     </fragment>
     <fragment
         android:id="@+id/basicSettingsFragment"
-        android:name="ru.madbrains.smartyard.ui.main.settings.basicSettings.BasicSettingsFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.basicSettings.BasicSettingsFragment"
         android:label="fragment_basic_settings"
         tools:layout="@layout/fragment_basic_settings">
         <action
@@ -30,7 +30,7 @@
     </fragment>
     <fragment
         android:id="@+id/addressSettingsFragment"
-        android:name="ru.madbrains.smartyard.ui.main.settings.addressSettings.AddressSettingsFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.addressSettings.AddressSettingsFragment"
         android:label="fragment_address_settings"
         tools:layout="@layout/fragment_address_settings">
         <argument
@@ -49,7 +49,7 @@
             android:id="@+id/action_addressSettingsFragment_to_settingsFragment"
             app:destination="@id/settingsFragment" />
         <argument
-            android:name="contractOwner"
+            android:name="flatOwner"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/accessAddressFragment"
-        android:name="ru.madbrains.smartyard.ui.main.settings.accessAddress.AccessAddressFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.accessAddress.AccessAddressFragment"
         android:label="AccessAddressFragment">
         <argument
             android:name="address"
@@ -68,7 +68,7 @@
             android:defaultValue="-1"
             app:argType="integer" />
         <argument
-            android:name="contractOwner"
+            android:name="flatOwner"
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
@@ -84,12 +84,12 @@
     </fragment>
     <activity
         android:id="@+id/registrationActivity"
-        android:name="ru.madbrains.smartyard.ui.reg.RegistrationActivity"
+        android:name="com.sesameware.smartyard_oem.ui.reg.RegistrationActivity"
         android:label="RegistrationActivity" />
     <include app:graph="@navigation/address" />
     <fragment
         android:id="@+id/burgerFragment"
-        android:name="ru.madbrains.smartyard.ui.main.burger.BurgerFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.burger.BurgerFragment"
         android:label="fragment_burger"
         tools:layout="@layout/fragment_burger" >
         <action
@@ -102,12 +102,12 @@
             android:id="@+id/action_burgerFragment_to_cityCamerasFragment"
             app:destination="@id/cityCamerasMapFragment" />
         <action
-            android:id="@+id/action_burgerFragment_to_extWebViewFragment"
-            app:destination="@id/extWebViewFragment" />
+            android:id="@+id/action_burgerFragment_to_customWebViewFragmentSettings"
+            app:destination="@id/customWebViewFragmentSettings" />
     </fragment>
     <fragment
         android:id="@+id/cityCamerasMapFragment"
-        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCamerasMapFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.burger.cityCameras.CityCamerasMapFragment"
         android:label="city_cameras_map_fragment"
         tools:layout="@layout/city_cameras_map_fragment">
         <action
@@ -116,7 +116,7 @@
     </fragment>
     <fragment
         android:id="@+id/cityCameraFragment"
-        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCameraFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.burger.cityCameras.CityCameraFragment"
         android:label="fragment_city_camera"
         tools:layout="@layout/fragment_city_camera" >
         <action
@@ -125,12 +125,12 @@
     </fragment>
     <fragment
         android:id="@+id/requestRecordFragment"
-        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.RequestRecordFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.burger.cityCameras.RequestRecordFragment"
         android:label="fragment_request_record"
         tools:layout="@layout/fragment_request_record" />
     <fragment
         android:id="@+id/faceSettingsFragment"
-        android:name="ru.madbrains.smartyard.ui.main.settings.faceSettings.FaceSettingsFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.faceSettings.FaceSettingsFragment"
         android:label="fragment_face_settings"
         tools:layout="@layout/fragment_face_settings" >
         <argument
@@ -142,25 +142,44 @@
             app:argType="string" />
     </fragment>
     <fragment
-        android:id="@+id/extWebViewFragment"
-        android:name="ru.madbrains.smartyard.ui.main.burger.ExtWebViewFragment"
-        android:label="fragment_ext_web_view"
-        tools:layout="@layout/fragment_ext_web_view" >
+        android:id="@+id/customWebViewFragmentSettings"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
+        android:label="fragment_custom_web_view"
+        tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
         <argument
             android:name="basePath"
-            app:argType="string" />
+            app:argType="string"
+            app:nullable="true" />
         <argument
             android:name="code"
-            app:argType="string" />
-        <action
-            android:id="@+id/action_extWebViewFragment_to_extWebBottomFragment"
-            app:destination="@id/extWebBottomFragment" />
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="hasBackButton"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
     <dialog
-        android:id="@+id/extWebBottomFragment"
-        android:name="ru.madbrains.smartyard.ui.main.burger.ExtWebBottomFragment"
-        android:label="fragment_ext_web_bottom"
-        tools:layout="@layout/fragment_ext_web_bottom" >
+        android:id="@+id/customWebBottomFragmentSettings"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebBottomFragment"
+        android:label="fragment_custom_web_bottom"
+        tools:layout="@layout/fragment_custom_web_bottom" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
         <argument
             android:name="url"
             app:argType="string" />

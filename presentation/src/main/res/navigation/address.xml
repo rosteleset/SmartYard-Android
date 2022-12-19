@@ -7,7 +7,7 @@
     app:startDestination="@id/addressFragment">
     <fragment
         android:id="@+id/addressFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.AddressFragment" >
+        android:name="com.sesameware.smartyard_oem.ui.main.address.AddressFragment" >
         <action
             android:id="@+id/action_addressFragment_to_authFragment"
             app:destination="@id/authFragment"
@@ -31,7 +31,7 @@
     </fragment>
     <fragment
         android:id="@+id/inputAddressFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.inputAdress.InputAddressFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.inputAdress.InputAddressFragment"
         android:label="InputAddressFragment" >
         <action
             android:id="@+id/action_inputAddressFragment_to_availableServicesFragment"
@@ -45,21 +45,21 @@
     </fragment>
     <fragment
         android:id="@+id/availableServicesFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.availableServices.AvailableServicesFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.availableServices.AvailableServicesFragment"
         android:label="AvailableServicesFragment" >
         <action
             android:id="@+id/action_availableServicesFragment_to_addressVerificationFragment"
             app:destination="@id/addressVerificationFragment" />
         <argument
             android:name="servicesList"
-            app:argType="ru.madbrains.domain.model.response.ServicesData[]" />
+            app:argType="com.sesameware.domain.model.response.ServicesData[]" />
         <argument
             android:name="address"
             app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/addressVerificationFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.addressVerification.AddressVerificationFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.addressVerification.AddressVerificationFragment"
         android:label="AddressVerificationFragment" >
         <argument
             android:name="address"
@@ -67,7 +67,7 @@
     </fragment>
     <fragment
         android:id="@+id/noNetworkFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.noNetwork.NoNetworkFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.noNetwork.NoNetworkFragment"
         android:label="fragment_no_network"
         tools:layout="@layout/fragment_no_network" >
         <argument
@@ -76,7 +76,7 @@
     </fragment>
     <fragment
         android:id="@+id/authFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.auth.AuthFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.auth.AuthFragment"
         android:label="AuthFragment" >
         <action
             android:id="@+id/action_authFragment_to_inputAddressFragment"
@@ -87,7 +87,7 @@
     </fragment>
     <fragment
         android:id="@+id/CCTVMapFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVMapFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVMapFragment"
         android:label="CCTVMapFragment" >
         <action
             android:id="@+id/action_CCTVMapFragment_to_CCTVDetailFragment"
@@ -95,7 +95,7 @@
     </fragment>
     <fragment
         android:id="@+id/CCTVDetailFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVDetailFragment"
         android:label="CCTVDetailFragment" >
         <action
             android:id="@+id/action_CCTVDetailFragment_to_CCTVTrimmerFragment"
@@ -104,7 +104,7 @@
 
     <fragment
         android:id="@+id/CCTVTrimmerFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVTrimmerFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVTrimmerFragment"
         android:label="CCTVTrimmerFragment" >
         <argument
             android:name="chosenDate"
@@ -116,7 +116,7 @@
 
     <fragment
         android:id="@+id/restoreAccessFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.auth.restoreAccess.RestoreAccessFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.auth.restoreAccess.RestoreAccessFragment"
         android:label="fragment_restore_access"
         tools:layout="@layout/fragment_restore_access" >
         <action
@@ -129,7 +129,7 @@
 
     <fragment
         android:id="@+id/codeSmsRestoreFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.auth.restoreAccess.codeSmsRestore.CodeSmsRestoreFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.auth.restoreAccess.codeSmsRestore.CodeSmsRestoreFragment"
         android:label="CodeSmsRestoreFragment" >
         <action
             android:id="@+id/action_codeSmsRestoreFragment_to_authFragment"
@@ -146,14 +146,14 @@
     </fragment>
     <fragment
         android:id="@+id/qrCodeFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.qrCode.QrCodeFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.qrCode.QrCodeFragment"
         android:label="QrCodeFragment" />
     <navigation
         android:id="@+id/navigation2"
         app:startDestination="@id/registrationActivity2" >
         <activity
             android:id="@+id/registrationActivity2"
-            android:name="ru.madbrains.smartyard.ui.reg.RegistrationActivity"
+            android:name="com.sesameware.smartyard_oem.ui.reg.RegistrationActivity"
             android:label="RegistrationActivity" />
     </navigation>
     <action
@@ -164,19 +164,19 @@
         app:popUpToInclusive="true" />
     <fragment
         android:id="@+id/workSoonCourierFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.workSoon.courier.WorkSoonCourierFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.workSoon.courier.WorkSoonCourierFragment"
         android:label="WorkSoonCourierFragment" >
         <argument
             android:name="issueModel"
-            app:argType="ru.madbrains.smartyard.ui.main.address.models.IssueModel" />
+            app:argType="com.sesameware.smartyard_oem.ui.main.address.models.IssueModel" />
     </fragment>
     <fragment
         android:id="@+id/workSoonOfficeFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.workSoon.office.WorkSoonOfficeFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.workSoon.office.WorkSoonOfficeFragment"
         android:label="WorkSoonOfficeFragment" >
         <argument
             android:name="issueModel"
-            app:argType="ru.madbrains.smartyard.ui.main.address.models.IssueModel" />
+            app:argType="com.sesameware.smartyard_oem.ui.main.address.models.IssueModel" />
         <action
             android:id="@+id/action_workSoonOfficeFragment_to_qrCodeFragment"
             app:destination="@id/qrCodeFragment" />
@@ -187,7 +187,7 @@
         app:popUpTo="@id/addressFragment" />
     <fragment
         android:id="@+id/eventLogFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.event_log.EventLogFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogFragment"
         android:label="fragment_event_log"
         tools:layout="@layout/fragment_event_log" >
         <action
@@ -195,11 +195,11 @@
             app:destination="@id/eventLogDetailFragment" />
         <argument
             android:name="eventLogModel"
-            app:argType="ru.madbrains.smartyard.ui.main.address.models.interfaces.EventLogModel" />
+            app:argType="com.sesameware.smartyard_oem.ui.main.address.models.interfaces.EventLogModel" />
     </fragment>
     <fragment
         android:id="@+id/eventLogDetailFragment"
-        android:name="ru.madbrains.smartyard.ui.main.address.event_log.EventLogDetailFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogDetailFragment"
         android:label="fragment_event_log_detail"
         tools:layout="@layout/fragment_event_log_detail" />
 </navigation>

@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/numberRegFragment">
+    app:startDestination="@id/providersFragment">
 
     <fragment
         android:id="@+id/numberRegFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.tel.NumberRegFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.tel.NumberRegFragment"
         android:label="fragment_number_reg"
-        tools:layout="@layout/fragment_number_reg" >
+        tools:layout="@layout/fragment_number_reg">
         <action
             android:id="@+id/action_numberRegFragment_to_smsRegFragment"
             app:destination="@id/smsRegFragment" />
@@ -19,11 +19,14 @@
         <action
             android:id="@+id/action_numberRegFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_numberRegFragment_to_outgoingCallFragment"
+            app:destination="@id/outgoingCallFragment" />
     </fragment>
     <fragment
         android:id="@+id/smsRegFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.sms.SmsRegFragment"
-        android:label="SmsRegFragment" >
+        android:name="com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment"
+        android:label="SmsRegFragment">
         <action
             android:id="@+id/action_smsRegFragment_to_appealFragment"
             app:destination="@id/appealFragment" />
@@ -35,21 +38,22 @@
     </fragment>
     <activity
         android:id="@+id/mainActivity"
-        android:name="ru.madbrains.smartyard.ui.main.MainActivity"
-        android:label="MainActivity" >
+        android:name="com.sesameware.smartyard_oem.ui.main.MainActivity"
+        android:label="MainActivity">
         <argument
             android:name="messageType"
-            app:argType="ru.madbrains.smartyard.FirebaseMessagingService$TypeMessage"
-            android:defaultValue="NO_DEFINE" />
-        <argument android:name="messageId"
+            android:defaultValue="NO_DEFINE"
+            app:argType="com.sesameware.smartyard_oem.FirebaseMessagingService$TypeMessage" />
+        <argument
+            android:name="messageId"
             app:argType="string"
             app:nullable="true" />
     </activity>
     <fragment
         android:id="@+id/appealFragment"
-        android:name="ru.madbrains.smartyard.ui.reg.appeal.AppealFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.appeal.AppealFragment"
         android:label="fragment_appeal"
-        tools:layout="@layout/fragment_appeal" >
+        tools:layout="@layout/fragment_appeal">
         <action
             android:id="@+id/action_appealFragment_to_mainActivity"
             app:destination="@id/mainActivity" />
@@ -57,5 +61,32 @@
     <action
         android:id="@+id/action_global_numberRegFragment"
         app:destination="@id/numberRegFragment" />
+    <fragment
+        android:id="@+id/providersFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragment"
+        android:label="fragment_providers"
+        tools:layout="@layout/fragment_providers">
+        <action
+            android:id="@+id/action_providersFragment_to_numberRegFragment"
+            app:destination="@id/numberRegFragment" />
+        <action
+            android:id="@+id/action_providersFragment_to_mainActivity"
+            app:destination="@id/mainActivity" />
+        <action
+            android:id="@+id/action_providersFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/outgoingCallFragment"
+        android:name="com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallFragment"
+        android:label="fragment_outgoing_call"
+        tools:layout="@layout/fragment_outgoing_call" >
+        <action
+            android:id="@+id/action_outgoingCallFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
+        <action
+            android:id="@+id/action_outgoingCallFragment_to_numberRegFragment"
+            app:destination="@id/numberRegFragment" />
+    </fragment>
 
 </navigation>

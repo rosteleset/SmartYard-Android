@@ -3,13 +3,13 @@
 buildscript { 
 
     ext {
-        compileSdkVersion = 31
+        compileSdkVersion = 33
         minSdkVersion = 21
-        targetSdkVersion = 31
-        kotlinVersion = '1.6.21'
-        kotlinReflect = '1.6.21'
-        appCompatVersion = '1.4.1'
-        coreKtxVersion = '1.7.0'
+        targetSdkVersion = 33
+        kotlinVersion = '1.7.10'
+        kotlinReflect = '1.7.10'
+        appCompatVersion = '1.4.2'
+        coreKtxVersion = '1.8.0'
         constraintLayoutVersion = '2.1.4'
         junitVersion = '4.13.2'
         extJunitVersion = '1.1.0'
@@ -19,15 +19,15 @@ buildscript {
         firebaseMessagingVersion = '21.1.0'
         timberVersion = '4.7.1'
         navigationVersion = "2.2.2"
-        roomVersion = '2.4.2'
-        coroutinesVersion = '1.6.0'
+        roomVersion = '2.4.3'
+        coroutinesVersion = '1.6.1'
         retrofitVersion = '2.6.0'
         okHttpVersion = '4.9.2'
         ktlintVersion = '0.37.2'
         archCoreVersion = '2.0.1'
         pagingVersion = '1.0.1'
         lifecycleVersion = '2.2.0'
-        lifecycleViewModelVersion = '2.4.1'
+        lifecycleViewModelVersion = '2.5.1'
         moshi_version = '1.11.0'
         koin_version = '3.1.5'
         glide_version = '4.12.0'
@@ -40,7 +40,7 @@ buildscript {
         openStreetMapVersion = '6.1.5'
         swipeLayout = '1.1.0'
         inputMask = '5.0.0'
-        materialMaterial = '1.6.0'
+        materialMaterial = '1.6.1'
         kotlinCodegen = '1.11.0'
         cameraxVersion = '1.0.0-alpha02'
         viewpagerVersion = '1.0.0'
@@ -63,11 +63,11 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.3.0'
+        classpath 'com.android.tools.build:gradle:7.3.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
         classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.0'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-rc02"
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
+        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.5.2'
         classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
     }
 }

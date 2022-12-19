@@ -27,7 +27,7 @@
             android:layout_marginTop="24dp"
             android:background="@drawable/background_radius_video_clip">
 
-            <ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout
+            <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
                 android:id="@+id/zlOnline"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -40,7 +40,7 @@
                     android:focusable="true"
                     app:resize_mode="fixed_height" />
 
-            </ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout>
+            </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
 
             <ProgressBar
                 android:id="@+id/mProgress"

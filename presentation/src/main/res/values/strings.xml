@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Main -->
-    <string name="app_name">LanTa</string>
+    <string name="app_name">Теледом</string>
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
@@ -31,9 +31,14 @@
 
     <!-- Регистрация номер телефона-->
     <string name="reg_tel_caption">Введите номер телефона\nдля регистрации</string>
+    <string name="reg_back_to_providers">Вернуться к выбору провайдера</string>
 
     <!-- Регистрация код из смс-->
     <string name="reg_sms_code_tel">Введите код из СМС,\nотправленный на номер +7%1$s</string>
+    <string name="reg_flash_call_code_tel">
+        Нам необходимо убедиться\nчто номер +7%1$s действительно ваш.\n
+        Вам нужно отклонить входящий вызов и ввести последние 4 цифры его номера
+    </string>
     <string name="reg_sms_correct_tel">Исправить номер телефона</string>
     <string name="reg_sms_send_code_repeat">Отправить код повторно можно через\n%1$s</string>
     <string name="reg_sms_error_code">Неверный код. Попробуйте ещё раз</string>
@@ -77,12 +82,12 @@
 
 
     <!-- Авторизация по номеру договора -->
-    <string name="auth_where_is_contract_title">У вас есть договор с Лантой?</string>
+    <string name="auth_where_is_contract_title">У вас есть договор с оператором?</string>
     <string name="auth_where_is_contract_caption">Введите номер и пароль договора, привязанного к данному адресу, и управляйте услугами из этого приложения.</string>
     <string name="auth_numer_pass0">Не помню пароль </string>
     <string name="auth_number_pass1">Ничего не помню</string>
     <string name="auth_number_btn_ok">Войти</string>
-    <string name="auth_number_btn_no">У меня нет договора с Лантой</string>
+    <string name="auth_number_btn_no">У меня нет договора с оператором</string>
     <string name="auth_dialog_title">Создать заявку на восстановление данных по договору?</string>
     <string name="auth_dialog_yes">Создать</string>
     <string name="auth_dialog_no">Отмена</string>
@@ -101,9 +106,9 @@
     <string name="address_verification_courier_block2_title">Отсканируйте QR-код</string>
     <string name="address_verification_courier_block2_description">Он будет внутри конверта</string>
     <string name="address_verification_courier_block3_title">Пользуйтесь!</string>
-    <string name="address_verification_courier_block3_description">Вы сразу получите доступ ко всему функционалу приложения «‎Умный домофон»</string>
+    <string name="address_verification_courier_block3_description">Вы сразу получите доступ ко всему функционалу приложения «Умный домофон»</string>
     <string name="address_verification_courier_btn_done">Супер! Оставить заявку</string>
-    <string name="address_verification_office_description">Посетите ближайший офис Lanta с квитанцией ЖКХ за эту квартиру и мы сразу же активируем функцию умного домофона и видеонаблюдения.</string>
+    <string name="address_verification_office_description">Посетите ближайший офис оператора с квитанцией ЖКХ за эту квартиру и мы сразу же активируем функцию умного домофона и видеонаблюдения.</string>
     <string name="address_verification_office_btn_done">Так и сделаю</string>
     <string name="address_verification_tab_title_1">Через курьера</string>
     <string name="address_verification_tab_title_2">Визит в офис</string>
@@ -152,7 +157,7 @@
 
     <!-- Скоро все заработает курьер. -->
     <string name="address_work_soon_courier_title">Совсем скоро  всё заработает!</string>
-    <string name="address_work_soon_courier_caption">Для подтверждения адреса вам нужно принести квитанцию ЖКХ не старше трёх месяцев в ближайший офис Lanta.</string>
+    <string name="address_work_soon_courier_caption">Для подтверждения адреса вам нужно принести квитанцию ЖКХ не старше трёх месяцев в ближайший офис оператора.</string>
     <string name="address_work_soon_courier_btn_0">Вызвать курьера</string>
 
     <!-- Как к вам обращаться? -->
@@ -207,13 +212,17 @@
     <string name="payments_error_1" translatable="false">Оплата отменена.</string>
     <string name="payments_error_2" translatable="false">Сумма должна быть больше 0.</string>
     <string name="payments_error_3" translatable="false">Вы не завершили оплату.</string>
+    <string name="pay_web_title">Оплата</string>
+
+    <!-- Web View -->
+    <string name="web_bottom_back">Назад</string>
 
     <string name="sound">Звук</string>
     <string name="choose_sound">Выбрать звук</string>
     <string name="next">Далее</string>
     <string name="save">Сохранить</string>
     <string name="chat_no_contract">(Номер договора отсутствует)</string>
-    <string name="chat_test_msg">(Это тестовые сообщения из мобильного клиента Ланта)</string>
+    <string name="chat_test_msg">(Это тестовые сообщения из мобильного клиента)</string>
     <string name="appwidget_text">EXAMPLE</string>
     <string name="add_widget">Add widget</string>
     <string name="error_map_permission">Невозможно запустить карту без нужных разрешений</string>
@@ -248,6 +257,22 @@
     <string name="city_camera_scroll_up">Наверх</string>
     <string name="city_camera_load_more">+ Загрузить ещё(%d)</string>
     <string name="city_camera_youtube_msg">Не удалось запустить приложение YouTube</string>
+
+    <!-- Выбор провайдера -->
+    <string name="providers_title">Провайдер услуг</string>
+    <string name="providers_caption">Пожалуйста, выберите вашего поставщика услуг из списка или воспользуйтесь поиском.</string>
+    <string name="providers_filter_hint">Введите название провайдера</string>
+    <string name="providers_choose">Далее</string>
+
+    <!-- Авторизация исходящим звонком -->
+    <string name="outgoing_call_caption_1">Нам необходимо убедиться\nчто номер +7%1$s действительно ваш.</string>
+    <string name="outgoing_call_change_number">Исправить номер телефона</string>
+    <string name="outgoing_call_caption_2">Сделайте бесплатный звонок на номер</string>
+    <string name="outgoing_call_caption_3">
+        Чтобы мы могли подтвердить,\n
+        что это ваш номер
+    </string>
+    <string name="outgoing_call_make_call">Позвонить</string>
 
     <string name="request_record_title">Запросить запись</string>
     <string name="request_record_date">Дата записи: %s</string>

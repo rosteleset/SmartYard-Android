@@ -16,4 +16,8 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="event_log_detail_corner">12dp</dimen>
     <dimen name="event_log_detail_spacing">8dp</dimen>
     <dimen name="event_log_detail_stroke_size">3dp</dimen>
+
+    <!-- logo -->
+    <dimen name="logo_width_onboarding">186dp</dimen>
+    <dimen name="logo_height_onboarding">91dp</dimen>
 </resources>

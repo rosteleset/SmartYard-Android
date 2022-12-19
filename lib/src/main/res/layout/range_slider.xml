@@ -27,13 +27,13 @@
             android:background="@drawable/background_stroke"
             />
     </FrameLayout>
-    <ru.madbrains.lib.OverlayView
+    <com.sesameware.lib.OverlayView
         android:id="@+id/overlayView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
     />
 
-    <ru.madbrains.lib.ArchiveIntervalsBar
+    <com.sesameware.lib.ArchiveIntervalsBar
         android:id="@+id/intervalsBar"
         android:layout_width="match_parent"
         android:layout_height="20dp"

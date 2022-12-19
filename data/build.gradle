@@ -35,6 +35,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    flavorDimensions "default"
+    productFlavors {
+        teledom {
+            buildConfigField "String", "USER_AGENT", "\"\""
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+        }
+
+        teledomTest {
+            buildConfigField "String", "USER_AGENT", "\"\""
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+        }
+    }
 }
 
 project.afterEvaluate {
@@ -79,6 +92,7 @@ dependencies {
     // Room
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "androidx.room:room-ktx:$rootProject.roomVersion"
+    implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
     kapt "androidx.room:room-compiler:$rootProject.roomVersion"
 
     // Koin Core features
