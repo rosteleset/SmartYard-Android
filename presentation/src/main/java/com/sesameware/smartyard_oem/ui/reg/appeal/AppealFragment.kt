@@ -55,6 +55,9 @@ class AppealFragment : Fragment() {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+            }
             requestPermission(
                 permissions,
                 requireContext(),
