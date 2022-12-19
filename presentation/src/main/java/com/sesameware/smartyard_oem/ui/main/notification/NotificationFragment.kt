@@ -65,6 +65,10 @@ class NotificationFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mViewModel.onStart()
+        binding.webViewNotification.settings.allowContentAccess = true
+        binding.webViewNotification.settings.allowFileAccess = true
+        binding.webViewNotification.settings.domStorageEnabled = true
+        binding.webViewNotification.settings.databaseEnabled = true
         binding.webViewNotification.settings.javaScriptEnabled = true
         binding.webViewNotification.addJavascriptInterface(WebAppInterface(), "AndroidFunction")
         binding.webViewNotification.webViewClient = object : WebViewClient() {

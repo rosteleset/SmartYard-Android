@@ -45,6 +45,10 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.wvExtBottom.settings.javaScriptEnabled = true
+        binding.wvExtBottom.settings.allowContentAccess = true
+        binding.wvExtBottom.settings.allowFileAccess = true
+        binding.wvExtBottom.settings.domStorageEnabled = true
+        binding.wvExtBottom.settings.databaseEnabled = true
         binding.wvExtBottom.webChromeClient = CustomWebChromeClient(null, this)
         binding.wvExtBottom.webViewClient = CustomWebViewClient(fragmentId, popupId, null, this)
         binding.wvExtBottom.addJavascriptInterface(CustomWebInterface(object : CustomWebInterface.Callback {
