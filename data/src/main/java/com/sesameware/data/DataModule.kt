@@ -129,18 +129,6 @@ object DataModule {
     }
 
     private fun createHttpClient(preferenceStorage: PreferenceStorage): OkHttpClient {
-        val trustAllCerts = arrayOf<TrustManager>(object : X509TrustManager {
-            override fun checkClientTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-            }
-
-            override fun checkServerTrusted(chain: Array<out X509Certificate>?, authType: String?) {
-            }
-
-            override fun getAcceptedIssuers() = arrayOf<X509Certificate>()
-        })
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(null, trustAllCerts, java.security.SecureRandom())
-        val sslSocketFactory = sslContext.socketFactory
         val builder = OkHttpClient.Builder()
         with(builder) {
             connectTimeout(30, TimeUnit.SECONDS)
@@ -149,7 +137,6 @@ object DataModule {
             addInterceptor(CommonInterceptor())
             addInterceptor(SessionInterceptor(preferenceStorage))
             addNetworkInterceptor(loggingInterceptor())
-            sslSocketFactory(sslSocketFactory, trustAllCerts[0] as X509TrustManager).hostnameVerifier{_, _ -> true}
         }
         return builder.build()
     }

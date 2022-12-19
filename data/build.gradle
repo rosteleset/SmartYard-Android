@@ -29,12 +29,10 @@ android {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
         }
     }
 
@@ -42,10 +40,17 @@ android {
     productFlavors {
         teledom {
             buildConfigField "String", "USER_AGENT", "\"\""
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+        }
+
+        teledomTest {
+            buildConfigField "String", "USER_AGENT", "\"\""
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
         }
 
         freedom1 {
             buildConfigField "String", "USER_AGENT", "\"Mozilla/5.0 (Linux; Android 4.0.4; Galaxy Nexus Build/IMM76B) AppleWebKit/535.19 (KHTML, like Gecko) Chrome/18.0.1025.133 Mobile Safari/535.19\""
+            buildConfigField "String", "PROVIDERS_URL", "\"\""
         }
     }
 }

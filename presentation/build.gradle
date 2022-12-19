@@ -65,6 +65,12 @@ android {
             buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
+        teledomTest {
+            applicationId "com.sesameware.smartyard_oem"
+            buildConfigField "String", "PROVIDER_NAME", "\"\""
+            buildConfigField "String", "PROVIDER_URL", "\"\""
+        }
+
         freedom1 {
             applicationId "com.freedom1.freedom_isp"
             buildConfigField "String", "PROVIDER_NAME", "\"Фридом\""
