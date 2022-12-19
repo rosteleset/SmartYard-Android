@@ -30,7 +30,7 @@ class SessionInterceptor constructor(
             tokenRequest.addHeader(KEY_TOKEN, String.format(VALUE_TOKEN, token))
         }
 
-        if (!BuildConfig.USER_AGENT.isNullOrBlank()) {
+        if (BuildConfig.USER_AGENT.isNotBlank()) {
             tokenRequest.addHeader(USER_AGENT, BuildConfig.USER_AGENT)
         }
 

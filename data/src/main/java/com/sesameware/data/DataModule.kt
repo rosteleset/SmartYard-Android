@@ -42,11 +42,7 @@ import com.sesameware.domain.interfaces.ExtRepository
 import com.sesameware.domain.model.response.ProviderConfig
 
 import timber.log.Timber
-import java.security.cert.X509Certificate
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 object DataModule {
     var BASE_URL = "https://localhost/"

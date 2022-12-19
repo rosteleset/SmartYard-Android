@@ -36,12 +36,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Registry
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.load.model.GlideUrl
-import com.bumptech.glide.module.AppGlideModule
-import com.bumptech.glide.integration.okhttp3.OkHttpUrlLoader
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -56,18 +50,11 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
-import okhttp3.OkHttpClient
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
-import java.io.InputStream
-import java.security.cert.X509Certificate
-import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
     showStandardAlert(context, context.getString(msgResId), callback)
