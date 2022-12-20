@@ -2,15 +2,15 @@ package com.sesameware.smartyard_oem.ui.custom_web_view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
-import com.sesameware.smartyard_oem.ui.dpToPx
+import com.sesameware.smartyard_oem.ui.getStatusBarHeight
 
 class CustomWebViewFragment : Fragment() {
     private var _binding: FragmentCustomWebViewBinding? = null
@@ -104,7 +104,7 @@ class CustomWebViewFragment : Fragment() {
             binding.ivEWVBack.visibility = View.INVISIBLE
             val lp = binding.srlCustomWebView.layoutParams as ConstraintLayout.LayoutParams
             lp.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-            lp.topMargin = dpToPx(24).toInt()
+            lp.topMargin = getStatusBarHeight()
             binding.srlCustomWebView.layoutParams = lp
             binding.srlCustomWebView.requestLayout()
         }

@@ -6,7 +6,6 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
-import timber.log.Timber
 
 /**
  * @author Artem Budarin
