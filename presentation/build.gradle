@@ -114,6 +114,7 @@ dependencies {
     implementation "com.google.android.material:material:$rootProject.materialMaterial"
     implementation "androidx.viewpager2:viewpager2:$rootProject.viewpagerVersion"
     implementation "com.github.romandanylyk:PageIndicatorView:$rootProject.pageIndicatorVersion"
+    implementation "androidx.core:core-splashscreen:$rootProject.splashscreen_version"
 
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
