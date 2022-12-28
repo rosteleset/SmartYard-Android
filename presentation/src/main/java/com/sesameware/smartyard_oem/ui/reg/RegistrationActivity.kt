@@ -34,6 +34,7 @@ class RegistrationActivity : CommonActivity() {
             try {
                 mViewModel.getProviderConfig()
             } catch (e: CommonErrorThrowable) {
+                Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
             }
         }
 

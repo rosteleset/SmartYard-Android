@@ -53,8 +53,11 @@ class RegistrationViewModel(
     }
 
     suspend fun getProviderConfig() {
+        Timber.d("debug_dmm call getProviderConfig")
         if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
             DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""
+            mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
+            Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
             DataModule.providerName = BuildConfig.PROVIDER_NAME
             authInteractor.getOptions()?.let { result ->
                 DataModule.providerConfig = result.data
@@ -67,6 +70,8 @@ class RegistrationViewModel(
                 authInteractor.providers()?.data?.forEach {
                     if (it.id == pId) {
                         DataModule.BASE_URL = it.baseUrl + if (!it.baseUrl.endsWith("/")) "/" else ""
+                        mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
+                        Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
                         DataModule.providerName = it.name
                         authInteractor.getOptions()?.let { result ->
                             DataModule.providerConfig = result.data

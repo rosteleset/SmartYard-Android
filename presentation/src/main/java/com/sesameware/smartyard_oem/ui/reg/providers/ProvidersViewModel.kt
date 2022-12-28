@@ -11,6 +11,7 @@ import com.sesameware.domain.model.response.Provider
 import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
+import timber.log.Timber
 
 class ProvidersViewModel(
     private val mPreferenceStorage: PreferenceStorage,
@@ -26,6 +27,8 @@ class ProvidersViewModel(
 
     fun goToNext(fragment: Fragment, providerId: String, providerName: String, providerBaseUrl: String) {
         DataModule.BASE_URL = providerBaseUrl + if (!providerBaseUrl.endsWith("/")) "/" else ""
+        mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
+        Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
         DataModule.providerName = providerName
         mPreferenceStorage.providerId = providerId
         NavHostFragment.findNavController(fragment).navigate(R.id.action_providersFragment_to_numberRegFragment)

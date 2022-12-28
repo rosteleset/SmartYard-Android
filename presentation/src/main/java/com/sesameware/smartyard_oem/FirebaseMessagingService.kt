@@ -36,7 +36,6 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
@@ -104,8 +103,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             //и вычисляются из hash
                             msg.hash?.let { hash ->
                                 msg.pass = hash
-                                msg.live = "${DataModule.BASE_URL}call/live/$hash"
-                                msg.image = "${DataModule.BASE_URL}call/camshot/$hash"
+                                msg.live = "${preferenceStorage.providerBaseUrl}call/live/$hash"
+                                msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/$hash"
                             }
                             waitForLinServiceAndRun(msg) {
                                 it.listenAndGetNotifications(msg)
