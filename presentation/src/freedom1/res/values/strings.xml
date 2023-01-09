@@ -1,4 +1,8 @@
 <resources>
     <!-- Main -->
     <string name="app_name">Фридом</string>
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_contract_hint">Логин или номер договора</string>
+
 </resources>

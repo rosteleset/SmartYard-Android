@@ -55,7 +55,7 @@
             android:layout_marginEnd="32dp"
             android:background="@drawable/background_edit_text_radius"
             android:ems="10"
-            android:hint="Номер договора"
+            android:hint="@string/auth_contract_hint"
             android:inputType="textPersonName"
             android:padding="16dp"
             android:textSize="18sp"

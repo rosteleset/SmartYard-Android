@@ -91,6 +91,7 @@
     <string name="auth_dialog_title">Создать заявку на восстановление данных по договору?</string>
     <string name="auth_dialog_yes">Создать</string>
     <string name="auth_dialog_no">Отмена</string>
+    <string name="auth_contract_hint">Номер договора</string>
 
 
     <!-- Ввод адреса -->
