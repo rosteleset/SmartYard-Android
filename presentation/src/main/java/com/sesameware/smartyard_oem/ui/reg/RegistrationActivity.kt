@@ -30,14 +30,6 @@ class RegistrationActivity : CommonActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
-        runBlocking {
-            try {
-                mViewModel.getProviderConfig()
-            } catch (e: CommonErrorThrowable) {
-                Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
-            }
-        }
-
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)

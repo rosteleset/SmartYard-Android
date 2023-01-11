@@ -1,10 +1,13 @@
 package com.sesameware.smartyard_oem.ui.reg.tel
 
+import android.content.Context
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.FrameLayout
 import androidx.annotation.StringRes
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
@@ -17,13 +20,20 @@ import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNumberRegBinding
+import com.sesameware.smartyard_oem.databinding.PinEntryBinding
+import com.sesameware.smartyard_oem.ui.dpToPx
 
 class NumberRegFragment : Fragment() {
     private var _binding: FragmentNumberRegBinding? = null
     private val binding get() = _binding!!
 
+    private var mPhonePrefix: String = ""
     private var mPhoneNumber: String = ""
     private val mViewModel by viewModel<NumberRegViewModel>()
+
+    private var pinSlots = mutableListOf<PinEntryBinding>()
+    private var pinSlotSizes = mutableListOf<Int>()
+    private var pinCount = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,7 +48,6 @@ class NumberRegFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvProviderNR.text = DataModule.providerName
-        setupNumbersEditText()
 
         binding.ivExit.setOnClickListener {
             activity?.finish()
@@ -62,62 +71,99 @@ class NumberRegFragment : Fragment() {
                 }
             }
         )
+
+        createFromTemplate()
     }
 
-    private fun setupNumbersEditText() {
-        binding.tel1.focus()
+    private fun createFromTemplate() {
+        val q = Regex("""^\+?(?<prefix>\d+)\s*(?<pattern>.*)""").find(DataModule.phonePattern)
+        var pattern = ""
+        q?.groups?.get("pattern")?.value?.forEachIndexed { index, c ->
+            pattern += if (c == '#') c else ' '
+        }
+        if (pattern.isEmpty()) {
+            return
+        }
 
-        binding.tel1.addTextChangedListener {
-            checkToSmsReg()
-            if (it?.length == 3) {
-                binding.tel2.requestFocus()
+        mPhonePrefix = q?.groups?.get("prefix")?.value ?: ""
+        if (mPhonePrefix.isNotEmpty()) {
+            binding.textView.text = "+" + mPhonePrefix
+        } else {
+            binding.textView.visibility = View.INVISIBLE
+        }
+
+        pattern.split(' ').forEach {
+            if (it.isNotEmpty()) {
+                val d = PinEntryBinding.inflate(LayoutInflater.from(requireContext()))
+                d.peeSlot.setMaxLength(it.length)
+                d.peeSlot.isFocusable = false
+                d.peeSlot.isFocusableInTouchMode = false
+                val lp = d.peeSlot.layoutParams as FrameLayout.LayoutParams
+                lp.width = (it.length * dpToPx(25)).toInt()
+                d.peeSlot.layoutParams = lp
+                binding.llPhone.addView(d.root)
+                pinSlots.add(d)
+                pinSlotSizes.add(it.length)
+                pinCount += it.length
             }
         }
 
-        binding.tel2.addTextChangedListener {
-            checkToSmsReg()
-            if (it?.length == 3) {
-                binding.tel3.requestFocus()
-            }
-        }
+        if (pinSlots.isNotEmpty()) {
+            pinSlots[0].peeSlot.isFocusable = true
+            pinSlots[0].peeSlot.isFocusableInTouchMode = true
+            pinSlots[0].peeSlot.focus()
 
-        binding.tel2.setOnKeyListener { _, keyCode, event ->
-            var r = false
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && binding.tel2.text?.isEmpty() == true) {
-                val text: String = binding.tel1.text.toString()
-                if (text.isNotEmpty()) {
-                    binding.tel1.setText(text.substring(0, text.length - 1))
-                    binding.tel1.setSelection(text.length - 1)
+            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.showSoftInput(pinSlots[0].peeSlot, InputMethodManager.SHOW_IMPLICIT)
+
+            pinSlots.forEachIndexed { index, pinSlot ->
+                pinSlot.peeSlot.addTextChangedListener {
+                    checkToSmsReg()
+
+                    if (index < pinSlots.size - 1) {
+                        if (it?.length == pinSlotSizes[index]) {
+                            pinSlots[index + 1].peeSlot.isFocusable = true
+                            pinSlots[index + 1].peeSlot.isFocusableInTouchMode = true
+                            pinSlots[index + 1].peeSlot.requestFocus()
+                            pinSlots[index].peeSlot.isFocusable = false
+                            pinSlots[index].peeSlot.isFocusableInTouchMode = false
+                        }
+                    }
                 }
-                binding.tel1.requestFocus()
-                r = true
-            }
-            r
-        }
 
-        binding.tel3.addTextChangedListener {
-            checkToSmsReg()
-        }
+                if (index > 0) {
+                    pinSlot.peeSlot.setOnKeyListener { _, keyCode, event ->
+                        var r = false
 
-        binding.tel3.setOnKeyListener { _, keyCode, event ->
-            var r = false
-            if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && binding.tel3.text?.isEmpty() == true) {
-                val text: String = binding.tel2.text.toString()
-                if (text.isNotEmpty()) {
-                    binding.tel2.setText(text.substring(0, text.length - 1))
-                    binding.tel2.setSelection(text.length - 1)
+                        //удаление символа в пустом слоте должно активировать предыдущий слот и удалить там номер
+                        if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_DEL && pinSlot.peeSlot.text?.isEmpty() == true) {
+                            val text: String = pinSlots[index - 1].peeSlot.text.toString()
+                            if (text.isNotEmpty()) {
+                                pinSlots[index - 1].peeSlot.setText(text.substring(0, text.length - 1))
+                                pinSlots[index - 1].peeSlot.setSelection(text.length - 1)
+                            }
+                            pinSlots[index - 1].peeSlot.isFocusable = true
+                            pinSlots[index - 1].peeSlot.isFocusableInTouchMode = true
+                            pinSlots[index - 1].peeSlot.requestFocus()
+                            pinSlots[index].peeSlot.isFocusable = false
+                            pinSlots[index].peeSlot.isFocusableInTouchMode = false
+                            r = true
+                        }
+
+                        r
+                    }
                 }
-                binding.tel2.requestFocus()
-                r = true
             }
-            r
         }
     }
 
     private fun checkToSmsReg() {
         toggleError(false)
-        mPhoneNumber = binding.tel1.text.toString() + binding.tel2.text.toString() + binding.tel3.text.toString()
-        if (mPhoneNumber.length == 10) {
+        mPhoneNumber = ""
+        pinSlots.forEach {
+            mPhoneNumber += it.peeSlot.text.toString()
+        }
+        if (mPhoneNumber.length == pinCount) {
             mViewModel.requestSmsCode(mPhoneNumber, this)
         }
     }

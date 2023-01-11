@@ -296,4 +296,7 @@ interface TeledomApi {
 
     @POST
     suspend fun getOptions(@Url url: String): ProviderConfigResponse
+
+    @POST
+    suspend fun phonePattern(@Url url: String): ApiResult<String>?
 }

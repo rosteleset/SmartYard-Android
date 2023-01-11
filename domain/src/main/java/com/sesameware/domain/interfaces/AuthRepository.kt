@@ -1,6 +1,7 @@
 package com.sesameware.domain.interfaces
 
 import com.sesameware.domain.model.TF
+import com.sesameware.domain.model.response.ApiResult
 import com.sesameware.domain.model.response.AppVersionResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
 import com.sesameware.domain.model.response.GetServicesResponse
@@ -24,4 +25,5 @@ interface AuthRepository {
     suspend fun appVersion(version: String): AppVersionResponse
     suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse
     suspend fun getOptions(): ProviderConfigResponse
+    suspend fun phonePattern(): ApiResult<String>?
 }

@@ -48,6 +48,8 @@ object DataModule {
     var BASE_URL = "https://localhost/"
     var providerConfig = ProviderConfig()
     var providerName = ""
+    var defaultPhonePattern = "7 (###) ###-##-##"
+    var phonePattern = defaultPhonePattern
 
     val sberApiUserName = ""
     val sberApiPassword = ""

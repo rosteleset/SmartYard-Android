@@ -10,11 +10,15 @@ import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
+import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragmentDirections
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class RegistrationViewModel(
@@ -22,8 +26,6 @@ class RegistrationViewModel(
     private val inboxInteractor: InboxInteractor,
     private val authInteractor: AuthInteractor
 ) : GenericViewModel() {
-    private val TAG = RegistrationViewModel::class.simpleName
-
     fun onStart(
         fragment: Fragment,
         messageId: String,
@@ -32,6 +34,15 @@ class RegistrationViewModel(
     ) {
         if (mPreferenceStorage.authToken == null) {
             if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
+                try {
+                    runBlocking {
+                        authInteractor.phonePattern()?.let { result ->
+                            DataModule.phonePattern = result.data
+                        }
+                    }
+                } catch(e: CommonErrorThrowable) {
+                    Timber.d("debug_dmm    phonePattern error: ${e.message}")
+                }
                 val action = ProvidersFragmentDirections.actionGlobalNumberRegFragment()
                 val options = NavOptions.Builder()
                     .setPopUpTo(R.id.providersFragment, true)
@@ -39,6 +50,14 @@ class RegistrationViewModel(
                 NavHostFragment.findNavController(fragment).navigate(action, options)
             }
         } else {
+            runBlocking {
+                try {
+                    getProviderConfig()
+                } catch (e: CommonErrorThrowable) {
+                    Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
+                }
+            }
+
             if (mPreferenceStorage.sentName == null) {
                 NavHostFragment.findNavController(fragment)
                     .navigate(R.id.action_providersFragment_to_appealFragment)
@@ -52,7 +71,7 @@ class RegistrationViewModel(
         }
     }
 
-    suspend fun getProviderConfig() {
+    private suspend fun getProviderConfig() {
         Timber.d("debug_dmm call getProviderConfig")
         if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
             DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""
@@ -66,6 +85,7 @@ class RegistrationViewModel(
             return
         } else {
             val pId = mPreferenceStorage.providerId
+            Timber.d("debug_dmm providerId = $pId")
             if (pId?.isNotEmpty() == true) {
                 authInteractor.providers()?.data?.forEach {
                     if (it.id == pId) {
