@@ -10,11 +10,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.view.*
-import android.widget.EditText
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
-import com.redmadrobot.inputmask.MaskedTextChangedListener
-import com.redmadrobot.inputmask.MaskedTextChangedListener.Companion.installOn
-import com.redmadrobot.inputmask.helper.AffinityCalculationStrategy
+import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.databinding.DialogShareAccessBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
@@ -69,21 +67,31 @@ class DialogShareAccessDialog(private val mainActivity: MainActivity? = null) :
     }
 
     private fun setupPrefixSample() {
-        val editText: EditText = binding.prefixEditText
-        val affineFormats: MutableList<String> = ArrayList()
-        val listener =
-            installOn(
-                editText,
-                "+7 ([000]) [000]-[00]-[00]",
-                affineFormats, AffinityCalculationStrategy.PREFIX,
-                object : MaskedTextChangedListener.ValueListener {
-                    override fun onTextChanged(maskFilled: Boolean, extractedValue: String, formattedValue: String) {
-                        binding.btnDone.isEnabled = maskFilled
-                        contactModel.number = "7$extractedValue"
-                    }
+        var hint = ""
+        DataModule.phonePattern.forEach {
+            if (it == '#') {
+                hint += '0'
+            }
+        }
+        binding.prefixEditText.hint = hint
+        binding.prefixEditText.setMask(DataModule.phonePattern)
+        binding.prefixEditText.addTextChangedListener {
+            var rawPhone = ""
+            val digits = "0123456789"
+            binding.prefixEditText.getRawText().forEach {
+                if (digits.contains(it)) {
+                    rawPhone += it
                 }
-            )
-        editText.hint = listener.placeholder()
+            }
+            var phone = ""
+            binding.prefixEditText.text.forEach {
+                if (digits.contains(it)) {
+                    phone += it
+                }
+            }
+            contactModel.number = phone
+            binding.btnDone.isEnabled = (rawPhone.length == hint.length)
+        }
     }
 
     override fun onStart() {
@@ -118,7 +126,21 @@ class DialogShareAccessDialog(private val mainActivity: MainActivity? = null) :
                         val number = cursor.getString(phoneIndex)
                         val name = cursor.getString(nameIndex)
                         contactModel.name = name
-                        binding.prefixEditText.setText(number)
+
+                        //учитываем префикс
+                        var rawPhone = ""
+                        val digits = "0123456789"
+                        number.forEach {
+                            if (digits.contains(it)) {
+                                rawPhone += it
+                            }
+                        }
+                        if (rawPhone.length > binding.prefixEditText.hint.length) {
+                            binding.prefixEditText.setText(rawPhone.substring(rawPhone.length - binding.prefixEditText.hint.length))
+                        } else {
+                            binding.prefixEditText.setText(rawPhone)
+                        }
+
                         binding.btnDone.isEnabled = true
                     }
                     cursor?.close()

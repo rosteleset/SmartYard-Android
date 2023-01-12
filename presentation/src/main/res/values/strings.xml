@@ -34,9 +34,9 @@
     <string name="reg_back_to_providers">Вернуться к выбору провайдера</string>
 
     <!-- Регистрация код из смс-->
-    <string name="reg_sms_code_tel">Введите код из СМС,\nотправленный на номер +7%1$s</string>
+    <string name="reg_sms_code_tel">Введите код из СМС,\nотправленный на номер +%1$s</string>
     <string name="reg_flash_call_code_tel">
-        Нам необходимо убедиться\nчто номер +7%1$s действительно ваш.\n
+        Нам необходимо убедиться\nчто номер +%1$s действительно ваш.\n
         Вам нужно отклонить входящий вызов и ввести последние 4 цифры его номера
     </string>
     <string name="reg_sms_correct_tel">Исправить номер телефона</string>
@@ -266,7 +266,7 @@
     <string name="providers_choose">Далее</string>
 
     <!-- Авторизация исходящим звонком -->
-    <string name="outgoing_call_caption_1">Нам необходимо убедиться\nчто номер +7%1$s действительно ваш.</string>
+    <string name="outgoing_call_caption_1">Нам необходимо убедиться\nчто номер +%1$s действительно ваш.</string>
     <string name="outgoing_call_change_number">Исправить номер телефона</string>
     <string name="outgoing_call_caption_2">Сделайте бесплатный звонок на номер</string>
     <string name="outgoing_call_caption_3">

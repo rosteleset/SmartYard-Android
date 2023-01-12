@@ -53,6 +53,9 @@ class RegistrationViewModel(
             runBlocking {
                 try {
                     getProviderConfig()
+                    authInteractor.phonePattern()?.let { result ->
+                        DataModule.phonePattern = result.data
+                    }
                 } catch (e: CommonErrorThrowable) {
                     Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
                 }

@@ -1,6 +1,5 @@
 package com.sesameware.smartyard_oem.ui.reg.outgoing_call
 
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.sesameware.data.DataModule
@@ -9,7 +8,6 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.response.Name
 import com.sesameware.smartyard_oem.GenericViewModel
-import com.sesameware.smartyard_oem.p8
 
 class OutgoingCallViewModel(
     private val authInteractor: AuthInteractor,
@@ -22,7 +20,7 @@ class OutgoingCallViewModel(
             var isDone = false
             while (isActive && !isDone) {
                 try {
-                    val res = authInteractor.checkPhone(userPhone.p8)
+                    val res = authInteractor.checkPhone(userPhone)
                     isDone = true
                     mPreferenceStorage.authToken = res.data.accessToken
                     val name: Name = if (res.data.names is Boolean)

@@ -164,7 +164,7 @@ class NumberRegFragment : Fragment() {
             mPhoneNumber += it.peeSlot.text.toString()
         }
         if (mPhoneNumber.length == pinCount) {
-            mViewModel.requestSmsCode(mPhoneNumber, this)
+            mViewModel.requestSmsCode(mPhonePrefix + mPhoneNumber, this)
         }
     }
 

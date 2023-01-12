@@ -102,7 +102,7 @@ fun String.md5(): String {
     return BigInteger(1, md.digest(toByteArray())).toString(16).padStart(32, '0')
 }
 
-val String.p8: String get() = "8$this"
+val String.p8: String get() = "8" + this.substring(1)
 
 fun String.isEmailCharacter(): Boolean {
     return this.contains("@")
