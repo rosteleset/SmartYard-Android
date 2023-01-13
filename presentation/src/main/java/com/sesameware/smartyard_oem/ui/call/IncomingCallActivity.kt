@@ -332,11 +332,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mLinphone.mAudioManager.routeAudioToEarPiece()
     }
 
-    override fun onStop() {
-        hangUp()
-        super.onStop()
-    }
-
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     override fun onSensorChanged(event: SensorEvent) {
