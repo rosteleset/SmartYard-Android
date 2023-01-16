@@ -30,13 +30,6 @@ class RegistrationActivity : CommonActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
-        runBlocking {
-            try {
-                mViewModel.getProviderConfig()
-            } catch (e: CommonErrorThrowable) {
-            }
-        }
-
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)

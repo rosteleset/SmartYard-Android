@@ -2,16 +2,7 @@ package com.sesameware.domain.interactors
 
 import com.sesameware.domain.interfaces.AuthRepository
 import com.sesameware.domain.model.TF
-import com.sesameware.domain.model.response.AppVersionResponse
-import com.sesameware.domain.model.response.ConfirmCodeResponse
-import com.sesameware.domain.model.response.GetServicesResponse
-import com.sesameware.domain.model.response.OpenDoorResponse
-import com.sesameware.domain.model.response.RegisterPushTokenResponse
-import com.sesameware.domain.model.response.RequestCodeResponse
-import com.sesameware.domain.model.response.SendNameResponse
-import com.sesameware.domain.model.response.UserNotificationResponse
-import com.sesameware.domain.model.response.ProvidersListResponse
-import com.sesameware.domain.model.response.ProviderConfigResponse
+import com.sesameware.domain.model.response.*
 
 class AuthInteractor(
     private val repository: AuthRepository
@@ -63,5 +54,9 @@ class AuthInteractor(
 
     suspend fun getOptions(): ProviderConfigResponse {
         return repository.getOptions()
+    }
+
+    suspend fun phonePattern(): ApiResult<String>? {
+        return repository.phonePattern()
     }
 }

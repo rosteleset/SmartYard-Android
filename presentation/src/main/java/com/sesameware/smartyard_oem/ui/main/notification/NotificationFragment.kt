@@ -19,6 +19,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -26,6 +27,7 @@ import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNotificationBinding
+import com.sesameware.smartyard_oem.ui.getStatusBarHeight
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import timber.log.Timber
 
@@ -60,10 +62,10 @@ class NotificationFragment : Fragment() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
     @SuppressLint("SetJavaScriptEnabled")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         mViewModel.onStart()
         binding.webViewNotification.settings.allowContentAccess = true
         binding.webViewNotification.settings.allowFileAccess = true
@@ -135,6 +137,15 @@ class NotificationFragment : Fragment() {
         ) { progress ->
             binding.refreshLayout.isRefreshing = progress
         }
+
+        adjustTopMargin()
+    }
+
+    private fun adjustTopMargin() {
+        val lp = binding.flNotification.layoutParams as FrameLayout.LayoutParams
+        lp.topMargin = getStatusBarHeight()
+        binding.flNotification.layoutParams = lp
+        binding.flNotification.requestLayout()
     }
 
     private var receiver = object : BroadcastReceiver() {

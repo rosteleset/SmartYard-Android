@@ -61,4 +61,5 @@ fastlane/test_output
 fastlane/readme.md
 
 # build
-presentation/sesameware/
+presentation/teledom/
+presentation/teledomTest/

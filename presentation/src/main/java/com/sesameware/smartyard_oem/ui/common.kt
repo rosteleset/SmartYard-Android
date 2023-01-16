@@ -461,3 +461,9 @@ class TimePickerFragment(
         callback(LocalTime.of(hourOfDay, minute))
     }
 }
+
+fun Fragment.getStatusBarHeight(): Int {
+    val rect = Rect()
+    requireActivity().window.decorView.getWindowVisibleDisplayFrame(rect)
+    return rect.top
+}

@@ -45,12 +45,7 @@ class BurgerViewModel(
     }
 
     fun getHelpMe() {
-        _dialNumber.value = ""
-        viewModelScope.withProgress {
-            sipInteractor.helpMe()?.let {
-                _dialNumber.value = it.dial
-            }
-        }
+        _dialNumber.value = DataModule.providerConfig.supportPhone ?: ""
     }
 
     fun createIssue() {

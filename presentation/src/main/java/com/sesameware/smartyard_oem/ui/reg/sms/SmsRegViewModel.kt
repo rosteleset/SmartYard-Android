@@ -15,7 +15,6 @@ import com.sesameware.domain.model.response.Name
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.p8
 
 /**
  * @author Nail Shakurov
@@ -52,7 +51,7 @@ class SmsRegViewModel(
             confirmError.value = Event(it)
             false
         }) {
-            val res = mInteractor.confirmCode(phone.p8, code)
+            val res = mInteractor.confirmCode(phone, code)
             mPreferenceStorage.authToken = res.data.accessToken
 
             //получение настроек
@@ -80,7 +79,7 @@ class SmsRegViewModel(
             sendPhoneError.value = Event(it)
             true
         }) {
-            mInteractor.requestCode(phone.p8)
+            mInteractor.requestCode(phone)
             startResendTimer()
         }
     }

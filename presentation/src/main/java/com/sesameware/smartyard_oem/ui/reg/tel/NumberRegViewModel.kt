@@ -11,7 +11,6 @@ import com.sesameware.domain.model.response.AuthMethod
 import com.sesameware.domain.model.response.RequestCode
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.p8
 import com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallFragment
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
 import kotlin.random.Random
@@ -29,7 +28,7 @@ class NumberRegViewModel(
 
     fun requestSmsCode(phone: String, fragment: Fragment) {
         viewModelScope.withProgress({ false }) {
-            val res = mInteractor.requestCode(phone.p8)
+            val res = mInteractor.requestCode(phone)
             authMethod = res?.data?.method ?: AuthMethod.SMS_CODE
             res?.data?.confirmationNumbers?.let {
                 callNumber = it[Random.nextInt(0, it.size)]

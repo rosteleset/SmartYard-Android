@@ -13,16 +13,7 @@ import com.sesameware.domain.model.request.RegisterPushTokenRequest
 import com.sesameware.domain.model.request.RequestCodeRequest
 import com.sesameware.domain.model.request.SendNameRequest
 import com.sesameware.domain.model.request.UserNotificationRequest
-import com.sesameware.domain.model.response.AppVersionResponse
-import com.sesameware.domain.model.response.ConfirmCodeResponse
-import com.sesameware.domain.model.response.GetServicesResponse
-import com.sesameware.domain.model.response.OpenDoorResponse
-import com.sesameware.domain.model.response.RegisterPushTokenResponse
-import com.sesameware.domain.model.response.RequestCodeResponse
-import com.sesameware.domain.model.response.SendNameResponse
-import com.sesameware.domain.model.response.UserNotificationResponse
-import com.sesameware.domain.model.response.ProvidersListResponse
-import com.sesameware.domain.model.response.ProviderConfigResponse
+import com.sesameware.domain.model.response.*
 
 class AuthRepositoryImpl(
     private val teledomApi: TeledomApi,
@@ -133,6 +124,12 @@ class AuthRepositoryImpl(
     override suspend fun getOptions(): ProviderConfigResponse {
         return safeApiCall {
             teledomApi.getOptions(DataModule.BASE_URL + "ext/options")
+        }
+    }
+
+    override suspend fun phonePattern(): ApiResult<String>? {
+        return safeApiCall {
+            teledomApi.phonePattern(DataModule.BASE_URL + "user/phonePattern")
         }
     }
 }

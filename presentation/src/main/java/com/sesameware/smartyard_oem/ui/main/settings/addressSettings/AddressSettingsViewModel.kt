@@ -10,7 +10,6 @@ import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
 import com.sesameware.domain.model.response.Intercom
-import com.sesameware.smartyard_oem.p8
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
@@ -70,7 +69,7 @@ class AddressSettingsViewModel(
         viewModelScope.withProgress {
             addressInteractor.access(
                 flatId,
-                preferenceStorage.phone?.p8,
+                preferenceStorage.phone,
                 null,
                 "2001-01-01 00:00:00",
                 clientId
