@@ -51,6 +51,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private var lpVideoWrap: ViewGroup.LayoutParams? = null
     private var playerResizeMode: Int = 0
 
+    private var canRenewToken = true
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -68,9 +70,10 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         super.onDestroyView()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        Timber.d("debug_dmm __onActivityCreated")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        Timber.d("debug_dmm __onViewCreated")
         setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
     }
 
@@ -149,7 +152,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             viewLifecycleOwner
         ) {
             it?.run {
-                changeVideoSource(context, hls)
+                changeVideoSource(hls)
             }
         }
 
@@ -171,7 +174,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         videoView: PlayerView,
         progressView: ProgressBar
     ): SimpleExoPlayer {
-        Timber.d("debug_dmm create")
+        Timber.d("debug_dmm createPlayer()")
 
         val trackSelector = DefaultTrackSelector(requireContext())
         val player  = SimpleExoPlayer.Builder(requireContext())
@@ -199,6 +202,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 playbackState: Int
             ) {
                 if (playbackState == Player.STATE_READY) {
+                    canRenewToken = true
                     mPlayer?.videoFormat?.let {
                         if (it.width > 0 && it.height > 0) {
                             (binding.mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
@@ -220,7 +224,16 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
             override fun onPlayerError(error: ExoPlaybackException) {
                 if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    mCCTVViewModel.showGlobalError(error.sourceException)
+                    if (canRenewToken) {
+                        canRenewToken = false
+
+                        //перезапрашиваем список камер
+                        mCCTVViewModel.cctvModel.value?.let {
+                            mCCTVViewModel.refreshCameras(it)
+                        }
+                    } else {
+                        mCCTVViewModel.showGlobalError(error.sourceException)
+                    }
                 }
 
                 if (error.type == ExoPlaybackException.TYPE_RENDERER) {
@@ -276,7 +289,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         return player
     }
 
-    private fun changeVideoSource(context: Context, hls_url: String) {
+    private fun changeVideoSource(hls_url: String) {
         mPlayer?.let { player ->
             binding.mProgress.visibility = View.VISIBLE
             player.setMediaItem(MediaItem.fromUri(Uri.parse(hls_url)))
@@ -285,7 +298,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     fun releasePlayer() {
-        Timber.d("debug_dmm release")
+        Timber.d("debug_dmm releasePlayer()")
         Timber.d("debug_dmm mPlayer = $mPlayer")
         mPlayer?.stop()
         mPlayer?.release()

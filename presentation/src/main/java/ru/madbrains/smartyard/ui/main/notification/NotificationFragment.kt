@@ -20,7 +20,6 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
@@ -125,11 +124,10 @@ class NotificationFragment : Fragment() {
             }
         )
         mViewModel.progress.observe(
-            viewLifecycleOwner,
-            Observer { progress ->
-                binding.refreshLayout.isRefreshing = progress
-            }
-        )
+            viewLifecycleOwner
+        ) { progress ->
+            binding.refreshLayout.isRefreshing = progress
+        }
     }
 
     private var receiver = object : BroadcastReceiver() {

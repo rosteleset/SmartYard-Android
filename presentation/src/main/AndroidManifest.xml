@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ru.madbrains.smartyard">
 
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
@@ -16,6 +17,15 @@
     <uses-permission android:name="android.permission.WRITE_CONTACTS" /> <!-- Needed for autostart -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
+    <queries>
+        <!-- Package visibility filtering on Android -->
+        <intent>
+            <action android:name="android.intent.action.DIAL" />
+        </intent>
+    </queries>
 
     <application
         android:name=".App"
@@ -40,7 +50,7 @@
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
         <receiver android:name=".ui.widget.WidgetProvider"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -102,7 +112,9 @@
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
             android:taskAffinity=".WidgetActivity"
-            android:theme="@style/Theme.Transparent" />
+            android:theme="@style/Theme.Transparent"
+            android:exported="false">
+        </activity>
 
         <service
             android:name=".FirebaseMessagingService"

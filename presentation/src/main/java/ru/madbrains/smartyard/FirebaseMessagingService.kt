@@ -192,6 +192,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         }
     }
 
+    //для заданного пользователя нужно закомментировать всю функцию
     override fun onNewToken(token: String) {
         Timber.d("debug_dmm new fcm token: $token")
         preferenceStorage.fcmToken = token

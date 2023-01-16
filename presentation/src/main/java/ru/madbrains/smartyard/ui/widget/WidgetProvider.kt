@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.widget.RemoteViews
 import org.koin.core.component.KoinComponent
 import ru.madbrains.smartyard.R
@@ -48,7 +49,12 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         updIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, intArrayOf(appWidgetId))
         val updPIntent = PendingIntent.getBroadcast(
             context,
-            appWidgetId, updIntent, 0
+            //Для API 31+ у PendingIntent надо обязательно указать флаг FLAG_MUTABLE или FLAG_IMMUTABLE
+            appWidgetId, updIntent, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            } else {
+                0
+            }
         )
         rv.setOnClickPendingIntent(R.id.tvUpdate, updPIntent)
     }
@@ -70,7 +76,12 @@ class WidgetProvider : AppWidgetProvider(), KoinComponent {
         listClickIntent.action = ACTION_ON_CLICK
         val listClickPIntent = PendingIntent.getBroadcast(
             context, 0,
-            listClickIntent, 0
+            //Для API 31+ у PendingIntent надо обязательно указать флаг FLAG_MUTABLE или FLAG_IMMUTABLE
+            listClickIntent, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+            } else {
+                0
+            }
         )
         rv.setPendingIntentTemplate(R.id.lvList, listClickPIntent)
     }

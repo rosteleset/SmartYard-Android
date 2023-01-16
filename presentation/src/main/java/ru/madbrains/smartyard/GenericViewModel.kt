@@ -79,6 +79,8 @@ open class GenericViewModel : ViewModel(), KoinComponent {
     }
 
     protected fun checkAndRegisterFcmToken() {
+        //для заданного пользователя не обновляем FCM токен
+        //return
 
         Timber.d("debug_dmm call checkAndRegisterFcmToken()")
 

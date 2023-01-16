@@ -50,14 +50,13 @@ class PayAddressFragment : Fragment() {
             }
         )
         payViewModel.progress.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (!binding.swipeContainer.isRefreshing) {
-                    binding.progressBarAddress.isVisible = it
-                }
-                binding.swipeContainer.isRefreshing = false
+            viewLifecycleOwner
+        ) {
+            if (!binding.swipeContainer.isRefreshing) {
+                binding.progressBarAddress.isVisible = it
             }
-        )
+            binding.swipeContainer.isRefreshing = false
+        }
         payViewModel.navigateToContractFragment.observe(
             viewLifecycleOwner,
             EventObserver {

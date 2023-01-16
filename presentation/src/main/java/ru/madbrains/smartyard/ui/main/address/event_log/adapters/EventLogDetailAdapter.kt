@@ -143,21 +143,20 @@ class EventLogDetailAdapter(
                     if (eventItem.frsEnabled) {
                         eventItem.detailX?.face?.let {face ->
                             tvEventImage.setFaceRect(face.left, face.top, face.width, face.height,
-                                eventItem.eventType == Plog.EVENT_OPEN_BY_FACE)
-                        }
+                                eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_DISLIKE) == true
+                                        || eventItem.detailX?.flags?.contains(Plog.FLAG_LIKED) == true)
 
-                        if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_DISLIKE) == true
-                            && eventItem.eventType == Plog.EVENT_OPEN_BY_FACE) {
-                            clELDFoe.isVisible = true
-                            bELDFoe.setOnClickListener {
-                                friendOrFoeCallback(Triple(position, day, index))
-                            }
-                        } else {
-                            if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_LIKE) == true
-                                && eventItem.eventType != Plog.EVENT_OPEN_BY_FACE) {
-                                clELDFriend.isVisible = true
-                                bELDFriend.setOnClickListener {
+                            if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_DISLIKE) == true) {
+                                clELDFoe.isVisible = true
+                                bELDFoe.setOnClickListener {
                                     friendOrFoeCallback(Triple(position, day, index))
+                                }
+                            } else {
+                                if (eventItem.detailX?.flags?.contains(Plog.FLAG_CAN_LIKE) == true) {
+                                    clELDFriend.isVisible = true
+                                    bELDFriend.setOnClickListener {
+                                        friendOrFoeCallback(Triple(position, day, index))
+                                    }
                                 }
                             }
                         }

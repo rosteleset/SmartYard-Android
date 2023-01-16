@@ -94,7 +94,9 @@ class ExtWebViewFragment : Fragment() {
         binding.wvExt.settings.setSupportMultipleWindows(true)
         binding.wvExt.webChromeClient = object : WebChromeClient() {
             override fun onConsoleMessage(consoleMessage: ConsoleMessage?): Boolean {
-                Timber.d("debug_web console: ${consoleMessage?.message()}")
+                Timber.d("debug_web error message: ${consoleMessage?.message()}")
+                Timber.d("debug_web error line number: ${consoleMessage?.lineNumber()}")
+                Timber.d("debug_web error source: ${consoleMessage?.sourceId()}")
                 return super.onConsoleMessage(consoleMessage)
             }
 

@@ -94,8 +94,8 @@ class AutoFitPreviewBuilder private constructor(
         // NOTE: Even though using a weak reference should take care of this,
         // we still try to avoid unnecessary calls to the listener this way.
         viewFinder.addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(view: View?) = Unit
-            override fun onViewDetachedFromWindow(view: View?) {
+            override fun onViewAttachedToWindow(view: View) = Unit
+            override fun onViewDetachedFromWindow(view: View) {
                 displayManager.unregisterDisplayListener(displayListener)
             }
         })

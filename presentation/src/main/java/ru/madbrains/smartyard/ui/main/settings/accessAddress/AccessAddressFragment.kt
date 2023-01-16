@@ -18,6 +18,7 @@ import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentAccessAddressBinding
 import ru.madbrains.smartyard.ui.Type
+import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.adapterdelegates.ContactAdapterDelegate
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
@@ -54,7 +55,7 @@ class AccessAddressFragment : Fragment() {
 
     private fun initAddContact() {
         binding.tvAddBarrierGate.setOnClickListener {
-            val dialog = DialogShareAccessDialog()
+            val dialog = DialogShareAccessDialog(requireActivity() as? MainActivity)
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
                     override fun onDone(contactModel: ContactModel) {
@@ -66,7 +67,7 @@ class AccessAddressFragment : Fragment() {
         }
 
         binding.tvPermanentAccessAddress.setOnClickListener {
-            val dialog = DialogShareAccessDialog()
+            val dialog = DialogShareAccessDialog(requireActivity() as? MainActivity)
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
                     override fun onDone(contactModel: ContactModel) {

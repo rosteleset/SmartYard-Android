@@ -9,11 +9,7 @@ import android.graphics.drawable.InsetDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.EditText
 import androidx.annotation.NonNull
 import androidx.fragment.app.DialogFragment
@@ -21,13 +17,14 @@ import com.redmadrobot.inputmask.MaskedTextChangedListener
 import com.redmadrobot.inputmask.MaskedTextChangedListener.Companion.installOn
 import com.redmadrobot.inputmask.helper.AffinityCalculationStrategy
 import ru.madbrains.smartyard.databinding.DialogShareAccessBinding
+import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
 
 /**
  * @author Nail Shakurov
  * Created on 26/02/2020.
  */
-class DialogShareAccessDialog() :
+class DialogShareAccessDialog(private val mainActivity: MainActivity? = null) :
     DialogFragment() {
 
     private var _binding: DialogShareAccessBinding? = null

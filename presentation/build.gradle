@@ -29,8 +29,8 @@ android {
         applicationId "ru.madbrains.smartyard"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 43
-        versionName '1.6.43'
+        versionCode 51
+        versionName '1.6.51'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

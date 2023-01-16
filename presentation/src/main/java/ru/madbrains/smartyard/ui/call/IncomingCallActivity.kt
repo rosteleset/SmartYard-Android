@@ -6,6 +6,8 @@ import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -13,11 +15,14 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
+import android.view.View
 import android.view.WindowManager
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.linphone.core.RegistrationState
@@ -128,9 +133,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun observeChanges() {
-        mLinphone.registrationState.observe(this, Observer { observeRegistrationState(it) })
-        mLinphone.callState.observe(this, Observer { observeCallState(it) })
-        mLinphone.dtmfIsSent.observe(this, Observer { setDoorState(it) })
+        mLinphone.registrationState.observe(this) { observeRegistrationState(it) }
+        mLinphone.callState.observe(this) { observeCallState(it) }
+        mLinphone.dtmfIsSent.observe(this) { setDoorState(it) }
         mLinphone.finishCallActivity.observe(
             this,
             EventObserver {
@@ -143,24 +148,29 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 showStandardAlert(this, error.status.messageId)
             }
         )
-        mViewModel.imageBitmapData.observe(
-            this,
-            EventObserver { bitmap ->
-                binding.mPeekView.setImageBitmap(bitmap)
-            }
-        )
         mViewModel.eyeState.observe(
-            this,
-            Observer { boolean ->
-                setPeek(boolean)
-            }
-        )
+            this
+        ) { boolean ->
+            setPeek(boolean)
+        }
         mViewModel.imageStringData.observe(
             this,
             EventObserver { string ->
                 Glide.with(binding.mPeekView)
+                    .asBitmap()
                     .load(string)
-                    .into(binding.mPeekView)
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
+                    .into(object : CustomTarget<Bitmap>() {
+                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                            binding.mPeekView.setImageBitmap(resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {
+                        }
+
+                    })
+                binding.mPeekView.visibility = View.VISIBLE
             }
         )
 
@@ -320,6 +330,15 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     override fun onPause() {
         super.onPause()
         mSensorManager?.unregisterListener(this)
+        mLinphone.mAudioManager.routeAudioToEarPiece()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+
+        if (!hasFocus) {
+            hangUp()
+        }
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}

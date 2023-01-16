@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -39,13 +38,12 @@ class PayContractFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         payViewModel.selectedItemIndex.observe(
-            viewLifecycleOwner,
-            Observer {
-                payAddressModel = payViewModel.addressList.value?.peekContent()!![it ?: 0]
-                binding.tvAddress.text = payAddressModel?.address
-                setupPager()
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            payAddressModel = payViewModel.addressList.value?.peekContent()!![it ?: 0]
+            binding.tvAddress.text = payAddressModel?.address
+            setupPager()
+        }
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }

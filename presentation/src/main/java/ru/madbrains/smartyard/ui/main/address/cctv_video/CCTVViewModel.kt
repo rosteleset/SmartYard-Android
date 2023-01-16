@@ -57,9 +57,6 @@ class CCTVViewModel(
     //доступные интервалы архива для выбранной камеры
     var availableRanges = mutableListOf<AvailableRange>()
 
-    //время последнего запроса списка камер; используется для (не)кэшированного запроса
-    private var lastGetCamerasCall: LocalDateTime? = null
-
     fun fullScreen(flag: Boolean) {
         stateFullScreen.value = flag
     }
@@ -122,38 +119,31 @@ class CCTVViewModel(
 
     fun getCameras(model: VideoCameraModelP, onComplete: listenerEmpty) {
         viewModelScope.withProgress {
-            //управление кэшированием запроса
-            //этот запрос точно должен быть некэшированным, если предыдущий был дольше, чем NO_CACHE_INTERVAL_HOURS часов назад
-            //или предыдущий запрос был до смены токена авторизации камер, который происходит раз в сутки в CAM_TOKEN_RENEW_SCHEDULER_HOUR часов
-            lastGetCamerasCall?.let {
-                val now = LocalDateTime.now()
-                if (it.plusHours(NO_CACHE_INTERVAL_HOURS) < now) {
-                    mPreferenceStorage.xDmApiRefresh = true
-                    return@let
-                }
-                if (it.dayOfMonth == now.dayOfMonth
-                    && it.hour < CAM_TOKEN_RENEW_SCHEDULER_HOUR && CAM_TOKEN_RENEW_SCHEDULER_HOUR < now.hour) {
-                    mPreferenceStorage.xDmApiRefresh = true
-                    return@let
-                }
-                if (it.dayOfMonth < now.dayOfMonth && it.hour < CAM_TOKEN_RENEW_SCHEDULER_HOUR) {
-                    mPreferenceStorage.xDmApiRefresh = true
-                    return@let
-                }
-            }
-            if (lastGetCamerasCall == null) {
-                mPreferenceStorage.xDmApiRefresh = true
-            }
-            val xDmApiRefresh = mPreferenceStorage.xDmApiRefresh
             cctvInteractor.getCCTV(model.houseId)?.let {
-                if (xDmApiRefresh) {
-                    lastGetCamerasCall = LocalDateTime.now()
-                }
+
+                //для теста имитация просроченного токена
+                /*it.forEach { item ->
+                    item.token = "qqq"
+                }*/
+
                 state.set(cameraList_Key, it.filter { camera ->
                     camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
                 })
                 state.set(cctvModel_Key, model)
-                //chooseCamera(0)
+                onComplete()
+            }
+        }
+    }
+
+    fun refreshCameras(model: VideoCameraModelP, onComplete: listenerEmpty = {}) {
+        viewModelScope.withProgress {
+            mPreferenceStorage.xDmApiRefresh = true
+            cctvInteractor.getCCTV(model.houseId)?.let {
+                state.set(cameraList_Key, it.filter { camera ->
+                    camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
+                })
+                state.set(cctvModel_Key, model)
+                chosenIndex.value?.let { it1 -> chooseCamera(it1) }
                 onComplete()
             }
         }
@@ -179,7 +169,7 @@ class CCTVViewModel(
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 initialThumb = downloadPreview(url)
-            } catch (e: Throwable) {
+            } catch (_: Throwable) {
             }
         }
     }
@@ -193,12 +183,6 @@ class CCTVViewModel(
         const val ONLINE_TAB_POSITION = 0
         const val ARCHIVE_TAB_POSITION = 1
         private const val minusDate = 6L
-
-        //час обновления токена авторизации для камер
-        private const val CAM_TOKEN_RENEW_SCHEDULER_HOUR = 4
-
-        //интервал в часах, спустя который запрос списка камер должен быть некэшированным (должен быть меньше 24)
-        private const val NO_CACHE_INTERVAL_HOURS = 1L
 
         @Throws(Exception::class)
         fun downloadPreview(url: String): Bitmap? {

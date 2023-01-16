@@ -25,22 +25,6 @@ class CCTVDetailFragment : Fragment() {
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        Timber.d("debug_dmm __onActivityCreated")
-        mCCTVViewModel.closedRangeCalendar.observe(
-            viewLifecycleOwner,
-            EventObserver {
-                mCCTVViewModel.startDate = it.start
-                mCCTVViewModel.endDate = it.endInclusive
-                setupUi(childFragmentManager)
-            }
-        )
-        setupUi(childFragmentManager)
-        setupObserve()
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -54,6 +38,8 @@ class CCTVDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Timber.d("debug_dmm onViewCreated")
+        setupUi(childFragmentManager)
+        setupObserve()
     }
 
     private fun setupUi(fm: FragmentManager
@@ -71,7 +57,7 @@ class CCTVDetailFragment : Fragment() {
         )
 
         adapter.addFragment(
-            CCTVArchiveTab.newInstance(mCCTVViewModel.startDate, mCCTVViewModel.endDate, mCCTVViewModel.availableRanges),
+            CCTVArchiveTab.newInstance(),
             resources.getString(R.string.cctv_detail_tab_archive)
         )
         binding.viewPager.adapter = adapter

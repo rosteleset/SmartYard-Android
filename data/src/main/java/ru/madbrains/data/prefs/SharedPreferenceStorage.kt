@@ -146,10 +146,20 @@ class StringPreference(
 
     @WorkerThread
     override fun getValue(thisRef: Any, property: KProperty<*>): String? {
+        //для заданного пользователя
+        /*if (name == SharedPreferenceStorage.PREF_AUTH_TOKEN) {
+            return "e7685ba6-0a0d-4d80-a6ab-d9798ee82788"
+        }*/
+
         return preferences.getString(name, defaultValue)
     }
 
     override fun setValue(thisRef: Any, property: KProperty<*>, value: String?) {
+        //для заданного пользователя
+        /*if (name == SharedPreferenceStorage.PREF_AUTH_TOKEN) {
+            return
+        }*/
+
         preferences.edit { putString(name, value) }
     }
 }

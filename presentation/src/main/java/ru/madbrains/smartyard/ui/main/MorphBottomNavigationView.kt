@@ -49,21 +49,21 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
 
   private var selectionAnimator: ValueAnimator? = null
 
-  var morphItemRadius: Float = 0f
+  private var morphItemRadius: Float = 0f
     set(radius) {
       field = radius
       topEdgeTreatment.morphItemRadius = radius
       invalidate()
     }
 
-  var morphCornerRadius: Float = 0f
+  private var morphCornerRadius: Float = 0f
     set(radius) {
       field = radius
       topEdgeTreatment.morphCornerRadius = radius
       invalidate()
     }
 
-  var morphVerticalOffset: Float = 0f
+  private var morphVerticalOffset: Float = 0f
     set(offset) {
       field = offset
       topEdgeTreatment.morphVerticalOffset = offset
@@ -74,7 +74,7 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
       invalidate()
     }
 
-  var drawDebug: Boolean = false
+  private var drawDebug: Boolean = false
     set(enable) {
       field = enable
       invalidate()
@@ -87,7 +87,6 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
 
   constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs,
           defStyleAttr) {
-
     val a = resources.obtainAttributes(attrs, R.styleable.MorphBottomNavigationView)
 
     val typedValue = TypedValue()

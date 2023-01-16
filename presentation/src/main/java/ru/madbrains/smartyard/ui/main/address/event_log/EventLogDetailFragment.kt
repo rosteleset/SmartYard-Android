@@ -189,7 +189,7 @@ class EventLogDetailFragment : Fragment() {
                                 val dialogRemovePhoto = DialogRemovePhotoFragment(photoUrl ?: "") {
                                     mViewModel.dislike(plog.uuid)
                                     flags.remove(Plog.FLAG_CAN_DISLIKE)
-                                    flags.remove(Plog.FLAG_CAN_LIKE)
+                                    flags.add(Plog.FLAG_CAN_LIKE)
                                     if (faceId > 0) {
                                         mViewModel.faceIdToUrl.remove(faceId)
                                     }
@@ -213,7 +213,11 @@ class EventLogDetailFragment : Fragment() {
                                     ) {
                                         mViewModel.like(plog.uuid)
                                         flags.remove(Plog.FLAG_CAN_LIKE)
-                                        flags.add(Plog.FLAG_CAN_DISLIKE)
+                                        val faceId = plog.detailX?.faceId?.toInt() ?: 0
+                                        if (faceId > 0) {
+                                            flags.add(Plog.FLAG_CAN_DISLIKE)
+                                        }
+                                        flags.add(Plog.FLAG_LIKED)
                                         (adapter as EventLogDetailAdapter).also { adapter ->
                                             adapter.eventsByDays[it.second]?.set(it.third, plog)
                                             Timber.d("__Q__ plog: $plog")
