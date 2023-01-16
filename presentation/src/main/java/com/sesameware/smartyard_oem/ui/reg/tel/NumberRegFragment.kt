@@ -76,16 +76,20 @@ class NumberRegFragment : Fragment() {
     }
 
     private fun createFromTemplate() {
-        val q = Regex("""^\+?(?<prefix>\d+)\s*(?<pattern>.*)""").find(DataModule.phonePattern)
+        val q = Regex("""^\+?(\d+)\s*(.*)""").find(DataModule.phonePattern)
+        if (q?.groups?.size != 3) {
+            return
+        }
+
         var pattern = ""
-        q?.groups?.get("pattern")?.value?.forEachIndexed { index, c ->
+        q.groupValues[2].forEachIndexed { index, c ->
             pattern += if (c == '#') c else ' '
         }
         if (pattern.isEmpty()) {
             return
         }
 
-        mPhonePrefix = q?.groups?.get("prefix")?.value ?: ""
+        mPhonePrefix = q.groupValues[1]
         if (mPhonePrefix.isNotEmpty()) {
             binding.textView.text = "+" + mPhonePrefix
         } else {
