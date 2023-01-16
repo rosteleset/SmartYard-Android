@@ -332,6 +332,14 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mLinphone.mAudioManager.routeAudioToEarPiece()
     }
 
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+
+        if (!hasFocus) {
+            hangUp()
+        }
+    }
+
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     override fun onSensorChanged(event: SensorEvent) {
