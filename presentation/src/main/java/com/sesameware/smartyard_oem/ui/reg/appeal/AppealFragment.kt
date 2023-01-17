@@ -50,13 +50,14 @@ class AppealFragment : Fragment() {
                 Manifest.permission.WRITE_CONTACTS,
                 Manifest.permission.CAMERA,
                 Manifest.permission.RECORD_AUDIO,
-                Manifest.permission.ACCESS_FINE_LOCATION
+                Manifest.permission.ACCESS_FINE_LOCATION,
             )
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
                 permissions.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
             }
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+                permissions.add(Manifest.permission.READ_MEDIA_AUDIO)
             }
             requestPermission(
                 permissions,
