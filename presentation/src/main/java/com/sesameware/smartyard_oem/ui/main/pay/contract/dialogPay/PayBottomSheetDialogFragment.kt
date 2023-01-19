@@ -238,7 +238,9 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
             val request = IsReadyToPayRequest.fromJson(res.toString())
             val task = mPaymentsClient.isReadyToPay(request)
             task.addOnSuccessListener {
-                setUpGooglePayButton(it)
+                //скрываем кнопку Google Pay до лучших времён
+                //setUpGooglePayButton(it)
+                setUpGooglePayButton(false)
             }
             task.addOnFailureListener {
                 Timber.d("debug_google ${it.message}")
@@ -249,7 +251,6 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private fun setUpGooglePayButton(isVisible: Boolean) {
         if (isVisible) {
-            binding.btnPay
             view?.findViewById<RelativeLayout>(R.id.btnPay)?.visibility = View.VISIBLE
             view?.findViewById<RelativeLayout>(R.id.btnPay)?.setOnClickListener {
                 if (binding.etMoneyBalance.text.toString().toFloat() > 0f) {

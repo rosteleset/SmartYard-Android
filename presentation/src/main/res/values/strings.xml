@@ -305,7 +305,7 @@
     </string-array>
 
     <string name="event_log_unanswered_call">  Пропущенный вызов</string>
-    <string name="event_log_answered_call">  Отвеченный вызов</string>
+    <string name="event_log_answered_call">  Отвеченный вызов, дверь %s</string>
     <string name="event_log_detail_friend">Свой</string>
     <string name="event_log_detail_foe">Чужой</string>
     <string name="event_log_detail_friend_description">
@@ -316,6 +316,9 @@
         При выборе \"Чужой\" мы удалим ваше зарегистрированное лицо, на какое произошло ложное срабатывание наших алгоритмов.\n
         Все лица, зарегистрированные в системе, можно найти в разделе Настройки адресов -> Управление доступом -> Вход по лицу без ключа.
     </string>
+    <string name="event_log_key">Ключ: %s</string>
+    <string name="event_log_phone">Телефон: %s</string>
+    <string name="event_log_code">Код: %s</string>
     <string name="settings_by_face_comments">Вы даете согласие на хранение фотографий вашего лица в системе распознавания лиц.</string>
     <string name="face_settings_comments">
         Фотографии ваших гостей хранятся в разделе \"События\".\n
