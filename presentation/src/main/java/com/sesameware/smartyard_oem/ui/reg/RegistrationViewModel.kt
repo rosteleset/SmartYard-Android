@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem.ui.reg
 
 import android.app.Activity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -16,9 +15,7 @@ import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragmentDirections
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class RegistrationViewModel(
@@ -34,6 +31,10 @@ class RegistrationViewModel(
     ) {
         if (mPreferenceStorage.authToken == null) {
             if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
+                DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""
+                mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
+                Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
+                DataModule.providerName = BuildConfig.PROVIDER_NAME
                 try {
                     runBlocking {
                         authInteractor.phonePattern()?.let { result ->

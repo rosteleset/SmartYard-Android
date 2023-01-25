@@ -2,4 +2,20 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <application>
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:exported="true">
+            <intent-filter tools:node="replace">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:scheme="https"
+                    android:host="isp.freedom1.ru"
+                    android:pathPrefix="/open_app.html" />
+            </intent-filter>
+        </activity>
+    </application>
+
 </manifest>
