@@ -48,18 +48,18 @@
             app:argType="string" />
     </dialog>
     <dialog
-        android:id="@+id/successButtomSheetDialogFragment"
-        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.dialogSuccessfully.SuccessButtomSheetDialogFragment"
-        android:label="SuccessButtomSheetDialogFragment" /><action android:id="@+id/action_global_successButtomSheetDialogFragment" app:destination="@id/successButtomSheetDialogFragment"/>
+        android:id="@+id/successBottomSheetDialogFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.dialogSuccessfully.SuccessBottomSheetDialogFragment"
+        android:label="SuccessBottomSheetDialogFragment" /><action android:id="@+id/action_global_successBottomSheetDialogFragment" app:destination="@id/successBottomSheetDialogFragment"/>
     <dialog
-        android:id="@+id/errorButtomSheetDialogFragment"
+        android:id="@+id/errorBottomSheetDialogFragment"
         android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.dialogError.ErrorBottomSheetDialogFragment"
-        android:label="ErrorButtomSheetDialogFragment" >
+        android:label="ErrorBottomSheetDialogFragment" >
         <argument
             android:name="textError"
             app:argType="string" />
     </dialog>
-    <action android:id="@+id/action_global_errorButtomSheetDialogFragment" app:destination="@id/errorButtomSheetDialogFragment" />
+    <action android:id="@+id/action_global_errorBottomSheetDialogFragment" app:destination="@id/errorBottomSheetDialogFragment" />
     <fragment
         android:id="@+id/payWebViewFragment"
         android:name="com.sesameware.smartyard_oem.ui.main.pay.contract.webview.PayWebViewFragment"

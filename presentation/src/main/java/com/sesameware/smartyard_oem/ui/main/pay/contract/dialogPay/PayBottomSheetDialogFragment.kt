@@ -18,7 +18,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.databinding.ButtomDialogSheetPayBinding
+import com.sesameware.smartyard_oem.databinding.BottomDialogSheetPayBinding
 import com.sesameware.smartyard_oem.ui.main.pay.contract.PayContractFragmentDirections
 import com.sesameware.smartyard_oem.ui.openUrl
 import java.util.regex.Matcher
@@ -67,7 +67,7 @@ class DecimalDigitsInputFilter(
 }
 
 class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
-    private var _binding: ButtomDialogSheetPayBinding? = null
+    private var _binding: BottomDialogSheetPayBinding? = null
     private val binding get() = _binding!!
 
     private val payBottomSheetDialogViewModel by viewModel<PayBottomSheetDialogViewModel>()
@@ -79,7 +79,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ButtomDialogSheetPayBinding.inflate(inflater, container, false)
+        _binding = BottomDialogSheetPayBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -154,7 +154,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private fun onError(errorText: String) {
         this.dismiss()
         val action =
-            PayContractFragmentDirections.actionGlobalErrorButtomSheetDialogFragment(
+            PayContractFragmentDirections.actionGlobalErrorBottomSheetDialogFragment(
                 errorText
             )
         this.findNavController().navigate(action)
@@ -162,7 +162,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     private fun onSuccess() {
         this.dismiss()
-        val action = PayContractFragmentDirections.actionGlobalSuccessButtomSheetDialogFragment()
+        val action = PayContractFragmentDirections.actionGlobalSuccessBottomSheetDialogFragment()
         this.findNavController().navigate(action)
     }
 }

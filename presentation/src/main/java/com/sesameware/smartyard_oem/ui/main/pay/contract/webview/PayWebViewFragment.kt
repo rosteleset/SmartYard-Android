@@ -46,7 +46,7 @@ class PayWebViewFragment : Fragment() {
         binding.ivClose.setOnClickListener {
             this@PayWebViewFragment.findNavController().popBackStack()
             val action =
-                PayWebViewFragmentDirections.actionGlobalErrorButtomSheetDialogFragment(
+                PayWebViewFragmentDirections.actionGlobalErrorBottomSheetDialogFragment(
                     getString(R.string.payments_error_3)
                 )
             this.findNavController()
@@ -70,6 +70,6 @@ class PayWebViewFragment : Fragment() {
     fun finishPay() {
         this@PayWebViewFragment.findNavController().popBackStack()
         this@PayWebViewFragment.findNavController()
-            .navigate(R.id.successButtomSheetDialogFragment)
+            .navigate(R.id.successBottomSheetDialogFragment)
     }
 }

@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.databinding.FragmentErrorButtomSheetDialogBinding
+import com.sesameware.smartyard_oem.databinding.FragmentErrorBottomSheetDialogBinding
 
 class ErrorBottomSheetDialogFragment : BottomSheetDialogFragment() {
-    private var _binding: FragmentErrorButtomSheetDialogBinding? = null
+    private var _binding: FragmentErrorBottomSheetDialogBinding? = null
     private val binding get() = _binding!!
 
     private val args: ErrorBottomSheetDialogFragmentArgs by navArgs()
@@ -20,7 +20,7 @@ class ErrorBottomSheetDialogFragment : BottomSheetDialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentErrorButtomSheetDialogBinding.inflate(inflater, container, false)
+        _binding = FragmentErrorBottomSheetDialogBinding.inflate(inflater, container, false)
         return binding.root
 
     }

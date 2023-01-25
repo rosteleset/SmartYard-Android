@@ -92,7 +92,7 @@
         <item name="android:textSize">16sp</item>
     </style>
 
-    <!-- Buttom Sheet Dialog -->
+    <!-- Bottom Sheet Dialog -->
 
     <style name="AppBottomSheetDialogTheme"
         parent="Theme.Design.Light.BottomSheetDialog">
@@ -103,7 +103,7 @@
     </style>
 
     <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/rounded_buttom_sheet_dialog</item>
+        <item name="android:background">@drawable/rounded_bottom_sheet_dialog</item>
     </style>
 
     <style name="Theme.Transparent" parent="@style/Theme.AppCompat.Light.NoActionBar">

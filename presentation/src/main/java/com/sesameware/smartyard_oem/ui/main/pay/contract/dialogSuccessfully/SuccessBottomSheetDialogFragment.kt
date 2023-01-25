@@ -12,7 +12,7 @@ import com.sesameware.smartyard_oem.R
  * Created on 21.05.2020.
  */
 
-class SuccessButtomSheetDialogFragment : BottomSheetDialogFragment() {
+class SuccessBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -20,7 +20,7 @@ class SuccessButtomSheetDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(
-            R.layout.buttom_dialog_sheet_success, container,
+            R.layout.bottom_dialog_sheet_success, container,
             false
         )
     }
