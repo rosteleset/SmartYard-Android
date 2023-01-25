@@ -50,29 +50,7 @@ object DataModule {
     var providerName = ""
     var defaultPhonePattern = "+7 (###) ###-##-##"
     var phonePattern = defaultPhonePattern
-
-    val sberApiUserName = ""
-    val sberApiPassword = ""
-    val orderNumberToId = hashMapOf<String, String>()
-    fun extractOrderId(orderNumber: String): String {
-        var r = ""
-        synchronized(orderNumberToId) {
-            if (orderNumberToId.containsKey(orderNumber)) {
-                r = orderNumberToId[orderNumber] ?: ""
-                orderNumberToId.remove(orderNumber)
-            }
-        }
-        return r
-    }
-    fun getOrderId(orderNumber: String): String {
-        var r = ""
-        synchronized(orderNumberToId) {
-            if (orderNumberToId.containsKey(orderNumber)) {
-                r = orderNumberToId[orderNumber] ?: ""
-            }
-        }
-        return r
-    }
+    var xDmApiRefresh = false
 
     fun create() = module {
         single {

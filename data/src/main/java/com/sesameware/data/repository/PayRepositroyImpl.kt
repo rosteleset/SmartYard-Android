@@ -5,14 +5,10 @@ import com.sesameware.data.DataModule
 import com.sesameware.data.remote.TeledomApi
 import com.sesameware.domain.interfaces.PayRepository
 import com.sesameware.domain.model.request.PayPrepareRequest
-import com.sesameware.domain.model.request.PayProcessRequest
-import com.sesameware.domain.model.request.PaymentDoRequest
+import com.sesameware.domain.model.request.PayRegisterRequest
 import com.sesameware.domain.model.response.PayPrepareResponse
-import com.sesameware.domain.model.response.PayProcessResponse
-import com.sesameware.domain.model.response.PaymentDoResponse
 import com.sesameware.domain.model.response.PaymentsListResponse
-import com.sesameware.domain.model.response.SberRegisterDoReponse
-import com.sesameware.domain.model.response.SberOrderStatusDoResponse
+import com.sesameware.domain.model.response.PayRegisterResponse
 
 /**
  * @author Nail Shakurov
@@ -36,66 +32,16 @@ class PayRepositroyImpl(
         }
     }
 
-    override suspend fun payProcess(paymentId: String, sbId: String): PayProcessResponse {
-        return safeApiCall {
-            teledomApi.payProcess(
-                DataModule.BASE_URL + "pay/process",
-                PayProcessRequest(paymentId, sbId))
-        }
-    }
-
-    override suspend fun paymentDo(
-        merchant: String,
-        returnUrl: String,
-        paymentToken: String,
-        amount: String,
-        orderNumber: String
-    ): PaymentDoResponse {
-        return safeApiCall {
-            teledomApi.paymentDo(
-                PaymentDoRequest(
-                    merchant = merchant,
-                    returnUrl = returnUrl,
-                    paymentToken = paymentToken,
-                    amount = amount,
-                    orderNumber = orderNumber
-                )
-            ).getResponseBody()
-        }
-    }
-
-    override suspend fun sberRegisterDo(
-        userName: String,
-        password: String,
-        language: String,
-        returnUrl: String,
-        failUrl: String,
+    override suspend fun payRegister(
         orderNumber: String,
         amount: Int
-    ): SberRegisterDoReponse {
+    ): PayRegisterResponse {
         return safeApiCall {
-            teledomApi.sberRegisterDo(
-                userName,
-                password,
-                language,
-                returnUrl,
-                failUrl,
-                orderNumber,
-                amount
-            ).getResponseBody()
-        }
-    }
-
-    override suspend fun sberOrderStatusDo(
-        userName: String,
-        password: String,
-        orderNumber: String
-    ): SberOrderStatusDoResponse {
-        return safeApiCall {
-            teledomApi.sberOrderStatusDo(
-                userName,
-                password,
-                orderNumber
+            teledomApi.payRegister(
+                DataModule.BASE_URL + "pay/register",
+                PayRegisterRequest(
+                    orderNumber,
+                    amount)
             ).getResponseBody()
         }
     }

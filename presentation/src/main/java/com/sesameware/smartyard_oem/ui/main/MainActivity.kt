@@ -135,8 +135,6 @@ class MainActivity : CommonActivity() {
         intent?.extras?.let {
             parseIntent(it)
         }
-
-        handleIntent(intent)
     }
 
     private fun dialogForceUpgrade() {
@@ -190,7 +188,6 @@ class MainActivity : CommonActivity() {
         intent.extras?.let {
             parseIntent(it)
         }
-        handleIntent(intent)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -346,16 +343,6 @@ class MainActivity : CommonActivity() {
         Timber.d("debug_dmm resultCode: $resultCode")
         Timber.d("debug_dmm data?.action: $data")
         when (requestCode) {
-            LOAD_PAYMENT_DATA_REQUEST_CODE -> {
-                mViewModel.paySendIntent.postValue(
-                    Event(
-                        MainActivityViewModel.SendDataPay(
-                            resultCode,
-                            data
-                        )
-                    )
-                )
-            }
             CHAT_REQUEST_FILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.data?.let { uri ->
@@ -436,29 +423,8 @@ class MainActivity : CommonActivity() {
         this.exitFullscreenListener = exitFullscreenListener
     }
 
-    private fun handleIntent(intent: Intent?) {
-        val appLinkAction = intent?.action
-        val appLinkData: Uri? = intent?.data
-        if (appLinkAction == Intent.ACTION_VIEW) {
-            val clientId = appLinkData?.getQueryParameter("clientId")?.toInt()
-            val orderNumber = appLinkData?.getQueryParameter("orderNumber")
-            if (clientId != null) {
-                Timber.d("__sber intent $appLinkData;  clientId = $clientId;  orderNumber = $orderNumber")
-                if (orderNumber != null) {
-                    mViewModel.sberCompletePayment(orderNumber)
-                }
-                mViewModel.sberPayIntent.postValue(
-                    Event(
-                        MainActivityViewModel.SendSberPay(orderNumber)
-                    )
-                )
-            }
-        }
-    }
-
     companion object {
         const val BROADCAST_LIST_UPDATE = "BROADCAST_LIST_UPDATE"
         const val CHAT_REQUEST_FILE = 0 // todo: переписать код сдк? (код скорее защит в sdk chat)
-        const val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
     }
 }

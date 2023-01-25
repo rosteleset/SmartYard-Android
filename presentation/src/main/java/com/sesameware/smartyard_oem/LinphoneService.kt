@@ -182,6 +182,5 @@ class LinphoneService : Service() {
         fun isReady(): Boolean {
             return instance != null
         }
-        const val RANDOM_PORT = -1
     }
 }

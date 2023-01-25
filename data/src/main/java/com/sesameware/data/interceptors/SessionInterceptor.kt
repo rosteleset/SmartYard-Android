@@ -1,6 +1,7 @@
 package com.sesameware.data.interceptors
 
 import com.sesameware.data.BuildConfig
+import com.sesameware.data.DataModule
 import okhttp3.Interceptor
 import okhttp3.Response
 import com.sesameware.data.prefs.PreferenceStorage
@@ -34,9 +35,10 @@ class SessionInterceptor constructor(
             tokenRequest.addHeader(USER_AGENT, BuildConfig.USER_AGENT)
         }
 
-        if (preferenceStorage.xDmApiRefresh) {
+        if (preferenceStorage.xDmApiRefresh || DataModule.xDmApiRefresh) {
             tokenRequest.addHeader(X_DM_API_REFRESH, "")
             preferenceStorage.xDmApiRefresh = false
+            DataModule.xDmApiRefresh = false
         }
 
         return chain.proceed(tokenRequest.build())

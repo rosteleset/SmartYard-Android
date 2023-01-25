@@ -97,13 +97,6 @@ class PayAddressFragment : Fragment() {
             binding.swipeContainer.setOnRefreshListener {
                 payViewModel.getPaymentsList()
             }
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        if (!isWeb) {
             payViewModel.getPaymentsList()
         }
     }

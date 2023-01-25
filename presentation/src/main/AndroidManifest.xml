@@ -100,8 +100,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="sesameware"
-                    android:pathPrefix="/sber" />
+                    android:scheme="teledom"
+                    android:pathPrefix="/open_app.html" />
             </intent-filter>
         </activity>
         <activity

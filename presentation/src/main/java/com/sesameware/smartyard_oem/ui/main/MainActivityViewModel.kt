@@ -32,8 +32,6 @@ class MainActivityViewModel(
     val chat = MutableLiveData<Boolean>()
     val chatSendMsg = MutableLiveData<Event<String>>()
     val chatSendFileUri = MutableLiveData<Event<Uri>>()
-    val paySendIntent = MutableLiveData<Event<SendDataPay?>>()
-    val sberPayIntent = MutableLiveData<Event<SendSberPay?>>()
 
     val chatOnReceiveFilePermission = MutableLiveData<Event<Boolean>>()
 
@@ -49,9 +47,6 @@ class MainActivityViewModel(
     val updateToAppNavigateDialog: LiveData<Event<Update>>
         get() = _updateToAppNavigateDialog
 
-    data class SendDataPay(var resultCode: Int, var data: Intent?)
-    data class SendSberPay(var orderNumber: String?)
-
     fun navigationToAddressAuthFragmentAction() {
         _navigationToAddressAuthFragmentAction.value = Event(Unit)
     }
@@ -66,7 +61,6 @@ class MainActivityViewModel(
 
     fun onResume() {
         unread()
-        sberCheckPayments()
     }
 
     private fun unread() {
@@ -113,50 +107,6 @@ class MainActivityViewModel(
                     else -> Update.NONE
                 }
             )
-        }
-    }
-
-    fun sberCompletePayment(orderNumber: String) {
-        viewModelScope.withProgress({false}, null) {
-            val orderId = DataModule.extractOrderId(orderNumber)
-            if (orderId.isNotEmpty()) {
-                payInteractor.payProcess(orderNumber, orderId)
-            }
-        }
-    }
-
-    //Проверям статусы оплат. Если оплата успешна завершена, то дёргаем api метод.
-    fun sberCheckPayments() {
-        viewModelScope.withProgress({false}, null) {
-            var orders: HashMap<String, String>
-            synchronized(DataModule.orderNumberToId) {
-                orders = HashMap(DataModule.orderNumberToId)
-            }
-            val removeOrders = mutableListOf<String>()
-            orders.forEach {
-                val res = payInteractor.sberOrderStatusDo(DataModule.sberApiUserName,
-                    DataModule.sberApiPassword, it.key)
-                res?.actionCode?.let { actionCode ->
-                    if (actionCode == 0) {
-                        //оплата успешно выполнена, дёргаем api метод
-                        payInteractor.payProcess(it.key, it.value)
-
-                        //добавляем идентификатор платежа в список для удаления
-                        removeOrders.add(it.key)
-                    } else if (actionCode < 0) {
-                        //ошибка при оплате, добавляем в список для удаления
-                        removeOrders.add(it.key)
-                    }
-                }
-            }
-
-            //удаляем обработанные платежи
-            Timber.d("__sber payments to remove: $removeOrders")
-            synchronized(DataModule.orderNumberToId) {
-                removeOrders.forEach {
-                    DataModule.orderNumberToId.remove(it)
-                }
-            }
         }
     }
 
