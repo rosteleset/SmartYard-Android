@@ -6,14 +6,14 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:exported="true">
-            <intent-filter tools:node="replace">
+            <intent-filter tools:node="replace" android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https" />
                 <data
-                    android:scheme="https"
                     android:host="isp.freedom1.ru"
-                    android:pathPrefix="/open_app.html" />
+                    android:pathPrefix="/open_app" />
             </intent-filter>
         </activity>
     </application>

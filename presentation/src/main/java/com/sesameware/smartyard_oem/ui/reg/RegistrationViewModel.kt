@@ -21,7 +21,7 @@ import timber.log.Timber
 class RegistrationViewModel(
     private val mPreferenceStorage: PreferenceStorage,
     private val inboxInteractor: InboxInteractor,
-    private val authInteractor: AuthInteractor
+    val authInteractor: AuthInteractor
 ) : GenericViewModel() {
     fun onStart(
         fragment: Fragment,
@@ -75,7 +75,7 @@ class RegistrationViewModel(
         }
     }
 
-    private suspend fun getProviderConfig() {
+    suspend fun getProviderConfig() {
         Timber.d("debug_dmm call getProviderConfig")
         if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
             DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""

@@ -27,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.data.DataModule
+import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.smartyard_oem.*
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
@@ -38,7 +39,9 @@ import com.sesameware.smartyard_oem.ui.dpToPx
 import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogDetailFragment
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment
+import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
 import com.sesameware.smartyard_oem.ui.setupWithNavController
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 interface UserInteractionListener {
@@ -59,6 +62,8 @@ class MainActivity : CommonActivity() {
     private var userInteractionListener: UserInteractionListener? = null
     private var exitFullscreenListener: ExitFullscreenListener? = null
 
+    private val mRegModel by viewModel<RegistrationViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -68,6 +73,20 @@ class MainActivity : CommonActivity() {
         /*(bottom_nav.background as MaterialShapeDrawable).apply {
             this.setStroke(2.0f, 12345)
         }*/
+
+        if (DataModule.providerName.isEmpty()) {
+            Timber.d("debug_dmm    providerName is empty")
+            runBlocking {
+                try {
+                    mRegModel.getProviderConfig()
+                    mRegModel.authInteractor.phonePattern()?.let { result ->
+                        DataModule.phonePattern = result.data
+                    }
+                } catch (e: CommonErrorThrowable) {
+                    Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
+                }
+            }
+        }
 
         appVersion()
         val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
