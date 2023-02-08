@@ -181,6 +181,16 @@ class AddressSettingsFragment : Fragment() {
                 binding.switchOwnerEventLog.isChecked = ownerEventLog
                 binding.switchOwnerEventLog.isVisible = true
                 binding.vOwnerEventLog.isVisible = true
+                if (useEventLog != null) {
+                    //журнал событий выключен, запрещаем переключатель скрытия журнала и делаем его полупрозрачным
+                    binding.tvOwnerEventLog.isEnabled = !useEventLog
+                    binding.switchOwnerEventLog.isEnabled = !useEventLog
+                    binding.vOwnerEventLog.isEnabled = !useEventLog
+                    val alpha = if (useEventLog) DISABLED_ALPHA else ENABLED_ALPHA
+                    binding.tvOwnerEventLog.alpha = alpha
+                    binding.switchOwnerEventLog.alpha = alpha
+                    binding.vOwnerEventLog.alpha = alpha
+                }
             }
 
             val useFRS = it.frsDisabled
@@ -192,9 +202,9 @@ class AddressSettingsFragment : Fragment() {
             } else {
                 if (!flatOwner) {
                     //не владелец квартиры, запрещаем переключатель распознавания лиц и делаем настройку попупрозрачной
-                    binding.tvUseFRS.alpha = FRS_DISABLED_ALPHA
-                    binding.ivUseFRSBeta.alpha = FRS_DISABLED_ALPHA
-                    binding.switchUseFRS.alpha = FRS_DISABLED_ALPHA
+                    binding.tvUseFRS.alpha = DISABLED_ALPHA
+                    binding.ivUseFRSBeta.alpha = DISABLED_ALPHA
+                    binding.switchUseFRS.alpha = DISABLED_ALPHA
                     binding.switchUseFRS.isEnabled = false
                     binding.switchUseFRS.setOnCheckedChangeListener(null)
                 }
@@ -363,6 +373,7 @@ class AddressSettingsFragment : Fragment() {
     companion object {
         const val WHITE_RABBIT_ON = 5
         const val WHITE_RABBIT_OFF = 0
-        const val FRS_DISABLED_ALPHA = 0.4f
+        const val DISABLED_ALPHA = 0.4f
+        const val ENABLED_ALPHA = 1.0f
     }
 }
