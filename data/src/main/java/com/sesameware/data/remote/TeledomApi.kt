@@ -6,8 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.Field
 import com.sesameware.domain.model.request.*
 import com.sesameware.domain.model.response.*
 
@@ -218,32 +216,9 @@ interface TeledomApi {
         @Body request: PayPrepareRequest): PayPrepareResponse
 
     @POST
-    suspend fun payProcess(
+    suspend fun payRegister(
         @Url url: String,
-        @Body request: PayProcessRequest): PayProcessResponse
-
-    @POST("https://securepayments.sberbank.ru/payment/google/payment.do")
-    suspend fun paymentDo(@Body request: PaymentDoRequest): Response<PaymentDoResponse>
-
-    @FormUrlEncoded
-    @POST("https://securepayments.sberbank.ru/payment/rest/register.do")
-    suspend fun sberRegisterDo(
-        @Field("userName") userName: String,
-        @Field("password") password: String,
-        @Field("language") language: String,
-        @Field("returnUrl") returnUrl: String,
-        @Field("failUrl") failUrl: String,
-        @Field("orderNumber") orderNumber: String,
-        @Field("amount") amount: Int
-    ): Response<SberRegisterDoReponse>
-
-    @FormUrlEncoded
-    @POST("https://securepayments.sberbank.ru/payment/rest/getOrderStatusExtended.do")
-    suspend fun sberOrderStatusDo(
-        @Field("userName") userName: String,
-        @Field("password") password: String,
-        @Field("orderNumber") orderNumber: String
-    ): Response<SberOrderStatusDoResponse>
+        @Body request: PayRegisterRequest): Response<PayRegisterResponse>
 
     @POST
     suspend fun appVersion(

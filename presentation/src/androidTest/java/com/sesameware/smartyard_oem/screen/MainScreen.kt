@@ -15,5 +15,5 @@ object MainScreen : KScreen<MainScreen>() {
     override val viewClass: Class<*>? = OnboardingActivity::class.java
     val btnCompleteButton = KButton { withId(R.id.completeButton) }
     val btnSkipTextView = KButton { withId(R.id.skipTextView) }
-    val buttomMenu = KBottomNavigationView { withId(R.id.bottom_nav) }
+    val bottomMenu = KBottomNavigationView { withId(R.id.bottom_nav) }
 }

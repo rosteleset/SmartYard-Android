@@ -45,7 +45,7 @@ class AuthScreenTest : TestCase() {
     fun logoutAccount() {
         run {
             step("Выход из аккаунта") {
-                MainScreen.buttomMenu {
+                MainScreen.bottomMenu {
                     setSelectedItem(R.id.settings)
                 }
                 SettingsScreen {
@@ -133,7 +133,7 @@ class AuthScreenTest : TestCase() {
         run {
             step("Настройки приложения") {
                 MainScreen {
-                    buttomMenu {
+                    bottomMenu {
                         setSelectedItem(R.id.settings)
                         idle(1500)
                     }
@@ -177,7 +177,7 @@ class AuthScreenTest : TestCase() {
         run {
             loginAccount()
             MainScreen {
-                buttomMenu {
+                bottomMenu {
                     setSelectedItem(R.id.address)
                     idle(1500)
                     setSelectedItem(R.id.pay)

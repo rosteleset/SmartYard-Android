@@ -71,7 +71,6 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:drawableLeft="@drawable/ic_eld_unanswered_call"
                 android:paddingBottom="8dp"
                 android:text="@string/event_log_unanswered_call"
                 android:textColor="@color/red_100"
@@ -79,7 +78,8 @@
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/tvELDDate" />
+                app:layout_constraintTop_toBottomOf="@+id/tvELDDate"
+                app:drawableLeftCompat="@drawable/ic_eld_unanswered_call" />
 
             <TextView
                 android:id="@+id/tvELDAnsweredCall"
@@ -88,11 +88,28 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
-                android:drawableLeft="@drawable/ic_eld_answered_call"
                 android:paddingBottom="8dp"
                 android:text="@string/event_log_answered_call"
                 android:textColor="@color/green_100"
                 android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvELDDate"
+                app:drawableLeftCompat="@drawable/ic_eld_answered_call" />
+
+            <TextView
+                android:id="@+id/tvELDAdditional"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:paddingBottom="8dp"
+                android:text="Дополнительный текст"
+                android:textColor="@color/grey_100"
+                android:textSize="12sp"
+                android:textStyle="bold"
                 android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

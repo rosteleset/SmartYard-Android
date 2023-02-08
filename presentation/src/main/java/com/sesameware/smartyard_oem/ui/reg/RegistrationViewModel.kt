@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem.ui.reg
 
 import android.app.Activity
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -16,15 +15,13 @@ import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragmentDirections
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 
 class RegistrationViewModel(
     private val mPreferenceStorage: PreferenceStorage,
     private val inboxInteractor: InboxInteractor,
-    private val authInteractor: AuthInteractor
+    val authInteractor: AuthInteractor
 ) : GenericViewModel() {
     fun onStart(
         fragment: Fragment,
@@ -34,6 +31,10 @@ class RegistrationViewModel(
     ) {
         if (mPreferenceStorage.authToken == null) {
             if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
+                DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""
+                mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
+                Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
+                DataModule.providerName = BuildConfig.PROVIDER_NAME
                 try {
                     runBlocking {
                         authInteractor.phonePattern()?.let { result ->
@@ -74,7 +75,7 @@ class RegistrationViewModel(
         }
     }
 
-    private suspend fun getProviderConfig() {
+    suspend fun getProviderConfig() {
         Timber.d("debug_dmm call getProviderConfig")
         if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
             DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""

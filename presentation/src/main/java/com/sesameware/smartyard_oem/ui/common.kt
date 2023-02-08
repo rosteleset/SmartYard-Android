@@ -20,6 +20,7 @@ import android.net.Uri
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.View
@@ -36,6 +37,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -198,12 +200,25 @@ class SoundChooser {
             prefs: PreferenceStorage
         ): RingtoneU {
             val path = getPath(type, flatId, prefs)
-            val uri =
-                if (path != null) Uri.parse(path) else RingtoneManager.getActualDefaultRingtoneUri(
-                    context,
-                    type
-                )
-            return RingtoneU(uri)
+            try {
+                val uri = if (path != null) {
+                    Uri.parse(path)
+                } else {
+                    if (type == RingtoneManager.TYPE_RINGTONE) {
+                        Settings.System.DEFAULT_RINGTONE_URI
+                    } else {
+                        Settings.System.DEFAULT_NOTIFICATION_URI
+                    }
+                }
+                return RingtoneU(uri)
+            } catch (e: Throwable) {
+                val crashlytics = FirebaseCrashlytics.getInstance()
+                crashlytics.setCustomKey("_melody_data", "flat_id = $flatId, path = ${path.orEmpty()}")
+                crashlytics.recordException(e)
+                crashlytics.setCustomKey("_melody_data", "")
+            }
+
+            return RingtoneU(null)
         }
 
         fun showSoundChooseIntent(
@@ -263,7 +278,7 @@ class SoundChooser {
 }
 
 fun dpToPx(dp: Int): Float {
-    return (dp * Resources.getSystem().getDisplayMetrics().density)
+    return (dp * Resources.getSystem().displayMetrics.density)
 }
 
 fun getBottomNavigationHeight(context: Context?): Int {
@@ -351,10 +366,12 @@ fun requestPermission(permissions: ArrayList<String>, context: Context, onGrante
             }
         }).check()
 }
+
 fun resourceToBitmap(context: Context, drawableSrc: Int): Bitmap {
     val drawable = ResourcesCompat.getDrawable(context.resources, drawableSrc, null) as Drawable
     return drawableToBitmap(drawable)
 }
+
 private fun drawableToBitmap(vectorDrawable: Drawable): Bitmap {
     val bitmap = Bitmap.createBitmap(
         vectorDrawable.intrinsicWidth,

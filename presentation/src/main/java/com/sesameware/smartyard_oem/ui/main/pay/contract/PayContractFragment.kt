@@ -14,6 +14,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
+import com.sesameware.data.DataModule
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.smartyard_oem.databinding.FragmentPayContractBinding
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment
@@ -27,6 +28,8 @@ class PayContractFragment : Fragment() {
 
     private val payViewModel: PayAddressViewModel by sharedStateViewModel()
     private var payAddressModel: PayAddressModel? = null
+    private var needRefresh = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -84,9 +87,27 @@ class PayContractFragment : Fragment() {
     private var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             intent?.let {
+                DataModule.xDmApiRefresh = true
                 payViewModel.getPaymentsList()
+                needRefresh = false
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        if (needRefresh) {
+            DataModule.xDmApiRefresh = true
+            payViewModel.getPaymentsList()
+            needRefresh = false
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        needRefresh = true
     }
 
     override fun onStart() {

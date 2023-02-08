@@ -107,6 +107,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                                 msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/$hash"
                             }
                             waitForLinServiceAndRun(msg) {
+                                Timber.d("debug_dmm linphone service is running")
                                 it.listenAndGetNotifications(msg)
                             }
                         }

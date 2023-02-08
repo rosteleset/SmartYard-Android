@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Needed for full screen intent in notifications -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
@@ -36,6 +37,8 @@
         android:screenOrientation="portrait"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:requestLegacyExternalStorage="true"
+        android:preserveLegacyExternalStorage="true"
         android:theme="@style/AppTheme.Launcher">
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
@@ -97,8 +100,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:scheme="sesameware"
-                    android:pathPrefix="/sber" />
+                    android:scheme="teledom"
+                    android:pathPrefix="/open_app.html" />
             </intent-filter>
         </activity>
         <activity

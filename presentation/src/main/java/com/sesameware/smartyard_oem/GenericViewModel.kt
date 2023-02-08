@@ -80,6 +80,10 @@ open class GenericViewModel : ViewModel(), KoinComponent {
 
     protected fun checkAndRegisterFcmToken() {
         Timber.d("debug_dmm call checkAndRegisterFcmToken()")
+        val crashlytics = FirebaseCrashlytics.getInstance()
+        crashlytics.setUserId("_user_${mPreferenceStorage.phone.orEmpty()}")
+        val deviceInfo = "Manufacturer: ${Build.MANUFACTURER}, model: ${Build.MODEL}, device: ${Build.DEVICE}, release: ${Build.VERSION.RELEASE}, SDK: ${Build.VERSION.SDK_INT}"
+        crashlytics.setCustomKey("_device_info", deviceInfo)
 
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
@@ -88,8 +92,6 @@ open class GenericViewModel : ViewModel(), KoinComponent {
                 val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 val phone = mPreferenceStorage.phone
                 val exceptionMessage = task.exception?.message
-                val deviceInfo = "Manufacturer: " + Build.MANUFACTURER + ", model: " + Build.MODEL +
-                    ", device: " + Build.DEVICE + ", release: " + Build.VERSION.RELEASE + ", SDK: " + Build.VERSION.SDK_INT
                 Timber.w("debug_dmm exception message: $exceptionMessage")
                 Timber.w("debug_dmm Device info: $deviceInfo")
                 FirebaseCrashlytics.getInstance().log("Date: $date; Phone: $phone; Device info: $deviceInfo; Message: $exceptionMessage\n")

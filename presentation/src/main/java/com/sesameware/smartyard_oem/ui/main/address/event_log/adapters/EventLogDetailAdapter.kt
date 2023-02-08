@@ -80,6 +80,7 @@ class EventLogDetailAdapter(
         private val tvEventDate: TextView = itemView.findViewById(R.id.tvELDDate)
         private val tvEventUnansweredCall: TextView = itemView.findViewById(R.id.tvELDUnansweredCall)
         private val tvEventAnsweredCall: TextView = itemView.findViewById(R.id.tvELDAnsweredCall)
+        private val tvEventAdditional: TextView = itemView.findViewById(R.id.tvELDAdditional)
         private val pvEventVideo: PlayerView = itemView.findViewById(R.id.pvELDVideo)
         private val tvEventImage: FaceImageView = itemView.findViewById(R.id.ivELDImage)
         private val clELDFriend: ConstraintLayout = itemView.findViewById(R.id.clELDFriend)
@@ -101,21 +102,57 @@ class EventLogDetailAdapter(
                     tvEventAddress.text = eventItem.address
                     tvEventDate.text =
                         eventItem.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"))
+                    tvEventAdditional.text = ""
                     when (eventItem.eventType) {
                         Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> {
                             tvEventUnansweredCall.isVisible = true
                             tvEventAnsweredCall.isVisible = false
+                            tvEventAdditional.isVisible = false
                         }
                         Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> {
                             tvEventUnansweredCall.isVisible = false
                             tvEventAnsweredCall.isVisible = true
-                            val txt = tvEventAnsweredCall.resources.getString(R.string.event_log_answered_call) +
-                                ", дверь " + if (eventItem.detailX?.opened == true) "открыли" else "не открыли"
+                            val txt = itemView.resources.getString(R.string.event_log_answered_call,
+                                if (eventItem.detailX?.opened == true) "открыли" else "не открыли")
                             tvEventAnsweredCall.text = txt
+                            tvEventAdditional.isVisible = false
+                        }
+                        Plog.EVENT_OPEN_BY_KEY -> {
+                            tvEventUnansweredCall.isVisible = false
+                            tvEventAnsweredCall.isVisible = false
+                            tvEventAdditional.isVisible = true
+                            if (eventItem.detailX?.key?.isNotEmpty() == true) {
+                                tvEventAdditional.text = itemView.resources.getString(R.string.event_log_key, eventItem.detailX?.key)
+                            }
+                        }
+                        Plog.EVENT_OPEN_FROM_APP -> {
+                            tvEventUnansweredCall.isVisible = false
+                            tvEventAnsweredCall.isVisible = false
+                            tvEventAdditional.isVisible = true
+                            if (eventItem.detailX?.phone?.isNotEmpty() == true) {
+                                tvEventAdditional.text = itemView.resources.getString(R.string.event_log_phone, eventItem.detailX?.phone)
+                            }
+                        }
+                        Plog.EVENT_OPEN_BY_CODE -> {
+                            tvEventUnansweredCall.isVisible = false
+                            tvEventAnsweredCall.isVisible = false
+                            tvEventAdditional.isVisible = true
+                            if (eventItem.detailX?.code?.isNotEmpty() == true) {
+                                tvEventAdditional.text = itemView.resources.getString(R.string.event_log_code, eventItem.detailX?.code)
+                            }
+                        }
+                        Plog.EVENT_OPEN_GATES_BY_CALL -> {
+                            tvEventUnansweredCall.isVisible = false
+                            tvEventAnsweredCall.isVisible = false
+                            tvEventAdditional.isVisible = true
+                            if (eventItem.detailX?.phone?.isNotEmpty() == true) {
+                                tvEventAdditional.text = itemView.resources.getString(R.string.event_log_phone, eventItem.detailX?.phone)
+                            }
                         }
                         else -> {
                             tvEventUnansweredCall.isVisible = false
                             tvEventAnsweredCall.isVisible = false
+                            tvEventAdditional.isVisible = false
                         }
                     }
 

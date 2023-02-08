@@ -27,6 +27,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.data.DataModule
+import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.smartyard_oem.*
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
@@ -38,7 +39,9 @@ import com.sesameware.smartyard_oem.ui.dpToPx
 import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogDetailFragment
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment
+import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
 import com.sesameware.smartyard_oem.ui.setupWithNavController
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 interface UserInteractionListener {
@@ -59,6 +62,8 @@ class MainActivity : CommonActivity() {
     private var userInteractionListener: UserInteractionListener? = null
     private var exitFullscreenListener: ExitFullscreenListener? = null
 
+    private val mRegModel by viewModel<RegistrationViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -68,6 +73,20 @@ class MainActivity : CommonActivity() {
         /*(bottom_nav.background as MaterialShapeDrawable).apply {
             this.setStroke(2.0f, 12345)
         }*/
+
+        if (DataModule.providerName.isEmpty()) {
+            Timber.d("debug_dmm    providerName is empty")
+            runBlocking {
+                try {
+                    mRegModel.getProviderConfig()
+                    mRegModel.authInteractor.phonePattern()?.let { result ->
+                        DataModule.phonePattern = result.data
+                    }
+                } catch (e: CommonErrorThrowable) {
+                    Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
+                }
+            }
+        }
 
         appVersion()
         val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
@@ -135,8 +154,6 @@ class MainActivity : CommonActivity() {
         intent?.extras?.let {
             parseIntent(it)
         }
-
-        handleIntent(intent)
     }
 
     private fun dialogForceUpgrade() {
@@ -190,7 +207,6 @@ class MainActivity : CommonActivity() {
         intent.extras?.let {
             parseIntent(it)
         }
-        handleIntent(intent)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
@@ -346,16 +362,6 @@ class MainActivity : CommonActivity() {
         Timber.d("debug_dmm resultCode: $resultCode")
         Timber.d("debug_dmm data?.action: $data")
         when (requestCode) {
-            LOAD_PAYMENT_DATA_REQUEST_CODE -> {
-                mViewModel.paySendIntent.postValue(
-                    Event(
-                        MainActivityViewModel.SendDataPay(
-                            resultCode,
-                            data
-                        )
-                    )
-                )
-            }
             CHAT_REQUEST_FILE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     data?.data?.let { uri ->
@@ -436,29 +442,8 @@ class MainActivity : CommonActivity() {
         this.exitFullscreenListener = exitFullscreenListener
     }
 
-    private fun handleIntent(intent: Intent?) {
-        val appLinkAction = intent?.action
-        val appLinkData: Uri? = intent?.data
-        if (appLinkAction == Intent.ACTION_VIEW) {
-            val clientId = appLinkData?.getQueryParameter("clientId")?.toInt()
-            val orderNumber = appLinkData?.getQueryParameter("orderNumber")
-            if (clientId != null) {
-                Timber.d("__sber intent $appLinkData;  clientId = $clientId;  orderNumber = $orderNumber")
-                if (orderNumber != null) {
-                    mViewModel.sberCompletePayment(orderNumber)
-                }
-                mViewModel.sberPayIntent.postValue(
-                    Event(
-                        MainActivityViewModel.SendSberPay(orderNumber)
-                    )
-                )
-            }
-        }
-    }
-
     companion object {
         const val BROADCAST_LIST_UPDATE = "BROADCAST_LIST_UPDATE"
         const val CHAT_REQUEST_FILE = 0 // todo: переписать код сдк? (код скорее защит в sdk chat)
-        const val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
     }
 }
