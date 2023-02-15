@@ -18,7 +18,7 @@ data class Address(
     @Json(name = "houseId")
     val houseId: Int,
     @Json(name = "hasPlog")
-    val _hasPlog: String
+    val _hasPlog: String = ""
 ) {
     val hasPlog: Boolean
         get() = _hasPlog == "t"
