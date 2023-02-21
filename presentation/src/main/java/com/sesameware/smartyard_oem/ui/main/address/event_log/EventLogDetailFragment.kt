@@ -82,7 +82,7 @@ class EventLogDetailFragment : Fragment() {
                     if (state == Player.STATE_ENDED) {
                         mPlayer?.playWhenReady = false
                         mPlayer?.seekTo((mPlayer?.duration ?: 0) - 1)
-                        Toast.makeText(requireContext(), EventLogViewModel.PAUSE, Toast.LENGTH_LONG).show()
+                        Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_pause), Toast.LENGTH_LONG).show()
                     }
                 }
             })
@@ -261,11 +261,11 @@ class EventLogDetailFragment : Fragment() {
                             if (mPlayer?.playbackState == Player.STATE_READY) {
                                 if (mPlayer?.isPlaying == true) {
                                     mPlayer?.pause()
-                                    Toast.makeText(requireContext(), EventLogViewModel.PAUSE, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_pause), Toast.LENGTH_LONG).show()
                                 } else {
                                     mPlayerView?.alpha = 1.0f
                                     mPlayer?.play()
-                                    Toast.makeText(requireContext(), EventLogViewModel.PLAYING, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_playing), Toast.LENGTH_LONG).show()
                                 }
                             }
                         }, { x_pos ->  //двойной тап делает перемотку вперед или назад в зависимости от места двойного тапа: слева - назад, справа - вперед
@@ -299,11 +299,11 @@ class EventLogDetailFragment : Fragment() {
                                 if (mPlayerView?.alpha == 0.0f) {
                                     mPlayerView?.alpha = 1.0f
                                     mPlayer?.play()
-                                    Toast.makeText(requireContext(), EventLogViewModel.PLAYING, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_playing), Toast.LENGTH_LONG).show()
                                 } else {
                                     mPlayerView?.alpha = 0.0f
                                     mPlayer?.pause()
-                                    Toast.makeText(requireContext(), EventLogViewModel.SCREENSHOT, Toast.LENGTH_LONG).show()
+                                    Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_screenshot), Toast.LENGTH_LONG).show()
                                 }
                             }
                         }))

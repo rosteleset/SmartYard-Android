@@ -336,9 +336,6 @@ class EventLogViewModel(
         const val EVENT_VIDEO_BACK_SECONDS = 1 * 60L
         const val EVENT_VIDEO_DURATION_SECONDS = EVENT_VIDEO_BACK_SECONDS * 2
         const val SEEK_STEP = 10_000L  // интервал перемотки в миллисекундах видео в деталях события при двойном тапе
-        const val PAUSE = "Пауза"
-        const val PLAYING = "Видео"
-        const val SCREENSHOT = "Кадр события"
         const val EVENT_LOG_KEEPING_MONTHS = 6L  // период хранения журнала событий в месяцах
     }
 }

@@ -72,7 +72,8 @@
     <string name="dialog_yes">ВКЛЮЧИТЬ</string>
     <string name="dialog_no">ОТМЕНА</string>
     <string name="dialog_sms">Информация для гостя успешно отправлена!</string>
-
+    <string name="addresses_video_cameras">Видеокамеры</string>
+    <string name="addresses_events">События</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">Адрес добавлен.</string>
@@ -358,5 +359,24 @@
             <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;долгий тап - показать кадр события.</p>
         ]]>
     </string>
+
+    <string name="channel_inbox_title">Сообщения</string>
+    <string name="channel_calls_title">Входящие звонки</string>
+    <string name="event_log_pause">Пауза</string>
+    <string name="event_log_playing">Видео</string>
+    <string name="event_log_screenshot">Кадр события</string>
+    <string name="event_log_flat">Квартира %s</string>
+    <string name="event_log_all_flats">Все квартиры</string>
+    <string name="event_log_opened">открыли</string>
+    <string name="event_log_not_opened">не открыли</string>
+
+    <string name="event_door_phone_call_unanswered">Звонок в домофон</string>
+    <string name="event_door_phone_call_answered">Звонок в домофон</string>
+    <string name="event_open_by_key">Открывание ключом</string>
+    <string name="event_open_from_app">Открытие из приложения</string>
+    <string name="event_open_by_face">Открывание по лицу</string>
+    <string name="event_open_by_code">Открывание по коду</string>
+    <string name="event_open_gates_by_call">Открытие ворот звонком</string>
+    <string name="event_unknown">Неизвестное событие</string>
 
 </resources>

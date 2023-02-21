@@ -11,6 +11,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.FirebaseMessagingService
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.onboarding.OnboardingActivity
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
 
@@ -54,14 +55,14 @@ class LauncherActivity : CommonActivity() {
 
             val channelMessages = NotificationChannel(
                 FirebaseMessagingService.CHANNEL_INBOX_ID,
-                FirebaseMessagingService.CHANNEL_INBOX_TITLE,
+                this.getString(R.string.channel_inbox_title),
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationManager.createNotificationChannel(channelMessages)
 
             val channelCalls = NotificationChannel(
                 FirebaseMessagingService.CHANNEL_CALLS_ID,
-                FirebaseMessagingService.CHANNEL_CALLS_TITLE,
+                this.getString(R.string.channel_calls_title),
                 NotificationManager.IMPORTANCE_HIGH
             )
 

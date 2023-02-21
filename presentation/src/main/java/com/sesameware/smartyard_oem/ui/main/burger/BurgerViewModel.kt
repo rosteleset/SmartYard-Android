@@ -68,7 +68,7 @@ class BurgerViewModel(
                 BurgerModel(
                     orderId = 200,
                     iconId = R.drawable.address_settings_burger,
-                    title = "Настройки адресов",
+                    titleId = R.string.burger_address_settings_title,
                     onClick = {
                         _navigateToFragment.value = Event(R.id.action_burgerFragment_to_settingsFragment)
                     }
@@ -76,7 +76,7 @@ class BurgerViewModel(
                 BurgerModel(
                     orderId = 300,
                     iconId = R.drawable.common_settings_burger,
-                    title = "Общие настройки",
+                    titleId = R.string.burger_common_settings_title,
                     onClick = {
                         _navigateToFragment.value = Event(R.id.action_burgerFragment_to_basicSettingsFragment)
                     }
@@ -87,7 +87,7 @@ class BurgerViewModel(
                     BurgerModel(
                         orderId = 100,
                         iconId = R.drawable.city_camera_burger,
-                        title = "Городские камеры",
+                        titleId = R.string.burger_city_cameras_title,
                         onClick = {
                             _navigateToFragment.value =
                                 Event(R.id.action_burgerFragment_to_cityCamerasFragment)
@@ -118,7 +118,7 @@ class BurgerViewModel(
                         }
                     }
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
 
             }
 

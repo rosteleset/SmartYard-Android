@@ -56,14 +56,14 @@ class EventLogChildAdapter(
 
         private fun getEventTypeDescription(eType: Int): String {
             return when (eType) {
-                Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> "Звонок в домофон"
-                Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> "Звонок в домофон"
-                Plog.EVENT_OPEN_BY_KEY -> "Открывание ключом"
-                Plog.EVENT_OPEN_FROM_APP -> "Открытие из приложения"
-                Plog.EVENT_OPEN_BY_FACE -> "Открывание по лицу"
-                Plog.EVENT_OPEN_BY_CODE -> "Открывание по коду"
-                Plog.EVENT_OPEN_GATES_BY_CALL -> "Открытие ворот звонком"
-                else -> "Неизвестное событие"
+                Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> itemView.context.getString(R.string.event_door_phone_call_unanswered)
+                Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> itemView.context.getString(R.string.event_door_phone_call_answered)
+                Plog.EVENT_OPEN_BY_KEY -> itemView.context.getString(R.string.event_open_by_key)
+                Plog.EVENT_OPEN_FROM_APP -> itemView.context.getString(R.string.event_open_from_app)
+                Plog.EVENT_OPEN_BY_FACE -> itemView.context.getString(R.string.event_open_by_face)
+                Plog.EVENT_OPEN_BY_CODE -> itemView.context.getString(R.string.event_open_by_code)
+                Plog.EVENT_OPEN_GATES_BY_CALL -> itemView.context.getString(R.string.event_open_gates_by_call)
+                else -> itemView.context.getString(R.string.event_unknown)
             }
         }
 

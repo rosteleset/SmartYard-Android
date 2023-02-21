@@ -150,7 +150,7 @@ class AddressViewModel(
                         if (addressItem.cctv > 0) {
                             mutableList.add(
                                 VideoCameraModel().apply {
-                                    caption = "Видеокамеры"
+                                    resourceId = R.string.addresses_video_cameras
                                     counter = addressItem.cctv
                                     houseId = addressItem.houseId
                                     address = addressItem.address
@@ -161,7 +161,7 @@ class AddressViewModel(
                             if (addressItem.hasPlog && hasYards && list.isNotEmpty()) {
                                 mutableList.add(
                                     EventLogModel().apply {
-                                        caption = "События"
+                                        resourceId = R.string.addresses_events
                                         counter = 0
                                         houseId = addressItem.houseId
                                         address = addressItem.address

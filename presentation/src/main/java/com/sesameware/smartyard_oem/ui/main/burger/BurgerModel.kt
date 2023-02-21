@@ -9,5 +9,6 @@ data class BurgerModel(
     val iconId: Int? = null,
     val iconUrl: String? = null,
     val title: String = "",
+    val titleId: Int? = null,
     val onClick: () -> Unit
 ) : Parcelable
