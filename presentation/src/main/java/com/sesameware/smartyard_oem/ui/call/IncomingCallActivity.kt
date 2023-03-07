@@ -15,7 +15,6 @@ import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
-import android.os.Vibrator
 import android.view.View
 import android.view.WindowManager
 import androidx.core.app.ActivityCompat
@@ -324,9 +323,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onPause() {
         super.onPause()
-
-        val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-        vibrator.cancel()
 
         mSensorManager?.unregisterListener(this)
         mLinphone.mAudioManager.routeAudioToEarPiece()
