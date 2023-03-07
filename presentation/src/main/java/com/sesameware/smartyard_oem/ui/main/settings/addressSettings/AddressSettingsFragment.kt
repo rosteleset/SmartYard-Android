@@ -193,7 +193,14 @@ class AddressSettingsFragment : Fragment() {
                 }
             }
 
-            val useFRS = it.frsDisabled
+            //new code for FRS switch: just hidden
+            binding.tvUseFRS.isVisible = false
+            binding.ivUseFRSBeta.isVisible = false
+            binding.switchUseFRS.isVisible = false
+            binding.vUseFRS.isVisible = false
+
+            //old code for FRS switch: individual setting for flat that depends if user is owner of the flat
+            /*val useFRS = it.frsDisabled
             if (useFRS == null) {
                 binding.tvUseFRS.isVisible = false
                 binding.ivUseFRSBeta.isVisible = false
@@ -214,7 +221,7 @@ class AddressSettingsFragment : Fragment() {
                 binding.switchUseFRS.isChecked = !useFRS
                 binding.switchUseFRS.isVisible = true
                 binding.vUseFRS.isVisible = true
-            }
+            }*/
 
             binding.switchWhiteRabbit.isChecked = (it.whiteRabbit > 0)
         }
