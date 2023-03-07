@@ -66,7 +66,8 @@ class LauncherActivity : CommonActivity() {
                 NotificationManager.IMPORTANCE_HIGH
             )
 
-            //задаём шаблон вибрации
+            //включаем вибрацию
+            channelCalls.enableVibration(true)
             channelCalls.vibrationPattern = FirebaseMessagingService.CALL_VIBRATION_PATTERN
 
             //отключаем звук уведомления, так как он запускается при успешном sip соединении

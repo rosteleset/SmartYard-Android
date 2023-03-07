@@ -8,7 +8,6 @@ import com.sesameware.smartyard_oem.di.Modules
 import timber.log.Timber
 
 class App : Application() {
-
     var isChatActive = false
 
     override fun onCreate() {

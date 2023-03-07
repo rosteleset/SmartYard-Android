@@ -314,7 +314,6 @@ fun sendCallNotification(
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSound(null)  //отключаем звук уведомления, так как он запускается при успешном sip соединении
-            .setVibrate(FirebaseMessagingService.CALL_VIBRATION_PATTERN)  //задаём шаблон вибрации
             .setTimeoutAfter(30000)
             .setContentIntent(pendingIntent)
             .setWhen(System.currentTimeMillis())
