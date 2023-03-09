@@ -1,0 +1,10 @@
+<resources>
+    <!-- Main -->
+    <string name="app_name">ООО “ГИС”</string>
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">У вас есть договор с ООО “ГИС”?</string>
+    <string name="auth_where_is_contract_caption">Введите номер договора и пароль и управляйте услугами прямо из этого приложения. Если у вас пока ещё нет договора — оставьте заявку на подключение.</string>
+    <string name="auth_number_btn_no">У меня нет договора</string>
+
+</resources>

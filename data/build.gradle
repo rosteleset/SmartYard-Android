@@ -52,6 +52,11 @@ android {
             buildConfigField "String", "USER_AGENT", "\"Freedom (Android)\""
             buildConfigField "String", "PROVIDERS_URL", "\"\""
         }
+
+        grin {
+            buildConfigField "String", "USER_AGENT", "\"GrIN (Android)\""
+            buildConfigField "String", "PROVIDERS_URL", "\"\""
+        }
     }
 }
 

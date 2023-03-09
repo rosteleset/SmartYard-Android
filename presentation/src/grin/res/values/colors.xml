@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MAIN -->
+    <color name="colorPrimary">#084EB6</color>
+    <color name="colorPrimaryDark">#084EB6</color>
+    <color name="colorAccent">#084EB6</color>
+    <color name="brandColor">#084EB6</color>
+
+    <!-- BRAND colors -->
+    <color name="blue">#084EB6</color>
+    <color name="blue_200">#084EB6</color>
+    <color name="brand_pressed">#6D7A8A</color>
+
+    <color name="global_progress_bar_color">#084EB6</color>
+</resources>

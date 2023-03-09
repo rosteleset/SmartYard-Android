@@ -76,6 +76,12 @@ android {
             buildConfigField "String", "PROVIDER_NAME", "\"Фридом\""
             buildConfigField "String", "PROVIDER_URL", "\"https://rbt.freedom1.ru/mobile\""
         }
+
+        grin {
+            applicationId "by.grin.rbt"
+            buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.grin.by/mobile\""
+        }
     }
 
     buildFeatures {
