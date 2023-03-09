@@ -20,7 +20,7 @@ sip_tls_random_port=1
 [video]
 displaytype=MSAndroidTextureDisplay
 
-[video_codec_0]
+[video_codec_1]
 mime=H264
 rate=90000
 enabled=1
