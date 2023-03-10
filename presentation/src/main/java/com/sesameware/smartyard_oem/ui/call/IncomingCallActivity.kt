@@ -205,12 +205,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     private fun setDoorState(opened: Boolean) {
         if (opened) {
-            mLinphone.disconnect()
             doDelayed(
                 {
+                    mLinphone.disconnect()
                     hangUp()
                 },
-                1000
+                3000
             )
         }
         binding.mOpenedButton.show(opened, true)
