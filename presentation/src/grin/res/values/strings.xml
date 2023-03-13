@@ -1,6 +1,6 @@
 <resources>
     <!-- Main -->
-    <string name="app_name">ООО “ГИС”</string>
+    <string name="app_name">Наша хата</string>
 
     <!-- Авторизация по номеру договора -->
     <string name="auth_where_is_contract_title">У вас есть договор с ООО “ГИС”?</string>

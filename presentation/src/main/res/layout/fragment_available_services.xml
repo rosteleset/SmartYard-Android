@@ -9,7 +9,7 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/background_auth"
         android:scaleType="centerCrop"
         android:src="@drawable/background_auth"
         android:visibility="visible"

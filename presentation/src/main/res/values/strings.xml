@@ -378,5 +378,4 @@
     <string name="event_open_by_code">Открывание по коду</string>
     <string name="event_open_gates_by_call">Открытие ворот звонком</string>
     <string name="event_unknown">Неизвестное событие</string>
-
 </resources>

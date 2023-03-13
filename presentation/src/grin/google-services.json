@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1049690821477",
+    "project_id": "grin-by",
+    "storage_bucket": "grin-by.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1049690821477:android:a3a414cdf1c98d65f2878c",
+        "android_client_info": {
+          "package_name": "by.grin.smartyard"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1049690821477-5d9l6ls706cur45j6hgllo6cljsbrpm9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8jTbfUk9wq__Icxxpcyr8J-N6foRzwy4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1049690821477-5d9l6ls706cur45j6hgllo6cljsbrpm9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1049690821477-h33uu4so00cq0tqmt4efds67j7r74um5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "by.grin.smartyard"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

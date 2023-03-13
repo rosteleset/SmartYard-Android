@@ -1,5 +1,11 @@
 <resources>
     <!-- logo -->
-    <dimen name="logo_width_onboarding">186dp</dimen>
-    <dimen name="logo_height_onboarding">91dp</dimen>
+    <dimen name="logo_width_onboarding">200dp</dimen>
+    <dimen name="logo_height_onboarding">100dp</dimen>
+
+    <!-- images heights -->
+    <dimen name="background_1">186dp</dimen>
+    <dimen name="ic_background_reg_number">186dp</dimen>
+    <dimen name="background_auth">306dp</dimen>
+    <dimen name="ic_background_address">186dp</dimen>
 </resources>

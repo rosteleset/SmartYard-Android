@@ -78,9 +78,11 @@ android {
         }
 
         grin {
-            applicationId "by.grin.rbt"
-            buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
+            //applicationId "com.sesameware.smartyard_oem"
+            //buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile\""
+            applicationId "by.grin.smartyard"
             buildConfigField "String", "PROVIDER_URL", "\"https://rbt.grin.by/mobile\""
+            buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
         }
     }
 

@@ -19,7 +19,7 @@
             <ImageView
                 android:id="@+id/ivRequestRecordBackground"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/background_auth"
                 android:background="@drawable/background_auth"
                 android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
