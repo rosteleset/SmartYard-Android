@@ -159,7 +159,7 @@
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
-                    app:buttonBG="@drawable/checkbox_round_state_unlock"
+                    app:buttonBG="@drawable/checkbox_round_state_unlocked"
                     android:text="@string/opened"
                     tools:visibility="visible"
                     android:visibility="invisible"
