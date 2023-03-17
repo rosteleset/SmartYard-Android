@@ -99,8 +99,8 @@ class EventLogDetailAdapter(
             if (day != null && index != null) {
                 eventsByDays[day]?.get(index)?.let {eventItem ->
                     tvEventName.text = when (eventItem.eventType) {
-                        Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> itemView.context.getString(R.string.event_log_unanswered_call)
-                        Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> itemView.context.getString(R.string.event_log_answered_call)
+                        Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> itemView.context.getString(R.string.event_door_phone_call_unanswered)
+                        Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> itemView.context.getString(R.string.event_door_phone_call_answered)
                         Plog.EVENT_OPEN_BY_KEY -> itemView.context.getString(R.string.event_open_by_key)
                         Plog.EVENT_OPEN_FROM_APP -> itemView.context.getString(R.string.event_open_from_app)
                         Plog.EVENT_OPEN_BY_FACE -> itemView.context.getString(R.string.event_open_by_face)

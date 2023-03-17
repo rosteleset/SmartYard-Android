@@ -291,6 +291,9 @@ class EventLogViewModel(
                                     } else {
                                         plog.address = address
                                     }
+                                    if (plog.mechanizmaDescription.isNotEmpty()) {
+                                        plog.address += " [${plog.mechanizmaDescription}]"
+                                    }
                                     plog.frsEnabled = flat.frsEnabled
                                     cacheEvents.getOrPut(cacheKey) {mutableListOf()}.add(plog)
                                     if (filterEventType.contains(plog.eventType)) {
