@@ -5,6 +5,7 @@ mtu=1300
 download_bw=1000
 upload_bw=1000
 force_ice_disablement=0
+dtmf_delay_ms=500
 
 [sip]
 guess_hostname=1
