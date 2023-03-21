@@ -23,7 +23,7 @@
     </style>
     <style name="AppThemeSplash" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/AppTheme.Launcher</item>
-        <item name="windowSplashScreenBackground">@color/brandColor</item>
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_splash</item>
     </style>
 

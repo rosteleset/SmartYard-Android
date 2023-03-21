@@ -5,6 +5,7 @@
     <color name="colorPrimaryDark">#0075FF</color>
     <color name="colorAccent">#0075FF</color>
     <color name="brandColor">#298BFF</color>
+    <color name="splashColor">@color/brandColor</color>
 
     <!-- BRAND colors -->
     <color name="blue">#298BFF</color>
