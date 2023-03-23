@@ -46,8 +46,9 @@
     </style>
 
     <style name="TextAppearance.BottomNavigation.Overline" parent="TextAppearance.MaterialComponents.Overline">
-        <item name="android:textSize">8sp</item>
-        <item name="android:fontFamily">regular</item>
+        <item name="android:textSize">11sp</item>
+        <item name="android:fontFamily">ubuntu</item>
+        <item name="android:letterSpacing">0.012</item>
         <item name="android:textAllCaps">false</item>
     </style>
 
