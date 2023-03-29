@@ -16,6 +16,9 @@ import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.model.response.CCTVYoutubeResponse
 import com.sesameware.domain.model.response.CCTVRangesResponse
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Nail Shakurov
@@ -77,6 +80,24 @@ class CCTVRepositoryImpl(
             teledomApi.ranges(
                 DataModule.BASE_URL + "cctv/ranges",
                 CCTVRangesRequest(cameraID)).getResponseBody()
+        }
+    }
+
+    override suspend fun getRealHlsUrlMacroscop(url: String): String {
+        return safeApiCall {
+            val builder = OkHttpClient.Builder()
+            with(builder) {
+                connectTimeout(30, TimeUnit.SECONDS)
+                readTimeout(30, TimeUnit.SECONDS)
+                writeTimeout(30, TimeUnit.SECONDS)
+            }
+            val client = builder.build()
+            val request = Request.Builder()
+                .url(url)
+                .build()
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) response.body!!.string() else ""
+            }
         }
     }
 }

@@ -23,11 +23,13 @@ data class CCTVData(
     @Json(name = "lon") val longitude: Double?,
     @Json(name = "token") val token: String,
     @Json(name = "url") val url: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    var realHlsUrl: String = ""
 ) : Parcelable {
     val hls: String get() =
         when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> realHlsUrl
             else -> "$url/index.m3u8?token=$token"
         }
 
@@ -58,6 +60,7 @@ data class CCTVData(
         get() {
             return when (_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
+                MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -71,10 +74,12 @@ data class CCTVCityCameraData(
     @Json(name = "lon") val longitude: Double?,
     @Json(name = "url") val url: String,
     @Json(name = "token") val token: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    var realHlsUrl: String = ""
 ) : Parcelable {
     val hls: String get() = when (serverType) {
         MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
+        MediaServerType.MACROSCOP -> realHlsUrl
         else -> "$url/index.m3u8?token=$token"
     }
 
@@ -82,6 +87,7 @@ data class CCTVCityCameraData(
         get() {
             return when (_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
+                MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -101,10 +107,12 @@ data class CCTVYoutubeData(
 
 enum class MediaServerType {
     FLUSSONIC,
-    NIMBLE;
+    NIMBLE,
+    MACROSCOP;
 
     companion object {
         const val MEDIA_TYPE_FLUSSONIC = "flussonic"
         const val MEDIA_TYPE_NIMBLE = "nimble"
+        const val MEDIA_TYPE_MACROSCOP = "macroscop"
     }
 }

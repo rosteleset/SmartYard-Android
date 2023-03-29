@@ -53,4 +53,8 @@ class CCTVInteractor(
     suspend fun ranges(cameraID: Int): List<RangeObject>? {
         return repository.ranges(cameraID)?.data
     }
+
+    suspend fun getRealHlsUrlMacroscop(@Url url: String): String {
+        return repository.getRealHlsUrlMacroscop(url)
+    }
 }

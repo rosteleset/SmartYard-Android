@@ -21,4 +21,5 @@ interface CCTVRepository {
     suspend fun getCCTVOverview(): CCTVCityCameraGetResponse?
     suspend fun getCCTVYoutube(id: Int?): CCTVYoutubeResponse?
     suspend fun ranges(cameraID: Int): CCTVRangesResponse?
+    suspend fun getRealHlsUrlMacroscop(@Url url: String): String
 }

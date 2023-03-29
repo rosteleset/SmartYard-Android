@@ -23,6 +23,7 @@ import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
+import kotlinx.coroutines.withContext
 import java.util.*
 
 @Parcelize
@@ -158,9 +159,25 @@ class CCTVViewModel(
     fun chooseCamera(index: Int) {
         state[chosenIndex_Key] = index
         cameraList.value?.get(index)?.let { camera ->
-            state[chosenCamera_Key] = camera
-            downloadMaskImage(camera.preview)
-            loadPeriod()
+            if (camera.serverType == MediaServerType.MACROSCOP) {
+                viewModelScope.launchSimple {
+                    val requestUrl = "${camera.url}&${camera.token}"
+                    val r = cctvInteractor.getRealHlsUrlMacroscop(requestUrl)
+                    val p = camera.url.indexOf("?")
+                    if (p >= 0) {
+                        camera.realHlsUrl = camera.url.substring(0, p) + "/" + r
+                        withContext(Dispatchers.Main) {
+                            state[chosenCamera_Key] = camera
+                            //downloadMaskImage(camera.preview)
+                            //loadPeriod()
+                        }
+                    }
+                }
+            } else {
+                state[chosenCamera_Key] = camera
+                downloadMaskImage(camera.preview)
+                loadPeriod()
+            }
         }
     }
 
