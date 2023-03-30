@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
@@ -24,6 +25,9 @@ import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import timber.log.Timber
 import java.util.*
 
 @Parcelize
@@ -81,6 +85,7 @@ class CCTVViewModel(
                 availableRanges.clear()
                 val loadPeriods = try {
                     when (it.serverType) {
+                        MediaServerType.MACROSCOP,
                         MediaServerType.NIMBLE -> cctvInteractor.ranges(it.id)?.first()?.ranges ?: emptyList()
                         else -> {
                             val url = it.url + "/recording_status.json?from=1525186456&token=" + it.token
@@ -157,27 +162,12 @@ class CCTVViewModel(
     }
 
     fun chooseCamera(index: Int) {
+        Timber.d("debug_dmm  call chooseCamera with index = $index")
         state[chosenIndex_Key] = index
         cameraList.value?.get(index)?.let { camera ->
-            if (camera.serverType == MediaServerType.MACROSCOP) {
-                viewModelScope.launchSimple {
-                    val requestUrl = "${camera.url}&${camera.token}"
-                    val r = cctvInteractor.getRealHlsUrlMacroscop(requestUrl)
-                    val p = camera.url.indexOf("?")
-                    if (p >= 0) {
-                        camera.realHlsUrl = camera.url.substring(0, p) + "/" + r
-                        withContext(Dispatchers.Main) {
-                            state[chosenCamera_Key] = camera
-                            //downloadMaskImage(camera.preview)
-                            //loadPeriod()
-                        }
-                    }
-                }
-            } else {
-                state[chosenCamera_Key] = camera
-                downloadMaskImage(camera.preview)
-                loadPeriod()
-            }
+            state[chosenCamera_Key] = camera
+            downloadMaskImage(camera.preview)
+            loadPeriod()
         }
     }
 
@@ -209,12 +199,23 @@ class CCTVViewModel(
 
         @Throws(Exception::class)
         fun downloadPreview(url: String): Bitmap? {
-            val retriever = MediaMetadataRetriever()
+            /*val retriever = MediaMetadataRetriever()
             retriever.setDataSource(url, hashMapOf())
-            val result =
-                retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+            val result = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
             retriever.release()
-            return result
+            return result*/
+
+            val client = OkHttpClient()
+            val request = Request.Builder()
+                .url(url)
+                .build()
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    return BitmapFactory.decodeStream(response.body!!.byteStream())
+                }
+            }
+
+            return null
         }
     }
 }

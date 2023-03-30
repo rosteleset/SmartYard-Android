@@ -82,22 +82,4 @@ class CCTVRepositoryImpl(
                 CCTVRangesRequest(cameraID)).getResponseBody()
         }
     }
-
-    override suspend fun getRealHlsUrlMacroscop(url: String): String {
-        return safeApiCall {
-            val builder = OkHttpClient.Builder()
-            with(builder) {
-                connectTimeout(30, TimeUnit.SECONDS)
-                readTimeout(30, TimeUnit.SECONDS)
-                writeTimeout(30, TimeUnit.SECONDS)
-            }
-            val client = builder.build()
-            val request = Request.Builder()
-                .url(url)
-                .build()
-            client.newCall(request).execute().use { response ->
-                if (response.isSuccessful) response.body!!.string() else ""
-            }
-        }
-    }
 }

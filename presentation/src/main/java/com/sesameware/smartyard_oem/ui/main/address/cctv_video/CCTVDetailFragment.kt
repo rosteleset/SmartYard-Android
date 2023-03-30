@@ -78,7 +78,7 @@ class CCTVDetailFragment : Fragment() {
                 onlineTabFragment.releasePlayer()
             }
             CCTVViewModel.ONLINE_TAB_POSITION -> {
-                onlineTabFragment.initPlayer()
+                onlineTabFragment.initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
             }
         }
     }
@@ -118,7 +118,7 @@ class CCTVDetailFragment : Fragment() {
         } else {
             if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
                 val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as? CCTVOnlineTab
-                onlineTabFragment?.initPlayer()
+                onlineTabFragment?.initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
             }
         }
 

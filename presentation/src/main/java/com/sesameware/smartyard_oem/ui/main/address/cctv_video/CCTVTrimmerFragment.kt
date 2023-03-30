@@ -32,12 +32,14 @@ import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.MimeTypes
+import com.sesameware.domain.model.response.MediaServerType
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.lib.TimeInterval
 import com.sesameware.lib.timeInMs
+import com.sesameware.lib.toTimeStamp
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.clamp
@@ -56,7 +58,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private var _binding: FragmentCctvTrimmerBinding? = null
     private val binding get() = _binding!!
 
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: BaseCCTVPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private lateinit var chosenDate: LocalDate
 
@@ -186,7 +188,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             return 0L
         }
 
-        return archiveRanges[currentArchiveRangeIndex].from.timeInMs() - archiveRanges.first().from.timeInMs() + (mPlayer?.currentPosition ?: 0)
+        return archiveRanges[currentArchiveRangeIndex].from.timeInMs() - archiveRanges.first().from.timeInMs() + (mPlayer?.currentPosition() ?: 0)
     }
 
     //общая длительность интервала
@@ -200,7 +202,6 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         private const val prepareVideoWait = 1L
 
         const val INACTIVE_PERIOD_MS = 5_000L  //период бездествия пользователя в миллисекундах, спустя который скрываются видео контроллеры
-        const val RESOLUTION_TOLERANCE = 1.08  // коэффициент допуска видео разрешения
     }
 
     override fun onUserInteraction() {
@@ -552,7 +553,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                         speedDownText
                     )
             }
-            mPlayer?.setPlaybackParameters(PlaybackParameters(num.toFloat()))
+            mPlayer?.setPlaybackSpeed(num.toFloat())
         }
 
         mViewModel.videoLoaderVisible.observe(
@@ -639,10 +640,12 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mCCTVViewModel.chosenCamera.observe(
             viewLifecycleOwner
         ) {
-            it?.run {
+            it?.let { cctvData ->
                 val initialThumb = mCCTVViewModel.initialThumb
-                mViewModel.initialize(this, initialThumb)
+                mViewModel.initialize(cctvData, initialThumb)
                 mCurrentPlaybackData?.run {
+                    releasePlayer()
+                    createPlayer(cctvData.serverType, binding.mPlayerView)
                     changeVideoSource(this)
                 }
             }
@@ -662,24 +665,91 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
     override fun onStart() {
         super.onStart()
-        mPlayer = createPlayer(binding.mPlayerView)
+        mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
         mCurrentPlaybackData?.run {
             changeVideoSource(this)
         }
     }
 
     private fun createPlayer(
+        serverType: MediaServerType?,
         videoView: PlayerView
-    ): SimpleExoPlayer {
+    ): BaseCCTVPlayer {
         Timber.d("debug_dmm createPlayer()")
 
-        val trackSelector = DefaultTrackSelector(requireContext())
-        val player  = SimpleExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
-        //player.addAnalyticsListener(EventLogger(trackSelector))
+        val callbacks = object : BaseCCTVPlayer.Callbacks {
+            override fun onPlayerStateReady() {
+                canRenewToken = true
+                (mPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let {
+                    if (it.width > 0 && it.height > 0) {
+                        (binding.mPlayerView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
+                    }
+                }
+                if (mPlayer?.playWhenReady == true) {
+                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+                mViewModel.changePlaybackState(Player.STATE_READY)
+            }
 
-        videoView.player = player
+            override fun onPlayerStateEnded() {
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                if (currentArchiveRangeIndex < archiveRanges.size - 1) {
+                    ++currentArchiveRangeIndex
+                    prepareMedia(mPlayer?.playWhenReady == true)
+                }
+                mViewModel.changePlaybackState(Player.STATE_ENDED)
+            }
+
+            override fun onPlayerStateBuffering() {
+                mViewModel.changePlaybackState(Player.STATE_BUFFERING)
+            }
+
+            override fun onPlayerStateIdle() {
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                mViewModel.changePlaybackState(Player.STATE_IDLE)
+            }
+
+            override fun onPlayerError(exception: Exception) {
+                mViewModel.showVideoLoader(false)
+
+                (exception as? ExoPlaybackException)?.let { error ->
+                    if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                        if (canRenewToken) {
+                            canRenewToken = false
+
+                            //перезапрашиваем список камер
+                            mCCTVViewModel.cctvModel.value?.let {
+                                mCCTVViewModel.refreshCameras(it)
+                            }
+                        } else {
+                            mCCTVViewModel.showGlobalError(error.sourceException)
+                        }
+                    }
+
+                    if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                        if (forceVideoTrack) {
+                            forceVideoTrack = false
+
+                            mViewModel.stopVideoPlay()
+                            releasePlayer()
+                            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                            mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
+                            mCurrentPlaybackData?.run {
+                                changeVideoSource(this)
+                            }
+                            mViewModel.restoreSeek()
+                            if (mExoPlayerView == null) {
+                                mExoPlayerView = view?.findViewById(R.id.mPlayerView)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        val player = if (serverType == MediaServerType.MACROSCOP) MacroscopPlayer(requireContext(), forceVideoTrack, callbacks) else DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+        videoView.player = player.getPlayer()
         videoView.useController = false
 
         val p = videoView.parent as ViewGroup
@@ -698,7 +768,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
         //двойной тап делает перемотку вперед или назад в зависимости от места двойного тапа: слева - назад, справа - вперед
         binding.zlArchive.setDoubleTapConfirmedListener { x_pos ->
-            if (mPlayer?.playbackState == Player.STATE_READY && x_pos != null) {
+            if (mPlayer?.isReady() == true && x_pos != null) {
                 var currentPosition = playerCurrentPosition()
                 var seekStep = CCTVTrimmerViewModel.SEEK_STEP
                 if (x_pos.toInt() < binding.zlArchive.width / 2) {
@@ -721,8 +791,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             }
         }
         
-        player.playWhenReady = false
-        player.addListener(object : Player.EventListener {
+        //old player.playWhenReady = false
+        /*player.addListener(object : Player.EventListener {
             @Deprecated("Deprecated in Java")
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
@@ -828,7 +898,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 }
             }
 
-        })
+        })*/
 
         return player
     }
@@ -837,9 +907,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.showVideoLoader(true)
         try {
             val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRanges[currentArchiveRangeIndex].from, archiveRanges[currentArchiveRangeIndex].durationSeconds)
-            mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(hls)))
+            //old
+            /*mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(hls)))
             mPlayer?.prepare()
-            mPlayer?.playWhenReady = doPlay
+            mPlayer?.playWhenReady = doPlay*/
+            mPlayer?.prepareMedia(hls, archiveRanges[currentArchiveRangeIndex].fromUtc, archiveRanges[currentArchiveRangeIndex].durationSeconds, doPlay)
         } catch (e: Throwable) {
             mViewModel.showVideoLoader(false)
             mViewModel.handleError(e)
@@ -867,9 +939,12 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
     private fun releasePlayer() {
         Timber.d("debug_dmm releasePlayer()")
-        mPlayer?.stop()
-        mPlayer?.release()
+        mPlayer?.releasePlayer()
         mPlayer = null
+        //old
+        /*mPlayer?.stop()
+        mPlayer?.release()
+        mPlayer = null*/
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -880,7 +955,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             releasePlayer()
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
-            mPlayer = createPlayer(binding.mPlayerView)
+            mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
             mCurrentPlaybackData?.run {
                 changeVideoSource(this)
             }
