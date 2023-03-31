@@ -2,6 +2,7 @@ package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaDataSource
 import android.media.MediaMetadataRetriever
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
@@ -28,6 +29,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
+import java.io.FileDescriptor
 import java.util.*
 
 @Parcelize
@@ -199,11 +201,13 @@ class CCTVViewModel(
 
         @Throws(Exception::class)
         fun downloadPreview(url: String): Bitmap? {
-            /*val retriever = MediaMetadataRetriever()
-            retriever.setDataSource(url, hashMapOf())
-            val result = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
-            retriever.release()
-            return result*/
+            if (url.contains(".mp4")) {
+                val retriever = MediaMetadataRetriever()
+                retriever.setDataSource(url, hashMapOf())
+                val result = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                retriever.release()
+                return result
+            }
 
             val client = OkHttpClient()
             val request = Request.Builder()
