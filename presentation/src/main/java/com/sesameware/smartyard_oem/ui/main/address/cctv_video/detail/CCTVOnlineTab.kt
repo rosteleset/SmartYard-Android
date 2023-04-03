@@ -253,96 +253,6 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
         }
 
-        /*player.addListener(object : Player.EventListener {
-            override fun onPlayerStateChanged(
-                playWhenReady: Boolean,
-                playbackState: Int
-            ) {
-                if (playbackState == Player.STATE_READY) {
-                    canRenewToken = true
-                    mPlayer?.videoFormat?.let {
-                        if (it.width > 0 && it.height > 0) {
-                            (binding.mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
-                        }
-                    }
-                }
-
-                if (playWhenReady && playbackState == Player.STATE_READY) {
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } else {
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                }
-
-                progressView.visibility = when (playbackState) {
-                    Player.STATE_BUFFERING -> View.VISIBLE
-                    else -> View.GONE
-                }
-            }
-
-            override fun onPlayerError(error: ExoPlaybackException) {
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    if (canRenewToken) {
-                        canRenewToken = false
-
-                        //перезапрашиваем список камер
-                        mCCTVViewModel.cctvModel.value?.let {
-                            mCCTVViewModel.refreshCameras(it)
-                        }
-                    } else {
-                        mCCTVViewModel.showGlobalError(error.sourceException)
-                    }
-                }
-
-                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                    if (forceVideoTrack) {
-                        forceVideoTrack = false
-                        releasePlayer()
-                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                        initPlayer()
-                    }
-                }
-            }
-
-            override fun onTracksChanged(trackGroups: TrackGroupArray,
-                                         trackSelections: TrackSelectionArray) {
-                super.onTracksChanged(trackGroups, trackSelections)
-
-                if (!forceVideoTrack) {
-                    return
-                }
-
-                val decoderInfo = MediaCodecUtil.getDecoderInfo(MimeTypes.VIDEO_H264, false, false)
-                val maxSupportedWidth = (decoderInfo?.capabilities?.videoCapabilities?.supportedWidths?.upper ?: 0) * RESOLUTION_TOLERANCE
-                val maxSupportedHeight = (decoderInfo?.capabilities?.videoCapabilities?.supportedHeights?.upper ?: 0) * RESOLUTION_TOLERANCE
-
-                (player.trackSelector as? DefaultTrackSelector)?.let{ trackSelector ->
-                    trackSelector.currentMappedTrackInfo?.let { mappedTrackInfo ->
-                        for (k in 0 until mappedTrackInfo.rendererCount) {
-                            if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
-                                val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
-                                for (i in 0 until rendererTrackGroups.length) {
-                                    val tracks = mutableListOf<Int>()
-                                    for (j in 0 until rendererTrackGroups[i].length) {
-                                        if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
-                                            mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                            (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                    maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
-                                            tracks.add(j)
-                                        }
-                                    }
-                                    val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks.toIntArray())
-                                    trackSelector.setParameters(
-                                        trackSelector.buildUponParameters()
-                                            .setSelectionOverride(k, rendererTrackGroups, selectionOverride)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        })*/
         return player
     }
 
@@ -353,8 +263,6 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     fun releasePlayer() {
-        Timber.d("__Q__  call releasePlayer")
-
         mPlayer?.releasePlayer()
         mPlayer = null
     }

@@ -8,6 +8,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.util.MimeTypes
+import com.google.android.exoplayer2.video.VideoSize
 import kotlinx.coroutines.*
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -27,6 +28,8 @@ abstract class BaseCCTVPlayer {
     abstract fun mediaDuration(): Long
     abstract fun setPlaybackSpeed(speed: Float)
     abstract fun isReady(): Boolean
+    abstract fun isPlaying(): Boolean
+    abstract fun isIdle(): Boolean
     abstract fun prepareMedia(mediaUrl: String?, from: Long = INVALID_POSITION, mediaDuration: Long = INVALID_DURATION, seekMediaTo: Long = 0L, doPlay: Boolean = false)
     abstract fun releasePlayer()
     open var playWhenReady: Boolean = false
@@ -37,6 +40,8 @@ abstract class BaseCCTVPlayer {
         fun onPlayerStateBuffering() {}
         fun onPlayerStateIdle() {}
         fun onPlayerError(exception: Exception) {}
+        fun onRenderFirstFrame() {}
+        fun onVideoSizeChanged(videoSize: VideoSize) {}
     }
 
     companion object {
@@ -88,6 +93,14 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
 
     override fun isReady(): Boolean {
         return mPlayer?.playbackState == Player.STATE_READY
+    }
+
+    override fun isPlaying(): Boolean {
+        return mPlayer?.isPlaying == true
+    }
+
+    override fun isIdle(): Boolean {
+        return mPlayer?.playbackState == Player.STATE_IDLE
     }
 
     override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
@@ -182,6 +195,18 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
                         }
                     }
                 }
+            }
+
+            override fun onRenderedFirstFrame() {
+                super.onRenderedFirstFrame()
+
+                callbacks?.onRenderFirstFrame()
+            }
+
+            override fun onVideoSizeChanged(videoSize: VideoSize) {
+                super.onVideoSizeChanged(videoSize)
+
+                callbacks?.onVideoSizeChanged(videoSize)
             }
         })
     }

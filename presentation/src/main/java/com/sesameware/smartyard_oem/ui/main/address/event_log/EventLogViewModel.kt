@@ -39,6 +39,7 @@ data class DoorphoneData(
         val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> "$url&$token"
             else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
         }
     }

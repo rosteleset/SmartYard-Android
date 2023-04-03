@@ -763,7 +763,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         p.removeView(videoView)
         p.addView(videoView, 0)
 
-        binding.zlArchive.setSingleTapConfirmeListener {
+        binding.zlArchive.setSingleTapConfirmedListener {
             if (mExoPlayerFullscreen) {
                 if (areVideoControllersShown) {
                     hideVideoControllers()
@@ -797,115 +797,6 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 animationFadeInFadeOut(ivAnimation)
             }
         }
-        
-        //old player.playWhenReady = false
-        /*player.addListener(object : Player.EventListener {
-            @Deprecated("Deprecated in Java")
-            override fun onPlayerStateChanged(
-                playWhenReady: Boolean,
-                playbackState: Int
-            ) {
-                if (playbackState == Player.STATE_READY) {
-                    canRenewToken = true
-                    mPlayer?.videoFormat?.let {
-                        if (it.width > 0 && it.height > 0) {
-                            (binding.mPlayerView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
-                        }
-                    }
-                }
-
-                if (playWhenReady && playbackState == Player.STATE_READY) {
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } else {
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                }
-
-                mViewModel.changePlaybackState(playbackState)
-
-                if (playbackState == Player.STATE_ENDED) {
-                    if (currentArchiveRangeIndex < archiveRanges.size - 1) {
-                        ++currentArchiveRangeIndex
-                        prepareMedia(playWhenReady)
-                    }
-                }
-            }
-
-            override fun onPlayerError(error: ExoPlaybackException) {
-                mViewModel.showVideoLoader(false)
-
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    if (canRenewToken) {
-                        canRenewToken = false
-
-                        //перезапрашиваем список камер
-                        mCCTVViewModel.cctvModel.value?.let {
-                            mCCTVViewModel.refreshCameras(it)
-                        }
-                    } else {
-                        mCCTVViewModel.showGlobalError(error.sourceException)
-                    }
-                }
-
-                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                    if (forceVideoTrack) {
-                        forceVideoTrack = false
-
-                        mViewModel.stopVideoPlay()
-                        releasePlayer()
-                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-                        mPlayer = createPlayer(binding.mPlayerView)
-                        mCurrentPlaybackData?.run {
-                            changeVideoSource(this)
-                        }
-                        mViewModel.restoreSeek()
-                        if (mExoPlayerView == null) {
-                            mExoPlayerView = view?.findViewById(R.id.mPlayerView)
-                        }
-                    }
-                }
-            }
-
-            override fun onTracksChanged(trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray) {
-                super.onTracksChanged(trackGroups, trackSelections)
-
-                if (!forceVideoTrack) {
-                    return
-                }
-
-                val decoderInfo = MediaCodecUtil.getDecoderInfo(MimeTypes.VIDEO_H264, false, false)
-                val maxSupportedWidth = (decoderInfo?.capabilities?.videoCapabilities?.supportedWidths?.upper ?: 0) * RESOLUTION_TOLERANCE
-                val maxSupportedHeight = (decoderInfo?.capabilities?.videoCapabilities?.supportedHeights?.upper ?: 0) * RESOLUTION_TOLERANCE
-
-                (player.trackSelector as? DefaultTrackSelector)?.let{ trackSelector ->
-                    trackSelector.currentMappedTrackInfo?.let { mappedTrackInfo ->
-                        for (k in 0 until mappedTrackInfo.rendererCount) {
-                            if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
-                                val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
-                                for (i in 0 until rendererTrackGroups.length) {
-                                    val tracks = mutableListOf<Int>()
-                                    for (j in 0 until rendererTrackGroups[i].length) {
-                                        if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
-                                            mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                                (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
-                                            tracks.add(j)
-                                        }
-                                    }
-                                    val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks.toIntArray())
-                                    trackSelector.setParameters(
-                                        trackSelector.buildUponParameters()
-                                            .setSelectionOverride(k, rendererTrackGroups, selectionOverride)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        })*/
 
         return player
     }
@@ -914,10 +805,6 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         mViewModel.showVideoLoader(true)
         try {
             val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRanges[currentArchiveRangeIndex].from, archiveRanges[currentArchiveRangeIndex].durationSeconds)
-            //old
-            /*mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(hls)))
-            mPlayer?.prepare()
-            mPlayer?.playWhenReady = doPlay*/
             mPlayer?.prepareMedia(hls, archiveRanges[currentArchiveRangeIndex].fromUtc, archiveRanges[currentArchiveRangeIndex].durationSeconds, seekMediaTo, doPlay)
         } catch (e: Throwable) {
             mViewModel.showVideoLoader(false)
@@ -948,10 +835,6 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         Timber.d("__Q__ call releasePlayer()")
         mPlayer?.releasePlayer()
         mPlayer = null
-        //old
-        /*mPlayer?.stop()
-        mPlayer?.release()
-        mPlayer = null*/
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

@@ -15,25 +15,25 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.video.VideoListener
+import com.google.android.exoplayer2.video.VideoSize
+import com.sesameware.domain.model.response.MediaServerType
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailAdapter
 import timber.log.Timber
-import org.threeten.bp.DateTimeUtils
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogDetailBinding
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MyGestureDetector
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogAddPhoto.DialogAddPhotoFragment
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogRemovePhoto.DialogRemovePhotoFragment
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
+import org.threeten.bp.ZoneOffset
 
 class EventLogDetailFragment : Fragment() {
     private var _binding: FragmentEventLogDetailBinding? = null
@@ -43,7 +43,7 @@ class EventLogDetailFragment : Fragment() {
     private var snapHelper: PagerSnapHelper? = null
 
     private var prevLoadedIndex = -1
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: BaseCCTVPlayer? = null
     private var mPlayerView: PlayerView? = null
     private var videoUrl = ""
     private var savedPosition = -1
@@ -64,57 +64,42 @@ class EventLogDetailFragment : Fragment() {
         }
     }
 
-    private fun initPlayer() {
+    private fun initPlayer(serverType: MediaServerType) {
+        mPlayer?.let { player ->
+            if ((serverType == MediaServerType.MACROSCOP) xor (player is MacroscopPlayer)) {
+                releasePlayer()
+            }
+        }
         if (mPlayer == null) {
-            val trackSelector = DefaultTrackSelector(requireContext())
-            mPlayer = SimpleExoPlayer.Builder(requireContext())
-                .setTrackSelector(trackSelector)
-                .build()
-            mPlayer?.playWhenReady = true
-            mPlayer?.addListener(object : Player.EventListener{
-                override fun onPlaybackStateChanged(state: Int) {
-                    if (state == Player.STATE_READY) {
-                        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                    } else {
-                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                    }
-
-                    if (state == Player.STATE_ENDED) {
-                        mPlayer?.playWhenReady = false
-                        mPlayer?.seekTo((mPlayer?.duration ?: 0) - 1)
-                        Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_pause), Toast.LENGTH_LONG).show()
-                    }
+            val callbacks = object : BaseCCTVPlayer.Callbacks {
+                override fun onPlayerStateReady() {
+                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
-            })
-            mPlayer?.addVideoListener(object : VideoListener {
-                override fun onRenderedFirstFrame() {
-                    super.onRenderedFirstFrame()
+
+                override fun onPlayerStateEnded() {
+                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+
+                override fun onPlayerStateIdle() {
+                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+
+                override fun onRenderFirstFrame() {
                     mPlayerView?.alpha = 1.0f
                 }
 
-                //этот метод нужен для установки нужной высоты вьюшки с видео
-                @Deprecated("Deprecated in Java")
-                override fun onVideoSizeChanged(
-                    width: Int,
-                    height: Int,
-                    unappliedRotationDegrees: Int,
-                    pixelWidthHeightRatio: Float
-                ) {
-                    super.onVideoSizeChanged(
-                        width,
-                        height,
-                        unappliedRotationDegrees,
-                        pixelWidthHeightRatio
-                    )
+                override fun onVideoSizeChanged(videoSize: VideoSize) {
                     mPlayerView?.let {
-                        if (width > 0 && height > 0) {
-                            val k = it.measuredWidth.toFloat() / width.toFloat()
-                            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (height.toFloat() * k).toInt())
+                        if (videoSize.width > 0 && videoSize.height > 0) {
+                            val k = it.measuredWidth.toFloat() / videoSize.width.toFloat()
+                            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (videoSize.height.toFloat() * k).toInt())
                         }
                     }
                 }
-            })
-            mPlayerView?.player = mPlayer
+            }
+
+            mPlayer = if (serverType == MediaServerType.MACROSCOP) MacroscopPlayer(requireContext(), false, callbacks) else DefaultCCTVPlayer(requireContext(), false, callbacks)
+            mPlayerView?.player = (mPlayer as? DefaultCCTVPlayer)?.getPlayer()
         }
     }
 
@@ -125,8 +110,7 @@ class EventLogDetailFragment : Fragment() {
 
     fun releasePlayer() {
         mPlayerView?.alpha = 0.0f
-        mPlayer?.stop()
-        mPlayer?.release()
+        mPlayer?.releasePlayer()
         mPlayer = null
     }
 
@@ -136,13 +120,17 @@ class EventLogDetailFragment : Fragment() {
             if (day != null && index != null) {
                 adapter.eventsByDays[day]?.get(index)?.let {eventItem ->
                     mViewModel.camMapData[eventItem.objectId]?.let { data ->
-                        videoUrl = data.getHlsAt(eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS),
-                            EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS)
-                        Timber.d("__Q__  playVideo media $videoUrl  mPlayer = $mPlayer")
-                        mPlayer?.setMediaItem(MediaItem.fromUri(videoUrl))
-                        mPlayer?.prepare()
-                        mPlayer?.play()
-                        mPlayer?.seekTo(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS * 1000L)
+                        initPlayer(data.serverType)
+                        val fromDate = eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)
+                        videoUrl = data.getHlsAt(fromDate, EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS)
+                        Timber.d("__Q__    serverType = ${data.serverType}    playVideo media $videoUrl    mPlayer = $mPlayer")
+                        mPlayer?.prepareMedia(
+                            videoUrl,
+                            fromDate.toEpochSecond(ZoneOffset.of("+3")),
+                            EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS,
+                            EventLogViewModel.EVENT_VIDEO_BACK_SECONDS * 1000L,
+                            true
+                        )
                     }
                 }
             }
@@ -158,7 +146,6 @@ class EventLogDetailFragment : Fragment() {
         super.onResume()
 
         if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address) {
-            initPlayer()
             playVideo(savedPosition)
         }
     }
@@ -167,7 +154,6 @@ class EventLogDetailFragment : Fragment() {
         if (hidden) {
             releasePlayer()
         } else {
-            initPlayer()
             playVideo(savedPosition)
         }
 
@@ -258,8 +244,8 @@ class EventLogDetailFragment : Fragment() {
                     val svELD: ScrollView? = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.svELD)
                     val q = GestureDetector(requireContext(), MyGestureDetector(
                         {
-                            if (mPlayer?.playbackState == Player.STATE_READY) {
-                                if (mPlayer?.isPlaying == true) {
+                            if (mPlayer?.isReady() == true) {
+                                if (mPlayer?.isPlaying() == true) {
                                     mPlayer?.pause()
                                     Toast.makeText(requireContext(), requireContext().getString(R.string.event_log_pause), Toast.LENGTH_LONG).show()
                                 } else {
@@ -269,10 +255,10 @@ class EventLogDetailFragment : Fragment() {
                                 }
                             }
                         }, { x_pos ->  //двойной тап делает перемотку вперед или назад в зависимости от места двойного тапа: слева - назад, справа - вперед
-                            if (mPlayer?.playbackState == Player.STATE_READY) {
+                            if (mPlayer?.isReady() == true) {
                                 if (x_pos != null && svELD != null && mPlayer != null) {
-                                    var currentPosition = mPlayer?.currentPosition ?: 0
-                                    val lastPosition = (mPlayer?.duration ?: 0) - 1
+                                    var currentPosition = mPlayer?.currentPosition() ?: 0
+                                    val lastPosition = (mPlayer?.mediaDuration() ?: 0) - 1
                                     var seekStep = EventLogViewModel.SEEK_STEP
                                     if (x_pos.toInt() < svELD.width / 2) {
                                         seekStep = -seekStep
@@ -295,7 +281,7 @@ class EventLogDetailFragment : Fragment() {
                                 }
                             }
                         }, {
-                            if (mPlayer?.playbackState == Player.STATE_READY) {
+                            if (mPlayer?.isReady() == true) {
                                 if (mPlayerView?.alpha == 0.0f) {
                                     mPlayerView?.alpha = 1.0f
                                     mPlayer?.play()
@@ -315,7 +301,7 @@ class EventLogDetailFragment : Fragment() {
                     }
 
                     mPlayerView?.alpha = 0.0f
-                    mPlayerView?.player = mPlayer
+                    mPlayerView?.player = (mPlayer as? DefaultCCTVPlayer)?.getPlayer()
                     playVideo(newPosition)
                     savedPosition = newPosition
                 }
