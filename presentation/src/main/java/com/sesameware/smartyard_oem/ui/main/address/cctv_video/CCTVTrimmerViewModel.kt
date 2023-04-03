@@ -199,7 +199,7 @@ class CCTVTrimmerViewModel(
                 }
                 Player.STATE_BUFFERING -> {
                     showVideoLoader(true)
-                    normalSpeed()
+                    //normalSpeed()
                 }
                 Player.STATE_ENDED -> {
                     //игнорируем, так как обрабатывается в CCTVTimmerFragment

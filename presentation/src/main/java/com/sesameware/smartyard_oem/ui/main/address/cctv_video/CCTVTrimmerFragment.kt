@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -25,13 +24,8 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
 import com.sesameware.domain.model.response.MediaServerType
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -39,7 +33,6 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.lib.TimeInterval
 import com.sesameware.lib.timeInMs
-import com.sesameware.lib.toTimeStamp
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.clamp
@@ -130,6 +123,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
     //позиционирование в указанную временную точку в миллисекундах внутри интервала
     private fun playerSeekTo(ms: Long) {
+        Timber.d("__Q__  call  playerSeekTo = $ms")
+
         if (archiveRanges.size == 0) {
             return
         }
@@ -161,16 +156,22 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             seekToTime = archiveRanges.first().from
         }
 
+        var isNewMedia = false
         if (foundIndex != currentArchiveRangeIndex) {
             currentArchiveRangeIndex = foundIndex
-            prepareMedia(mPlayer?.playWhenReady ?: false)
+            isNewMedia = true
         }
 
         if (seekToTime < archiveRanges[currentArchiveRangeIndex].from) {
             seekToTime = archiveRanges[currentArchiveRangeIndex].from
         }
 
-        mPlayer?.seekTo(seekToTime.timeInMs() - archiveRanges[currentArchiveRangeIndex].from.timeInMs())
+        val seekMediaTo = seekToTime.timeInMs() - archiveRanges[currentArchiveRangeIndex].from.timeInMs()
+        if (isNewMedia) {
+            prepareMedia(seekMediaTo, mPlayer?.playWhenReady ?: false)
+        } else {
+            mPlayer?.seekTo(seekToTime.timeInMs() - archiveRanges[currentArchiveRangeIndex].from.timeInMs())
+        }
         binding.rangePlayer.slider.setSeekFromPlayer(playerCurrentPosition())
     }
 
@@ -479,6 +480,23 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        Timber.d("__Q__   createPlayer from onStart")
+        mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
+        mCurrentPlaybackData?.run {
+            changeVideoSource(this)
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        mViewModel.stopVideoPlay()
+        Timber.d("__Q__   releasePlayer from onStop")
+        releasePlayer()
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -488,13 +506,6 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 mExoPlayerView = view?.findViewById(R.id.mPlayerView)
             }
         }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        mViewModel.stopVideoPlay()
-        releasePlayer()
     }
 
     private fun setupObserve(context: Context) {
@@ -644,7 +655,9 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 val initialThumb = mCCTVViewModel.initialThumb
                 mViewModel.initialize(cctvData, initialThumb)
                 mCurrentPlaybackData?.run {
+                    Timber.d("__Q__   releasePlayer from chosenCamera observer")
                     releasePlayer()
+                    Timber.d("__Q__   createPlayer from chosenCamera observer")
                     createPlayer(cctvData.serverType, binding.mPlayerView)
                     changeVideoSource(this)
                 }
@@ -663,19 +676,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         binding.rvTimeFragmentButtonsWrap.show(!active)
     }
 
-    override fun onStart() {
-        super.onStart()
-        mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
-        mCurrentPlaybackData?.run {
-            changeVideoSource(this)
-        }
-    }
-
     private fun createPlayer(
         serverType: MediaServerType?,
         videoView: PlayerView
     ): BaseCCTVPlayer {
-        Timber.d("debug_dmm createPlayer()")
+        Timber.d("__Q__ createPlayer()")
 
         val callbacks = object : BaseCCTVPlayer.Callbacks {
             override fun onPlayerStateReady() {
@@ -695,7 +700,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 if (currentArchiveRangeIndex < archiveRanges.size - 1) {
                     ++currentArchiveRangeIndex
-                    prepareMedia(mPlayer?.playWhenReady == true)
+                    prepareMedia(0L, mPlayer?.playWhenReady == true)
                 }
                 mViewModel.changePlaybackState(Player.STATE_ENDED)
             }
@@ -731,9 +736,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                             forceVideoTrack = false
 
                             mViewModel.stopVideoPlay()
+                            Timber.d("__Q__   releasePlayer from onPlayerError")
                             releasePlayer()
                             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
+                            Timber.d("__Q__   createPlayer from onPlayerError")
                             mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
                             mCurrentPlaybackData?.run {
                                 changeVideoSource(this)
@@ -903,7 +910,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         return player
     }
 
-    private fun prepareMedia(doPlay: Boolean = false) {
+    private fun prepareMedia(seekMediaTo: Long = 0, doPlay: Boolean = false) {
         mViewModel.showVideoLoader(true)
         try {
             val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRanges[currentArchiveRangeIndex].from, archiveRanges[currentArchiveRangeIndex].durationSeconds)
@@ -911,7 +918,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             /*mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(hls)))
             mPlayer?.prepare()
             mPlayer?.playWhenReady = doPlay*/
-            mPlayer?.prepareMedia(hls, archiveRanges[currentArchiveRangeIndex].fromUtc, archiveRanges[currentArchiveRangeIndex].durationSeconds, doPlay)
+            mPlayer?.prepareMedia(hls, archiveRanges[currentArchiveRangeIndex].fromUtc, archiveRanges[currentArchiveRangeIndex].durationSeconds, seekMediaTo, doPlay)
         } catch (e: Throwable) {
             mViewModel.showVideoLoader(false)
             mViewModel.handleError(e)
@@ -927,7 +934,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         generateArchiveRanges()
         currentArchiveRangeIndex = 0
 
-        prepareMedia(mPlayer?.playWhenReady ?: false)
+        prepareMedia(0L, mPlayer?.playWhenReady ?: false)
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
@@ -938,7 +945,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     private fun releasePlayer() {
-        Timber.d("debug_dmm releasePlayer()")
+        Timber.d("__Q__ call releasePlayer()")
         mPlayer?.releasePlayer()
         mPlayer = null
         //old
@@ -952,9 +959,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
         if (hidden) {
             mViewModel.stopVideoPlay()
+            Timber.d("__Q__   releasePlayer from onHiddenChanged")
             releasePlayer()
             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         } else {
+            Timber.d("__Q__   createPlayer from onHiddenChanged")
             mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
             mCurrentPlaybackData?.run {
                 changeVideoSource(this)

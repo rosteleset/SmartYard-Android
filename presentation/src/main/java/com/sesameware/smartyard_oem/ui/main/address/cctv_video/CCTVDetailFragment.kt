@@ -75,10 +75,11 @@ class CCTVDetailFragment : Fragment() {
             adapter.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as CCTVOnlineTab
         when (position) {
             CCTVViewModel.ARCHIVE_TAB_POSITION -> {
+                Timber.d("__Q__   call onlineTabFragment.releasePlayer from setupTabs")
                 onlineTabFragment.releasePlayer()
             }
             CCTVViewModel.ONLINE_TAB_POSITION -> {
-                onlineTabFragment.initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
+                mCCTVViewModel.chosenCamera.postValue(mCCTVViewModel.chosenCamera.value)
             }
         }
     }
@@ -112,12 +113,14 @@ class CCTVDetailFragment : Fragment() {
             if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
                 val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as? CCTVOnlineTab
                 Timber.d("debug_dmm __onlineTabFragment: $onlineTabFragment")
+                Timber.d("__Q__   releasePlayer from onHiddenChanged")
                 onlineTabFragment?.releasePlayer()
                 activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
         } else {
             if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
                 val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as? CCTVOnlineTab
+                Timber.d("__Q__   initPlayer from onHiddenChanged")
                 onlineTabFragment?.initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
             }
         }

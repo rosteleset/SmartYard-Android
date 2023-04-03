@@ -154,8 +154,9 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             viewLifecycleOwner
         ) {
             it?.run {
-                Timber.d("debug_dmm  chosenCamera changed")
+                Timber.d("__Q__   releasePlayer from chosenCamera observer")
                 releasePlayer()
+                Timber.d("__Q__   initPlayer from chosenCamera observer")
                 initPlayer(this.serverType)
                 changeVideoSource(this)
             }
@@ -228,8 +229,10 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                     if (error.type == ExoPlaybackException.TYPE_RENDERER) {
                         if (forceVideoTrack) {
                             forceVideoTrack = false
+                            Timber.d("__Q__   releasePlayer from onPlayerError")
                             releasePlayer()
                             activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                            Timber.d("__Q__   initPlayer from onPlayerError")
                             initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
                         }
                     }
@@ -346,11 +349,11 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private fun changeVideoSource(cctvData: CCTVData) {
         binding.mProgress.visibility = View.VISIBLE
         Timber.d("debug_dmm  prepareMedia url = ${cctvData.hls}")
-        mPlayer?.prepareMedia(cctvData.hls, BaseCCTVPlayer.INVALID_POSITION, BaseCCTVPlayer.INVALID_DURATION,true)
+        mPlayer?.prepareMedia(cctvData.hls)
     }
 
     fun releasePlayer() {
-        Timber.d("debug_dmm  call releasePlayer")
+        Timber.d("__Q__  call releasePlayer")
 
         mPlayer?.releasePlayer()
         mPlayer = null
@@ -401,10 +404,17 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        Timber.d("__Q__   releasePlayer from onStop")
+        releasePlayer()
+    }
+
     override fun onPause() {
         super.onPause()
 
-        Timber.d("debug_dmm __onPause")
+        Timber.d("__Q__   releasePlayer from onPause")
         releasePlayer()
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
@@ -415,6 +425,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm __onResume, is fragment hidden = $isHidden")
 
         if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
+            Timber.d("__Q__   initPlayer from onResume")
             initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
             Timber.d("debug_dmm __CCTVOnlineTab: $this")
         }

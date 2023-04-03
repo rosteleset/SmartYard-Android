@@ -164,7 +164,7 @@ class CCTVViewModel(
     }
 
     fun chooseCamera(index: Int) {
-        Timber.d("debug_dmm  call chooseCamera with index = $index")
+        Timber.d("__Q__  call chooseCamera with index = $index")
         state[chosenIndex_Key] = index
         cameraList.value?.get(index)?.let { camera ->
             state[chosenCamera_Key] = camera
