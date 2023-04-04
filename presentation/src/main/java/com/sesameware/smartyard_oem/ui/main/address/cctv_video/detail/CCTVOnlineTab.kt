@@ -259,7 +259,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private fun changeVideoSource(cctvData: CCTVData) {
         binding.mProgress.visibility = View.VISIBLE
         Timber.d("debug_dmm  prepareMedia url = ${cctvData.hls}")
-        mPlayer?.prepareMedia(cctvData.hls)
+        mPlayer?.prepareMedia(cctvData.hls, doPlay = true)
     }
 
     fun releasePlayer() {
