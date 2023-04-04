@@ -16,6 +16,9 @@ import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.model.response.CCTVYoutubeResponse
 import com.sesameware.domain.model.response.CCTVRangesResponse
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Nail Shakurov

@@ -25,19 +25,6 @@ data class Plog(
 ) {
     val date: LocalDateTime
         get() = LocalDateTime.parse(_date, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-    val event: String
-        get() {
-            return when (eventType) {
-                EVENT_DOOR_PHONE_CALL_UNANSWERED -> "Звонок в домофон"
-                EVENT_DOOR_PHONE_CALL_ANSWERED -> "Звонок в домофон"
-                EVENT_OPEN_BY_KEY -> "Открывание ключом"
-                EVENT_OPEN_FROM_APP -> "Открытие из приложения"
-                EVENT_OPEN_BY_FACE -> "Открывание по лицу"
-                EVENT_OPEN_BY_CODE -> "Открывание по коду"
-                EVENT_OPEN_GATES_BY_CALL -> "Открывание звонком"
-                else -> "Неизвестное событие"
-            }
-        }
 
     // расширенная детализация, структура до конца не определена
     data class DetailX(

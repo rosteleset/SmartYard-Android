@@ -13,7 +13,7 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
     private lateinit var mFcmCallData: FcmCallData
     private var slideShowTimer: Timer? = null
     val imageStringData = MutableLiveData<Event<String>>()
-    val eyeState = MutableLiveData<Boolean>()
+    val eyeState = MutableLiveData(false)
     val connected = MutableLiveData<Event<Unit>>()
     val routeAudioTo = MutableLiveData<Boolean>()
 
@@ -52,7 +52,7 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
         switchStreamMode(false)
     }
 
-    fun connectedСhangeStateUiAudioToSpeaker() {
+    fun connectedChangeStateUiAudioToSpeaker() {
         connected.value = Event(Unit)
     }
 }

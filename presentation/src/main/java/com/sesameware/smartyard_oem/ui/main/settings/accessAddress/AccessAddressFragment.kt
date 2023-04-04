@@ -107,19 +107,18 @@ class AccessAddressFragment : Fragment() {
         }
 
         mViewModel.roommate.observe(
-            viewLifecycleOwner,
-            Observer {
-                val inner = it.filter { it.type == Type.INNER.value }
-                val outer = it.filter { it.type == Type.OUTER.value }
-                adapterAccessBarrierGate.items =
-                    outer.map { ContactModel(it.expire, it.phone) }.toMutableList()
-                adapterAccessBarrierGate.notifyDataSetChanged()
+            viewLifecycleOwner
+        ) {
+            val inner = it.filter { it.type == Type.INNER.value }
+            val outer = it.filter { it.type == Type.OUTER.value }
+            adapterAccessBarrierGate.items =
+                outer.map { ContactModel(it.expire, it.phone) }.toMutableList()
+            adapterAccessBarrierGate.notifyDataSetChanged()
 
-                adapterPermanentAccessAddress.items =
-                    inner.map { ContactModel(it.expire, it.phone) }.toMutableList()
-                adapterPermanentAccessAddress.notifyDataSetChanged()
-            }
-        )
+            adapterPermanentAccessAddress.items =
+                inner.map { ContactModel(it.expire, it.phone) }.toMutableList()
+            adapterPermanentAccessAddress.notifyDataSetChanged()
+        }
 
         mViewModel.operationRoommate.observe(
             viewLifecycleOwner,

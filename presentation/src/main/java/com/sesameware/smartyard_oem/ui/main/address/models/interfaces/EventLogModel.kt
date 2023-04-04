@@ -1,8 +1,8 @@
 package com.sesameware.smartyard_oem.ui.main.address.models.interfaces
 
 import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
 import com.sesameware.smartyard_oem.ui.main.address.event_log.Flat
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class EventLogModel : ObjectItem(), Parcelable {

@@ -244,9 +244,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
     companion object {
         const val CHANNEL_INBOX_ID = "channel_inbox"
-        const val CHANNEL_INBOX_TITLE = "Сообщения"
         const val CHANNEL_CALLS_ID = "channel_calls"
-        const val CHANNEL_CALLS_TITLE = "Входящие звонки"
         val CALL_VIBRATION_PATTERN = longArrayOf(0, 1000, 1000)
         const val NOTIFICATION_MESSAGE_ID = "messageId"
         const val NOTIFICATION_MESSAGE_TYPE = "messageType"

@@ -8,9 +8,7 @@ import android.widget.CheckBox
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
-import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.sesameware.smartyard_oem.R
-import timber.log.Timber
 
 class ProvidersAdapterDelegate(
     var activity: Activity,
@@ -47,6 +45,8 @@ class ProvidersAdapterDelegate(
                 checkbox.isChecked = true
                 checkedPosition = position
                 clickListener.invoke(providerItem.id, providerItem.name, providerItem.baseUrl)
+                items[checkedPosition].isChecked = true
+                bindingAdapter?.notifyItemChanged(checkedPosition)
             }
         }
     }

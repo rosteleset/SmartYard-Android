@@ -28,12 +28,12 @@ import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.util.MimeTypes
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.domain.model.response.CCTVData
+import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailOnlineBinding
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.*
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
 import timber.log.Timber
 
@@ -41,7 +41,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCctvDetailOnlineBinding? = null
     private val binding get() = _binding!!
 
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: BaseCCTVPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
     private var mExoPlayerFullscreen = false
@@ -74,6 +74,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
         Timber.d("debug_dmm __onViewCreated")
         setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
+        setupObserve()
     }
 
     private fun setFullscreenMode() {
@@ -147,11 +148,17 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     private fun setupObserve() {
+        Timber.d("debug_dmm call setupObserve")
+
         mCCTVViewModel.chosenCamera.observe(
             viewLifecycleOwner
         ) {
             it?.run {
-                changeVideoSource(hls)
+                Timber.d("__Q__   releasePlayer from chosenCamera observer")
+                releasePlayer()
+                Timber.d("__Q__   initPlayer from chosenCamera observer")
+                initPlayer(this.serverType)
+                changeVideoSource(this)
             }
         }
 
@@ -170,20 +177,71 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     private fun createPlayer(
+        serverType: MediaServerType?,
         videoView: PlayerView,
         progressView: ProgressBar
-    ): SimpleExoPlayer {
+    ): BaseCCTVPlayer {
         Timber.d("debug_dmm createPlayer()")
 
-        val trackSelector = DefaultTrackSelector(requireContext())
-        val player  = SimpleExoPlayer.Builder(requireContext())
-            .setTrackSelector(trackSelector)
-            .build()
+        val callbacks = object : BaseCCTVPlayer.Callbacks {
+            override fun onPlayerStateReady() {
+                progressView.visibility = View.GONE
+                canRenewToken = true
+                (mPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let {
+                    if (it.width > 0 && it.height > 0) {
+                        (binding.mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
+                    }
+                }
+                if (mPlayer?.playWhenReady == true) {
+                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
 
-        //для теста
-        //player.addAnalyticsListener(EventLogger(trackSelector))
+            override fun onPlayerStateEnded() {
+                progressView.visibility = View.GONE
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
 
-        videoView.player = player
+            override fun onPlayerStateBuffering() {
+                progressView.visibility = View.VISIBLE
+            }
+
+            override fun onPlayerStateIdle() {
+                progressView.visibility = View.GONE
+                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+            }
+
+            override fun onPlayerError(exception: Exception) {
+                (exception as? ExoPlaybackException)?.let { error ->
+                    if (error.type == ExoPlaybackException.TYPE_SOURCE) {
+                        if (canRenewToken) {
+                            canRenewToken = false
+
+                            //перезапрашиваем список камер
+                            mCCTVViewModel.cctvModel.value?.let {
+                                mCCTVViewModel.refreshCameras(it)
+                            }
+                        } else {
+                            mCCTVViewModel.showGlobalError(error.sourceException)
+                        }
+                    }
+
+                    if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                        if (forceVideoTrack) {
+                            forceVideoTrack = false
+                            Timber.d("__Q__   releasePlayer from onPlayerError")
+                            releasePlayer()
+                            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                            Timber.d("__Q__   initPlayer from onPlayerError")
+                            initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
+                        }
+                    }
+                }
+            }
+        }
+
+        val player = if (serverType == MediaServerType.MACROSCOP) MacroscopPlayer(requireContext(), forceVideoTrack, callbacks) else DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+        videoView.player = player.getPlayer()
         videoView.useController = false
         player.playWhenReady = true
 
@@ -195,119 +253,24 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
         }
 
-        player.addListener(object : Player.EventListener {
-            override fun onPlayerStateChanged(
-                playWhenReady: Boolean,
-                playbackState: Int
-            ) {
-                if (playbackState == Player.STATE_READY) {
-                    canRenewToken = true
-                    mPlayer?.videoFormat?.let {
-                        if (it.width > 0 && it.height > 0) {
-                            (binding.mVideoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
-                        }
-                    }
-                }
-
-                if (playWhenReady && playbackState == Player.STATE_READY) {
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                } else {
-                    activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                }
-
-                progressView.visibility = when (playbackState) {
-                    Player.STATE_BUFFERING -> View.VISIBLE
-                    else -> View.GONE
-                }
-            }
-
-            override fun onPlayerError(error: ExoPlaybackException) {
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    if (canRenewToken) {
-                        canRenewToken = false
-
-                        //перезапрашиваем список камер
-                        mCCTVViewModel.cctvModel.value?.let {
-                            mCCTVViewModel.refreshCameras(it)
-                        }
-                    } else {
-                        mCCTVViewModel.showGlobalError(error.sourceException)
-                    }
-                }
-
-                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                    if (forceVideoTrack) {
-                        forceVideoTrack = false
-                        releasePlayer()
-                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                        initPlayer()
-                    }
-                }
-            }
-
-            override fun onTracksChanged(trackGroups: TrackGroupArray,
-                                         trackSelections: TrackSelectionArray) {
-                super.onTracksChanged(trackGroups, trackSelections)
-
-                if (!forceVideoTrack) {
-                    return
-                }
-
-                val decoderInfo = MediaCodecUtil.getDecoderInfo(MimeTypes.VIDEO_H264, false, false)
-                val maxSupportedWidth = (decoderInfo?.capabilities?.videoCapabilities?.supportedWidths?.upper ?: 0) * RESOLUTION_TOLERANCE
-                val maxSupportedHeight = (decoderInfo?.capabilities?.videoCapabilities?.supportedHeights?.upper ?: 0) * RESOLUTION_TOLERANCE
-
-                (player.trackSelector as? DefaultTrackSelector)?.let{ trackSelector ->
-                    trackSelector.currentMappedTrackInfo?.let { mappedTrackInfo ->
-                        for (k in 0 until mappedTrackInfo.rendererCount) {
-                            if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
-                                val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
-                                for (i in 0 until rendererTrackGroups.length) {
-                                    val tracks = mutableListOf<Int>()
-                                    for (j in 0 until rendererTrackGroups[i].length) {
-                                        if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
-                                            mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                            (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                    maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
-                                            tracks.add(j)
-                                        }
-                                    }
-                                    val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks.toIntArray())
-                                    trackSelector.setParameters(
-                                        trackSelector.buildUponParameters()
-                                            .setSelectionOverride(k, rendererTrackGroups, selectionOverride)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-        })
         return player
     }
 
-    private fun changeVideoSource(hls_url: String) {
-        mPlayer?.let { player ->
-            binding.mProgress.visibility = View.VISIBLE
-            player.setMediaItem(MediaItem.fromUri(Uri.parse(hls_url)))
-            player.prepare()
-        }
+    private fun changeVideoSource(cctvData: CCTVData) {
+        binding.mProgress.visibility = View.VISIBLE
+        Timber.d("debug_dmm  prepareMedia url = ${cctvData.hls}")
+        mPlayer?.prepareMedia(cctvData.hls)
     }
 
     fun releasePlayer() {
-        Timber.d("debug_dmm releasePlayer()")
-        Timber.d("debug_dmm mPlayer = $mPlayer")
-        mPlayer?.stop()
-        mPlayer?.release()
+        mPlayer?.releasePlayer()
         mPlayer = null
     }
 
-    fun initPlayer() {
+    fun initPlayer(serverType: MediaServerType?) {
+        Timber.d("debug_dmm  call initPlayer")
         if (mPlayer == null && view != null) {
-            mPlayer = createPlayer(binding.mVideoView, binding.mProgress)
-            setupObserve()
+            mPlayer = createPlayer(serverType, binding.mVideoView, binding.mProgress)
             binding.videoWrap.clipToOutline = true
         }
     }
@@ -316,8 +279,6 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         fun newInstance() = CCTVOnlineTab().apply {
             Timber.d("debug_dmm __new instance $this")
         }
-
-        const val RESOLUTION_TOLERANCE = 1.08  // коэффициент допуска видео разрешения
     }
 
     class GridSpacingItemDecoration(
@@ -351,10 +312,17 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        Timber.d("__Q__   releasePlayer from onStop")
+        releasePlayer()
+    }
+
     override fun onPause() {
         super.onPause()
 
-        Timber.d("debug_dmm __onPause")
+        Timber.d("__Q__   releasePlayer from onPause")
         releasePlayer()
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
@@ -365,7 +333,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm __onResume, is fragment hidden = $isHidden")
 
         if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-            initPlayer()
+            Timber.d("__Q__   initPlayer from onResume")
+            initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
             Timber.d("debug_dmm __CCTVOnlineTab: $this")
         }
     }

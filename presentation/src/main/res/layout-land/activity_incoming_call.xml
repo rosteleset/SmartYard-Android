@@ -104,7 +104,7 @@
                 android:layout_marginStart="16dp"
                 android:text="@string/opened"
                 android:visibility="visible"
-                app:buttonBG="@drawable/checkbox_round_state_unlock"
+                app:buttonBG="@drawable/checkbox_round_state_unlocked"
                 app:orientationLandscap="true" />
 
 

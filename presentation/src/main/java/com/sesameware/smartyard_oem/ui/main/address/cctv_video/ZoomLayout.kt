@@ -69,7 +69,7 @@ class ZoomLayout : FrameLayout, OnScaleGestureListener {
         init(context)
     }
 
-    fun setSingleTapConfirmeListener(listener: (() -> Unit)?) {
+    fun setSingleTapConfirmedListener(listener: (() -> Unit)?) {
         this.singleTapListener = listener
     }
 

@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.sesameware.smartyard_oem.databinding.ItemBurgerBinding
-import timber.log.Timber
 
 class BurgerDelegate: AdapterDelegate<List<BurgerModel>>() {
     override fun isForViewType(items: List<BurgerModel>, position: Int): Boolean {
@@ -35,7 +34,11 @@ class BurgerDelegate: AdapterDelegate<List<BurgerModel>>() {
                 .into(binding.ivIcon)
         }
 
-        binding.tvItem.text = items[position].title
+        if (items[position].titleId != null) {
+            binding.tvItem.text = holder.itemView.context.getString(items[position].titleId!!)
+        } else {
+            binding.tvItem.text = items[position].title
+        }
         binding.root.setOnClickListener {
             items[position].onClick.invoke()
         }

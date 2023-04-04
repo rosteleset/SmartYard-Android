@@ -3,7 +3,6 @@ package com.sesameware.smartyard_oem
 import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
-import android.media.AudioManager
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
@@ -33,7 +32,7 @@ import timber.log.Timber
 
 class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinComponent {
     private var currentRingtone: Ringtone? = null
-    private var fcmData: FcmCallData? = null
+    var fcmData: FcmCallData? = null
     private val preferenceStorage: PreferenceStorage by inject()
 
     val registrationState = MutableLiveData(
@@ -90,9 +89,14 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                             if (!isAppVisible()) {
                                 sendCallNotification(data, service, preferenceStorage)
                             } else {
+                                val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                    val notification = notificationManager.getNotificationChannel(FirebaseMessagingService.CHANNEL_CALLS_ID)
+                                    shouldVibrate = notification?.shouldVibrate() ?: false
+                                }
                                 val intent =
                                     Intent(service, IncomingCallActivity::class.java).apply {
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
                                         putExtra(FCM_DATA, data)
                                     }
                                 service.startActivity(intent)
@@ -106,7 +110,6 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                     service.stopSelf()
                 }
                 CallStateSimple.CONNECTED -> {
-                    deleteCallNotifications(service)
                     stopRinging()
                 }
                 CallStateSimple.OTHER_CONNECTED,
@@ -144,11 +147,6 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         Timber.d("debug_dmm ring.uri: ${ring.uri}")
 
         currentRingtone = RingtoneManager.getRingtone(service, ring.uri)
-        val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notification = notificationManager.getNotificationChannel(FirebaseMessagingService.CHANNEL_CALLS_ID)
-            shouldVibrate = notification?.shouldVibrate() ?: false
-        }
         fcmData = pendingData
         connect(pendingData)
     }
@@ -162,9 +160,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     fun stopRinging() {
         currentRingtone?.stop()
-        if (shouldVibrate) {
-            mAudioManager.vibrator?.cancel()
-        }
+        deleteCallNotifications(service)
+        mAudioManager.vibrator?.cancel()
     }
 
     fun acceptCall() {
@@ -197,7 +194,6 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     fun onDestroy() {
         stopRinging()
-        deleteCallNotifications(service)
         disconnect()
         finishCallActivity.value = Event(Unit)
     }
@@ -255,11 +251,12 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     }
 
     fun sendDtmf() {
-        Timber.d("debug_dmm sending dtmf..")
+        Timber.d("debug_dmm sending dtmf...")
         core.currentCall?.run {
             doDelayed(
                 {
-                    sendDtmfs(fcmData?.dtmf)
+                    val dtmfs = "${fcmData?.dtmf}${fcmData?.dtmf}${fcmData?.dtmf}"
+                    sendDtmfs(dtmfs)
                     doDelayed(
                         {
                             Timber.d("debug_dmm dtmf sent")

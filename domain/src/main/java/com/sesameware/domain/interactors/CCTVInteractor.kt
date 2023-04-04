@@ -53,4 +53,5 @@ class CCTVInteractor(
     suspend fun ranges(cameraID: Int): List<RangeObject>? {
         return repository.ranges(cameraID)?.data
     }
+
 }

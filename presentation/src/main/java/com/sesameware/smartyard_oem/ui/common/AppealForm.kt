@@ -81,6 +81,9 @@ class AppealForm @JvmOverloads constructor(
         if (error && mesId != null) {
             binding.tvError.visibility = View.VISIBLE
             binding.tvError.setText(mesId)
+            if (mesId == com.sesameware.domain.R.string.common_do_authorization_on_another) {
+                mViewModel.logout()
+            }
         } else {
             binding.tvError.visibility = View.GONE
         }

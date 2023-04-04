@@ -20,6 +20,7 @@ data class FcmCallData(
     val stun: String? = null,
     val stun_transport: String? = null,
     val hash: String? = null,
+    var eyeState: Boolean = false,
 ) : Serializable
 
 enum class FcmTransport {

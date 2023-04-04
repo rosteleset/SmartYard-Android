@@ -66,6 +66,7 @@ class MainActivity : CommonActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -200,6 +201,15 @@ class MainActivity : CommonActivity() {
     override fun onResume() {
         super.onResume()
         mViewModel.onResume()
+
+        // если мы в режиме звонка, то переходим в соответствующее окно
+        if (LinphoneService.instance?.mCore?.inCall() == true) {
+            val intent = Intent(this, IncomingCallActivity::class.java).apply {
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                putExtra(IncomingCallActivity.FCM_DATA, LinphoneService.instance?.provider?.fcmData)
+            }
+            startActivity(intent)
+        }
     }
 
     override fun onNewIntent(intent: Intent) {

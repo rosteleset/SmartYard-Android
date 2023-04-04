@@ -99,10 +99,8 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
     val morphCornerRadius = a.getDimensionPixelSize(R.styleable.MorphBottomNavigationView_morphCornerRadius, dpToPx(128f).toInt()).toFloat()
     a.recycle()
 
-    height = dpToPx(56f)
-
+    height = resources.getDimension(R.dimen.design_bottom_navigation_height)
     bottomNavigationMenuView = getChildAt(0) as BottomNavigationMenuView
-
     topEdgeTreatment = MorphBottomNavigationViewTopEdgeTreatment(
             bottomNavigationMenuView,
             morphItemRadius,

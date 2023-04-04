@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -20,4 +20,14 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <!-- logo -->
     <dimen name="logo_width_onboarding">186dp</dimen>
     <dimen name="logo_height_onboarding">91dp</dimen>
+
+    <!-- images heights -->
+    <dimen name="background_1">-2px</dimen>
+    <dimen name="ic_background_reg_number">-2px</dimen>
+    <dimen name="background_auth">-2px</dimen>
+    <dimen name="ic_background_address_map">-2px</dimen>
+    <dimen name="ic_background_address">-2px</dimen>
+
+    <dimen name="design_bottom_navigation_margin" tools:override="true">16dp</dimen>
+    <dimen name="design_bottom_navigation_height" tools:override="true">60dp</dimen>
 </resources>

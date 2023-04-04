@@ -14,6 +14,7 @@ typealias CCTVYoutubeResponse = ApiResult<List<CCTVYoutubeData>>
 typealias CCTVRangesResponse = ApiResult<List<RangeObject>>
 private val mPreviewFormatter = DateTimeFormatter.ofPattern("YYYY/MM/dd/HH/mm/ss")
 val targetZoneId: ZoneId = ZoneId.of("GMT+3")
+private val mPreviewFormatterMacroscop = DateTimeFormatter.ofPattern("dd.MM.yyyy%20HH:mm:ss")
 
 @Parcelize
 data class CCTVData(
@@ -23,11 +24,12 @@ data class CCTVData(
     @Json(name = "lon") val longitude: Double?,
     @Json(name = "token") val token: String,
     @Json(name = "url") val url: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
 ) : Parcelable {
     val hls: String get() =
         when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> "$url&$token"
             else -> "$url/index.m3u8?token=$token"
         }
 
@@ -42,6 +44,7 @@ data class CCTVData(
         val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> "$url&$token"
             else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
         }
     }
@@ -50,6 +53,7 @@ data class CCTVData(
         val zoned = time.atZone(targetZoneId).withZoneSameInstant(ZoneId.of("UTC"))
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/dvr_thumbnail_${zoned.format(mPreviewFormatter)}.mp4?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> "${url.replace("/hls?", "/site?")}&$token&starttime=${zoned.format(mPreviewFormatterMacroscop)}&resolutionx=480&resolutiony=270&streamtype=mainvideo&withcontenttype=true&mode=archive"
             else -> "$url/${zoned.format(mPreviewFormatter)}-preview.mp4?token=$token"
         }
     }
@@ -58,6 +62,7 @@ data class CCTVData(
         get() {
             return when (_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
+                MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -71,10 +76,11 @@ data class CCTVCityCameraData(
     @Json(name = "lon") val longitude: Double?,
     @Json(name = "url") val url: String,
     @Json(name = "token") val token: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
 ) : Parcelable {
     val hls: String get() = when (serverType) {
         MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
+        MediaServerType.MACROSCOP -> "$url&$token"
         else -> "$url/index.m3u8?token=$token"
     }
 
@@ -82,6 +88,7 @@ data class CCTVCityCameraData(
         get() {
             return when (_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
+                MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -101,10 +108,12 @@ data class CCTVYoutubeData(
 
 enum class MediaServerType {
     FLUSSONIC,
-    NIMBLE;
+    NIMBLE,
+    MACROSCOP;
 
     companion object {
         const val MEDIA_TYPE_FLUSSONIC = "flussonic"
         const val MEDIA_TYPE_NIMBLE = "nimble"
+        const val MEDIA_TYPE_MACROSCOP = "macroscop"
     }
 }

@@ -28,16 +28,8 @@ import org.koin.core.component.KoinComponent
 import org.linphone.core.RegistrationState
 import com.sesameware.domain.model.FcmCallData
 import com.sesameware.domain.utils.doDelayed
-import com.sesameware.smartyard_oem.CCallState
-import com.sesameware.smartyard_oem.CRegistrationState
-import com.sesameware.smartyard_oem.CallStateSimple
-import com.sesameware.smartyard_oem.CommonActivity
-import com.sesameware.smartyard_oem.EventObserver
-import com.sesameware.smartyard_oem.LinphoneProvider
-import com.sesameware.smartyard_oem.LinphoneService
-import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.*
 import com.sesameware.smartyard_oem.databinding.ActivityIncomingCallBinding
-import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 
 class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListener {
@@ -53,6 +45,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityIncomingCallBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -80,6 +73,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
             binding.mOpenButton.setOnClickListener { openDoor() }
             binding.mAnswerButton.setOnClickListener { answerCall() }
+            mViewModel.eyeState.value = LinphoneService.instance?.provider?.fcmData?.eyeState == true
             binding.mPeekButton.setOnClickListener {
                 mViewModel.eyeState.value = !binding.mPeekButton.isChecked
                 mLinphone.stopRinging()
@@ -211,12 +205,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     private fun setDoorState(opened: Boolean) {
         if (opened) {
-            mLinphone.disconnect()
             doDelayed(
                 {
+                    mLinphone.disconnect()
                     hangUp()
                 },
-                1000
+                3000
             )
         }
         binding.mOpenedButton.show(opened, true)
@@ -237,7 +231,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             binding.mPeekButton.setOnClickListener(null)
         } else {
             binding.mPeekButton.setOnClickListener {
-                setPeek(!binding.mPeekButton.isChecked)
+                mViewModel.eyeState.value = !binding.mPeekButton.isChecked
+                mLinphone.stopRinging()
             }
         }
 
@@ -247,7 +242,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         binding.mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
         binding.mAnswerButton.isSelected = connected
         if (connected) {
-            mViewModel.connectedСhangeStateUiAudioToSpeaker()
+            mViewModel.connectedChangeStateUiAudioToSpeaker()
         }
     }
 
@@ -328,16 +323,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onPause() {
         super.onPause()
+
         mSensorManager?.unregisterListener(this)
         mLinphone.mAudioManager.routeAudioToEarPiece()
-    }
-
-    override fun onWindowFocusChanged(hasFocus: Boolean) {
-        super.onWindowFocusChanged(hasFocus)
-
-        if (!hasFocus) {
-            hangUp()
-        }
+        LinphoneService.instance?.provider?.fcmData?.eyeState = binding.mPeekButton.isChecked
     }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}

@@ -2,6 +2,8 @@ package com.sesameware.lib
 
 import android.graphics.Bitmap
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 
 typealias HashBitmap = HashMap<Int, Bitmap?>
@@ -15,6 +17,7 @@ data class TimeInterval(
     val intervalText: String get() = "${from.format(mIntervalFormatter)} - ${to.format(mIntervalFormatter)}"
     val durationSeconds: Long get() = durationInMs / 1000
     val durationInMs: Long get() = to.timeInMs() - from.timeInMs()
+    val fromUtc: Long get() = from.toEpochSecond(ZoneOffset.of("+3"))
 
     private fun getPosInMs(current: LocalDateTime): Long {
         return (current.timeInMs() - from.timeInMs()).coerceIn(0L, durationInMs)

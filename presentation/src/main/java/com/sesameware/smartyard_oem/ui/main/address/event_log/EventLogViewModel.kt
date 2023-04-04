@@ -39,6 +39,7 @@ data class DoorphoneData(
         val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> "$url&$token"
             else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
         }
     }
@@ -291,6 +292,9 @@ class EventLogViewModel(
                                     } else {
                                         plog.address = address
                                     }
+                                    if (plog.mechanizmaDescription.isNotEmpty()) {
+                                        plog.address += " [${plog.mechanizmaDescription}]"
+                                    }
                                     plog.frsEnabled = flat.frsEnabled
                                     cacheEvents.getOrPut(cacheKey) {mutableListOf()}.add(plog)
                                     if (filterEventType.contains(plog.eventType)) {
@@ -336,9 +340,6 @@ class EventLogViewModel(
         const val EVENT_VIDEO_BACK_SECONDS = 1 * 60L
         const val EVENT_VIDEO_DURATION_SECONDS = EVENT_VIDEO_BACK_SECONDS * 2
         const val SEEK_STEP = 10_000L  // интервал перемотки в миллисекундах видео в деталях события при двойном тапе
-        const val PAUSE = "Пауза"
-        const val PLAYING = "Видео"
-        const val SCREENSHOT = "Кадр события"
         const val EVENT_LOG_KEEPING_MONTHS = 6L  // период хранения журнала событий в месяцах
     }
 }

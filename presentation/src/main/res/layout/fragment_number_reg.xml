@@ -13,7 +13,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/ic_background_reg_number"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_background_reg_number"
             app:layout_constraintEnd_toEndOf="parent"

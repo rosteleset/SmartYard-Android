@@ -31,7 +31,11 @@ class EventLogAdapterDelegate(private val setting: ParentListAdapterSetting) :
     ) {
         val vh = holder as EventLogViewHolder
         val eventLog: EventLogModel = items[position] as EventLogModel
-        vh.caption.text = eventLog.caption
+        if (eventLog.resourceId != null) {
+            vh.caption.text = vh.caption.context.getString(eventLog.resourceId!!)
+        } else {
+            vh.caption.text = eventLog.caption
+        }
         vh.count.text = eventLog.counter.toString()
         vh.itemView.setOnClickListener {setting.clickEventLog(eventLog)}
     }

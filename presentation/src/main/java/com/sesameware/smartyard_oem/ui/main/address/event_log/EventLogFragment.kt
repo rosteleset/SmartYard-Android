@@ -113,8 +113,8 @@ class EventLogFragment : Fragment() {
             binding.spinnerEventLogFlats.isVisible = true
             binding.spinnerEventLogFlats.adapter = ArrayAdapter(requireContext(),
                 R.layout.item_event_log_flats_spinner,
-                mViewModel.flatsAll.map {"Квартира ${it.flatNumber}"}.toMutableList().also {
-                    it.add(0, "Все квартиры")
+                mViewModel.flatsAll.map {getString(R.string.event_log_flat, it.flatNumber)}.toMutableList().also {
+                    it.add(0, getString(R.string.event_log_all_flats))
                 }).apply {
                 setDropDownViewResource(R.layout.event_log_flats_spinner_drop_down)
             }

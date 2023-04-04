@@ -34,7 +34,11 @@ class VideoCameraAdapterDelegate(private val setting: ParentListAdapterSetting) 
     ) {
         val vh = holder as VideoCameraViewHolder
         val videoCamera: VideoCameraModel = items[position] as VideoCameraModel
-        vh.caption.text = videoCamera.caption
+        if (videoCamera.resourceId != null) {
+            vh.caption.text = vh.caption.context.getString(videoCamera.resourceId!!)
+        } else {
+            vh.caption.text = videoCamera.caption
+        }
         vh.count.text = videoCamera.counter.toString()
         vh.itemView.setOnClickListener { setting.clickCamera(videoCamera) }
     }

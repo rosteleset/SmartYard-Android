@@ -7,4 +7,5 @@ package com.sesameware.smartyard_oem.ui.main.address.models.interfaces
 open class ObjectItem : DisplayableItem {
     var caption: String = ""
     var image: Int = 0
+    var resourceId: Int? = null
 }

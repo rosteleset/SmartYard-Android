@@ -1,13 +1,11 @@
 package com.sesameware.smartyard_oem.ui.main
 
 import android.content.Context
-import android.content.Intent
 import android.net.Uri
 import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
@@ -18,7 +16,6 @@ import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
-import timber.log.Timber
 
 class MainActivityViewModel(
     private val authInteractor: AuthInteractor,

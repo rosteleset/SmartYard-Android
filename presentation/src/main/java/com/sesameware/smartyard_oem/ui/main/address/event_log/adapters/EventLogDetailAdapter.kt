@@ -98,7 +98,16 @@ class EventLogDetailAdapter(
             val (day, index) = getPlog(position)
             if (day != null && index != null) {
                 eventsByDays[day]?.get(index)?.let {eventItem ->
-                    tvEventName.text = eventItem.event
+                    tvEventName.text = when (eventItem.eventType) {
+                        Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> itemView.context.getString(R.string.event_door_phone_call_unanswered)
+                        Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> itemView.context.getString(R.string.event_door_phone_call_answered)
+                        Plog.EVENT_OPEN_BY_KEY -> itemView.context.getString(R.string.event_open_by_key)
+                        Plog.EVENT_OPEN_FROM_APP -> itemView.context.getString(R.string.event_open_from_app)
+                        Plog.EVENT_OPEN_BY_FACE -> itemView.context.getString(R.string.event_open_by_face)
+                        Plog.EVENT_OPEN_BY_CODE -> itemView.context.getString(R.string.event_open_by_code)
+                        Plog.EVENT_OPEN_GATES_BY_CALL -> itemView.context.getString(R.string.event_open_gates_by_call)
+                        else -> itemView.context.getString(R.string.event_unknown)
+                    }
                     tvEventAddress.text = eventItem.address
                     tvEventDate.text =
                         eventItem.date.format(DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm"))
@@ -113,7 +122,7 @@ class EventLogDetailAdapter(
                             tvEventUnansweredCall.isVisible = false
                             tvEventAnsweredCall.isVisible = true
                             val txt = itemView.resources.getString(R.string.event_log_answered_call,
-                                if (eventItem.detailX?.opened == true) "открыли" else "не открыли")
+                                if (eventItem.detailX?.opened == true) itemView.context.getString(R.string.event_log_opened) else itemView.context.getString(R.string.event_log_not_opened))
                             tvEventAnsweredCall.text = txt
                             tvEventAdditional.isVisible = false
                         }

@@ -14,7 +14,7 @@ import java.io.IOException
 import java.util.*
 
 class LinphoneService : Service() {
-    private var mCore: Core? = null
+    var mCore: Core? = null
     var provider: LinphoneProvider? = null
     private val mTaskHandler = Handler()
     private var mTimer = Timer()
