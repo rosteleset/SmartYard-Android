@@ -280,6 +280,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             }
 
             override fun onPlayerError(exception: Exception) {
+                progressView.visibility = View.GONE
+
                 (exception as? ExoPlaybackException)?.let { error ->
                     if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                         viewModel.showGlobalError(error.sourceException)
@@ -293,7 +295,11 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                             initPlayer(viewModel.chosenCamera.value?.serverType)
                         }
                     }
+
+                    return
                 }
+
+                viewModel.showGlobalError(exception)
             }
         }
 

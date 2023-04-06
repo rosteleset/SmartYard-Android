@@ -50,7 +50,7 @@ abstract class BaseCCTVPlayer {
     }
 }
 
-open class DefaultCCTVPlayer(private val context: Context, private val forceVideoTrack: Boolean, private val callbacks: Callbacks? = null) : BaseCCTVPlayer() {
+open class DefaultCCTVPlayer(private val context: Context, private val forceVideoTrack: Boolean, protected val callbacks: Callbacks? = null) : BaseCCTVPlayer() {
     protected var mPlayer: SimpleExoPlayer? = null
 
     override var playWhenReady: Boolean
@@ -280,9 +280,9 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
 
         val builder = OkHttpClient.Builder()
         with(builder) {
-            connectTimeout(30, TimeUnit.SECONDS)
-            readTimeout(30, TimeUnit.SECONDS)
-            writeTimeout(30, TimeUnit.SECONDS)
+            connectTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+            readTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
+            writeTimeout(REQUEST_TIMEOUT, TimeUnit.SECONDS)
         }
         httpClient = builder.build()
     }
@@ -350,17 +350,23 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
             val request = Request.Builder()
                 .url(requestUrl)
                 .build()
-            httpClient.newCall(request).execute().use { response ->
-                if (response.isSuccessful) {
-                    val p = mUrl.indexOf("?")
-                    if (p >= 0) {
-                        val r = response.body!!.string()
-                        Timber.d("__D__  response = $r")
-                        val realHlsUrl = mUrl.substring(0, p) + "/" + r
-                        withContext(Dispatchers.Main) {
-                            super.prepareMedia(realHlsUrl, INVALID_POSITION, INVALID_DURATION, 0L, doPlay)
+            try {
+                httpClient.newCall(request).execute().use { response ->
+                    if (response.isSuccessful) {
+                        val p = mUrl.indexOf("?")
+                        if (p >= 0) {
+                            val r = response.body!!.string()
+                            Timber.d("__D__  response = $r")
+                            val realHlsUrl = mUrl.substring(0, p) + "/" + r
+                            withContext(Dispatchers.Main) {
+                                super.prepareMedia(realHlsUrl, INVALID_POSITION, INVALID_DURATION, 0L, doPlay)
+                            }
                         }
                     }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    this@MacroscopPlayer.callbacks?.onPlayerError(e)
                 }
             }
         }
@@ -369,5 +375,9 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
     private fun clearProgressTimer() {
         progressTimer?.cancel()
         progressTimer = null
+    }
+
+    companion object {
+        const val REQUEST_TIMEOUT = 10L  // in seconds
     }
 }
