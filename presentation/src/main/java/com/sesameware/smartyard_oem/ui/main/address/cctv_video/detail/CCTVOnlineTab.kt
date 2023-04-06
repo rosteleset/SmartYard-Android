@@ -212,6 +212,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             }
 
             override fun onPlayerError(exception: Exception) {
+                progressView.visibility = View.GONE
+
                 (exception as? ExoPlaybackException)?.let { error ->
                     if (error.type == ExoPlaybackException.TYPE_SOURCE) {
                         if (canRenewToken) {
@@ -236,7 +238,11 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                             initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
                         }
                     }
+
+                    return
                 }
+
+                mCCTVViewModel.showGlobalError(exception)
             }
         }
 

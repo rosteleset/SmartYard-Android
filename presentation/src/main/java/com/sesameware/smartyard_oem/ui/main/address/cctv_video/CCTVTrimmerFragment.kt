@@ -751,7 +751,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                             }
                         }
                     }
+
+                    return
                 }
+
+                mCCTVViewModel.showGlobalError(exception)
             }
         }
 
