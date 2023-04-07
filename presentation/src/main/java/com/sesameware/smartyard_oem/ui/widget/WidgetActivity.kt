@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import com.sesameware.data.DataModule
+import com.sesameware.data.prefs.PreferenceStorage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -19,6 +21,7 @@ import com.sesameware.smartyard_oem.ui.updateAllWidget
 class WidgetActivity : AppCompatActivity() {
     private val databaseInteractor: DatabaseInteractor by inject()
     private val authInteractor: AuthInteractor by inject()
+    private val mPreferenceStorage: PreferenceStorage by inject()
     
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +44,7 @@ class WidgetActivity : AppCompatActivity() {
     private fun openDoor(domophoneId: Int, doorId: Int?, idItemDataBase: Long) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
+                DataModule.BASE_URL = mPreferenceStorage.providerBaseUrl ?: DataModule.BASE_URL
                 authInteractor.openDoor(domophoneId, doorId)
                 databaseInteractor.updateState(StateButton.OPEN, idItemDataBase.toInt())
                 updateAllWidget(this@WidgetActivity)
