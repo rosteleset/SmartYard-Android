@@ -4,9 +4,8 @@ import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.TrackGroupArray
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
+import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.video.VideoSize
 import kotlinx.coroutines.*
@@ -51,7 +50,7 @@ abstract class BaseCCTVPlayer {
 }
 
 open class DefaultCCTVPlayer(private val context: Context, private val forceVideoTrack: Boolean, protected val callbacks: Callbacks? = null) : BaseCCTVPlayer() {
-    protected var mPlayer: SimpleExoPlayer? = null
+    protected var mPlayer: ExoPlayer? = null
 
     override var playWhenReady: Boolean
         get() = mPlayer?.playWhenReady == true
@@ -119,16 +118,17 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         mPlayer = null
     }
 
-    fun getPlayer() : SimpleExoPlayer? {
+    fun getPlayer() : ExoPlayer? {
         return mPlayer
     }
 
     private fun createPlayer() {
         Timber.d("__Q__   call createPlayer")
         val trackSelector = DefaultTrackSelector(context)
-        mPlayer  = SimpleExoPlayer.Builder(context)
+        mPlayer  = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
             .build()
+        mPlayer?.addAnalyticsListener(EventLogger())
         mPlayer?.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 super.onPlaybackStateChanged(state)
@@ -150,17 +150,14 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
+            override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
 
                 callbacks?.onPlayerError(error)
             }
 
-            override fun onTracksChanged(
-                trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray
-            ) {
-                super.onTracksChanged(trackGroups, trackSelections)
+            override fun onTracksChanged(tracks: Tracks) {
+                super.onTracksChanged(tracks)
 
                 if (!forceVideoTrack) {
                     return
@@ -176,16 +173,16 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
                             if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
                                 val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
                                 for (i in 0 until rendererTrackGroups.length) {
-                                    val tracks = mutableListOf<Int>()
+                                    val tracks2 = mutableListOf<Int>()
                                     for (j in 0 until rendererTrackGroups[i].length) {
                                         if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
                                             mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
                                             (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
                                                     maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
-                                            tracks.add(j)
+                                            tracks2.add(j)
                                         }
                                     }
-                                    val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks.toIntArray())
+                                    val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks2.toIntArray())
                                     trackSelector.setParameters(
                                         trackSelector.buildUponParameters()
                                             .setSelectionOverride(k, rendererTrackGroups, selectionOverride)

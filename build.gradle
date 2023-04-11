@@ -6,8 +6,8 @@ buildscript {
         compileSdkVersion = 33
         minSdkVersion = 21
         targetSdkVersion = 33
-        kotlinVersion = '1.7.10'
-        kotlinReflect = '1.7.10'
+        kotlinVersion = '1.7.20'
+        kotlinReflect = '1.7.20'
         appCompatVersion = '1.4.2'
         coreKtxVersion = '1.8.0'
         constraintLayoutVersion = '2.1.4'
@@ -51,7 +51,7 @@ buildscript {
         playServicesLocation = '19.0.1'
         dexter = '6.2.2'
         playServicesWallet = '19.1.0'
-        exoPlayer = '2.14.2'
+        exoPlayer = '2.18.5'
         installreferrer = '2.2'
         recyclerView = '1.2.1'
         preference_version = "1.2.0"
