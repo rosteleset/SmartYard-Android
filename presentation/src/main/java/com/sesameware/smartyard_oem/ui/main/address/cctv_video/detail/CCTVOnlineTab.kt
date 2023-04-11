@@ -5,7 +5,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,13 +18,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.MediaServerType
@@ -262,7 +256,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         return player
     }
 
-    private fun changeVideoSource(cctvData: CCTVData) {
+    fun changeVideoSource(cctvData: CCTVData) {
         binding.mProgress.visibility = View.VISIBLE
         Timber.d("debug_dmm  prepareMedia url = ${cctvData.hls}")
         mPlayer?.prepareMedia(cctvData.hls, doPlay = true)
@@ -333,28 +327,9 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        Timber.d("debug_dmm __onResume, is fragment hidden = $isHidden")
-
-        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-            Timber.d("__Q__   initPlayer from onResume")
-            initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
-            Timber.d("debug_dmm __CCTVOnlineTab: $this")
-        }
-    }
-
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
         (binding.mVideoView.parent as ZoomLayout).resetZoom()
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
-        super.setUserVisibleHint(isVisibleToUser)
-
-        Timber.d("debug_dmm  __isVisibleToUser = $isVisibleToUser")
     }
 }

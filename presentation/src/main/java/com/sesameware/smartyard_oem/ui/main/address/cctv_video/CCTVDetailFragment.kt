@@ -122,6 +122,9 @@ class CCTVDetailFragment : Fragment() {
                 val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as? CCTVOnlineTab
                 Timber.d("__Q__   initPlayer from onHiddenChanged")
                 onlineTabFragment?.initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
+                mCCTVViewModel.chosenCamera.value?.let {cctvData ->
+                    onlineTabFragment?.changeVideoSource(cctvData)
+                }
             }
         }
 

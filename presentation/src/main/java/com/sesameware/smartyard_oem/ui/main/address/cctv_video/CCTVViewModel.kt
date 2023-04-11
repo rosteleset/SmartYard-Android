@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.media.MediaDataSource
 import android.media.MediaMetadataRetriever
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
@@ -25,11 +24,9 @@ import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import java.io.FileDescriptor
 import java.util.*
 
 @Parcelize
@@ -202,11 +199,24 @@ class CCTVViewModel(
         @Throws(Exception::class)
         fun downloadPreview(url: String): Bitmap? {
             if (url.contains(".mp4")) {
-                val retriever = MediaMetadataRetriever()
-                retriever.setDataSource(url, hashMapOf())
-                val result = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
-                retriever.release()
-                return result
+                val client = OkHttpClient()
+                val request = Request.Builder()
+                    .head()
+                    .url(url)
+                    .build()
+                client.newCall(request).execute().use { response ->
+                    if (response.isSuccessful) {
+                        val retriever = MediaMetadataRetriever()
+                        retriever.setDataSource(url, hashMapOf())
+                        val result = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+                        retriever.release()
+                        return result
+                    } else {
+                        Timber.d("debug_dmm    get MP4 error: ${response.code} ${response.message}")
+                    }
+                }
+
+                return null
             }
 
             val client = OkHttpClient()
