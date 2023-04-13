@@ -5,6 +5,7 @@
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
+    <string name="widget_title">Умный двор</string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Выход из приложения</string>
