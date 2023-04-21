@@ -31,7 +31,9 @@ class RegistrationActivity : CommonActivity() {
         val view = binding.root
         setContentView(view)
 
+        Timber.d("debug_dmm    in onCreate")
         intent?.extras?.let {
+            Timber.d("debug_dmm    has extras")
             intentParse(it)
         }
 
@@ -51,6 +53,7 @@ class RegistrationActivity : CommonActivity() {
     }
 
     private fun intentParse(bundle: Bundle) {
+        Timber.d("debug_dmm   intentParse")
         messageId = bundle.getString(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID, "")
         messageType =
             getTypeMessage(
