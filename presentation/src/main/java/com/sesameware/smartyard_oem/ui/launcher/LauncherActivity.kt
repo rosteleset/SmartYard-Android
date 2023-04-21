@@ -14,6 +14,7 @@ import com.sesameware.smartyard_oem.FirebaseMessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.onboarding.OnboardingActivity
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
+import timber.log.Timber
 
 class LauncherActivity : CommonActivity() {
     override val mViewModel by viewModel<LauncherViewModel>()
@@ -43,8 +44,15 @@ class LauncherActivity : CommonActivity() {
     }
 
     private fun openRegistrationActivity() {
-        val intent = Intent(this, RegistrationActivity::class.java)
-        startActivity(intent)
+        Timber.d("debug_dmm   openRegistrationActivity   ${intent?.extras?.keySet()?.joinToString(", ")}")
+        val regIntent = Intent(this, RegistrationActivity::class.java)
+        if (intent.extras?.containsKey("action") == true) {
+            regIntent.putExtra(FirebaseMessagingService.NOTIFICATION_MESSAGE_TYPE, intent.extras?.getString("action"))
+        }
+        if (intent.extras?.containsKey(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID) == true) {
+            regIntent.putExtra(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID, intent.extras?.getString(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID))
+        }
+        startActivity(regIntent)
         finish()
     }
 

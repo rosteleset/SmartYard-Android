@@ -86,7 +86,7 @@ class MainActivityViewModel(
         callJsSendMessage(msg)
     }
 
-    private fun bottomNavigate(@IdRes id: Int) {
+    fun bottomNavigate(@IdRes id: Int) {
         bottomNavigateTo.postValue(Event(id))
     }
 

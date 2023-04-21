@@ -180,6 +180,7 @@ class MainActivity : CommonActivity() {
     }
 
     private fun parseIntent(bundle: Bundle) {
+        Timber.d("debug_dmm   call parseIntent    ${bundle.keySet().joinToString(", ")}")
         val notificationId = bundle.getInt(IncomingCallActivity.NOTIFICATION_ID, 0)
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -191,10 +192,13 @@ class MainActivity : CommonActivity() {
     }
 
     private fun rootingTabMessage(messageType: TypeMessage) {
+        Timber.d("debug_dmm  call rootingTabMessage    messageType = $messageType")
         if (messageType == TypeMessage.INBOX) {
-            binding.bottomNav.selectedItemId = R.id.notification
+            mViewModel.bottomNavigate(R.id.notification)
+            //binding.bottomNav.selectedItemId = R.id.notification
         } else {
-            binding.bottomNav.selectedItemId = R.id.address
+            mViewModel.bottomNavigate(R.id.address)
+            //binding.bottomNav.selectedItemId = R.id.address
         }
     }
 
@@ -214,6 +218,7 @@ class MainActivity : CommonActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
+        Timber.d("debug_dmm    onNewIntent")
         intent.extras?.let {
             parseIntent(it)
         }
@@ -324,6 +329,7 @@ class MainActivity : CommonActivity() {
 
     private var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            Timber.d("debug_dmm    onReceive")
             intent?.let {
                 it.extras?.let {
                     val isChat = it.getBoolean(NOTIFICATION_CHAT, false)
