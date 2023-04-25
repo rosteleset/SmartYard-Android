@@ -41,11 +41,17 @@ android {
         teledom {
             buildConfigField "String", "USER_AGENT", "\"\""
             buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_NAME", "\"\""
+            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
         teledomTest {
             buildConfigField "String", "USER_AGENT", "\"\""
             buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_NAME", "\"\""
+            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
     }
 }

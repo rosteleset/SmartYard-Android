@@ -123,7 +123,7 @@ class AuthRepositoryImpl(
 
     override suspend fun getOptions(): ProviderConfigResponse {
         return safeApiCall {
-            teledomApi.getOptions(DataModule.BASE_URL + "ext/options")
+            teledomApi.getOptions(DataModule.BASE_URL + "ext/options").getResponseBody()
         }
     }
 
