@@ -22,7 +22,7 @@ class ProvidersViewModel(
     val providersList = MutableLiveData<List<Provider>?>(null)
 
     init {
-        if (BuildConfig.PROVIDER_URL.isEmpty()) {
+        if (DataModule.BASE_URL.isEmpty()) {
             getProviders()
         }
     }

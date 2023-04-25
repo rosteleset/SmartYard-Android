@@ -45,10 +45,10 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 object DataModule {
-    var BASE_URL = "https://localhost/"
+    var BASE_URL = BuildConfig.PROVIDER_URL
     var providerConfig = ProviderConfig()
-    var providerName = ""
-    var defaultPhonePattern = "+7 (###) ###-##-##"
+    var providerName = BuildConfig.PROVIDER_NAME
+    var defaultPhonePattern = BuildConfig.DEFAULT_PHONE_PATTERN
     var phonePattern = defaultPhonePattern
     var xDmApiRefresh = false
 
@@ -97,7 +97,7 @@ object DataModule {
 
     private fun createApi(client: OkHttpClient, moshi: Moshi): TeledomApi {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BASE_URL.ifEmpty { "http://localhost" })
             .client(client)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .build()

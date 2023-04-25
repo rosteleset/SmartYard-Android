@@ -37,8 +37,8 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 38
-        versionName '1.0.38'
+        versionCode 39
+        versionName '1.0.39'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -61,28 +61,18 @@ android {
     productFlavors {
         teledom {
             applicationId "com.sesameware.smartyard_oem"
-            buildConfigField "String", "PROVIDER_NAME", "\"\""
-            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
         teledomTest {
             applicationId "com.sesameware.smartyard_oem"
-            buildConfigField "String", "PROVIDER_NAME", "\"\""
-            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
         freedom1 {
             applicationId "com.freedom1.freedom_isp"
-            buildConfigField "String", "PROVIDER_NAME", "\"Фридом\""
-            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.freedom1.ru/mobile\""
         }
 
         grin {
-            //applicationId "com.sesameware.smartyard_oem"
-            //buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile\""
             applicationId "by.grin.smartyard"
-            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.grin.by/mobile\""
-            buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
         }
     }
 

@@ -30,11 +30,9 @@ class RegistrationViewModel(
         activity: Activity
     ) {
         if (mPreferenceStorage.authToken == null) {
-            if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
-                DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""
+            if (DataModule.BASE_URL.isNotEmpty()) {
                 mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
                 Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
-                DataModule.providerName = BuildConfig.PROVIDER_NAME
                 try {
                     runBlocking {
                         authInteractor.phonePattern()?.let { result ->
@@ -77,13 +75,11 @@ class RegistrationViewModel(
 
     suspend fun getProviderConfig() {
         Timber.d("debug_dmm call getProviderConfig")
-        if (BuildConfig.PROVIDER_URL.isNotEmpty()) {
-            DataModule.BASE_URL = BuildConfig.PROVIDER_URL + if (!BuildConfig.PROVIDER_URL.endsWith("/")) "/" else ""
+        if (DataModule.BASE_URL.isNotEmpty()) {
             mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
             Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
-            DataModule.providerName = BuildConfig.PROVIDER_NAME
             authInteractor.getOptions()?.let { result ->
-                DataModule.providerConfig = result.data
+                DataModule.providerConfig = result.data ?: DataModule.providerConfig
             }
 
             return
@@ -98,7 +94,7 @@ class RegistrationViewModel(
                         Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
                         DataModule.providerName = it.name
                         authInteractor.getOptions()?.let { result ->
-                            DataModule.providerConfig = result.data
+                            DataModule.providerConfig = result.data ?: DataModule.providerConfig
                         }
 
                         return

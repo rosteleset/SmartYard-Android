@@ -53,7 +53,7 @@ class NumberRegFragment : Fragment() {
             activity?.finish()
         }
 
-        if (BuildConfig.PROVIDER_URL.isEmpty()) {
+        if (DataModule.BASE_URL.isEmpty()) {
             binding.tvBackToProviders.setOnClickListener {
                 findNavController().popBackStack(R.id.providersFragment, false)
             }

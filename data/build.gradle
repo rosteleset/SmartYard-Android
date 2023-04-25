@@ -41,21 +41,33 @@ android {
         teledom {
             buildConfigField "String", "USER_AGENT", "\"\""
             buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_NAME", "\"\""
+            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
         teledomTest {
             buildConfigField "String", "USER_AGENT", "\"\""
             buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_NAME", "\"\""
+            buildConfigField "String", "PROVIDER_URL", "\"\""
         }
 
         freedom1 {
             buildConfigField "String", "USER_AGENT", "\"Freedom (Android)\""
             buildConfigField "String", "PROVIDERS_URL", "\"\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_NAME", "\"Фридом\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.freedom1.ru/mobile/\""
         }
 
         grin {
             buildConfigField "String", "USER_AGENT", "\"GrIN (Android)\""
             buildConfigField "String", "PROVIDERS_URL", "\"\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"375 (##) ###-##-##\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.grin.by/mobile/\""
+            buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
         }
     }
 }

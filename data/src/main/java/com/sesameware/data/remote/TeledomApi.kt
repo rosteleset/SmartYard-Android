@@ -270,7 +270,7 @@ interface TeledomApi {
         @Body request: ExtRequest): Response<ExtResponse>
 
     @POST
-    suspend fun getOptions(@Url url: String): ProviderConfigResponse
+    suspend fun getOptions(@Url url: String): Response<ProviderConfigResponse>
 
     @POST
     suspend fun phonePattern(@Url url: String): ApiResult<String>?
