@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -94,7 +95,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 if ((rangeFrom < range.endDate) && (range.startDate < rangeTo)) {
                     val intersectionLeft = if (rangeFrom > range.startDate) rangeFrom else range.startDate
                     val intersectionRight = if (rangeTo < range.endDate) rangeTo else range.endDate
-                    archiveRanges.add(TimeInterval(intersectionLeft, intersectionRight))
+                    archiveRanges.add(TimeInterval(intersectionLeft, intersectionRight, DataModule.serverTz))
                 }
             }
         }
@@ -114,7 +115,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             if ((rangeFrom < range.endDate) && (range.startDate < rangeTo)) {
                 val intersectionLeft = if (rangeFrom > range.startDate) rangeFrom else range.startDate
                 val intersectionRight = if (rangeTo < range.endDate) rangeTo else range.endDate
-                trimmerRanges.add(TimeInterval(intersectionLeft, intersectionRight))
+                trimmerRanges.add(TimeInterval(intersectionLeft, intersectionRight, DataModule.serverTz))
             }
         }
 
@@ -470,7 +471,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         binding.rangeTrimmer.slider.run {
             setCurrentDate(chosenDate)
             setSelectionChangeListener { from, to ->
-                mViewModel.saveCurrentSelection(TimeInterval(from, to))
+                mViewModel.saveCurrentSelection(TimeInterval(from, to, DataModule.serverTz))
             }
             setTrimMoveListener { progress ->
                 interval?.let {
@@ -808,7 +809,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private fun prepareMedia(seekMediaTo: Long = 0, doPlay: Boolean = false) {
         mViewModel.showVideoLoader(true)
         try {
-            val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRanges[currentArchiveRangeIndex].from, archiveRanges[currentArchiveRangeIndex].durationSeconds)
+            val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRanges[currentArchiveRangeIndex].from, archiveRanges[currentArchiveRangeIndex].durationSeconds, DataModule.serverTz)
             mPlayer?.prepareMedia(hls, archiveRanges[currentArchiveRangeIndex].fromUtc, archiveRanges[currentArchiveRangeIndex].durationSeconds, seekMediaTo, doPlay)
         } catch (e: Throwable) {
             mViewModel.showVideoLoader(false)

@@ -37,12 +37,15 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.google.android.material.datepicker.CalendarConstraints
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.model.FcmCallData
 import com.sesameware.domain.utils.listenerEmpty
@@ -52,10 +55,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalTime
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.*
 import timber.log.Timber
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
@@ -449,14 +449,18 @@ fun animationFadeInFadeOut(view: View?) {
 
 class DatePickerFragment(
     private val selectedDate: LocalDate,
+    private val timeZone: String = DataModule.serverTz,
     private val minDate: LocalDate? = null,
     private val callback: listenerGeneric<LocalDate>) : DialogFragment(), DatePickerDialog.OnDateSetListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = DatePickerDialog(requireContext(), this,
             selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth)
-        dialog.datePicker.maxDate = System.currentTimeMillis()
+        val serverMaxDate = LocalDateTime.now(ZoneId.of(timeZone))
+        val localDateTime = LocalDateTime.now()
+        val delta = serverMaxDate.toInstant(ZoneOffset.UTC).toEpochMilli() - localDateTime.toInstant(ZoneOffset.UTC).toEpochMilli()
+        dialog.datePicker.maxDate = System.currentTimeMillis() + delta
         if (minDate != null) {
-            dialog.datePicker.minDate = ZonedDateTime.of(minDate, LocalTime.of(0, 0), ZoneId.systemDefault()).toInstant().toEpochMilli()
+            dialog.datePicker.minDate = ZonedDateTime.of(minDate, LocalTime.of(0, 0), ZoneId.of(timeZone)).toInstant().toEpochMilli() + delta
         }
         return dialog
     }

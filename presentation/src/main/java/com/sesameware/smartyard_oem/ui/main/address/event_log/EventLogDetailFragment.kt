@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerView
 import com.google.android.exoplayer2.video.VideoSize
+import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.domain.model.response.Plog
@@ -33,7 +34,8 @@ import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MyGestureDetector
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogAddPhoto.DialogAddPhotoFragment
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogRemovePhoto.DialogRemovePhotoFragment
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
-import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 class EventLogDetailFragment : Fragment() {
     private var _binding: FragmentEventLogDetailBinding? = null
@@ -122,11 +124,11 @@ class EventLogDetailFragment : Fragment() {
                     mViewModel.camMapData[eventItem.objectId]?.let { data ->
                         initPlayer(data.serverType)
                         val fromDate = eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)
-                        videoUrl = data.getHlsAt(fromDate, EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS)
+                        videoUrl = data.getHlsAt(fromDate, EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS, DataModule.serverTz)
                         Timber.d("__Q__    serverType = ${data.serverType}    playVideo media $videoUrl    mPlayer = $mPlayer")
                         mPlayer?.prepareMedia(
                             videoUrl,
-                            fromDate.toEpochSecond(ZoneOffset.of("+3")),
+                            ZonedDateTime.of(fromDate, ZoneId.of(DataModule.serverTz)).toEpochSecond(),
                             EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS,
                             EventLogViewModel.EVENT_VIDEO_BACK_SECONDS * 1000L,
                             true

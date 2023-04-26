@@ -44,6 +44,7 @@ android {
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
             buildConfigField "String", "PROVIDER_NAME", "\"\""
             buildConfigField "String", "PROVIDER_URL", "\"\""
+            buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""
         }
 
         teledomTest {
@@ -52,6 +53,7 @@ android {
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
             buildConfigField "String", "PROVIDER_NAME", "\"\""
             buildConfigField "String", "PROVIDER_URL", "\"\""
+            buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""
         }
 
         freedom1 {
@@ -60,6 +62,7 @@ android {
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
             buildConfigField "String", "PROVIDER_NAME", "\"Фридом\""
             buildConfigField "String", "PROVIDER_URL", "\"https://rbt.freedom1.ru/mobile/\""
+            buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""
         }
 
         grin {
@@ -68,6 +71,7 @@ android {
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"375 (##) ###-##-##\""
             buildConfigField "String", "PROVIDER_URL", "\"https://rbt.grin.by/mobile/\""
             buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
+            buildConfigField "String", "SERVER_TZ", "\"Europe/Minsk\""
         }
     }
 }

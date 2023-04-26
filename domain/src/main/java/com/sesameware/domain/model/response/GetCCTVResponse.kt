@@ -13,7 +13,6 @@ typealias CCTVCityCameraGetResponse = ApiResult<List<CCTVCityCameraData>>
 typealias CCTVYoutubeResponse = ApiResult<List<CCTVYoutubeData>>
 typealias CCTVRangesResponse = ApiResult<List<RangeObject>>
 private val mPreviewFormatter = DateTimeFormatter.ofPattern("YYYY/MM/dd/HH/mm/ss")
-val targetZoneId: ZoneId = ZoneId.of("GMT+3")
 private val mPreviewFormatterMacroscop = DateTimeFormatter.ofPattern("dd.MM.yyyy%20HH:mm:ss")
 
 @Parcelize
@@ -39,8 +38,8 @@ data class CCTVData(
             else -> "$url/preview.mp4?token=$token"
         }
 
-    fun getHlsAt(time: LocalDateTime, durationSeconds: Long): String {
-        val zoned = time.atZone(targetZoneId).withZoneSameInstant(ZoneId.systemDefault())
+    fun getHlsAt(time: LocalDateTime, durationSeconds: Long, timeZone: String): String {
+        val zoned = time.atZone(ZoneId.of(timeZone))
         val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
@@ -49,8 +48,8 @@ data class CCTVData(
         }
     }
 
-    fun getPreviewAt(time: LocalDateTime): String {
-        val zoned = time.atZone(targetZoneId).withZoneSameInstant(ZoneId.of("UTC"))
+    fun getPreviewAt(time: LocalDateTime, timeZone: String): String {
+        val zoned = time.atZone(ZoneId.of(timeZone)).withZoneSameInstant(ZoneId.of("UTC"))
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/dvr_thumbnail_${zoned.format(mPreviewFormatter)}.mp4?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "${url.replace("/hls?", "/site?")}&$token&starttime=${zoned.format(mPreviewFormatterMacroscop)}&resolutionx=480&resolutiony=270&streamtype=mainvideo&withcontenttype=true&mode=archive"

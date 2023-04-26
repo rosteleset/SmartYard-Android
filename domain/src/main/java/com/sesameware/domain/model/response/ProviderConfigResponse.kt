@@ -29,6 +29,9 @@ data class ProviderConfig(
     //настройки чата
     @Json(name = CHAT_URL) val chatUrl: String? = null,
     @Json(name = CHAT_OPTIONS) val chatOptions: ChatOptions? = null,
+
+    //настройки TimeZone
+    @Json(name = TIME_ZONE) val timeZone: String? = null
 ) {
     val hasNotification: Boolean
         get() = _hasNotifications == "t"
@@ -79,5 +82,8 @@ data class ProviderConfig(
         const val CHAT_ID = "id"
         const val CHAT_DOMAIN = "domain"
         const val CHAT_TOKEN = "token"
+
+        //настройки TimeZone
+        const val TIME_ZONE = "timeZone"
     }
 }

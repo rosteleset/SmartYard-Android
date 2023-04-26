@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.sesameware.data.DataModule
 import org.threeten.bp.LocalDate
 import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.lib.TimeInterval
@@ -58,7 +59,7 @@ class TimeFragmentButtonsAdapter(
 
             if (leftMargin < rightMargin) {
                 //есть пересечение с интервалами из архива
-                result.add(TimeInterval(leftMargin, rightMargin))
+                result.add(TimeInterval(leftMargin, rightMargin, DataModule.serverTz))
             }
 
             startRange = rangeFrom.plusHours(INTERVAL_STEP_)
