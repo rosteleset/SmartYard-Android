@@ -7,6 +7,7 @@ import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import kotlinx.parcelize.Parcelize
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -19,7 +20,6 @@ import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.RangeObject
-import com.sesameware.domain.model.response.targetZoneId
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
@@ -56,7 +56,7 @@ class CCTVViewModel(
     var stateFullScreen = MutableLiveData<Boolean>()
     var closedRangeCalendar = MutableLiveData<Event<ClosedRange<LocalDate>>>()
 
-    var endDate: LocalDate = LocalDate.now(targetZoneId)
+    var endDate: LocalDate = LocalDate.now(ZoneId.of(DataModule.serverTz))
     var startDate: LocalDate = endDate.minusDays(minusDate)
 
     //доступные интервалы архива для выбранной камеры
@@ -111,8 +111,8 @@ class CCTVViewModel(
                     period.from -= 3196800*/
 
                     availableRanges.add(AvailableRange(period.duration, period.from,
-                        Instant.ofEpochSecond(period.from.toLong()).atZone(ZoneId.systemDefault()).toLocalDateTime(),
-                        Instant.ofEpochSecond(period.from.toLong() + period.duration.toLong()).atZone(ZoneId.systemDefault()).toLocalDateTime()
+                        Instant.ofEpochSecond(period.from.toLong()).atZone(ZoneId.of(DataModule.serverTz)).toLocalDateTime(),
+                        Instant.ofEpochSecond(period.from.toLong() + period.duration.toLong()).atZone(ZoneId.of(DataModule.serverTz)).toLocalDateTime()
                     ))
                 }
 

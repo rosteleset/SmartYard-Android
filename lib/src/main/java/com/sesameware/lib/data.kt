@@ -4,6 +4,7 @@ import android.graphics.Bitmap
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 typealias HashBitmap = HashMap<Int, Bitmap?>
@@ -11,13 +12,14 @@ typealias SeekListener = (Double) -> Unit
 typealias SelectionListener = (LocalDateTime, LocalDateTime) -> Unit
 data class TimeInterval(
     val from: LocalDateTime,
-    val to: LocalDateTime
+    val to: LocalDateTime,
+    val timeZone: String
 ) {
     var fragmentIdToDownload: Int? = null
     val intervalText: String get() = "${from.format(mIntervalFormatter)} - ${to.format(mIntervalFormatter)}"
     val durationSeconds: Long get() = durationInMs / 1000
     val durationInMs: Long get() = to.timeInMs() - from.timeInMs()
-    val fromUtc: Long get() = from.toEpochSecond(ZoneOffset.of("+3"))
+    val fromUtc: Long get() = ZonedDateTime.of(from, ZoneId.of(timeZone)).toEpochSecond()
 
     private fun getPosInMs(current: LocalDateTime): Long {
         return (current.timeInMs() - from.timeInMs()).coerceIn(0L, durationInMs)
@@ -32,7 +34,7 @@ data class TimeInterval(
     }
 
     fun offsetInterval(offsetSeconds: Long): TimeInterval {
-        return TimeInterval(from.plusSeconds(offsetSeconds), to.plusSeconds(offsetSeconds))
+        return TimeInterval(from.plusSeconds(offsetSeconds), to.plusSeconds(offsetSeconds), timeZone)
     }
 
     fun getTrimInterval(centerTime: LocalDateTime): TimeInterval {
@@ -44,7 +46,7 @@ data class TimeInterval(
         if (newTo.isAfter(endLimit)) {
             return getTrimInterval(endLimit.plusSeconds(-TIME_OFFSET))
         }*/
-        return TimeInterval(newFrom, newTo/*, startLimit, endLimit*/)
+        return TimeInterval(newFrom, newTo, timeZone)
     }
 
     companion object {

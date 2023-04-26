@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AdapterView
 import androidx.navigation.fragment.findNavController
+import com.sesameware.data.DataModule
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
@@ -23,8 +24,8 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val binding get() = _binding!!
 
     private val viewModel: CityCamerasViewModel by sharedStateViewModel()
-    private var recordDate: LocalDate = LocalDate.now()
-    private var recordTime: LocalTime = LocalTime.now()
+    private var recordDate: LocalDate = LocalDate.now(ZoneId.of(DataModule.serverTz))
+    private var recordTime: LocalTime = LocalTime.now(ZoneId.of(DataModule.serverTz))
     private val durationList = listOf(5, 10, 15, 20, 30, 40, 50, 60)  // список возможных вариантов продолжительности записи в минутах
     private var selectedDurationPosition = 1
 
@@ -44,8 +45,8 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
 
         binding.ivRequestRecordDateArrow.setOnClickListener {
-            val minDate = LocalDate.now().minusDays(CityCamerasViewModel.RECORD_DEPTH_DAYS)
-            val dateDialogFragment = DatePickerFragment(recordDate, minDate) {
+            val minDate = LocalDate.now(ZoneId.of(DataModule.serverTz)).minusDays(CityCamerasViewModel.RECORD_DEPTH_DAYS)
+            val dateDialogFragment = DatePickerFragment(recordDate, DataModule.serverTz, minDate) {
                 recordDate = it
                 updateDateTime()
             }
@@ -94,8 +95,8 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private fun updateDateTime() {
         var recordDateTime = LocalDateTime.of(recordDate, recordTime)
-        if (recordDateTime.plusMinutes(durationList[selectedDurationPosition].toLong()) > LocalDateTime.now()) {
-            recordDateTime = LocalDateTime.now().minusMinutes(durationList[selectedDurationPosition].toLong())
+        if (recordDateTime.plusMinutes(durationList[selectedDurationPosition].toLong()) > LocalDateTime.now(ZoneId.of(DataModule.serverTz))) {
+            recordDateTime = LocalDateTime.now(ZoneId.of(DataModule.serverTz)).minusMinutes(durationList[selectedDurationPosition].toLong())
             recordDate = recordDateTime.toLocalDate()
             recordTime = recordDateTime.toLocalTime()
         }

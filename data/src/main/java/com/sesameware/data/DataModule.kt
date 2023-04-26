@@ -51,6 +51,8 @@ object DataModule {
     var defaultPhonePattern = BuildConfig.DEFAULT_PHONE_PATTERN
     var phonePattern = defaultPhonePattern
     var xDmApiRefresh = false
+    val serverTz: String
+        get() = providerConfig.timeZone.orEmpty().ifEmpty { BuildConfig.SERVER_TZ }
 
     fun create() = module {
         single {

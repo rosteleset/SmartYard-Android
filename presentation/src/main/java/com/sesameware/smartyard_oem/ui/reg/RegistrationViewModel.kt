@@ -79,7 +79,7 @@ class RegistrationViewModel(
             mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
             Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
             authInteractor.getOptions()?.let { result ->
-                DataModule.providerConfig = result.data ?: DataModule.providerConfig
+                DataModule.providerConfig = result.data
             }
 
             return
@@ -94,7 +94,7 @@ class RegistrationViewModel(
                         Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
                         DataModule.providerName = it.name
                         authInteractor.getOptions()?.let { result ->
-                            DataModule.providerConfig = result.data ?: DataModule.providerConfig
+                            DataModule.providerConfig = result.data
                         }
 
                         return

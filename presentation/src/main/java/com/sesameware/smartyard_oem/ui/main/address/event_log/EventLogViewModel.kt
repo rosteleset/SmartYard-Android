@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem.ui.main.address.event_log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
@@ -11,7 +12,6 @@ import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.FRSInteractor
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.Plog
-import com.sesameware.domain.model.response.targetZoneId
 import com.sesameware.smartyard_oem.GenericViewModel
 import org.threeten.bp.DateTimeUtils
 import org.threeten.bp.LocalDateTime
@@ -34,8 +34,8 @@ data class DoorphoneData(
     val token: String,
     val serverType: MediaServerType
 ) {
-    fun getHlsAt(time: LocalDateTime, durationSeconds: Long): String {
-        val zoned = time.atZone(targetZoneId).withZoneSameInstant(ZoneId.systemDefault())
+    fun getHlsAt(time: LocalDateTime, durationSeconds: Long, timeZone: String): String {
+        val zoned = time.atZone(ZoneId.of(timeZone))
         val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"

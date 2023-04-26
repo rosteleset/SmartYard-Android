@@ -56,7 +56,7 @@ class SmsRegViewModel(
 
             //получение настроек
             mInteractor.getOptions()?.let { result ->
-                DataModule.providerConfig = result.data ?: DataModule.providerConfig
+                DataModule.providerConfig = result.data
             }
 
             val name: Name = if (res.data.names is Boolean)

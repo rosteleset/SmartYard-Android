@@ -10,6 +10,7 @@ import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.Player
+import com.sesameware.data.DataModule
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
@@ -230,7 +231,7 @@ class CCTVTrimmerViewModel(
     fun changePlayerInterval(interval: TimeInterval) {
         mCurrentPlayerInterval = interval
         startListeningProgress(false)
-        val hls = chosenCamera.getHlsAt(interval.from, interval.durationSeconds)
+        val hls = chosenCamera.getHlsAt(interval.from, interval.durationSeconds, DataModule.serverTz)
         changePlayerInterval.postValue(Event(PlayerIntervalChangeData(interval, hls)))
         videoFragmentDebounce.doBlocking(interval) {
             downloadMaskImages(interval, false)
@@ -271,7 +272,7 @@ class CCTVTrimmerViewModel(
     private fun downloadThumbAtNow(percent: Double, interval: TimeInterval) {
         thumbTask?.cancel()
         thumbTask = viewModelScope.async(Dispatchers.IO) {
-            val url = chosenCamera.getPreviewAt(interval.getTimeAtProgress(percent))
+            val url = chosenCamera.getPreviewAt(interval.getTimeAtProgress(percent), DataModule.serverTz)
             trimmerPreviewImage.postValue(downloadPreview(url) ?: Bitmap.createBitmap(0, 0, Bitmap.Config.ARGB_8888))
         }
     }
@@ -290,7 +291,7 @@ class CCTVTrimmerViewModel(
             val range = getThumbnailRange(time, 5)
             val hash = HashBitmap()
             range.forEachIndexed { index, it ->
-                val url = chosenCamera.getPreviewAt(it)
+                val url = chosenCamera.getPreviewAt(it, DataModule.serverTz)
                 val task = viewModelScope.async(Dispatchers.IO) {
                     hash[index] = downloadPreview(url)
                 }
@@ -399,7 +400,7 @@ class CCTVTrimmerViewModel(
             }
         }
 
-        return TimeInterval(newFrom, newTo)
+        return TimeInterval(newFrom, newTo, DataModule.serverTz)
     }
 
     companion object {

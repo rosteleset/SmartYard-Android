@@ -30,7 +30,7 @@ class OutgoingCallViewModel(
 
                     //получение настроек
                     authInteractor.getOptions()?.let { result ->
-                        DataModule.providerConfig = result.data ?: DataModule.providerConfig
+                        DataModule.providerConfig = result.data
                     }
 
                     phoneConfirmed.postValue(Pair(true, name))

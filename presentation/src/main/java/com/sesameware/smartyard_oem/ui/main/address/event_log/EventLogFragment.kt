@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
+import com.sesameware.data.DataModule
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.threeten.bp.LocalDate
 import com.sesameware.domain.model.response.Plog
@@ -146,7 +147,7 @@ class EventLogFragment : Fragment() {
             val p = llm.findFirstVisibleItemPosition()
             val ld = if (p == RecyclerView.NO_POSITION) LocalDate.now() else eventsDay[p]
             val minDate = LocalDate.now().minusMonths(EventLogViewModel.EVENT_LOG_KEEPING_MONTHS)
-            val dateDialogFragment = DatePickerFragment(ld, minDate) {
+            val dateDialogFragment = DatePickerFragment(ld, DataModule.serverTz, minDate) {
                 scrollToDay(it)
             }
             dateDialogFragment.show(requireActivity().supportFragmentManager, "datePicker")
