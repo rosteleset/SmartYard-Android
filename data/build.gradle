@@ -73,6 +73,15 @@ android {
             buildConfigField "String", "PROVIDER_NAME", "\"Гродненские информационные сети\""
             buildConfigField "String", "SERVER_TZ", "\"Europe/Minsk\""
         }
+
+        insit {
+            buildConfigField "String", "USER_AGENT", "\"INSIT (Android)\""
+            buildConfigField "String", "PROVIDERS_URL", "\"\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile/\""
+            buildConfigField "String", "PROVIDER_NAME", "\"ИНСИТ\""
+            buildConfigField "String", "SERVER_TZ", "\"Asia/Yekaterinburg\""
+        }
     }
 }
 
