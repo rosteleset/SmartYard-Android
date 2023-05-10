@@ -1,0 +1,337 @@
+<resources>
+
+    <!-- Main -->
+    <string name="app_name">Centra.Дом</string>
+    <string name="app_title">Версия устарела</string>
+    <string name="app_message">Обновить приложение?</string>
+
+    <!-- Настройки -->
+    <string name="setting_dialog_exit_caption">Выход из приложения</string>
+    <string name="setting_dialog_exit_caption_msg">Вы действительно хотите выйти из вашей учетной записи?</string>
+    <string name="setting_dialog_exit_yes">Да</string>
+    <string name="setting_dialog_exit_no">Нет</string>
+    <string name="setting_dialog_delete_title">Вы уверенны?</string>
+    <string name="setting_dialog_delete_yes">Да</string>
+    <string name="setting_dialog_delete_no">Отмена</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_skip">Пропустить</string>
+    <string name="onboarding_next">Далее</string>
+    <string name="onboarding_complete">Класс, давайте начнём!</string>
+    <string name="onboarding_cam_title">Видеонаблюдение</string>
+    <string name="onboarding_cam_subtitle">Будь в курсе всего, что происходит возле дома</string>
+    <string name="onboarding_donation_title">Всё под контролем</string>
+    <string name="onboarding_donation_subtitle">Управляй услугами и оплачивай их через\nприложение</string>
+    <string name="onboarding_intercom_title">Умный домофон</string>
+    <string name="onboarding_intercom_subtitle">Управляй домофоном, воротами или\nшлагбаумом со смартфона</string>
+
+    <!-- Заявки -->
+    <string name="issue_dialog_caption_0">Заявка создана.</string>
+
+    <!-- Регистрация номер телефона-->
+    <string name="reg_tel_caption">Введите номер телефона\nдля регистрации</string>
+
+    <!-- Регистрация код из смс-->
+    <string name="reg_sms_code_tel">Введите код из СМС,\nотправленный на номер +7%1$s</string>
+    <string name="reg_sms_correct_tel">Исправить номер телефона</string>
+    <string name="reg_sms_send_code_repeat">Отправить код повторно можно через\n%1$s</string>
+    <string name="reg_sms_error_code">Неверный код. Попробуйте ещё раз</string>
+    <string name="send_sms_error_code">Не получилось отправить. Подождите.</string>
+
+    <!-- Восстановление доступа -->
+    <string name="restore_access_title">Восстановить доступ</string>
+    <string name="restore_access_caption">Пожалуйста, введите ваш номер договора и укажите email или телефон, которые вы использовали при регистрации договора</string>
+    <string name="restore_access_edit_hint">Номер договора</string>
+    <string name="restore_access_edit_btn_get_recovery">Получить доступные методы восстановления</string>
+    <string name="restore_access_edit_btn_get_code">Получить код подтверждения</string>
+    <string name="restore_access_input_code_phone">Код подтверждения отправлен\n на телефон %1$s</string>
+    <string name="restore_access_input_code_email">Код подтверждения отправлен\n на почту %1$s</string>
+
+    <string name="restore_access_btn_text_confirm">Подтвердить</string>
+    <string name="restore_access_btn_resent_text">Отправить код повторно</string>
+    <string name="restore_access_dialog_ok_title">Пароль от учетной записи отправлен.</string>
+    <string name="restore_access_dialog_ok_yes">Перейти на страницу авторизации</string>
+
+
+    <!-- Bottom Menu -->
+    <string name="title_address">Адреса</string>
+    <string name="title_notification">Уведомления</string>
+    <string name="title_chat">Чат</string>
+    <string name="title_pay">Оплатить</string>
+    <string name="title_burger">Меню</string>
+
+    <!-- Мои адреса-->
+    <string name="dialog_title">Включить гостевой доступ на час?</string>
+    <string name="dialog_message">Всем, кто будет набирать номер вашей квартиры на домофоне, дверь будет открываться автоматически в течение 60 минут. По истечению данного времени работа домофона вернется в стандартный режим автоматически.</string>
+    <string name="dialog_yes">ВКЛЮЧИТЬ</string>
+    <string name="dialog_no">ОТМЕНА</string>
+    <string name="dialog_sms">Информация для гостя успешно отправлена!</string>
+
+
+    <!-- Qr code -->
+    <string name="qr_code_dialog_title">Адрес добавлен.</string>
+    <string name="qr_code_dialog_ok">Ок</string>
+    <string name="qr_code_title">Наведите камеру на QR-код</string>
+    <string name="qr_code_error_permission_title">Для работы с qr кодами нужно разрешение на использование камеры.</string>
+
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">У вас есть договор с CENTRA ?</string>
+    <string name="auth_where_is_contract_caption">Введите номер и пароль договора, привязанного к данному адресу, и управляйте услугами из этого приложения.</string>
+    <string name="auth_numer_pass0">Не помню пароль </string>
+    <string name="auth_number_pass1">Ничего не помню</string>
+    <string name="auth_number_btn_ok">Войти</string>
+    <string name="auth_number_btn_no">У меня нет договора с CENTRA </string>
+    <string name="auth_dialog_title">Создать заявку на восстановление данных по договору?</string>
+    <string name="auth_dialog_yes">Создать</string>
+    <string name="auth_dialog_no">Отмена</string>
+
+
+    <!-- Ввод адреса -->
+    <string name="input_address_title">Введите адрес</string>
+    <string name="input_address_ok">Проверить доступные услуги</string>
+    <string name="input_address_text_qr">У меня есть QR-код</string>
+
+    <!-- Потверждение адреса -->
+    <string name="address_verification_title">Подтверждение адреса</string>
+    <string name="address_verification_descriptions">Как вам будет удобнее это сделать?</string>
+    <string name="address_verification_courier_block1_title">Оставьте заявку</string>
+    <string name="address_verification_courier_block1_description">В течение недели курьер принесёт секретный конверт</string>
+    <string name="address_verification_courier_block2_title">Отсканируйте QR-код</string>
+    <string name="address_verification_courier_block2_description">Он будет внутри конверта</string>
+    <string name="address_verification_courier_block3_title">Пользуйтесь!</string>
+    <string name="address_verification_courier_block3_description">Вы сразу получите доступ ко всему функционалу приложения «‎Умный домофон»</string>
+    <string name="address_verification_courier_btn_done">Супер! Оставить заявку</string>
+    <string name="address_verification_office_description">Посетите ближайший офис CENTRA с квитанцией ЖКХ за эту квартиру и мы сразу же активируем функцию умного домофона и видеонаблюдения.</string>
+    <string name="address_verification_office_btn_done">Так и сделаю</string>
+    <string name="address_verification_tab_title_1">Через курьера</string>
+    <string name="address_verification_tab_title_2">Визит в офис</string>
+
+    <!-- Диалоговые окны. Настройки. -->
+    <string name="setting_dialog_service_connected_title">подключена</string>
+    <string name="setting_dialog_service_connected_caption">Если хотите сменить тариф, оставьте заявку</string>
+    <string name="setting_dialog_service_connected_button">Сменить тариф</string>
+    <string name="setting_dialog_service_connected_chat">Здравствуйте, я бы хотел изменить тариф для услуги "%s" на договоре "%s"</string>
+    <string name="setting_dialog_service_not_connected_title">не подключена</string>
+    <string name="setting_dialog_service_not_connected_caption">Если хотите активировать услугу, оставьте заявку</string>
+    <string name="setting_dialog_service_not_connected_button">Оставить заявку</string>
+    <string name="setting_dialog_service_not_connected_chat">Здравствуйте, я бы хотел подключить услугу "%s" на договор "%s"</string>
+    <string name="setting_dialog_service_unavailable_title">пока недоступна</string>
+    <string name="setting_dialog_service_unavailable_caption">На данный момент услуга недоступна по вашему адресу. Для ее подключения необходимо собрать несколько заявок с вашего дома. Оставьте заявку первым!</string>
+    <string name="setting_dialog_service_unavailable_button">Оставить заявку</string>
+    <string name="setting_dialog_service_unavailable_chat">Здравствуйте, услуга "%s" недоступна по моему адресу, но я хочу пользоваться ей на договоре "%s"</string>
+    <string name="setting_dialog_service_domophone_connected_title">подключена</string>
+    <string name="setting_dialog_service_domophone_connected_caption">Если хотите получить доступ, оставьте сообщение</string>
+    <string name="setting_dialog_service_domophone_connected_button">Получить доступ</string>
+    <string name="setting_dialog_service_domophone_connected_chat">Здравствуйте, по моему адресу подключен домофон, мне необходимо получить доступ</string>
+    >
+    <string name="setting_dialog_service_cctv_connected_title">подключена</string>
+    <string name="setting_dialog_service_cctv_connected_caption">Если хотите получить доступ, оставьте сообщение</string>
+    <string name="setting_dialog_service_cctv_connected_button">Получить доступ</string>
+    <string name="setting_dialog_service_cctv_connected_chat">Здравствуйте, по моему адресу подключено видеонаблюдение, мне необходимо получить доступ</string>
+    >
+
+    <!-- Диалог предоставление доступа -->
+    <string name="dialog_share_access_title">Поделиться доступом</string>
+    <string name="dialog_share_access_caption">Введите номер телефона человека, которому хотите предоставить доступ, или выберите его из контактов</string>
+    <string name="dialog_share_access_btn_ok">Поделиться</string>
+
+    <!-- Нет сети по адресу. -->
+    <string name="address_no_network_title">Упс :(</string>
+    <string name="address_no_network_caption">Ваш адрес требует уточнения. Дождитесь звонка специалиста.\n\nКакую услугу вы хотели бы подключить?</string>
+    <string name="address_no_network_btn_ok">Оставить заявку</string>
+
+    <!-- Скоро все заработает офис. -->
+    <string name="address_work_soon_office_title">Совсем скоро  всё заработает!</string>
+    <string name="address_work_soon_office_caption">Дождитесь курьера по адресу "%s" и сфотографируйте QR-код, который он принесёт.</string>
+    <string name="address_work_soon_office_btn_0">Сфотографировать QR-код</string>
+    <string name="address_work_soon_office_btn_1">Приду в офис самостоятельно</string>
+    <string name="address_work_soon_office_btn_2">Отменить заявку</string>
+
+
+    <!-- Скоро все заработает курьер. -->
+    <string name="address_work_soon_courier_title">Совсем скоро  всё заработает!</string>
+    <string name="address_work_soon_courier_caption">Для подтверждения адреса вам нужно принести квитанцию ЖКХ не старше трёх месяцев в ближайший офис CENTRA.</string>
+    <string name="address_work_soon_courier_btn_0">Вызвать курьера</string>
+
+    <!-- Как к вам обращаться? -->
+    <string name="appeal_validation_error">Имя не должно быть пустым</string>
+    <string name="appeal_title">Как к вам\nобращаться?</string>
+    <string name="appeal_title_patronymic">Отчество</string>
+
+    <!-- Temp -->
+    <string name="terminate">Прервать</string>
+    <string name="enter_sip_address">Введите номер для звонка</string>
+    <string name="sip_address">номер</string>
+    <string name="doCall">Позвонить</string>
+    <string name="tls">TLS</string>
+    <string name="tcp">TCP</string>
+    <string name="udp">UDP</string>
+    <string name="domain">домен</string>
+    <string name="password">пароль</string>
+    <string name="username">логин</string>
+    <string name="connect">Подключиться</string>
+    <string name="disconnect">Отключиться</string>
+    <string name="connected_to">Подключено к %s</string>
+    <string name="connecting">подключение…</string>
+    <string name="error">Ошибка</string>
+    <string name="connected">Подключено</string>
+    <string name="call">Звонок</string>
+    <string name="from">От %s</string>
+    <string name="call_from">Звонок от %s</string>
+    <string name="cancel">Отменить</string>
+    <string name="chat_fragment">chat_fragment</string>
+    <!-- IncomingCallActivity -->
+    <string name="reject">Отклонить</string>
+    <string name="ignore">Игнорировать</string>
+    <string name="opened">Открыто</string>
+    <string name="open">Открыть</string>
+    <string name="answer">Ответить</string>
+    <string name="speak">Громкая связь</string>
+    <string name="peek">Глазок</string>
+    <string name="call_on_domophone">Звонок в домофон</string>
+    <string name="call_talk">Разговор</string>
+    <string name="call_peek_on">Глазок включен</string>
+
+    <!-- Оплата -->
+    <string name="pay_title_address">Выберите адрес</string>
+    <string name="pay_recomended_sum">Рекомендуемая - %1$s рублей</string>
+    <string name="pay_title_dialog">Пополнить баланс</string>
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Buy with Google Pay</string>
+    <string name="googlepay_status_unavailable" translatable="false">Unfortunately, Google Pay is not available on this phone.</string>
+    <string name="googlepay_status_checking" translatable="false">Checking if Google Pay is available...</string>
+    <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
+    <string name="payments_error" translatable="false">Google Play Result Error</string>
+    <string name="payments_error_1" translatable="false">Оплата отменена.</string>
+    <string name="payments_error_2" translatable="false">Сумма должна быть больше 0.</string>
+    <string name="payments_error_3" translatable="false">Вы не завершили оплату.</string>
+
+    <string name="sound">Звук</string>
+    <string name="choose_sound">Выбрать звук</string>
+    <string name="next">Далее</string>
+    <string name="save">Сохранить</string>
+    <string name="chat_no_contract">(Номер договора отсутствует)</string>
+    <string name="chat_test_msg">(Это тестовые сообщения из мобильного клиента CENTRA)</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="error_map_permission">Невозможно запустить карту без нужных разрешений</string>
+    <string name="address_choose_camera_title">Выберите камеру</string>
+    <string name="cctv_detail_tab_online">Онлайн</string>
+    <string name="cctv_detail_tab_archive">Архив</string>
+    <string name="cctv_video_from_date">Видео от %s</string>
+    <string name="cctv_choose_fragment">Выбрать фрагмент</string>
+    <string name="cctv_download_and_get_link">Загрузить и получить ссылку</string>
+    <string name="downloading_fragment">Загрузка видеофрагмента</string>
+    <string name="video_fragment">Видеофрагмент</string>
+    <string name="downloading">Загрузка</string>
+    <string name="cctv_speed_template">%1$sx</string>
+    <string name="cctv_dialog_video_prepare_title">Видео готовится</string>
+    <string name="cctv_dialog_video_prepare_message">Как только процесс закончится, вам придет сообщение в чат. В зависимости от длины видео процесс загрузки может занять от нескольких минут до нескольких часов.</string>
+    <string name="cctv_dialog_video_prepare_button">Спасибо</string>
+
+    <!-- Меню бургера  -->
+    <string name="burger_title">Меню</string>
+    <string name="burger_city_cameras_title">Городские камеры</string>
+    <string name="burger_address_settings_title">Настройки адресов</string>
+    <string name="burger_common_settings_title">Общие настройки</string>
+    <string name="burger_call_support_button">Звонок в техподдержку</string>
+    <string name="burger_call_support_by_phone">Позвонить %s</string>
+
+    <!-- Городские камеры  -->
+    <string name="city_cameras_title">Городские камеры</string>
+    <string name="city_camera_events">Происшествия</string>
+    <string name="city_camera_events_count">Происшествия (%d)</string>
+    <string name="city_camera_request_record">Запросить запись</string>
+    <string name="city_camera_send_request">Отправить запрос</string>
+    <string name="city_camera_scroll_up">Наверх</string>
+    <string name="city_camera_load_more">+ Загрузить ещё(%d)</string>
+    <string name="city_camera_youtube_msg">Не удалось запустить приложение YouTube</string>
+
+    <string name="request_record_title">Запросить запись</string>
+    <string name="request_record_date">Дата записи: %s</string>
+    <string name="request_record_time">Время записи: %s</string>
+    <string name="request_record_duration">Продолжительность:</string>
+
+    <string-array name="request_record_duration_list">
+        <item>5 мин</item>
+        <item>10 мин</item>
+        <item>15 мин</item>
+        <item>20 мин</item>
+        <item>30 мин</item>
+        <item>40 мин</item>
+        <item>50 мин</item>
+        <item>60 мин</item>
+    </string-array>
+
+    <string name="request_record_comments">Комментарий:</string>
+    <string name="request_record_description">Вы можете запросить фрагмент продолжительностью не более 1 часа. Наш сервис позволяет хранить видеозаписи не более 7 суток, после этого видео из архива безвозвратно удаляется.\n\nПродолжительность обработки запроса может составлять до 1 рабочего дня.</string>
+
+    <string-array name="event_log_types">
+        <item>Все</item>
+        <item>Домофон</item>
+        <item>Ключом</item>
+        <item>По лицу</item>
+        <item>Приложение</item>
+        <item>Ворота по звонку</item>
+        <item>Код квартиры</item>
+    </string-array>
+
+    <string name="event_log_unanswered_call">  Пропущенный вызов</string>
+    <string name="event_log_answered_call">  Отвеченный вызов</string>
+    <string name="event_log_detail_friend">Свой</string>
+    <string name="event_log_detail_foe">Чужой</string>
+    <string name="event_log_detail_friend_description">
+        При выборе \"Свой\" мы добавим фотографию из этого события для дальнейшего распознавания пользователя по лицу.\n
+        Все лица, зарегистрированные в системе, можно найти в разделе Настройки адресов -> Управление доступом -> Вход по лицу без ключа.
+    </string>
+    <string name="event_log_detail_foe_description">
+        При выборе \"Чужой\" мы удалим ваше зарегистрированное лицо, на какое произошло ложное срабатывание наших алгоритмов.\n
+        Все лица, зарегистрированные в системе, можно найти в разделе Настройки адресов -> Управление доступом -> Вход по лицу без ключа.
+    </string>
+    <string name="settings_by_face_comments">Вы даете согласие на хранение фотографий вашего лица в системе распознавания лиц.</string>
+    <string name="face_settings_comments">
+        Фотографии ваших гостей хранятся в разделе \"События\".\n
+        Для выбора и регистрации лица перейдите в указанный раздел, кликнув на Плюс.\n
+        В событиях кликните на значок информации напротив нужного события и на открывшемся экране выберите необходимое фото.
+    </string>
+    <string name="settings_white_rabbit">Режим «Белый кролик»</string>
+
+    <string name="help_white_rabbit">
+        <![CDATA[
+            <h2 style=\"text-align: center\">«Белый кролик»</h2>
+            <p>Функция, предназначенная для открытия калитки при звонке в квартиру и открытии подъездной панели по номеру квартиры без звонка в квартиру.</p>
+            <p>Работает следующим образом:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;гость подходит к калитке и набирает нужный номер квартиры;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;хозяин квартиры отвечает гостю и нажимает кнопку Открыть в приложении или аналоговой трубке;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;гость, подойдя к домофонной панели, набирает номер квартиры. Домофон откроется без звонка в квартиру.</p>
+            <p>Время действия данной функции после открытия калитки: <b>5 минут.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_share_access">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Гостевой доступ на час</h2>
+            <p>Данная функция позволяет вашим гостям открывать домофон без вашего участия: на вызывной панели достаточно набрать номер вашей квартиры и калитка или дверь подъезда сразу откроется.</p>
+            <p>Время действия - <b>один час с момента включения.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_log_details">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Подсказка</h2>
+            <p>Для недавних событий показывается видео за небольшой промежуток времени. Для остальных - сохраненный кадр в момент события.</p>
+            <p>Также можно использовать жесты:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;свайп влево или вправо - листание ленты событий;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;одиночный тап - старт/пауза видео;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;двойной тап в левой/правой части экрана - перемотка видео назад/вперед на 10 секунд;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;долгий тап - показать кадр события.</p>
+        ]]>
+    </string>
+    <string name="itemMessage">Замысел эпопеи формировался задолго до начала работы над тем текстом, который известен под названием «Война и мир». В наброске предисловия к «Войне и миру» Толстой писал, что в 1856 году начал писать повесть, «геро.</string>
+    <string name="itemMessageDate">01.01.2023 10:00</string>
+    <string name="inputChat">Введите сообщение</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

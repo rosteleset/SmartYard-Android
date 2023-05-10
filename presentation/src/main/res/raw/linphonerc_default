@@ -1,0 +1,8 @@
+[sip]
+use_info=0
+use_ipv6=1
+keepalive_period=30000
+
+[misc]
+max_calls=10
+history_max_size=100

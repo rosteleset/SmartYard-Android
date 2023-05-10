@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/address"
+            android:checkable="false"
+            android:checked="false"
+            android:icon="@drawable/ic_nav_address"
+            android:title="@string/title_address" />
+
+        <item
+            android:id="@+id/notification"
+            android:icon="@drawable/ic_nav_notification"
+            android:title="@string/title_notification" />
+
+        <item
+            android:id="@+id/chat"
+            android:icon="@drawable/ic_nav_chat"
+            android:title="@string/title_chat" />
+
+        <item
+            android:id="@+id/pay"
+            android:icon="@drawable/ic_nav_pay"
+            android:title="@string/title_pay" />
+
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_nav_burger"
+            android:title="@string/title_burger" />
+
+    </group>
+</menu>

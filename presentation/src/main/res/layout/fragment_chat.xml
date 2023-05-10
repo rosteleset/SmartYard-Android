@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:id="@+id/wrapChatView"
+    android:background="#F3F4FA">
+
+    <com.sofit.onlinechatsdk.ChatView
+        android:id="@+id/chatView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        app:id="7087c1e6f6d8506d95e876dbc48a85c6"
+        app:domain="intercom-mobile-api.mycentra.ru"
+        app:autoLoad="false"
+    />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

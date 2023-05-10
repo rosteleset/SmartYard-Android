@@ -1,0 +1,5 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+  <item android:drawable="@drawable/ic_cctv_p_button_pause_fs" android:state_selected="true" />
+  <item android:drawable="@drawable/ic_cctv_p_button_play_fs" android:state_selected="false" />
+  <item android:drawable="@drawable/ic_cctv_p_button_play_fs" />
+</selector>

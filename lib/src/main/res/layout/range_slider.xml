@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    android:id="@+id/mainView"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/default_overlay_height"
+    >
+    <FrameLayout
+        android:id="@+id/sliderView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/default_slider_height"
+        android:background="@drawable/background_round"
+        android:layout_gravity="bottom"
+        >
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvImageMask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:orientation="horizontal"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_stroke"
+            />
+    </FrameLayout>
+    <ru.madbrains.lib.OverlayView
+        android:id="@+id/overlayView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+    />
+
+    <ru.madbrains.lib.ArchiveIntervalsBar
+        android:id="@+id/intervalsBar"
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_gravity="bottom" />
+</FrameLayout>

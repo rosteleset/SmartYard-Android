@@ -1,0 +1,90 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+
+    ext {
+        compileSdkVersion = 33
+        minSdkVersion = 26
+        targetSdkVersion = 30
+        kotlinVersion = '1.6.21'
+        kotlinReflect = '1.6.21'
+        appCompatVersion = '1.4.1'
+        coreKtxVersion = '1.7.0'
+        constraintLayoutVersion = '2.1.4'
+        junitVersion = '4.13.2'
+        extJunitVersion = '1.1.0'
+        espressoCoreVersion = '3.2.0'
+        firebaseAnalyticsVersion = '20.0.2'
+        firebaseCrashlyticsVersion = '18.2.7'
+        firebaseMessagingVersion = '21.1.0'
+        timberVersion = '4.7.1'
+        navigationVersion = "2.2.2"
+        roomVersion = '2.4.2'
+        coroutinesVersion = '1.6.0'
+        retrofitVersion = '2.6.0'
+        okHttpVersion = '4.9.2'
+        ktlintVersion = '0.37.2'
+        archCoreVersion = '2.0.1'
+        pagingVersion = '1.0.1'
+        lifecycleVersion = '2.2.0'
+        lifecycleViewModelVersion = '2.4.1'
+        moshi_version = '1.11.0'
+        koin_version = '3.1.5'
+        glide_version = '4.12.0'
+        pinEntryEditText = '2.0.6'
+        morphBottomNavigation = '1.0.1'
+        androidxTransition = '1.4.1'
+        linphoneVersion = '4.4.35'
+        expandablelayoutVersion = '2.9.2'
+        adapterdelegates = '4.2.0'
+        openStreetMapVersion = '6.1.5'
+        swipeLayout = '1.1.0'
+        inputMask = '5.0.0'
+        materialMaterial = '1.6.0'
+        kotlinCodegen = '1.11.0'
+        cameraxVersion = '1.0.0-alpha02'
+        viewpagerVersion = '1.0.0'
+        pageIndicatorVersion = "v.1.0.3"
+        calendarView = '0.3.4'
+        threetenabp = '1.2.3'
+        osmdroidAndroid = '6.1.10'
+        playServicesLocation = '19.0.1'
+        dexter = '6.2.2'
+        playServicesWallet = '19.1.0'
+        exoPlayer = '2.14.2'
+        mobmetricalib = '3.13.1'
+        installreferrer = '2.2'
+        recyclerView = '1.2.1'
+        preference_version = "1.2.0"
+        kotlin_version = '1.4.31'
+    }
+
+    repositories {
+        mavenCentral()
+        google()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.2.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.0'
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.5.0-rc01"
+        classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
+    }
+}
+
+configurations.all { resolutionStrategy { force "org.jetbrains.kotlin:kotlin-reflect:1.6.10" } }
+
+allprojects {
+    //apply from: "$rootDir/ktlint.gradle"
+    repositories {
+        google()
+        maven { url 'https://jitpack.io' }
+        mavenCentral()
+        google()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flChatImage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    tools:context=".ui.main.ChatWoot.FragmentChatWootImage">
+
+    <ImageButton
+        android:id="@+id/ibBack"
+        android:layout_width="40dp"
+        android:layout_height="39dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginLeft="20dp"
+        android:background="#00FFFFFF"
+        android:cropToPadding="false"
+        android:elevation="3dp"
+        android:src="@drawable/arrow_back_image" />
+
+    <ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout
+        android:id="@+id/zoom"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/rlFullScreen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/fullscreenImageView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                app:srcCompat="@drawable/background_btn_openend" />
+        </RelativeLayout>
+
+    </ru.madbrains.smartyard.ui.main.address.cctv_video.ZoomLayout>
+
+</FrameLayout>

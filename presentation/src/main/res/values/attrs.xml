@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="item_incoming_call_button_attributes">
+        <attr name="buttonBG" format="reference" />
+        <attr name="buttonCheckable" format="boolean" />
+        <attr name="android:text" format="reference" />
+        <attr name="orientationLandscap" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="MorphBottomNavigationView">
+        <attr format="color" name="backgroundTint"/>
+        <attr format="dimension" name="morphItemRadius"/>
+        <attr format="dimension" name="morphVerticalOffset"/>
+        <attr format="dimension" name="morphCornerRadius"/>
+    </declare-styleable>
+</resources>

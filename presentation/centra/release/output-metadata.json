@@ -1,0 +1,20 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+  "applicationId": "centra.dom",
+  "variantName": "centraRelease",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 41,
+      "versionName": "1.6.31",
+      "outputFile": "presentation-centra-release.apk"
+    }
+  ],
+  "elementType": "File"
+}

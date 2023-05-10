@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/settings"
+    app:startDestination="@id/burgerFragment">
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="ru.madbrains.smartyard.ui.main.settings.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings">
+        <action
+            android:id="@+id/action_settingsFragment_to_addressSettingsFragment"
+            app:destination="@id/addressSettingsFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_accessAddressFragment"
+            app:destination="@id/accessAddressFragment" />
+        <action
+            android:id="@+id/action_settingsFragment_to_address"
+            app:destination="@id/address" />
+    </fragment>
+    <fragment
+        android:id="@+id/basicSettingsFragment"
+        android:name="ru.madbrains.smartyard.ui.main.settings.basicSettings.BasicSettingsFragment"
+        android:label="fragment_basic_settings"
+        tools:layout="@layout/fragment_basic_settings">
+        <action
+            android:id="@+id/action_basicSettingsFragment_to_registrationActivity"
+            app:destination="@id/registrationActivity" />
+    </fragment>
+    <fragment
+        android:id="@+id/addressSettingsFragment"
+        android:name="ru.madbrains.smartyard.ui.main.settings.addressSettings.AddressSettingsFragment"
+        android:label="fragment_address_settings"
+        tools:layout="@layout/fragment_address_settings">
+        <argument
+            android:name="address"
+            android:defaultValue="-"
+            app:argType="string" />
+        <argument
+            android:name="flatId"
+            android:defaultValue="0"
+            app:argType="integer" />
+        <argument
+            android:name="isKey"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <action
+            android:id="@+id/action_addressSettingsFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <argument
+            android:name="contractOwner"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="clientId"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/accessAddressFragment"
+        android:name="ru.madbrains.smartyard.ui.main.settings.accessAddress.AccessAddressFragment"
+        android:label="AccessAddressFragment">
+        <argument
+            android:name="address"
+            app:argType="string" />
+        <argument
+            android:name="flatId"
+            android:defaultValue="-1"
+            app:argType="integer" />
+        <argument
+            android:name="contractOwner"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="hasGates"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
+            android:name="clientId"
+            app:argType="string"/>
+        <action
+            android:id="@+id/action_accessAddressFragment_to_faceSettingsFragment"
+            app:destination="@id/faceSettingsFragment" />
+    </fragment>
+    <activity
+        android:id="@+id/registrationActivity"
+        android:name="ru.madbrains.smartyard.ui.reg.RegistrationActivity"
+        android:label="RegistrationActivity" />
+    <include app:graph="@navigation/address" />
+    <fragment
+        android:id="@+id/burgerFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.BurgerFragment"
+        android:label="fragment_burger"
+        tools:layout="@layout/fragment_burger" >
+        <action
+            android:id="@+id/action_burgerFragment_to_settingsFragment"
+            app:destination="@id/settingsFragment" />
+        <action
+            android:id="@+id/action_burgerFragment_to_basicSettingsFragment"
+            app:destination="@id/basicSettingsFragment" />
+        <action
+            android:id="@+id/action_burgerFragment_to_cityCamerasFragment"
+            app:destination="@id/cityCamerasMapFragment" />
+        <action
+            android:id="@+id/action_burgerFragment_to_extWebViewFragment"
+            app:destination="@id/extWebViewFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cityCamerasMapFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCamerasMapFragment"
+        android:label="city_cameras_map_fragment"
+        tools:layout="@layout/city_cameras_map_fragment">
+        <action
+            android:id="@+id/action_cityCamerasMapFragment_to_cityCameraFragment"
+            app:destination="@id/cityCameraFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/cityCameraFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCameraFragment"
+        android:label="fragment_city_camera"
+        tools:layout="@layout/fragment_city_camera" >
+        <action
+            android:id="@+id/action_cityCameraFragment_to_requestRecordFragment"
+            app:destination="@id/requestRecordFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestRecordFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.RequestRecordFragment"
+        android:label="fragment_request_record"
+        tools:layout="@layout/fragment_request_record" />
+    <fragment
+        android:id="@+id/faceSettingsFragment"
+        android:name="ru.madbrains.smartyard.ui.main.settings.faceSettings.FaceSettingsFragment"
+        android:label="fragment_face_settings"
+        tools:layout="@layout/fragment_face_settings" >
+        <argument
+            android:name="flatId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="address"
+            app:argType="string" />
+    </fragment>
+    <fragment
+        android:id="@+id/extWebViewFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.ExtWebViewFragment"
+        android:label="fragment_ext_web_view"
+        tools:layout="@layout/fragment_ext_web_view" >
+        <argument
+            android:name="basePath"
+            app:argType="string" />
+        <argument
+            android:name="code"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_extWebViewFragment_to_extWebBottomFragment"
+            app:destination="@id/extWebBottomFragment" />
+    </fragment>
+    <dialog
+        android:id="@+id/extWebBottomFragment"
+        android:name="ru.madbrains.smartyard.ui.main.burger.ExtWebBottomFragment"
+        android:label="fragment_ext_web_bottom"
+        tools:layout="@layout/fragment_ext_web_bottom" >
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
+</navigation>

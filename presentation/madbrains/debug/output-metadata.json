@@ -1,0 +1,21 @@
+{
+  "version": 3,
+  "artifactType": {
+    "type": "APK",
+    "kind": "Directory"
+  },
+
+  "applicationId": "centra.inercom",
+  "variantName": "madbrainsDebug",
+  "elements": [
+    {
+      "type": "SINGLE",
+      "filters": [],
+      "attributes": [],
+      "versionCode": 39,
+      "versionName": "1.6.29",
+      "outputFile": "presentation-madbrains-debug.apk"
+    }
+  ],
+  "elementType": "File"
+}
