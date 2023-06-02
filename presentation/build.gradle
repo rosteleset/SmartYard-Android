@@ -76,8 +76,7 @@ android {
         }
 
         insit {
-            // applicationId "ru.insit.smartyard"
-            applicationId "com.sesameware.smartyard_oem"
+            applicationId "ru.insit.intercom"
         }
     }
 
