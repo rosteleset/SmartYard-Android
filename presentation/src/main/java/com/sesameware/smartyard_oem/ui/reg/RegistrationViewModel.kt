@@ -57,6 +57,7 @@ class RegistrationViewModel(
                     }
                 } catch (e: CommonErrorThrowable) {
                     Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
+                    logout()
                 }
             }
 

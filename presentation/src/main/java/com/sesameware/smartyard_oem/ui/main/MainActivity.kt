@@ -85,6 +85,7 @@ class MainActivity : CommonActivity() {
                     }
                 } catch (e: CommonErrorThrowable) {
                     Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
+                    mViewModel.logout()
                 }
             }
         }
