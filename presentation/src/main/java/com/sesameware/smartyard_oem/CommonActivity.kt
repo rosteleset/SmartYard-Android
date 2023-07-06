@@ -28,7 +28,8 @@ abstract class CommonActivity : AppCompatActivity() {
                         showStandardAlert(
                             this,
                             getString(R.string.title_0),
-                            getString(R.string.common_do_authorization_on_another)
+                            getString(R.string.common_do_authorization_on_another),
+                            false
                         ) {
                             mViewModel.logout()
                         }

@@ -27,7 +27,7 @@ class NumberRegViewModel(
     private var callNumber = ""
 
     fun requestSmsCode(phone: String, fragment: Fragment) {
-        viewModelScope.withProgress({ false }) {
+        viewModelScope.withProgress({ true }) {
             val res = mInteractor.requestCode(phone)
             authMethod = res?.data?.method ?: AuthMethod.SMS_CODE
             res?.data?.confirmationNumbers?.let {

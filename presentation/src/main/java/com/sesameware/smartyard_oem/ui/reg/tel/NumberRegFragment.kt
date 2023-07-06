@@ -15,8 +15,6 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.sesameware.domain.model.ErrorStatus
-import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNumberRegBinding
@@ -64,11 +62,12 @@ class NumberRegFragment : Fragment() {
         mViewModel.localErrorsSink.observe(
             viewLifecycleOwner,
             EventObserver { error ->
-                if (error.status == ErrorStatus.TOO_MANY_REQUESTS) {
-                    mViewModel.goToNext(mPhoneNumber, this)
+                /*if (error.status == ErrorStatus.TOO_MANY_REQUESTS) {
+                    mViewModel.goToNext(mPhonePrefix + mPhoneNumber, this)
                 } else {
                     toggleError(true, error.status.messageId)
-                }
+                }*/
+                toggleError(true, error.status.messageId)
             }
         )
 

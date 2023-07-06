@@ -84,11 +84,13 @@ fun showStandardAlert(
     context: Context,
     title: String?,
     message: String,
+    cancel: Boolean = true,
     callback: listenerEmpty? = null
 ) {
     AlertDialog.Builder(context, R.style.AlertDialogStyle)
         .setTitle(title)
         .setMessage(message)
+        .setCancelable(cancel)
         .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
             callback?.run { this() }
         }
