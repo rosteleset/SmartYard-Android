@@ -101,20 +101,22 @@ class BurgerViewModel(
                 extInteractor.list()?.let { extList ->
                     extList.data.forEach { item ->
                         if (item.extId != null && item.order != null && item.caption != null) {
-                            extInteractor.ext(ExtRequest(item.extId!!))?.let {
-                                list.add(
-                                    BurgerModel(
-                                        orderId = item.order!!,
-                                        iconUrl = item.icon,
-                                        title = item.caption!!,
-                                        onClick = {
-                                            if (it.data.basePath != null && it.data.code != null) {
-                                                _navigateToWebView.value = Event(WebExtension(it.data.basePath!!, it.data.code!!))
+                            list.add(
+                                BurgerModel(
+                                    orderId = item.order!!,
+                                    iconUrl = item.icon,
+                                    title = item.caption!!,
+                                    onClick = {
+                                        viewModelScope.withProgress({false}) {
+                                            extInteractor.ext(ExtRequest(item.extId!!))?.let {
+                                                if (it.data.basePath != null && it.data.code != null) {
+                                                    _navigateToWebView.value = Event(WebExtension(it.data.basePath!!, it.data.code!!))
+                                                }
                                             }
                                         }
-                                    )
+                                    }
                                 )
-                            }
+                            )
                         }
                     }
                 }
