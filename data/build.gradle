@@ -82,6 +82,15 @@ android {
             buildConfigField "String", "PROVIDER_NAME", "\"ИНСИТ\""
             buildConfigField "String", "SERVER_TZ", "\"Asia/Yekaterinburg\""
         }
+
+        pakt {
+            buildConfigField "String", "USER_AGENT", "\"PAKT (Android)\""
+            buildConfigField "String", "PROVIDERS_URL", "\"\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://dm.pakt.ru/api/app/\""
+            buildConfigField "String", "PROVIDER_NAME", "\"ПАКТ\""
+            buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""
+        }
     }
 }
 

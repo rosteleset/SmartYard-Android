@@ -37,8 +37,8 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdkVersion rootProject.minSdkVersion
         targetSdkVersion rootProject.targetSdkVersion
-        versionCode 41
-        versionName '1.0.41'
+        versionCode 42
+        versionName '1.0.42'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -77,6 +77,10 @@ android {
 
         insit {
             applicationId "ru.insit.intercom"
+        }
+
+        pakt {
+            applicationId "com.sesameware.smartyard_oem"
         }
     }
 
