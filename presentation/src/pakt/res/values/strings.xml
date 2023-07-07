@@ -1,0 +1,18 @@
+<resources>
+    <!-- Main -->
+    <string name="app_name">ПАКТ Мой дом</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_complete">Начнем</string>
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">У вас есть договор с ПАКТ?</string>
+    <string name="auth_where_is_contract_caption">Введите номер Договора и пароль от ЛК и управляйте услугами из Приложения</string>
+    <string name="auth_number_btn_no">У меня нет договора с ПАКТ</string>
+
+    <!-- Потверждение адреса -->
+    <string name="address_verification_office_description">Посетите ближайший офис ПАКТ с квитанцией ЖКХ за эту квартиру и мы сразу же активируем функцию умного домофона и видеонаблюдения.</string>
+
+    <!-- Скоро все заработает курьер. -->
+    <string name="address_work_soon_courier_caption">Для подтверждения адреса вам нужно принести квитанцию ЖКХ не старше трёх месяцев в ближайший офис ПАКТ.</string>
+</resources>

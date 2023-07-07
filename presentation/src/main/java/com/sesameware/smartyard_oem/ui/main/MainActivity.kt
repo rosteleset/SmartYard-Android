@@ -85,7 +85,11 @@ class MainActivity : CommonActivity() {
                     }
                 } catch (e: CommonErrorThrowable) {
                     Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
-                    mViewModel.logout()
+                    if (e.data.httpCode == 401) {
+                        mViewModel.logout()
+                    } else {
+
+                    }
                 }
             }
         }
