@@ -57,7 +57,11 @@ class RegistrationViewModel(
                     }
                 } catch (e: CommonErrorThrowable) {
                     Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
-                    logout()
+                    if (e.data.httpCode == 401) {
+                        logout()
+                    } else {
+
+                    }
                 }
             }
 
