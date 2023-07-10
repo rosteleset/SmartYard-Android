@@ -13,6 +13,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import com.sesameware.data.DataModule
+import com.sesameware.domain.model.response.GuestAccessType
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
@@ -92,9 +94,14 @@ class AccessAddressFragment : Fragment() {
                 val c: Calendar = Calendar.getInstance()
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
                 val getCurrentDateTime = sdf.format(c.time)
-                if (getCurrentDateTime <= it.autoOpen) {
-                    binding.btnGuestAccessOpen.isClickable = false
-                    binding.btnGuestAccessOpen.isChecked = true
+                if (DataModule.providerConfig.guestAccess == GuestAccessType.TURN_ON_ONLY) {
+                    if (getCurrentDateTime <= it.autoOpen) {
+                        binding.btnGuestAccessOpen.isClickable = false
+                        binding.btnGuestAccessOpen.isChecked = true
+                    }
+                } else {
+                    binding.btnGuestAccessOpen.isClickable = true
+                    binding.btnGuestAccessOpen.isChecked = (getCurrentDateTime <= it.autoOpen)
                 }
                 hideCodeOpen(it.allowDoorCode)
 
@@ -244,17 +251,35 @@ class AccessAddressFragment : Fragment() {
 
     private fun showDialog() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
-        builder
-            .setTitle(resources.getString(R.string.dialog_title))
-            .setMessage(resources.getString(R.string.dialog_message))
-            .setPositiveButton(resources.getString(R.string.dialog_yes)) { _, _ ->
-                mViewModel.guestAccessOpen(flatId)
-                binding.btnGuestAccessOpen.isClickable = false
-            }
-            .setNegativeButton(resources.getString(R.string.dialog_no)) { _, _ ->
-                binding.btnGuestAccessOpen.isChecked = false
-                returnTransition
-            }.show()
+        if (DataModule.providerConfig.guestAccess == GuestAccessType.TURN_ON_ONLY) {
+            builder
+                .setTitle(resources.getString(R.string.dialog_title))
+                .setMessage(resources.getString(R.string.dialog_message))
+                .setCancelable(false)
+                .setPositiveButton(resources.getString(R.string.dialog_yes)) { _, _ ->
+                    mViewModel.guestAccess(flatId, true)
+                    binding.btnGuestAccessOpen.isClickable = false
+                }
+                .setNegativeButton(resources.getString(R.string.dialog_no)) { _, _ ->
+                    binding.btnGuestAccessOpen.isChecked = false
+                    returnTransition
+                }.show()
+        } else {
+            binding.btnGuestAccessOpen.isClickable = true
+            val isOpen = !binding.btnGuestAccessOpen.isChecked
+            builder
+                .setTitle(resources.getString(if (isOpen) R.string.dialog_title2 else R.string.dialog_title))
+                .setMessage(resources.getString(if (isOpen) R.string.dialog_message2 else R.string.dialog_message))
+                .setCancelable(false)
+                .setPositiveButton(resources.getString(if (isOpen) R.string.dialog_turn_off else R.string.dialog_yes)) { _, _ ->
+                    mViewModel.guestAccess(flatId, !isOpen)
+                    binding.btnGuestAccessOpen.isChecked = !isOpen
+                }
+                .setNegativeButton(resources.getString(R.string.dialog_no)) { _, _ ->
+                    binding.btnGuestAccessOpen.isChecked = isOpen
+                    returnTransition
+                }.show()
+        }
     }
 
     private fun requestCameraPermission() {

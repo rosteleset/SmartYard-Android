@@ -37,9 +37,13 @@ class AccessAddressViewModel(
         }
     }
 
-    fun guestAccessOpen(flatId: Int) {
+    fun guestAccess(flatId: Int, isOpen: Boolean) {
         val cal: Calendar = Calendar.getInstance()
-        cal.add(Calendar.HOUR_OF_DAY, 1)
+        if (isOpen) {
+            cal.add(Calendar.HOUR_OF_DAY, 1)
+        } else {
+            cal.add(Calendar.SECOND, -1)
+        }
         val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         dateFormat.timeZone = cal.timeZone
         val autoOpen = dateFormat.format(cal.time)

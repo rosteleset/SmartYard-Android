@@ -75,6 +75,11 @@
     <string name="dialog_sms">Информация для гостя успешно отправлена!</string>
     <string name="addresses_video_cameras">Видеокамеры</string>
     <string name="addresses_events">События</string>
+    <string name="dialog_title2">Выключить гостевой доступ?</string>
+    <string name="dialog_message2" />
+    <string name="dialog_turn_off">ВЫКЛЮЧИТЬ</string>
+    <string name="guest_access_open">Открыть</string>
+    <string name="guest_access_opened">Открыто</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">Адрес добавлен.</string>
