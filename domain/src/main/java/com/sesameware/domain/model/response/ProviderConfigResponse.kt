@@ -31,7 +31,10 @@ data class ProviderConfig(
     @Json(name = CHAT_OPTIONS) val chatOptions: ChatOptions? = null,
 
     //настройки TimeZone
-    @Json(name = TIME_ZONE) val timeZone: String? = null
+    @Json(name = TIME_ZONE) val timeZone: String? = null,
+
+    //настройки гостевого доступа
+    @Json(name = GUEST_ACCESS) val _guestAccess: String = GUEST_ACCESS_TURN_ON_ONLY
 ) {
     val hasNotification: Boolean
         get() = _hasNotifications == "t"
@@ -53,6 +56,8 @@ data class ProviderConfig(
         @Json(name = CHAT_DOMAIN) val domain: String? = null,
         @Json(name = CHAT_TOKEN) val token: String? = null,
     )
+
+    val guestAccess: GuestAccessType get() = GuestAccessType.getType(_guestAccess)
 
     companion object {
         //уведомления
@@ -85,5 +90,24 @@ data class ProviderConfig(
 
         //настройки TimeZone
         const val TIME_ZONE = "timeZone"
+
+        //настройки гостевого доступа
+        const val GUEST_ACCESS = "guestAccess"
+        const val GUEST_ACCESS_TURN_ON_ONLY = "turnOnOnly"
+        const val GUEST_ACCESS_TURN_ON_AND_OFF = "turnOnAndOff"
+    }
+}
+
+enum class GuestAccessType {
+    TURN_ON_ONLY,
+    TURN_ON_AND_OFF;
+
+    companion object {
+        fun getType(type: String): GuestAccessType {
+            return when (type) {
+                ProviderConfig.GUEST_ACCESS_TURN_ON_AND_OFF -> TURN_ON_AND_OFF
+                else -> TURN_ON_ONLY
+            }
+        }
     }
 }

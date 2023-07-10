@@ -213,11 +213,11 @@
                                 android:background="@drawable/tooglebutton_selector"
                                 android:paddingStart="18dp"
                                 android:paddingEnd="18dp"
-                                android:text="Открыто"
+                                android:text="@string/guest_access_open"
                                 android:textAllCaps="false"
                                 android:textColor="@drawable/toggle_color_text"
-                                android:textOff="Открыть"
-                                android:textOn="Открыто" />
+                                android:textOff="@string/guest_access_open"
+                                android:textOn="@string/guest_access_opened" />
 
                         </LinearLayout>
 

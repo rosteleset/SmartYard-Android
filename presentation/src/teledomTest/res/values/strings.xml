@@ -1,0 +1,5 @@
+<resources>
+    <!-- Мои адреса-->
+    <string name="guest_access_open">Включить</string>
+    <string name="guest_access_opened">Выключить</string>
+</resources>
