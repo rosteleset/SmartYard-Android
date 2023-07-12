@@ -13,6 +13,7 @@ import com.sesameware.domain.model.request.CreateIssuesRequest.Issue
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
+import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 
 /**
  * @author Nail Shakurov
@@ -30,6 +31,10 @@ abstract class BaseIssueViewModel(
     private val _successNavigateToFragment = MutableLiveData<Event<Unit>>()
     val successNavigateToFragment: LiveData<Event<Unit>>
         get() = _successNavigateToFragment
+
+    private val _navigateToIssueFragmentAction = MutableLiveData<Event<IssueModel>>()
+    val navigateToIssueFragmentAction: LiveData<Event<IssueModel>>
+        get() = _navigateToIssueFragmentAction
 
     fun createIssue(
         summary: String,
@@ -49,7 +54,7 @@ abstract class BaseIssueViewModel(
                 customFields.x10744 = apiResult.data.lon.replace(".", ",")
             }
             customFields.x11840 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"))
-            issueInteractor.createIssues(
+            val result = issueInteractor.createIssues(
                 CreateIssuesRequest.Builder().issue(
                     Issue(
                         description,
@@ -63,6 +68,9 @@ abstract class BaseIssueViewModel(
                     .build()
             )
             _navigateToIssueSuccessDialogAction.value = Event(Unit)
+            if (address != null) {
+                _navigateToIssueFragmentAction.value = Event(IssueModel(address, result.data))
+            }
         }
     }
 
