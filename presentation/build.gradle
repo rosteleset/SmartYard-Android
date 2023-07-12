@@ -80,7 +80,7 @@ android {
         }
 
         pakt {
-            applicationId "com.sesameware.smartyard_oem"
+            applicationId "ru.pakt.cctv"
         }
     }
 

@@ -91,11 +91,11 @@
                 android:background="@drawable/dashed"
                 android:text="@string/auth_numer_pass0"
                 android:textColor="@color/blue"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toStartOf="@+id/tvRememberAnything"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etPassword"
-                tools:visibility="invisible" />
+                app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
             <TextView
                 android:id="@+id/tvRememberAnything"
@@ -106,9 +106,9 @@
                 android:background="@drawable/dashed"
                 android:text="@string/auth_number_pass1"
                 android:textColor="@color/blue"
+                android:visibility="invisible"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/etPassword"
-                tools:visibility="invisible" />
+                app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
 
         <Button

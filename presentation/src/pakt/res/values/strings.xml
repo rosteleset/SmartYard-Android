@@ -15,4 +15,12 @@
 
     <!-- Скоро все заработает курьер. -->
     <string name="address_work_soon_courier_caption">Для подтверждения адреса вам нужно принести квитанцию ЖКХ не старше трёх месяцев в ближайший офис ПАКТ.</string>
+
+    <!-- Заявка (диалог)-->
+    <string name="issue_dialog_title">Совсем скоро\nвсё заработает!</string>
+    <string name="issue_dialog_caption">Заявка принята. Ожидайте звонок\nоператора в течение одного рабочего дня.</string>
+
+    <!-- Мои адреса-->
+    <string name="guest_access_open">Включить</string>
+    <string name="guest_access_opened">Выключить</string>
 </resources>

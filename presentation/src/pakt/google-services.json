@@ -1,42 +1,34 @@
 {
   "project_info": {
-    "project_number": "906963827830",
-    "project_id": "smartyardoem",
-    "storage_bucket": "smartyardoem.appspot.com"
+    "project_number": "320885490708",
+    "project_id": "pakt-domophones-20213",
+    "storage_bucket": "pakt-domophones-20213.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:906963827830:android:4e21eef919e368a7eb3357",
+        "mobilesdk_app_id": "1:320885490708:android:49113dc106424734a8d301",
         "android_client_info": {
-          "package_name": "com.sesameware.smartyard_oem"
+          "package_name": "ru.pakt.cctv"
         }
       },
       "oauth_client": [
         {
-          "client_id": "906963827830-vgbjv7ra08fe8ded4lqhinneu2ue1s49.apps.googleusercontent.com",
+          "client_id": "320885490708-qtd4704lougnko0is0gs2drg0n49a6t2.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyC_4QPrPMpo9BsQlr6lXK7_RwFBM4pXUO4"
+          "current_key": "AIzaSyCQ-ZZxqHjyxfes9fY5my88MYPWwI0528c"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "906963827830-vgbjv7ra08fe8ded4lqhinneu2ue1s49.apps.googleusercontent.com",
+              "client_id": "320885490708-qtd4704lougnko0is0gs2drg0n49a6t2.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "906963827830-1p7rm10r7jdiancnj9qk2791eeh75m79.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "ru.lanta-net.smartyard.oem",
-                "app_store_id": "1631532001"
-              }
             }
           ]
         }
