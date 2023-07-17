@@ -218,5 +218,8 @@
         <argument
             android:name="issueModel"
             app:argType="com.sesameware.smartyard_oem.ui.main.address.models.IssueModel" />
+        <argument
+            android:name="hasCancel"
+            app:argType="boolean" />
     </fragment>
 </navigation>

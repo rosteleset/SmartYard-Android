@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.sesameware.smartyard_oem.EventObserver
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentIssueBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.availableServices.AvailableServicesViewModel
@@ -18,6 +19,7 @@ class IssueFragment : Fragment() {
 
     private val viewModel by viewModel<AvailableServicesViewModel>()
     private var issueModel: IssueModel? = null
+    private var hasCancel = true
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,10 +34,19 @@ class IssueFragment : Fragment() {
 
         requireNotNull(arguments).let {
             issueModel = IssueFragmentArgs.fromBundle(it).issueModel
+            hasCancel = IssueFragmentArgs.fromBundle(it).hasCancel
         }
 
-        binding.btnCancel.setOnClickListener {
-            viewModel.deleteIssue(issueModel?.key ?: "")
+        if (hasCancel) {
+            binding.btnCancel.text = view.resources.getText(R.string.address_work_soon_office_btn_2)
+            binding.btnCancel.setOnClickListener {
+                viewModel.deleteIssue(issueModel?.key ?: "")
+            }
+        } else {
+            binding.btnCancel.text = view.resources.getText(R.string.address_work_soon_office_btn_3)
+            binding.btnCancel.setOnClickListener {
+                (activity as? MainActivity)?.reloadToAddress()
+            }
         }
 
         setupObservers()

@@ -161,7 +161,7 @@
     <string name="address_work_soon_office_btn_0">Сфотографировать QR-код</string>
     <string name="address_work_soon_office_btn_1">Приду в офис самостоятельно</string>
     <string name="address_work_soon_office_btn_2">Отменить заявку</string>
-
+    <string name="address_work_soon_office_btn_3">Продолжить</string>
 
     <!-- Скоро все заработает курьер. -->
     <string name="address_work_soon_courier_title">Совсем скоро  всё заработает!</string>
