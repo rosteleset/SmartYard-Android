@@ -82,6 +82,10 @@ android {
         pakt {
             applicationId "ru.pakt.cctv"
         }
+
+        garant {
+            applicationId "tv.garant.provider"
+        }
     }
 
     buildFeatures {
