@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1028052897587",
+    "firebase_url": "https://garant-glazove.firebaseio.com",
+    "project_id": "garant-glazove",
+    "storage_bucket": "garant-glazove.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028052897587:android:047acd3f1c1ca4da",
+        "android_client_info": {
+          "package_name": "tv.garant.provider"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028052897587-gckd61j7d9ig871tmcjq4ikod2ngen9t.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "tv.garant.provider",
+            "certificate_hash": "200bc8920527b18c25062f081a1c927973c69f06"
+          }
+        },
+        {
+          "client_id": "1028052897587-it6v8ogb16vosefdgu98kbqb9q5uflrp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj5RPEaSFRTT8ma42itiHPvj5AgYAMwn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028052897587-it6v8ogb16vosefdgu98kbqb9q5uflrp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
