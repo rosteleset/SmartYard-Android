@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentIssueBinding
@@ -20,6 +21,7 @@ class IssueFragment : Fragment() {
     private val viewModel by viewModel<AvailableServicesViewModel>()
     private var issueModel: IssueModel? = null
     private var hasCancel = true
+    private var hasBack = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,6 +37,7 @@ class IssueFragment : Fragment() {
         requireNotNull(arguments).let {
             issueModel = IssueFragmentArgs.fromBundle(it).issueModel
             hasCancel = IssueFragmentArgs.fromBundle(it).hasCancel
+            hasBack = IssueFragmentArgs.fromBundle(it).hasBack
         }
 
         if (hasCancel) {
@@ -47,6 +50,16 @@ class IssueFragment : Fragment() {
             binding.btnCancel.setOnClickListener {
                 (activity as? MainActivity)?.reloadToAddress()
             }
+        }
+
+        if (hasBack) {
+            binding.btnBack.visibility = View.VISIBLE
+            binding.btnBack.setOnClickListener {
+                this.findNavController().popBackStack()
+            }
+        } else {
+            binding.btnBack.visibility = View.INVISIBLE
+            binding.btnBack.setOnClickListener(null)
         }
 
         setupObservers()

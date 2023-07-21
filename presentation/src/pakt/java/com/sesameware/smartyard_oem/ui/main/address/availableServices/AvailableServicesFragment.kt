@@ -72,7 +72,7 @@ class AvailableServicesFragment : Fragment() {
         viewModel.navigateToIssueFragmentAction.observe(
             viewLifecycleOwner,
             EventObserver {
-                val action = AvailableServicesFragmentDirections.actionAvailableServicesFragmentToIssueFragment(it, false)
+                val action = AvailableServicesFragmentDirections.actionAvailableServicesFragmentToIssueFragment(it, false, false)
                 this.findNavController().navigate(action)
             }
         )

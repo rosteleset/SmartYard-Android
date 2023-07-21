@@ -221,5 +221,8 @@
         <argument
             android:name="hasCancel"
             app:argType="boolean" />
+        <argument
+            android:name="hasBack"
+            app:argType="boolean" />
     </fragment>
 </navigation>

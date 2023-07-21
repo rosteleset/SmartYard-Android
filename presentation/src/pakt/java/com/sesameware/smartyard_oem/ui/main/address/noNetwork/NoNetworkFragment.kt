@@ -55,7 +55,7 @@ class NoNetworkFragment : Fragment() {
         viewModel.navigateToIssueFragmentAction.observe(
             viewLifecycleOwner,
             EventObserver {
-                val action = NoNetworkFragmentDirections.actionNoNetworkFragmentToIssueFragment(it, false)
+                val action = NoNetworkFragmentDirections.actionNoNetworkFragmentToIssueFragment(it, false, false)
                 this.findNavController().navigate(action)
             }
         )

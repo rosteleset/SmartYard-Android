@@ -143,7 +143,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                     }
                 },
                 clickItemIssue = {
-                    val action = AddressFragmentDirections.actionAddressFragmentToIssueFragment(it, true)
+                    val action = AddressFragmentDirections.actionAddressFragmentToIssueFragment(it, true, true)
                     this.findNavController().navigate(action)
                 },
                 clickQrCode = {
