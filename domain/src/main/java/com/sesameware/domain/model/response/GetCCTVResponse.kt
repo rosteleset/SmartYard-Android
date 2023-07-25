@@ -4,6 +4,7 @@ import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 import org.threeten.bp.DateTimeUtils
+import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
@@ -29,12 +30,14 @@ data class CCTVData(
         when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
+            MediaServerType.FORPOST -> "$url&$token"
             else -> "$url/index.m3u8?token=$token"
         }
 
     val preview: String get() =
         when (serverType) {
             MediaServerType.NIMBLE -> "$url/thumbnail.mp4?wmsAuthSign=$token"
+            MediaServerType.FORPOST -> "$url&$token"
             else -> "$url/preview.mp4?token=$token"
         }
 
@@ -44,15 +47,19 @@ data class CCTVData(
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
+            MediaServerType.FORPOST -> "$url&$token"
             else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
         }
     }
 
     fun getPreviewAt(time: LocalDateTime, timeZone: String): String {
         val zoned = time.atZone(ZoneId.of(timeZone)).withZoneSameInstant(ZoneId.of("UTC"))
+        val ts = zoned.toEpochSecond()
+        val tz = Instant.now().atZone(ZoneId.of(timeZone)).offset.totalSeconds
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/dvr_thumbnail_${zoned.format(mPreviewFormatter)}.mp4?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "${url.replace("/hls?", "/site?")}&$token&starttime=${zoned.format(mPreviewFormatterMacroscop)}&resolutionx=480&resolutiony=270&streamtype=mainvideo&withcontenttype=true&mode=archive"
+            MediaServerType.FORPOST -> "$url&$token&TS=$ts&TZ=$tz"
             else -> "$url/${zoned.format(mPreviewFormatter)}-preview.mp4?token=$token"
         }
     }
@@ -62,6 +69,7 @@ data class CCTVData(
             return when (_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
+                MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -88,6 +96,7 @@ data class CCTVCityCameraData(
             return when (_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
+                MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -108,11 +117,13 @@ data class CCTVYoutubeData(
 enum class MediaServerType {
     FLUSSONIC,
     NIMBLE,
-    MACROSCOP;
+    MACROSCOP,
+    FORPOST;
 
     companion object {
         const val MEDIA_TYPE_FLUSSONIC = "flussonic"
         const val MEDIA_TYPE_NIMBLE = "nimble"
         const val MEDIA_TYPE_MACROSCOP = "macroscop"
+        const val MEDIA_TYPE_FORPOST = "forpost"
     }
 }

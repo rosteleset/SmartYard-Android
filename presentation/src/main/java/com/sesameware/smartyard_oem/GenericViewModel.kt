@@ -119,7 +119,6 @@ open class GenericViewModel : ViewModel(), KoinComponent {
 
     fun logout() {
         viewModelScope.withProgress {
-            logout.postValue(Event(true))
             mPreferenceStorage.providerId = null
             mPreferenceStorage.providerBaseUrl = null
             mPreferenceStorage.authToken = null
@@ -127,6 +126,7 @@ open class GenericViewModel : ViewModel(), KoinComponent {
             mPreferenceStorage.fcmTokenRegistered = null
             databaseInteractor.deleteAll()
             refreshFcmToken()
+            logout.postValue(Event(true))
         }
     }
 

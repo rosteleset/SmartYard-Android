@@ -760,7 +760,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             }
         }
 
-        val player = if (serverType == MediaServerType.MACROSCOP) MacroscopPlayer(requireContext(), forceVideoTrack, callbacks) else DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+        val player = when (serverType) {
+            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), forceVideoTrack, callbacks)
+            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), forceVideoTrack, callbacks)
+            else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+        }
         videoView.player = player.getPlayer()
         videoView.useController = false
 
