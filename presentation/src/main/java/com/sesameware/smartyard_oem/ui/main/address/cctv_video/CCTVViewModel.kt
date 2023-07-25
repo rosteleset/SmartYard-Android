@@ -24,8 +24,11 @@ import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
+import okhttp3.FormBody
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONObject
 import timber.log.Timber
 import java.util.*
 
@@ -84,6 +87,7 @@ class CCTVViewModel(
                 availableRanges.clear()
                 val loadPeriods = try {
                     when (it.serverType) {
+                        MediaServerType.FORPOST,
                         MediaServerType.MACROSCOP,
                         MediaServerType.NIMBLE -> cctvInteractor.ranges(it.id)?.first()?.ranges ?: emptyList()
                         else -> {
@@ -220,8 +224,41 @@ class CCTVViewModel(
             }
 
             val client = OkHttpClient()
+            var imageUrl = url
+
+            //forpost
+            if (url.contains("/GetTranslationURL")) {
+                val bodyBuilder = FormBody.Builder()
+                url.toHttpUrlOrNull()?.let { forpostUrl ->
+                    var hasFormat = false
+                    for (i in 0 until forpostUrl.querySize) {
+                        val paramName = forpostUrl.queryParameterName(i)
+                        var paramValue = forpostUrl.queryParameterValue(i) ?: ""
+                        if (paramName.lowercase() == "format") {
+                            hasFormat = true
+                            paramValue = "JPG"
+                        }
+                        bodyBuilder.add(paramName, paramValue)
+                    }
+                    if (!hasFormat) {
+                        bodyBuilder.add("format", "JPG")
+                    }
+
+                    val request = Request.Builder()
+                        .url(forpostUrl.toString().split("?", limit = 1)[0])
+                        .post(bodyBuilder.build())
+                        .build()
+                    client.newCall(request).execute().use { response ->
+                        if (response.isSuccessful) {
+                            val json = JSONObject(response.body!!.string())
+                            imageUrl = json.optString("URL", "")
+                        }
+                    }
+                }
+            }
+
             val request = Request.Builder()
-                .url(url)
+                .url(imageUrl)
                 .build()
             client.newCall(request).execute().use { response ->
                 if (response.isSuccessful) {

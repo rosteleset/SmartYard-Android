@@ -2,15 +2,23 @@ package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.content.Context
 import android.net.Uri
+import android.provider.ContactsContract.Data
 import com.google.android.exoplayer2.*
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.video.VideoSize
+import com.sesameware.data.DataModule
+import com.squareup.moshi.Json
 import kotlinx.coroutines.*
+import okhttp3.FormBody
+import okhttp3.HttpUrl
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.RequestBody
+import org.json.JSONObject
 import org.threeten.bp.*
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
@@ -153,6 +161,7 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
 
+                Timber.d("debug_dmm onPlayerError")
                 callbacks?.onPlayerError(error)
             }
 
@@ -213,22 +222,22 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
     }
 }
 
-class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
+abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
     : DefaultCCTVPlayer(context, forceVideoTrack, callbacks), CoroutineScope by MainScope() {
 
-    private var httpClient: OkHttpClient
+    protected var httpClient: OkHttpClient
 
-    private var fromUtc: Long = INVALID_POSITION
-    private var duration: Long = INVALID_DURATION
-    private var currentMediaPosition = 0L
-    private var currentSegmentStart: Long = 0L
-    private var currentSegmentTimePlayed: Long = 0L
-    private var internalCurrentPosition: Long = 0L
+    protected var fromUtc: Long = INVALID_POSITION
+    protected var duration: Long = INVALID_DURATION
+    protected var currentMediaPosition = 0L
+    protected var currentSegmentStart: Long = 0L
+    protected var currentSegmentTimePlayed: Long = 0L
+    protected var internalCurrentPosition: Long = 0L
 
-    private var mUrl: String = ""
-    private var progressTimer: Timer? = null
-    private var isNewTimeline = false
-    private var processSeeking = false
+    protected var mUrl: String = ""
+    protected var progressTimer: Timer? = null
+    protected var isNewTimeline = false
+    protected var processSeeking = false
 
     init {
         Timber.d("__Q__  call init")
@@ -311,6 +320,25 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
         return duration
     }
 
+    override fun releasePlayer() {
+        clearProgressTimer()
+        super.releasePlayer()
+    }
+
+    private fun clearProgressTimer() {
+        progressTimer?.cancel()
+        progressTimer = null
+    }
+
+    abstract fun setMediaSeek(doPlay: Boolean = false)
+
+    companion object {
+        const val REQUEST_TIMEOUT = 10L  // in seconds
+    }
+}
+
+class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
+    : NoDurationPlayer(context, forceVideoTrack, callbacks) {
     override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
         mediaUrl?.let { url ->
             currentSegmentStart = seekMediaTo
@@ -329,12 +357,7 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
         }
     }
 
-    override fun releasePlayer() {
-        clearProgressTimer()
-        super.releasePlayer()
-    }
-
-    private fun setMediaSeek(doPlay: Boolean = false) {
+    override fun setMediaSeek(doPlay: Boolean) {
         Timber.d("__Q__    call setMediaSeek")
         launch(Dispatchers.IO) {
             var requestUrl = mUrl
@@ -343,7 +366,6 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
                     DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss"))
                 requestUrl += "&starttime=${startTime}&mode=archive&isForward=true&speed=1&sound=off"
             }
-            Timber.d("__D__  requestUrl = $requestUrl")
             val request = Request.Builder()
                 .url(requestUrl)
                 .build()
@@ -353,10 +375,9 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
                         val p = mUrl.indexOf("?")
                         if (p >= 0) {
                             val r = response.body!!.string()
-                            Timber.d("__D__  response = $r")
                             val realHlsUrl = mUrl.substring(0, p) + "/" + r
                             withContext(Dispatchers.Main) {
-                                super.prepareMedia(realHlsUrl, INVALID_POSITION, INVALID_DURATION, 0L, doPlay)
+                               super.prepareMedia(realHlsUrl, INVALID_POSITION, INVALID_DURATION, 0L, doPlay)
                             }
                         }
                     }
@@ -368,13 +389,61 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
             }
         }
     }
+}
 
-    private fun clearProgressTimer() {
-        progressTimer?.cancel()
-        progressTimer = null
+class ForpostPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
+    : NoDurationPlayer(context, forceVideoTrack, callbacks) {
+    override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
+        mediaUrl?.let { url ->
+            currentSegmentStart = seekMediaTo
+            currentMediaPosition = currentSegmentStart
+            currentSegmentTimePlayed = 0L
+            if (from == INVALID_POSITION || mediaDuration == INVALID_DURATION) {
+                fromUtc = INVALID_POSITION
+                duration = INVALID_DURATION
+            } else {
+                fromUtc = from * 1000
+                duration = mediaDuration * 1000
+            }
+            mUrl = url
+
+            setMediaSeek(doPlay)
+        }
     }
 
-    companion object {
-        const val REQUEST_TIMEOUT = 10L  // in seconds
+    override fun setMediaSeek(doPlay: Boolean) {
+        Timber.d("__Q__    call setMediaSeek")
+        launch(Dispatchers.IO) {
+            val bodyBuilder = FormBody.Builder()
+            mUrl.toHttpUrlOrNull()?.let { forpostUrl ->
+                for (i in 0 until forpostUrl.querySize) {
+                    bodyBuilder.add(forpostUrl.queryParameterName(i), forpostUrl.queryParameterValue(i) ?: "")
+                }
+                if (fromUtc != INVALID_POSITION) {
+                    bodyBuilder.add("TS", ((fromUtc + currentSegmentStart) / 1000).toString())
+                    bodyBuilder.add("TZ", Instant.now().atZone(ZoneId.of(DataModule.serverTz)).offset.totalSeconds.toString())
+                }
+                val request = Request.Builder()
+                    .url(forpostUrl.toString().split("?", limit = 1)[0])
+                    .post(bodyBuilder.build())
+                    .build()
+
+                try {
+                    httpClient.newCall(request).execute().use { response ->
+                        if (response.isSuccessful) {
+                            val json = JSONObject(response.body!!.string())
+                            val realHls = json.optString("URL", "")
+                            withContext(Dispatchers.Main) {
+                                super.prepareMedia(realHls, INVALID_POSITION, INVALID_DURATION,0, doPlay)
+                            }
+                        }
+                    }
+                } catch (e: Exception) {
+                    withContext(Dispatchers.Main) {
+                        this@ForpostPlayer.callbacks?.onPlayerError(e)
+                    }
+                }
+            }
+        }
     }
 }
