@@ -67,6 +67,22 @@ class MainActivity : CommonActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        runBlocking {
+            try {
+                mRegModel.getProviderConfig()
+                mRegModel.authInteractor.phonePattern()?.let { result ->
+                    DataModule.phonePattern = result.data
+                }
+            } catch (e: CommonErrorThrowable) {
+                Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
+                if (e.data.httpCode == 401) {
+                    mViewModel.logout()
+                } else {
+
+                }
+            }
+        }
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
@@ -74,25 +90,6 @@ class MainActivity : CommonActivity() {
         /*(bottom_nav.background as MaterialShapeDrawable).apply {
             this.setStroke(2.0f, 12345)
         }*/
-
-        if (DataModule.providerName.isEmpty()) {
-            Timber.d("debug_dmm    providerName is empty")
-            runBlocking {
-                try {
-                    mRegModel.getProviderConfig()
-                    mRegModel.authInteractor.phonePattern()?.let { result ->
-                        DataModule.phonePattern = result.data
-                    }
-                } catch (e: CommonErrorThrowable) {
-                    Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
-                    if (e.data.httpCode == 401) {
-                        mViewModel.logout()
-                    } else {
-
-                    }
-                }
-            }
-        }
 
         appVersion()
         val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
