@@ -35,6 +35,7 @@ import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
 import com.sesameware.smartyard_oem.ui.main.burger.cityCameras.adapters.CityCameraEventAdapter
@@ -303,7 +304,11 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             }
         }
 
-        val player = if (serverType == MediaServerType.MACROSCOP) MacroscopPlayer(requireContext(), forceVideoTrack, callbacks) else DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+        val player = when (serverType) {
+            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), forceVideoTrack, callbacks)
+            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), forceVideoTrack, callbacks)
+            else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+        }
         videoView.player = player.getPlayer()
         videoView.useController = false
         player.playWhenReady = true
