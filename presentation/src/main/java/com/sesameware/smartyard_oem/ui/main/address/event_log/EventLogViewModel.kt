@@ -40,6 +40,7 @@ data class DoorphoneData(
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
+            MediaServerType.FORPOST -> "$url&$token"
             else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
         }
     }

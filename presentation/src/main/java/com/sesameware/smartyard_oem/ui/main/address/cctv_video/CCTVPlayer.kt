@@ -254,7 +254,7 @@ abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, call
                 super.onPlaybackStateChanged(state)
 
                 if (fromUtc != INVALID_POSITION && state == Player.STATE_READY && progressTimer == null) {
-                    progressTimer = fixedRateTimer("macroscopTimer", false, 0, 300) {
+                    progressTimer = fixedRateTimer("playerTimer", false, 0, 300) {
                         launch(Dispatchers.Main) {
                             mPlayer?.let { player ->
                                 //Timber.d("__Q__ progressTimer    ${player.currentPosition}      $internalCurrentPosition     $isNewTimeline")

@@ -15,6 +15,7 @@ data class CamMap(
             return when(_serverType) {
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
+                MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
                 else -> MediaServerType.FLUSSONIC
             }
         }
