@@ -88,6 +88,7 @@ data class CCTVCityCameraData(
     val hls: String get() = when (serverType) {
         MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
         MediaServerType.MACROSCOP -> "$url&$token"
+        MediaServerType.FORPOST -> "$url&$token"
         else -> "$url/index.m3u8?token=$token"
     }
 

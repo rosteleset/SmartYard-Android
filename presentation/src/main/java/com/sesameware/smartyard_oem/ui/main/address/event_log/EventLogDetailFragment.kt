@@ -29,6 +29,7 @@ import com.sesameware.smartyard_oem.databinding.FragmentEventLogDetailBinding
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MyGestureDetector
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogAddPhoto.DialogAddPhotoFragment
@@ -68,7 +69,8 @@ class EventLogDetailFragment : Fragment() {
 
     private fun initPlayer(serverType: MediaServerType) {
         mPlayer?.let { player ->
-            if ((serverType == MediaServerType.MACROSCOP) xor (player is MacroscopPlayer)) {
+            if ((serverType == MediaServerType.MACROSCOP) xor (player is MacroscopPlayer)
+                || (serverType == MediaServerType.FORPOST) xor (player is ForpostPlayer)) {
                 releasePlayer()
             }
         }
@@ -100,7 +102,11 @@ class EventLogDetailFragment : Fragment() {
                 }
             }
 
-            mPlayer = if (serverType == MediaServerType.MACROSCOP) MacroscopPlayer(requireContext(), false, callbacks) else DefaultCCTVPlayer(requireContext(), false, callbacks)
+            mPlayer = when (serverType) {
+                MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), false, callbacks)
+                MediaServerType.FORPOST -> ForpostPlayer(requireContext(), false, callbacks)
+                else -> DefaultCCTVPlayer(requireContext(), false, callbacks)
+            }
             mPlayerView?.player = (mPlayer as? DefaultCCTVPlayer)?.getPlayer()
         }
     }
