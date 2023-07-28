@@ -87,8 +87,8 @@ android {
             buildConfigField "String", "USER_AGENT", "\"PAKT (Android)\""
             buildConfigField "String", "PROVIDERS_URL", "\"\""
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
-            //buildConfigField "String", "PROVIDER_URL", "\"https://dm.pakt.ru/api/app/\""
-            buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile/\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://dm.pakt.ru/api/app/\""
+            //buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile/\""
             buildConfigField "String", "PROVIDER_NAME", "\"ПАКТ Мой дом\""
             buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""
         }
@@ -97,8 +97,8 @@ android {
             buildConfigField "String", "USER_AGENT", "\"Garant Glazov (Android)\""
             buildConfigField "String", "PROVIDERS_URL", "\"\""
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
-            //buildConfigField "String", "PROVIDER_URL", "\"https://rbt.garant.tv/mobile/\""
-            buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile/\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://rbt.garant.tv/mobile/\""
+            //buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile/\""
             buildConfigField "String", "PROVIDER_NAME", "\"Гарант Глазов\""
             buildConfigField "String", "SERVER_TZ", "\"Europe/Samara\""
         }
