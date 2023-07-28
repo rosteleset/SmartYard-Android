@@ -48,6 +48,7 @@ class EventLogDetailFragment : Fragment() {
     private var prevLoadedIndex = -1
     private var mPlayer: BaseCCTVPlayer? = null
     private var mPlayerView: PlayerView? = null
+    private var mEventImage: FaceImageView? = null
     private var videoUrl = ""
     private var savedPosition = -1
 
@@ -95,8 +96,12 @@ class EventLogDetailFragment : Fragment() {
                 override fun onVideoSizeChanged(videoSize: VideoSize) {
                     mPlayerView?.let {
                         if (videoSize.width > 0 && videoSize.height > 0) {
-                            val k = it.measuredWidth.toFloat() / videoSize.width.toFloat()
-                            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (videoSize.height.toFloat() * k).toInt())
+                            if (mEventImage?.measuredHeight != null && mEventImage!!.measuredHeight > 0) {
+                                it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, mEventImage!!.measuredHeight)
+                            } else {
+                                val k = it.measuredWidth.toFloat() / videoSize.width.toFloat()
+                                it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (videoSize.height.toFloat() * k).toInt())
+                            }
                         }
                     }
                 }
@@ -246,8 +251,8 @@ class EventLogDetailFragment : Fragment() {
                         pvELDVideo?.player = null
                         mPlayerView = null
                     }
-                    val pvELDVideo: PlayerView? = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.pvELDVideo)
-                    mPlayerView = pvELDVideo
+                    mEventImage = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.ivELDImage)
+                    mPlayerView = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.pvELDVideo)
 
                     val svELD: ScrollView? = binding.rvEventLogDetail.findViewHolderForAdapterPosition(newPosition)?.itemView?.findViewById(R.id.svELD)
                     val q = GestureDetector(requireContext(), MyGestureDetector(
