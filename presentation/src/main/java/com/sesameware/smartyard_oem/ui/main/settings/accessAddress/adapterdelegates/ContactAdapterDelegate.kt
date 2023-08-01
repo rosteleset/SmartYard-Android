@@ -9,7 +9,6 @@ import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
-import android.provider.ContactsContract
 import android.provider.ContactsContract.Contacts
 import android.provider.ContactsContract.PhoneLookup
 import android.view.LayoutInflater
@@ -27,6 +26,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.hannesdorfmann.adapterdelegates4.AdapterDelegate
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.setTextColorRes
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
 import ru.rambler.libs.swipe_layout.SwipeLayout
 import java.io.IOException
@@ -87,15 +87,28 @@ class ContactAdapterDelegate(
                     .into(holder.ivAvatar)
             }
 
-            rightViewDelete.setOnClickListener {
-                holder.swipeLayout.reset()
-                deleteListener.invoke(position, item.number)
-            }
-
             tvSms.isVisible = !hideSms
 
-            tvSms.setOnClickListener {
-                smsListener.invoke(item.number)
+            if (item.isOwner) {
+                tvTitle.isEnabled = false
+                tvTitle.setTextColorRes(R.color.grey_100)
+                swipeLayout.isSwipeEnabled = false
+
+                rightViewDelete.setOnClickListener(null)
+                tvSms.setOnClickListener(null)
+            } else {
+                tvTitle.isEnabled = true
+                tvTitle.setTextColorRes(R.color.black)
+                swipeLayout.isSwipeEnabled = true
+
+                rightViewDelete.setOnClickListener {
+                    holder.swipeLayout.reset()
+                    deleteListener.invoke(position, item.number)
+                }
+
+                tvSms.setOnClickListener {
+                    smsListener.invoke(item.number)
+                }
             }
         }
     }

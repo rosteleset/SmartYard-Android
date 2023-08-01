@@ -189,7 +189,8 @@ fun openUrl(activity: Activity?, url: String) {
 
 enum class Type(var value: String) {
     INNER("inner"),
-    OUTER("outer")
+    OUTER("outer"),
+    OWNER("owner")
 }
 
 class SoundChooser {

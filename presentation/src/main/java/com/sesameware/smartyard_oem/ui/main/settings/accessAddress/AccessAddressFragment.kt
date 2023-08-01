@@ -116,23 +116,22 @@ class AccessAddressFragment : Fragment() {
         mViewModel.roommate.observe(
             viewLifecycleOwner
         ) {
-            val inner = it.filter { it.type == Type.INNER.value }
+            val inner = it.filter { it.type == Type.INNER.value || it.type == Type.OWNER.value}
             val outer = it.filter { it.type == Type.OUTER.value }
             adapterAccessBarrierGate.items =
                 outer.map { ContactModel(it.expire, it.phone) }.toMutableList()
             adapterAccessBarrierGate.notifyDataSetChanged()
 
             adapterPermanentAccessAddress.items =
-                inner.map { ContactModel(it.expire, it.phone) }.toMutableList()
+                inner.map { ContactModel(it.expire, it.phone, it.type == Type.OWNER.value) }.toMutableList()
             adapterPermanentAccessAddress.notifyDataSetChanged()
         }
 
         mViewModel.operationRoommate.observe(
-            viewLifecycleOwner,
-            Observer {
-                mViewModel.getRoommateAndIntercom(flatId)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            mViewModel.getRoommateAndIntercom(flatId)
+        }
 
         mViewModel.dialogToSuccessSms.observe(
             viewLifecycleOwner,
