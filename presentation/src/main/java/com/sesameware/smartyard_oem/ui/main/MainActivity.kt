@@ -17,6 +17,7 @@ import android.view.*
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
@@ -65,6 +66,8 @@ class MainActivity : CommonActivity() {
     private val mRegModel by viewModel<RegistrationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
+
         super.onCreate(savedInstanceState)
 
         runBlocking {

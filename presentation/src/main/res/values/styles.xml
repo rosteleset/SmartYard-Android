@@ -10,6 +10,11 @@
         <item name="windowNoTitle">true</item>
         <item name="fontFamily">@font/source_sans_family</item>
     </style>
+    <style name="AppThemeMainSplash" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_splash</item>
+    </style>
 
     <!-- No action bar -->
     <style name="AppTheme.NoActionBar">
