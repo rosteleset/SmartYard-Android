@@ -90,7 +90,7 @@
             android:configChanges="orientation|screenSize"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppThemeMainSplash"
             android:windowSoftInputMode="adjustResize"
             android:exported="true">
             <intent-filter>
