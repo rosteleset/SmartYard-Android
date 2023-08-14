@@ -86,6 +86,10 @@ android {
         garant {
             applicationId "tv.garant.provider"
         }
+
+        korvet {
+            applicationId "com.sesameware.smartyard_oem"
+        }
     }
 
     buildFeatures {
