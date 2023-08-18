@@ -176,7 +176,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     fun acceptCallForDoor() {
         core.currentCall?.let { call ->
             val params = core.createCallParams(call)
-            params?.enableVideo(false)
+            params?.enableVideo(true)
             params?.enableAudio(true)
             call.acceptWithParams(params)
         }
