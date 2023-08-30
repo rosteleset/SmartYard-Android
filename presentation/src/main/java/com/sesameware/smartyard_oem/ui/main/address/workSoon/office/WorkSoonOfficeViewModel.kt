@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem.ui.main.address.workSoon.office
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.request.CreateIssuesRequest
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
@@ -55,7 +56,8 @@ class WorkSoonOfficeViewModel(
                 x12440 = x12440,
                 x10941 = x10941
             ),
-            CreateIssuesRequest.TypeAction.ACTION1
+            CreateIssuesRequest.TypeAction.ACTION1,
+            IssueClass.ComeInOfficeMyselfIssue
         )
     }
 }

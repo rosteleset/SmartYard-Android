@@ -3,17 +3,16 @@ package com.sesameware.smartyard_oem.ui.main
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.request.CreateIssuesRequest
-import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
-import com.sesameware.domain.model.request.CreateIssuesRequest.Issue
-import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction
+import com.sesameware.domain.model.request.CreateIssuesRequest.*
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 /**
  * @author Nail Shakurov
@@ -41,7 +40,8 @@ abstract class BaseIssueViewModel(
         description: String,
         address: String?,
         customFields: CustomFields,
-        typeAction: TypeAction
+        typeAction: TypeAction,
+        cls: IssueClass
     ) {
         val project = "REM"
         val type = 32L
@@ -64,7 +64,8 @@ abstract class BaseIssueViewModel(
                     )
                 ).customFields(
                     customFields
-                ).actions(typeAction.list)
+                ).actions(typeAction.list
+                ).cls(cls)
                     .build()
             )
             _navigateToIssueSuccessDialogAction.value = Event(Unit)
