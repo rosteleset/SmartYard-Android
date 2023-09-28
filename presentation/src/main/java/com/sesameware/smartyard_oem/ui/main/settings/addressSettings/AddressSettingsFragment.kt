@@ -41,6 +41,8 @@ class AddressSettingsFragment : Fragment() {
     private val mAddressVM by sharedViewModel<AddressViewModel>()
     private val mSettingsVM by sharedViewModel<SettingsViewModel>()
 
+    private var allowIntercom = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -224,6 +226,7 @@ class AddressSettingsFragment : Fragment() {
             }*/
 
             binding.switchWhiteRabbit.isChecked = (it.whiteRabbit > 0)
+            manageControls(true)
         }
 
         viewModel.deleteRoommate.observe(
@@ -241,6 +244,10 @@ class AddressSettingsFragment : Fragment() {
             if (!compoundButton.isPressed) {
                 return@setOnCheckedChangeListener
             }
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -256,6 +263,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchVoip.setOnCheckedChangeListener { _, check ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -271,6 +282,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchPaperBill.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -286,6 +301,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchUseEventLog.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -303,6 +322,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchOwnerEventLog.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -318,6 +341,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchUseFRS.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -333,6 +360,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchWhiteRabbit.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
             viewModel.putIntercom(
                 flatId,
                 null,
@@ -375,6 +406,17 @@ class AddressSettingsFragment : Fragment() {
             .setNegativeButton(resources.getString(R.string.setting_dialog_delete_no)) { _, _ ->
                 returnTransition
             }.show()
+    }
+
+    private fun manageControls(enabled: Boolean) {
+        allowIntercom = enabled
+        binding.switchIntercom.isEnabled = enabled
+        binding.switchVoip.isEnabled = enabled
+        binding.switchPaperBill.isEnabled = enabled
+        binding.switchUseEventLog.isEnabled = enabled
+        binding.switchOwnerEventLog.isEnabled = enabled
+        binding.switchUseFRS.isEnabled = enabled
+        binding.switchWhiteRabbit.isEnabled = enabled
     }
 
     companion object {
