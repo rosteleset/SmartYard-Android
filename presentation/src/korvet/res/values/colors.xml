@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MAIN -->
+    <color name="colorPrimary">#D12028</color>
+    <color name="colorPrimaryDark">#D12028</color>
+    <color name="colorAccent">#D12028</color>
+    <color name="brandColor">#D12028</color>
+    <color name="splashColor">#D12028</color>
+
+    <!-- BRAND colors -->
+    <color name="blue">#D12028</color>
+    <color name="blue_200">#A71920</color>
+    <color name="brand_pressed">#A71920</color>
+</resources>
