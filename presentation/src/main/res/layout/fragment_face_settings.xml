@@ -28,7 +28,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:fontFamily="@font/source_sans_pro_bold"
-            android:text="Регистрация лица"
+            android:text="@string/face_registration"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -71,7 +71,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="24dp"
-                android:text="Зарегистрированные лица"
+                android:text="@string/registered_faces"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -104,7 +104,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="start" />
 
-                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>>
+                </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
             </LinearLayout>
 

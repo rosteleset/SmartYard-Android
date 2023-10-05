@@ -32,7 +32,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="24dp"
                 android:gravity="center"
-                android:text="Добавить это лицо?"
+                android:text="@string/title_add_face"
                 android:textColor="@color/black_200"
                 android:textSize="24sp"
                 android:textStyle="bold" />
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
-                android:text="Добавить"
+                android:text="@string/add_face"
                 android:textStyle="bold" />
 
             <TextView
@@ -64,7 +64,7 @@
                 android:layout_marginEnd="24dp"
                 android:layout_marginBottom="28dp"
                 android:gravity="center"
-                android:text="Отмена"
+                android:text="@string/dialog_face_cancel"
                 android:textColor="@color/grey_100"
                 android:textSize="18sp"
                 android:textStyle="bold" />

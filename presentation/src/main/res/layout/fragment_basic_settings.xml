@@ -27,7 +27,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="24dp"
             android:fontFamily="@font/source_sans_pro_bold"
-            android:text="Общие настройки"
+            android:text="@string/title_common_settings"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -97,7 +97,7 @@
                             android:paddingStart="24dp"
                             android:paddingTop="24dp"
                             android:paddingBottom="24dp"
-                            android:text="Алексеев В.Б."
+                            android:text="@string/user_name_sample"
                             android:textColor="@color/black"
                             android:textSize="18sp" />
 
@@ -139,7 +139,7 @@
                             android:paddingStart="24dp"
                             android:paddingTop="24dp"
                             android:paddingBottom="24dp"
-                            android:text="Уведомления"
+                            android:text="@string/title_notifications"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             app:layout_constraintEnd_toEndOf="parent"
@@ -168,7 +168,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvTitleNotif">>
+                            app:layout_constraintTop_toBottomOf="@id/tvTitleNotif">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -190,19 +190,19 @@
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
                                     android:padding="24dp"
-                                    android:text="Получать уведомления"
+                                    android:text="@string/receive_notifications"
                                     android:textColor="@color/black"
                                     app:layout_constraintEnd_toStartOf="@+id/swShowNotify"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/view3" />
 
-                                <Switch
+                                <androidx.appcompat.widget.SwitchCompat
                                     android:id="@+id/swShowNotify"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
                                     android:button="@drawable/switch_button_selector"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
 
                                     android:thumb="@null"
                                     app:layout_constraintBottom_toBottomOf="@+id/tvShowNotify"
@@ -260,7 +260,7 @@
                                     android:gravity="fill_vertical"
                                     android:paddingLeft="24dp"
                                     android:paddingTop="24dp"
-                                    android:text="Оповестить о недостатке средств"
+                                    android:text="@string/lack_funds_notifications"
                                     android:textColor="@color/black"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/pdSound" />
@@ -272,19 +272,19 @@
                                     android:gravity="fill_vertical"
                                     android:paddingLeft="24dp"
                                     android:paddingBottom="16dp"
-                                    android:text="Прислать уведомление, когда баланс приблизится к нулю"
+                                    android:text="@string/balance_notify_near_zero"
                                     android:textColor="@color/grey_100"
                                     app:layout_constraintEnd_toStartOf="@+id/sBalanse"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/tvBalanseCaption" />
 
-                                <Switch
+                                <androidx.appcompat.widget.SwitchCompat
                                     android:id="@+id/sBalanse"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
                                     android:button="@drawable/switch_button_selector"
-                                    android:paddingRight="24dp"
+                                    android:paddingEnd="24dp"
                                     android:thumb="@null"
                                     app:layout_constraintBottom_toBottomOf="@+id/tvBalanseTitle"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -323,7 +323,7 @@
                             android:paddingStart="24dp"
                             android:paddingTop="24dp"
                             android:paddingBottom="24dp"
-                            android:text="Безопасность"
+                            android:text="@string/title_security"
                             android:textColor="@color/black"
                             android:textSize="18sp"
                             app:layout_constraintEnd_toStartOf="@+id/ivSecurity"
@@ -350,7 +350,7 @@
                             app:layout_constraintBottom_toBottomOf="parent"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/tvTitleSecurity">>
+                            app:layout_constraintTop_toBottomOf="@id/tvTitleSecurity">
 
                             <androidx.constraintlayout.widget.ConstraintLayout
                                 android:layout_width="match_parent"
@@ -360,22 +360,22 @@
                                     android:id="@+id/textView25"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
                                     android:paddingTop="24dp"
-                                    android:text="Вход по Fingerprint"
+                                    android:text="@string/fingerprint_entrance"
                                     android:textColor="@color/black"
                                     app:layout_constraintEnd_toStartOf="@+id/switch3"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toTopOf="parent" />
 
 
-                                <Switch
+                                <androidx.appcompat.widget.SwitchCompat
                                     android:id="@+id/switch3"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
                                     android:button="@drawable/switch_button_selector"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
                                     android:thumb="@null"
                                     app:layout_constraintBottom_toBottomOf="@+id/textView26"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -386,9 +386,9 @@
                                     android:id="@+id/textView26"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
                                     android:paddingBottom="24dp"
-                                    android:text="Входить в приложение с помощью отпечатка пальца"
+                                    android:text="@string/fingerprint_entrance_description"
                                     app:layout_constraintEnd_toStartOf="@+id/switch3"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/textView25" />
@@ -408,9 +408,9 @@
                                     android:id="@+id/textView27"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
                                     android:paddingTop="24dp"
-                                    android:text="Вход по PIN-коду"
+                                    android:text="@string/pin_code_entrance"
                                     android:textColor="@color/black"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/view7" />
@@ -419,20 +419,20 @@
                                     android:id="@+id/textView28"
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
                                     android:paddingBottom="16dp"
-                                    android:text="Входить в приложение с помощью ввода PIN-кода"
+                                    android:text="@string/pin_code_entrance_description"
                                     app:layout_constraintEnd_toStartOf="@+id/switch4"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@+id/textView27" />
 
-                                <Switch
+                                <androidx.appcompat.widget.SwitchCompat
                                     android:id="@+id/switch4"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:background="@null"
                                     android:button="@drawable/switch_button_selector"
-                                    android:paddingLeft="24dp"
+                                    android:paddingStart="24dp"
                                     android:thumb="@null"
                                     app:layout_constraintBottom_toBottomOf="@+id/textView28"
                                     app:layout_constraintEnd_toEndOf="parent"
@@ -466,7 +466,7 @@
                         android:paddingStart="24dp"
                         android:paddingTop="24dp"
                         android:paddingBottom="24dp"
-                        android:text="Выйти"
+                        android:text="@string/text_logout"
                         android:textColor="@color/red_100"
                         android:textSize="18sp" />
 

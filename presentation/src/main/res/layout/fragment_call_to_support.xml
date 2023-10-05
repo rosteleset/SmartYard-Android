@@ -20,7 +20,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_weight="1"
-            android:text="Техподдержка"
+            android:text="@string/title_support"
             android:textColor="@color/black_200"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
-            android:text="Позвонить"
+            android:text="@string/call_support"
             android:textColor="@color/grey_100"
             android:textSize="16sp" />
 
@@ -98,7 +98,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="start|center_vertical"
             android:layout_weight="1"
-            android:text="Заказать обратный звонок"
+            android:text="@string/order_callback"
             android:textColor="@color/grey_100"
             android:textSize="16sp" />
     </LinearLayout>

@@ -106,9 +106,9 @@ class WidgetFactory internal constructor(var context: Context, var intent: Inten
             R.layout.app_widget
         )
         if (data.isEmpty()) {
-            views.setViewVisibility(R.id.text_view_empty, View.VISIBLE)
+            views.setViewVisibility(R.id.textViewEmpty, View.VISIBLE)
         } else {
-            views.setViewVisibility(R.id.text_view_empty, View.INVISIBLE)
+            views.setViewVisibility(R.id.textViewEmpty, View.INVISIBLE)
         }
         AppWidgetManager.getInstance(context).updateAppWidget(
             ComponentName(context, WidgetProvider::class.java), views
