@@ -30,7 +30,7 @@
                 android:paddingStart="24dp"
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
-                android:text="г. Тамбов, ул. Советская, 16, к. 4"
+                android:text="@string/address_sample"
                 android:textColor="@color/black_200"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@+id/imageView6"

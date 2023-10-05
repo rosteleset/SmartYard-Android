@@ -29,7 +29,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:fontFamily="@font/source_sans_pro_bold"
-            android:text="Доступ к адресу"
+            android:text="@string/title_access_address"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
@@ -78,13 +78,12 @@
                     android:id="@+id/tvAddressName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="false"
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:paddingStart="24dp"
                     android:paddingTop="24dp"
                     android:paddingBottom="24dp"
-                    android:text="г. Тамбов, ул. Советская, 16, кв.4"
+                    android:text="@string/address_sample"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
@@ -115,7 +114,7 @@
                     android:layout_marginLeft="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="24dp"
-                    android:text="Временный доступ к домофону " />
+                    android:text="@string/temporary_intercom_access" />
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -147,7 +146,7 @@
                                 android:layout_marginStart="24dp"
                                 android:paddingTop="20dp"
                                 android:paddingBottom="20dp"
-                                android:text="Код открытия"
+                                android:text="@string/code_to_open"
                                 android:textColor="@color/black" />
 
                             <TextView
@@ -193,11 +192,11 @@
                                 android:layout_marginStart="24dp"
                                 android:layout_marginTop="20dp"
                                 android:layout_marginBottom="20dp"
-                                android:drawableRight="@drawable/ic_baseline_help"
                                 android:drawablePadding="8dp"
                                 android:gravity="center"
-                                android:text="Гостевой доступ на час"
-                                android:textColor="@color/black" />
+                                android:text="@string/share_access"
+                                android:textColor="@color/black"
+                                app:drawableRightCompat="@drawable/ic_baseline_help" />
 
 
                             <Space
@@ -250,7 +249,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="16dp"
                                 android:layout_marginEnd="4dp"
-                                android:text="Вход по лицу без ключа" />
+                                android:text="@string/entrance_by_face" />
 
                             <ImageView
                                 android:id="@+id/ivByFaceBeta"
@@ -291,7 +290,7 @@
                                     android:paddingTop="20dp"
                                     android:paddingEnd="24dp"
                                     android:paddingBottom="20dp"
-                                    android:text="Зарегистрированные лица"
+                                    android:text="@string/registered_faces"
                                     android:textColor="@color/black"
                                     android:textSize="14sp" />
 
@@ -303,7 +302,7 @@
                                     android:layout_gravity="center_vertical"
                                     android:layout_marginStart="24dp"
                                     android:layout_marginEnd="24dp"
-                                    android:text="  Настроить  "
+                                    android:text="@string/manage_faces"
                                     android:textSize="14sp" />
 
                             </LinearLayout>
@@ -320,7 +319,7 @@
                     android:layout_marginLeft="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="24dp"
-                    android:text="Временный доступ к шлагбауму/воротам" />
+                    android:text="@string/temporary_barrier_access" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvAccessGate"
@@ -351,13 +350,13 @@
                             android:id="@+id/tvAddBarrierGate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/ic_add_circle"
                             android:paddingLeft="24dp"
                             android:paddingTop="20dp"
                             android:paddingRight="24dp"
                             android:paddingBottom="20dp"
-                            android:text="Добавить контакт"
-                            android:textSize="18sp" />
+                            android:text="@string/barrier_add_contact"
+                            android:textSize="18sp"
+                            app:drawableRightCompat="@drawable/ic_add_circle" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -369,7 +368,7 @@
                     android:layout_marginLeft="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="24dp"
-                    android:text="Постоянный доступ к адресу" />
+                    android:text="@string/permanent_access_address" />
 
 
                 <androidx.cardview.widget.CardView
@@ -401,13 +400,13 @@
                             android:id="@+id/tvPermanentAccessAddress"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/ic_add_circle"
                             android:paddingLeft="24dp"
                             android:paddingTop="20dp"
                             android:paddingRight="24dp"
                             android:paddingBottom="20dp"
-                            android:text="Добавить контакт"
-                            android:textSize="18sp" />
+                            android:text="@string/permanent_add_contact"
+                            android:textSize="18sp"
+                            app:drawableRightCompat="@drawable/ic_add_circle" />
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>

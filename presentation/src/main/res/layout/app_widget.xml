@@ -9,7 +9,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -50,15 +50,14 @@
         tools:listitem="@layout/item_widget"/>
 
     <TextView
-        android:id="@+id/text_view_empty"
+        android:id="@+id/textViewEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/linearLayout"
         android:layout_alignParentBottom="true"
-        android:layout_weight="1"
         android:gravity="center"
         android:visibility="gone"
-        android:text="Список пуст"
+        android:text="@string/text_empty_list"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/black"
         android:textSize="18sp" />

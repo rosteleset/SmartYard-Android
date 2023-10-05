@@ -155,7 +155,7 @@
                 android:textColor="@color/white"
                 android:textSize="16sp"
                 app:autoSizeMinTextSize="10sp"
-                tools:text="Тамбов, ул. Советская 20, кв. 52" />
+                tools:text="@string/address_sample" />
 
             <Chronometer
                 android:id="@+id/mCallTimer"

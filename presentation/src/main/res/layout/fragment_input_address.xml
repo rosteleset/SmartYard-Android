@@ -88,7 +88,7 @@
                     android:background="@drawable/background_edit_text_radius"
                     android:completionThreshold="1"
                     android:ems="10"
-                    android:hint="Город"
+                    android:hint="@string/hint_city"
                     android:inputType="textPersonName"
                     android:padding="16dp"
                     android:textSize="18sp" />
@@ -122,7 +122,7 @@
                     android:background="@drawable/background_edit_text_radius"
                     android:completionThreshold="1"
                     android:ems="10"
-                    android:hint="Улица"
+                    android:hint="@string/hint_street"
                     android:inputType="textPersonName"
                     android:padding="16dp"
                     android:textSize="18sp" />
@@ -164,7 +164,7 @@
                         android:background="@drawable/background_edit_text_radius"
                         android:completionThreshold="1"
                         android:ems="10"
-                        android:hint="Дом"
+                        android:hint="@string/hint_house"
                         android:inputType="number"
                         android:padding="16dp"
                         android:textSize="18sp" />
@@ -193,7 +193,7 @@
                     android:layout_weight="1"
                     android:background="@drawable/background_edit_text_radius"
                     android:ems="10"
-                    android:hint="Квартира"
+                    android:hint="@string/hint_flat"
                     android:inputType="number|textPersonName"
                     android:padding="16dp"
                     android:textSize="18sp" />

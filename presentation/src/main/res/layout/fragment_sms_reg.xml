@@ -114,7 +114,7 @@
             android:paddingTop="18dp"
             android:paddingEnd="50dp"
             android:paddingBottom="18dp"
-            android:text="Отправить код повторно"
+            android:text="@string/reg_sms_code_resend"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"

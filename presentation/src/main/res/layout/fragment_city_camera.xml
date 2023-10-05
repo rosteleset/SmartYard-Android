@@ -37,7 +37,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:text="Камера 1"
+            android:text="@string/title_city_camera_sample"
             android:textAlignment="textStart"
             android:textColor="@color/white"
             android:textSize="32sp"
@@ -58,7 +58,7 @@
             app:autoSizeMinTextSize="10sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCityCameraTitle"
-            tools:text="г. Тамбов, ул. Советская, 16" />
+            tools:text="@string/address_sample" />
 
         <LinearLayout
             android:id="@+id/llCityCameraMain"
@@ -200,7 +200,7 @@
                         android:id="@+id/tvCityCameraScroll"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Наверх"
+                        android:text="@string/text_scroll_up"
                         android:textColor="@color/grey_100"
                         android:textSize="17sp" />
 

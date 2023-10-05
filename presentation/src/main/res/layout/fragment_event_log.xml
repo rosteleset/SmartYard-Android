@@ -36,7 +36,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:text="События"
+            android:text="@string/events_title"
             android:textAlignment="textStart"
             android:textColor="@color/white"
             android:textSize="32sp"

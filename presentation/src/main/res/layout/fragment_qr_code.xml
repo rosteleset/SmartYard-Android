@@ -32,7 +32,7 @@
             android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
-            tools:text="Наведите камеру на QR-код" />
+            tools:text="@string/qr_code_title" />
 
     </LinearLayout>
 

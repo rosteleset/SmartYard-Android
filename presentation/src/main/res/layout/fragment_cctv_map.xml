@@ -56,7 +56,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="5dp"
-            tools:text="г. Тамбов, ул. Советская, 16"
+            tools:text="@string/cctv_map_address_sample"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"

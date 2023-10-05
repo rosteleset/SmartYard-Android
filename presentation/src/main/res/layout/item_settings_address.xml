@@ -29,7 +29,7 @@
                 android:gravity="center_vertical"
                 android:paddingStart="24dp"
                 android:paddingTop="24dp"
-                android:text="г. Тамбов, ул. Советская, 16, к. 4"
+                android:text="@string/address_sample"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toStartOf="@+id/imageView6"
@@ -46,7 +46,7 @@
                 android:paddingStart="24dp"
                 android:paddingTop="4dp"
                 android:paddingBottom="24dp"
-                android:text="Номер договора: 68992"
+                android:text="@string/contract_number_sample"
                 android:textColor="@color/grey_100"
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -72,7 +72,7 @@
                 app:el_duration="300"
                 app:el_expanded="true"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvCaption">>
+                app:layout_constraintTop_toBottomOf="@id/tvCaption">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -184,7 +184,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:padding="24dp"
-                            android:text="Настройки адреса"
+                            android:text="@string/text_address_settings"
                             android:textColor="@color/black" />
 
                         <ImageView
@@ -222,7 +222,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:padding="24dp"
-                            android:text="Управление доступом"
+                            android:text="@string/text_provide_access"
                             android:textColor="@color/black" />
 
                         <ImageView
@@ -260,7 +260,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:padding="24dp"
-                            android:text="Открыть веб-версию личного кабинета"
+                            android:text="@string/text_open_lc"
                             android:textColor="@color/black" />
 
                         <ImageView

@@ -36,7 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="Шлагбаум Север"
+                android:text="@string/object_name_sample"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
@@ -44,7 +44,7 @@
                 android:id="@+id/tvAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="г.Тамбов, ул.Советская, 16, к.4"
+                android:text="@string/address_sample"
                 android:textColor="@color/black_200"
                 android:textSize="14sp" />
         </LinearLayout>
@@ -54,7 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:paddingLeft="20dp"
+            android:paddingStart="20dp"
             android:paddingEnd="20dp"
             android:src="@drawable/ic_open" />
 
