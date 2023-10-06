@@ -36,9 +36,9 @@ android {
     defaultConfig {
         applicationId "com.sesameware.smartyard_oem"
         minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
-        versionCode 44
-        versionName '1.0.44'
+        targetSdkVersion targetSdkVersion
+        versionCode 45
+        versionName '1.0.45'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -88,7 +88,7 @@ android {
         }
 
         korvet {
-            applicationId "com.sesameware.smartyard_oem"
+            applicationId "pro.korvet.smartyard"
         }
     }
 
