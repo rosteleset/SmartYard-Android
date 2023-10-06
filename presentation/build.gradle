@@ -14,7 +14,7 @@ apply plugin: 'androidx.navigation.safeargs'
 
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdkVersion
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -27,10 +27,10 @@ android {
 
     defaultConfig {
         applicationId "com.sesameware.smartyard_oem"
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
-        versionCode 43
-        versionName '1.0.43'
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
+        versionCode 46
+        versionName '1.0.46'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
