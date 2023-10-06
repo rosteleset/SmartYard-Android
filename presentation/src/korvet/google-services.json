@@ -1,44 +1,26 @@
 {
   "project_info": {
-    "project_number": "906963827830",
-    "project_id": "smartyardoem",
-    "storage_bucket": "smartyardoem.appspot.com"
+    "project_number": "38340570522",
+    "project_id": "korvet-pro",
+    "storage_bucket": "korvet-pro.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:906963827830:android:4e21eef919e368a7eb3357",
+        "mobilesdk_app_id": "1:38340570522:android:1551f7b46cfe6da0af1e23",
         "android_client_info": {
-          "package_name": "com.sesameware.smartyard_oem"
+          "package_name": "pro.korvet.smartyard"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "906963827830-vgbjv7ra08fe8ded4lqhinneu2ue1s49.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyC_4QPrPMpo9BsQlr6lXK7_RwFBM4pXUO4"
+          "current_key": "AIzaSyBAjhwkTo9bwblIZi4UMwquSH8NILif7jM"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "906963827830-vgbjv7ra08fe8ded4lqhinneu2ue1s49.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "906963827830-1p7rm10r7jdiancnj9qk2791eeh75m79.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "ru.lanta-net.smartyard.oem",
-                "app_store_id": "1631532001"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }
