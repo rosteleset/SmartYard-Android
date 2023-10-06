@@ -1,0 +1,502 @@
+<resources>
+
+    <!-- Main -->
+    <string name="app_name">Teledom</string>
+    <string name="app_title">An outdated version</string>
+    <string name="app_message">Update app?</string>
+    <string name="default_notification_channel_id">channel_inbox</string>
+    <string name="widget_title">Smart Yard</string>
+
+    <!-- Настройки -->
+    <string name="setting_dialog_exit_caption">Exit</string>
+    <string name="setting_dialog_exit_caption_msg">Are you sure you want to log out of your account??</string>
+    <string name="setting_dialog_exit_yes">Yes</string>
+    <string name="setting_dialog_exit_no">No</string>
+    <string name="setting_dialog_delete_title">Are you sure?</string>
+    <string name="setting_dialog_delete_yes">Yes</string>
+    <string name="setting_dialog_delete_no">Cancel</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_skip">Skip</string>
+    <string name="onboarding_next">Next</string>
+    <string name="onboarding_complete">Great, let\'s get started!</string>
+    <string name="onboarding_cam_title">CCTV</string>
+    <string name="onboarding_cam_subtitle">Be aware of everything that happens near your home</string>
+    <string name="onboarding_donation_title">Everything\'s under control</string>
+    <string name="onboarding_donation_subtitle">Manage services and pay for them through the app</string>
+    <string name="onboarding_intercom_title">Smart Intercom</string>
+    <string name="onboarding_intercom_subtitle">Control the intercom, gates, or\nbarrier from your smartphone</string>
+
+    <!-- Заявки -->
+    <string name="issue_dialog_caption_0">The request has been created.</string>
+
+    <!-- Регистрация номер телефона-->
+    <string name="reg_tel_caption">Enter your phone number\nfor registration</string>
+    <string name="reg_back_to_providers">Return to the provider selection</string>
+
+    <!-- Регистрация код из смс-->
+    <string name="reg_sms_code_tel">Enter the code from the SMS\nsent to your number +%1$s</string>
+    <string name="reg_flash_call_code_tel">
+        We need to ensure\nthat the number +%1$s is indeed yours.\n
+        You need to decline the incoming call and enter the last 4 digits of its number
+    </string>
+    <string name="reg_sms_correct_tel">Correct the phone number</string>
+    <string name="reg_sms_send_code_repeat">You can resend the code through\n%1$s</string>
+    <string name="reg_sms_error_code">Invalid code. Please try again</string>
+    <string name="send_sms_error_code">Couldn\'t send. Please wait.</string>
+
+    <!-- Восстановление доступа -->
+    <string name="restore_access_title">Recover access</string>
+    <string name="restore_access_caption">Please enter your contract number and provide the email or phone number you used during the contract registration</string>
+    <string name="restore_access_edit_hint">Contract number</string>
+    <string name="restore_access_edit_btn_get_recovery">Get available recovery methods</string>
+    <string name="restore_access_edit_btn_get_code">Get the confirmation code</string>
+    <string name="restore_access_input_code_phone">Confirmation code sent\nto phone %1$s</string>
+    <string name="restore_access_input_code_email">Confirmation code sent to\nemail %1$s</string>
+
+    <string name="restore_access_btn_text_confirm">Confirm</string>
+    <string name="restore_access_btn_resent_text">Resend the code</string>
+    <string name="restore_access_dialog_ok_title">Password for the account has been sent.</string>
+    <string name="restore_access_dialog_ok_yes">Go to the login page</string>
+
+
+    <!-- Bottom Menu -->
+    <string name="title_address">Addresses</string>
+    <string name="title_notification">Notifications</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_pay">Make a payment</string>
+    <string name="title_burger">Menu</string>
+
+    <!-- Мои адреса-->
+    <string name="dialog_title">Enable guest access for an hour?</string>
+    <string name="dialog_message">Anyone dialing your apartment number on the intercom will have the door automatically unlocked for 60 minutes. After this time, the intercom will return to its standard mode automatically.</string>
+    <string name="dialog_yes">TURN ON</string>
+    <string name="dialog_no">CANCEL</string>
+    <string name="dialog_sms">Information for the guest has been successfully sent!</string>
+    <string name="addresses_video_cameras">Video cameras</string>
+    <string name="addresses_events">Events</string>
+    <string name="dialog_title2">Turn off guest access?</string>
+    <string name="dialog_message2" />
+    <string name="dialog_turn_off">TURN OFF</string>
+    <string name="guest_access_open">Open</string>
+    <string name="guest_access_opened">Opened</string>
+
+    <!-- Qr code -->
+    <string name="qr_code_dialog_title">The address has been added.</string>
+    <string name="qr_code_dialog_ok">Ок</string>
+    <string name="qr_code_title">Point the camera at the QR code</string>
+    <string name="qr_code_error_permission_title">You need to grant permission to use the camera for QR code scanning.</string>
+
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">Do you have a contract with the operator?</string>
+    <string name="auth_where_is_contract_caption">Enter the contract number and password associated with this address, and manage services from this app.</string>
+    <string name="auth_numer_pass0">I don\'t remember the password</string>
+    <string name="auth_number_pass1">I don\'t remember anything.</string>
+    <string name="auth_number_btn_ok">Sign in</string>
+    <string name="auth_number_btn_no">I don\'t have a contract with the operator</string>
+    <string name="auth_dialog_title">Create a request for data recovery for the contract?</string>
+    <string name="auth_dialog_yes">Create</string>
+    <string name="auth_dialog_no">Cancel</string>
+    <string name="auth_contract_hint">Contract number</string>
+
+
+    <!-- Ввод адреса -->
+    <string name="input_address_title">Enter the address</string>
+    <string name="input_address_ok">Check available services</string>
+    <string name="input_address_text_qr">I have a QR code</string>
+
+    <!-- Потверждение адреса -->
+    <string name="address_verification_title">Address confirmation</string>
+    <string name="address_verification_descriptions">How would you prefer to do this?</string>
+    <string name="address_verification_courier_block1_title">Leave a request</string>
+    <string name="address_verification_courier_block1_description">Within a week, a courier will bring a secret envelope</string>
+    <string name="address_verification_courier_block2_title">Scan the QR code</string>
+    <string name="address_verification_courier_block2_description">It will be inside the envelope</string>
+    <string name="address_verification_courier_block3_title">Enjoy!</string>
+    <string name="address_verification_courier_block3_description">You will immediately gain access to all the features of the \'Smart Intercom\' app</string>
+    <string name="address_verification_courier_btn_done">Great! Submit a request</string>
+    <string name="address_verification_office_description">Visit the nearest operator\'s office with the utility bill for this apartment, and we will activate the smart intercom and video surveillance features immediately.</string>
+    <string name="address_verification_office_btn_done">That\'s what I\'ll do</string>
+    <string name="address_verification_tab_title_1">Through a courier</string>
+    <string name="address_verification_tab_title_2">Visit the office</string>
+
+    <!-- Диалоговые окны. Настройки. -->
+    <string name="setting_dialog_service_connected_title">connected</string>
+    <string name="setting_dialog_service_connected_caption">If you want to change your tariff, please leave a request</string>
+    <string name="setting_dialog_service_connected_button">Change Tariff</string>
+    <string name="setting_dialog_service_connected_chat">Hello, I would like to change the tariff for the "%s" service on the contract "%s"</string>
+    <string name="setting_dialog_service_not_connected_title">not connected</string>
+    <string name="setting_dialog_service_not_connected_caption">If you want to activate the service, please leave a request</string>
+    <string name="setting_dialog_service_not_connected_button">Submit request</string>
+    <string name="setting_dialog_service_not_connected_chat">Hello, I would like to subscribe to the "%s" service on the contract "%s"</string>
+    <string name="setting_dialog_service_unavailable_title">currently unavailable</string>
+    <string name="setting_dialog_service_unavailable_caption">At the moment, the service is not available at your address. To enable it, we need to gather a few requests from your building. Please submit the first one!</string>
+    <string name="setting_dialog_service_unavailable_button">Submit request</string>
+    <string name="setting_dialog_service_unavailable_chat">Hello, the "%s" service is not available at my address, but I would like to use it on the contract "%s"</string>
+    <string name="setting_dialog_service_domophone_connected_title">connected</string>
+    <string name="setting_dialog_service_domophone_connected_caption">If you want to get access, please leave a message</string>
+    <string name="setting_dialog_service_domophone_connected_button">Get access</string>
+    <string name="setting_dialog_service_domophone_connected_chat">Hello, the intercom is connected at my address, and I need to get access</string>
+    <string name="setting_dialog_service_cctv_connected_title">connected</string>
+    <string name="setting_dialog_service_cctv_connected_caption">If you want to get access, please leave a message</string>
+    <string name="setting_dialog_service_cctv_connected_button">Get access</string>
+    <string name="setting_dialog_service_cctv_connected_chat">Hello, video surveillance is connected at my address, and I need to get access</string>
+
+    <!-- Диалог предоставление доступа -->
+    <string name="dialog_share_access_title">Share Access</string>
+    <string name="dialog_share_access_caption">Enter the phone number of the person you want to grant access to, or select them from your contacts</string>
+    <string name="dialog_share_access_btn_ok">Share</string>
+
+    <!-- Нет сети по адресу. -->
+    <string name="address_no_network_title">Oops :(</string>
+    <string name="address_no_network_caption">Your address needs clarification. Please wait for a specialist\'s call.\n\nWhich service would you like to subscribe to?</string>
+    <string name="address_no_network_btn_ok">Submit request</string>
+
+    <!-- Скоро все заработает офис. -->
+    <string name="address_work_soon_office_title">Everything will be up and running soon!</string>
+    <string name="address_work_soon_office_caption">Please wait for a courier at the address "%s" and take a photo of the QR code they will bring.</string>
+    <string name="address_work_soon_office_btn_0">Take a photo of the QR Code</string>
+    <string name="address_work_soon_office_btn_1">I\'ll visit the office myself</string>
+    <string name="address_work_soon_office_btn_2">Cancel request</string>
+    <string name="address_work_soon_office_btn_3">Continue</string>
+    <string name="address_work_soon_office_btn_4">Back</string>
+
+    <!-- Скоро все заработает курьер. -->
+    <string name="address_work_soon_courier_title">Everything will be up and running soon!</string>
+    <string name="address_work_soon_courier_caption">To confirm your address, you need to bring a utility bill dated within the last three months to the nearest operator\'s office.</string>
+    <string name="address_work_soon_courier_btn_0">Request a courier</string>
+
+    <!-- Как к вам обращаться? -->
+    <string name="appeal_validation_error">Name cannot be empty</string>
+    <string name="appeal_title">How can\nwe address you?</string>
+    <string name="appeal_title_patronymic">Patronymic</string>
+
+    <!-- Temp -->
+    <string name="terminate">Terminate</string>
+    <string name="enter_sip_address">Enter the number to call</string>
+    <string name="sip_address">number</string>
+    <string name="doCall">Call</string>
+    <string name="tls">TLS</string>
+    <string name="tcp">TCP</string>
+    <string name="udp">UDP</string>
+    <string name="domain">domain</string>
+    <string name="password">password</string>
+    <string name="username">username</string>
+    <string name="connect">Connect</string>
+    <string name="disconnect">Disconnect</string>
+    <string name="connected_to">Connected to %s</string>
+    <string name="connecting">connecting…</string>
+    <string name="error">Error</string>
+    <string name="connected">Connected</string>
+    <string name="call">Call</string>
+    <string name="from">From %s</string>
+    <string name="call_from">Call from %s</string>
+    <string name="cancel">Cancel</string>
+
+    <!-- IncomingCallActivity -->
+    <string name="reject">End</string>
+    <string name="ignore">Ignore</string>
+    <string name="opened">Opened</string>
+    <string name="open">Open</string>
+    <string name="answer">Answer</string>
+    <string name="speak">Loudspeaker</string>
+    <string name="peek">Peephole</string>
+    <string name="call_on_domophone">Intercom call</string>
+    <string name="call_talk">Conversation</string>
+    <string name="call_peek_on">Peephole on</string>
+
+    <!-- Оплата -->
+    <string name="pay_title_address">Select an address</string>
+    <string name="pay_recomended_sum">Recommended - %1$s rubles</string>
+    <string name="pay_title_dialog">Top up balance</string>
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Buy with Google Pay</string>
+    <string name="googlepay_status_unavailable" translatable="false">Unfortunately, Google Pay is not available on this phone.</string>
+    <string name="googlepay_status_checking" translatable="false">Checking if Google Pay is available...</string>
+    <string name="payments_show_name" translatable="false">Successfully received payment data for %s!</string>
+    <string name="payments_error" translatable="false">Google Play Result Error</string>
+    <string name="payments_error_1" translatable="false">Payment canceled.</string>
+    <string name="payments_error_2" translatable="false">The amount must be greater than 0.</string>
+    <string name="payments_error_3" translatable="false">You did not complete the payment.</string>
+    <string name="pay_web_title">Payment</string>
+
+    <!-- Web View -->
+    <string name="web_bottom_back">Back</string>
+
+    <string name="sound">Sound</string>
+    <string name="choose_sound">Select sound</string>
+    <string name="next">Next</string>
+    <string name="save">Save</string>
+    <string name="chat_no_contract">(Contract number is missing)</string>
+    <string name="chat_test_msg">(These are test messages from the mobile client)</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
+    <string name="error_map_permission">Unable to launch the map without necessary permissions</string>
+    <string name="address_choose_camera_title">Choose camera</string>
+    <string name="cctv_detail_tab_online">Online</string>
+    <string name="cctv_detail_tab_archive">Archive</string>
+    <string name="cctv_video_from_date">Video from %s</string>
+    <string name="cctv_choose_fragment">Select fragment</string>
+    <string name="cctv_download_and_get_link">Download and get link</string>
+    <string name="downloading_fragment">Downloading video fragment</string>
+    <string name="video_fragment">Video fragment</string>
+    <string name="downloading">Downloading</string>
+    <string name="cctv_speed_template">%1$sx</string>
+    <string name="cctv_dialog_video_prepare_title">Video is being prepared</string>
+    <string name="cctv_dialog_video_prepare_message">Once the process is complete, you will receive a message in the chat. Depending on the video\'s length, the upload process may take from several minutes to several hours.</string>
+    <string name="cctv_dialog_video_prepare_button">Thank you</string>
+
+    <!-- Меню бургера  -->
+    <string name="burger_title">Menu</string>
+    <string name="burger_city_cameras_title">City cameras</string>
+    <string name="burger_address_settings_title">Address settings</string>
+    <string name="burger_common_settings_title">Common settings</string>
+    <string name="burger_call_support_button">Call support</string>
+    <string name="burger_call_support_by_phone">Call %s</string>
+
+    <!-- Городские камеры  -->
+    <string name="city_cameras_title">City cameras</string>
+    <string name="city_camera_events">Incidents</string>
+    <string name="city_camera_events_count">Incidents (%d)</string>
+    <string name="city_camera_request_record">Request recording</string>
+    <string name="city_camera_send_request">Send request</string>
+    <string name="city_camera_scroll_up">Scroll up</string>
+    <string name="city_camera_load_more">+ Load more (%d)</string>
+    <string name="city_camera_youtube_msg">Failed to launch YouTube app</string>
+
+    <!-- Выбор провайдера -->
+    <string name="providers_title">Service providers</string>
+    <string name="providers_caption">Please select your service provider from the list or use the search.</string>
+    <string name="providers_filter_hint">Enter provider name</string>
+    <string name="providers_choose">Next</string>
+
+    <!-- Авторизация исходящим звонком -->
+    <string name="outgoing_call_caption_1">We need to verify\nthat the number +%1$s is really yours.</string>
+    <string name="outgoing_call_change_number">Correct phone number</string>
+    <string name="outgoing_call_caption_2">Make a free call to the number</string>
+    <string name="outgoing_call_caption_3">
+        So we can confirm\n
+        that this is your number
+    </string>
+    <string name="outgoing_call_make_call">Call</string>
+
+    <string name="request_record_title">Request recording</string>
+    <string name="request_record_date">Recording date: %s</string>
+    <string name="request_record_time">Recording time: %s</string>
+    <string name="request_record_duration">Duration:</string>
+
+    <string-array name="request_record_duration_list">
+        <item>5 min</item>
+        <item>10 min</item>
+        <item>15 min</item>
+        <item>20 min</item>
+        <item>30 min</item>
+        <item>40 min</item>
+        <item>50 min</item>
+        <item>60 min</item>
+    </string-array>
+
+    <string name="request_record_comments">Comment:</string>
+    <string name="request_record_description">You can request a video fragment lasting no more than 1 hour. Our service allows video recordings to be stored for a maximum of 7 days, after which the video is permanently deleted from the archive.\n\nThe processing time for your request may take up to 1 business day.</string>
+
+    <string-array name="event_log_types">
+        <item>All</item>
+        <item>Intercom</item>
+        <item>Key</item>
+        <item>By face</item>
+        <item>Application</item>
+        <item>Gate by call</item>
+        <item>Apartment code</item>
+    </string-array>
+
+    <string name="event_log_unanswered_call">  Missed call</string>
+    <string name="event_log_answered_call">  Answered call, door %s</string>
+    <string name="event_log_detail_friend">Own</string>
+    <string name="event_log_detail_foe">Stranger</string>
+    <string name="event_log_detail_friend_description">
+        When selecting \"Own\", we will add a photo from this event for future user face recognition.\n
+        All registered faces can be found in the Address settings -> Access management -> Face entry without a key section.
+    </string>
+    <string name="event_log_detail_foe_description">
+        When selecting \"Stranger\", we will remove your registered face that triggered our algorithms falsely.\n
+        All registered faces can be found in the Address settings -> Access management -> Face entry without a key section.
+    </string>
+    <string name="event_log_key">Key: %s</string>
+    <string name="event_log_phone">Phone: %s</string>
+    <string name="event_log_code">Code: %s</string>
+    <string name="settings_by_face_comments">You consent to storing photos of your face in the face recognition system.</string>
+    <string name="face_settings_comments">
+        Photos of your guests are stored in the \"Events\" section.\n
+        To select and register a face, go to the specified section by clicking on the Plus icon.\n
+        In the events, click on the information icon next to the event you want, and on the opened screen, select the necessary photo.
+    </string>
+    <string name="settings_white_rabbit">\'White Rabbit\' mode</string>
+
+    <string name="help_white_rabbit">
+        <![CDATA[
+            <h2 style=\"text-align: center\">\'White Rabbit\'</h2>
+            <p>A feature designed to open the gate when calling an apartment and open the entrance panel by apartment number without calling the apartment.</p>
+            <p>It works as follows:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;the guest approaches the gate and dials the apartment number;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;the apartment owner answers the guest and presses the "Open" button in the app or analog phone;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;the guest, approaching the intercom panel, dials the apartment number. The intercom will open without calling the apartment.</p>
+            <p>The duration of this function after opening the gate: <b>5 minutes.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_share_access">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Guest access for an hour</h2>
+            <p>This feature allows your guests to open the intercom without your involvement: on the call panel, they just need to dial your apartment number, and the gate or entrance door will open immediately.</p>
+            <p>Duration: <b>one hour from activation.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_log_details">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Tip</h2>
+            <p>For recent events, a video is shown for a short period of time. For others, a saved frame at the moment of the event is displayed.</p>
+            <p>You can also use gestures:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;swipe left or right - scroll through the event timeline;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;single tap - start/pause the video;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;double tap on the left/right side of the screen - rewind the video backward/forward by 10 seconds;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;long tap - show the event frame.</p>
+        ]]>
+    </string>
+
+    <string name="channel_inbox_title">Messages</string>
+    <string name="channel_calls_title">Incoming calls</string>
+    <string name="event_log_pause">Pause</string>
+    <string name="event_log_playing">Video</string>
+    <string name="event_log_screenshot">Event screenshot</string>
+    <string name="event_log_flat">Apartment %s</string>
+    <string name="event_log_all_flats">All apartments</string>
+    <string name="event_log_opened">opened</string>
+    <string name="event_log_not_opened">not opened</string>
+
+    <string name="event_door_phone_call_unanswered">Intercom call</string>
+    <string name="event_door_phone_call_answered">Intercom call</string>
+    <string name="event_open_by_key">Opened with key</string>
+    <string name="event_open_from_app">Opened from the app</string>
+    <string name="event_open_by_face">Opened by face</string>
+    <string name="event_open_by_code">Opened by code</string>
+    <string name="event_open_gates_by_call">Gate opened by call</string>
+    <string name="event_unknown">Unknown event</string>
+
+    <!-- xml layouts -->
+    <string name="turn_on_guest_access">Enable guest access for an hour?</string>
+    <string name="open_barrier_info">We will send an SMS to the specified phone number, which can be called to automatically open the barrier. The barrier will be available for 6 hours, after which it will return to standard operation.</string>
+    <string name="share_access">Share</string>
+    <string name="service_name_sample">Smart intercom</string>
+    <string name="address_setup">Address settings</string>
+    <string name="address_sample">Tambov, Sovetskaya St., 16, Apt. 4</string>
+    <string name="domophone_notif_title">Intercom</string>
+    <string name="get_paper_bill">Receive a paper bill</string>
+    <string name="switch_intercom">Enable intercom</string>
+    <string name="switch_voip">Accept calls</string>
+    <string name="switch_use_event_log">Maintain event log</string>
+    <string name="switch_owner_event_log">Hide event log from other users</string>
+    <string name="switch_use_frs">Facial recognition</string>
+    <string name="switch_use_speaker">Loudspeaker</string>
+    <string name="delete_address">Delete address</string>
+    <string name="text_next">Next</string>
+    <string name="available_services">Available services</string>
+    <string name="service_address_sample">Tambov, Astrakhanskaya St., 24, Apt. 60</string>
+    <string name="address_access_contact_sample">Sasha (tenant)</string>
+    <string name="text_sms">SMS</string>
+    <string name="text_empty_list">List is empty</string>
+    <string name="reg_sms_code_resend">Resend code</string>
+    <string name="payment_done">Done!</string>
+    <string name="payment_being_processed">Please wait, payment is being processed</string>
+    <string name="appeal_title_first_name">First name*</string>
+    <string name="dialog_add_contact">+ Add contact</string>
+    <string name="dialog_close">Close</string>
+    <string name="event_sample">March 1, 2021, at 17:06</string>
+    <string name="event_log_type_sample">Opened from the app</string>
+    <string name="item_title_sample">Internet and TV</string>
+    <string name="item_description_sample">Over 250 channels</string>
+    <string name="cctv_map_address_sample">Tambov, Sovetskaya St., 16</string>
+    <string name="provider_sample">Service provider</string>
+    <string name="face_registration">Face registration</string>
+    <string name="registered_faces">Registered faces</string>
+    <string name="event_name">Event name</string>
+    <string name="text_address">Address</string>
+    <string name="text_date_time">Date, time</string>
+    <string name="text_additional">Additional text</string>
+    <string name="hint_city">City</string>
+    <string name="hint_street">Street</string>
+    <string name="hint_house">House</string>
+    <string name="hint_flat">Apartment</string>
+    <string name="specify_reason">Specify reason</string>
+    <string name="dialog_delete_reason_description">When you delete the address, you will no longer have access to address-related services</string>
+    <string name="text_delete">Delete</string>
+    <string name="text_dismiss">Cancel</string>
+    <string name="pay_number_sample">No. 68992</string>
+    <string name="pay_sum">Amount:</string>
+    <string name="pay_recommended_sample">Recommended - 480 rubles</string>
+    <string name="all_payment_types">All payment methods</string>
+    <string name="pay_by_card">Pay by card</string>
+    <string name="text_event_sample">Events</string>
+    <string name="text_count_sample">4</string>
+    <string name="events_title">Events</string>
+    <string name="title_my_addresses">My addresses</string>
+    <string name="dow_mon">Mon</string>
+    <string name="dow_tue">Tue</string>
+    <string name="dow_wed">Wed</string>
+    <string name="sow_tue">Thu</string>
+    <string name="dow_fri">Fri</string>
+    <string name="dow_sat">Sat</string>
+    <string name="dow_sun">Sun</string>
+    <string name="event_day_sample">Monday, April 19</string>
+    <string name="payment_error">Error!</string>
+    <string name="payment_error_description">An error occurred.</string>
+    <string name="auth_password">Password</string>
+    <string name="pay_contract">Contract:</string>
+    <string name="contract_sample">68992</string>
+    <string name="contract_balance">Balance</string>
+    <string name="balance_sample">120 ₽</string>
+    <string name="balance_recommendations">Recommended to top up by:</string>
+    <string name="ballance_recom_sample">480 ₽</string>
+    <string name="contract_action_pay">Pay</string>
+    <string name="full_lc_version">Full version of personal account</string>
+    <string name="title_support">Tech support</string>
+    <string name="call_support">Call</string>
+    <string name="order_callback">Request a callback</string>
+    <string name="title_cctv">CCTV cameras</string>
+    <string name="cctv_count_sample">4</string>
+    <string name="title_city_camera_sample">Camera 1</string>
+    <string name="text_scroll_up">Scroll up</string>
+    <string name="title_common_settings">Common settings</string>
+    <string name="user_name_sample">Alexeyev V.B.</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="receive_notifications">Receive notifications</string>
+    <string name="lack_funds_notifications">Notify about low balance</string>
+    <string name="balance_notify_near_zero">Send notification when the balance approaches zero</string>
+    <string name="title_security">Security</string>
+    <string name="fingerprint_entrance">Fingerprint entry</string>
+    <string name="fingerprint_entrance_description">Enter the app using fingerprint</string>
+    <string name="pin_code_entrance">PIN code entry</string>
+    <string name="pin_code_entrance_description">Enter the app using PIN code</string>
+    <string name="text_logout">Logout</string>
+    <string name="object_name_sample">North Barrier</string>
+    <string name="contract_number_sample">Contract number: 68992</string>
+    <string name="text_address_settings">Address settings</string>
+    <string name="text_provide_access">Access control</string>
+    <string name="text_open_lc">Open the web version of the personal account</string>
+    <string name="item_sample">North Barrier</string>
+    <string name="title_access_address">Access to address</string>
+    <string name="temporary_intercom_access">Temporary intercom access</string>
+    <string name="code_to_open">Code to open</string>
+    <string name="entrance_by_face">Entry by face without a key</string>
+    <string name="manage_faces">  Configure  </string>
+    <string name="temporary_barrier_access">Temporary barrier/gate access</string>
+    <string name="barrier_add_contact">Add contact</string>
+    <string name="permanent_access_address">Permanent access to address</string>
+    <string name="permanent_add_contact">Add contact</string>
+    <string name="title_delete_face">Delete this face?</string>
+    <string name="delete_face">Delete</string>
+    <string name="dialog_face_cancel">Cancel</string>
+    <string name="title_add_face">Add this face?</string>
+    <string name="add_face">Add</string>
+</resources>
