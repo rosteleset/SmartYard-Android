@@ -138,12 +138,10 @@
     <string name="setting_dialog_service_domophone_connected_caption">Если хотите получить доступ, оставьте сообщение</string>
     <string name="setting_dialog_service_domophone_connected_button">Получить доступ</string>
     <string name="setting_dialog_service_domophone_connected_chat">Здравствуйте, по моему адресу подключен домофон, мне необходимо получить доступ</string>
-    >
     <string name="setting_dialog_service_cctv_connected_title">подключена</string>
     <string name="setting_dialog_service_cctv_connected_caption">Если хотите получить доступ, оставьте сообщение</string>
     <string name="setting_dialog_service_cctv_connected_button">Получить доступ</string>
     <string name="setting_dialog_service_cctv_connected_chat">Здравствуйте, по моему адресу подключено видеонаблюдение, мне необходимо получить доступ</string>
-    >
 
     <!-- Диалог предоставление доступа -->
     <string name="dialog_share_access_title">Поделиться доступом</string>
