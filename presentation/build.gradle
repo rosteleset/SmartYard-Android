@@ -90,6 +90,10 @@ android {
         korvet {
             applicationId "pro.korvet.smartyard"
         }
+
+        sarkor {
+            applicationId "com.sesameware.smartyard_oem"
+        }
     }
 
     buildFeatures {

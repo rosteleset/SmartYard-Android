@@ -112,6 +112,16 @@ android {
             buildConfigField "String", "PROVIDER_NAME", "\"КОРВЕТ\""
             buildConfigField "String", "SERVER_TZ", "\"Asia/Vladivostok\""
         }
+
+        sarkor {
+            buildConfigField "String", "USER_AGENT", "\"Sarkor (Android)\""
+            buildConfigField "String", "PROVIDERS_URL", "\"\""
+            buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+998 (##) ###-##-##\""
+            buildConfigField "String", "PROVIDER_URL", "\"https://allcam.uz/mobile/\""
+            //buildConfigField "String", "PROVIDER_URL", "\"http://192.168.13.39/mobile/\""
+            buildConfigField "String", "PROVIDER_NAME", "\"Sarkor Security\""
+            buildConfigField "String", "SERVER_TZ", "\"Asia/Tashkent\""
+        }
     }
 }
 
