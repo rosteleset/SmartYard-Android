@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MAIN -->
+    <color name="colorPrimary">#EF7F1A</color>
+    <color name="colorPrimaryDark">#EF7F1A</color>
+    <color name="colorAccent">#EF7F1A</color>
+    <color name="brandColor">#EF7F1A</color>
+    <color name="splashColor">#FFFFFF</color>
+
+    <!-- BRAND colors -->
+    <color name="blue">#EF7F1A</color>
+    <color name="blue_200">#894405</color>
+    <color name="brand_pressed">#894405</color>
+</resources>
