@@ -37,6 +37,7 @@ class ChatFragment : Fragment() {
                 resources.getString(R.string.title_chat)
             )
             action.hasBackButton = false
+            action.canRefresh = false
             val option = NavOptions.Builder()
                 .setPopUpTo(R.id.chatFragment2, true)
                 .build()

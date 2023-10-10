@@ -39,6 +39,10 @@
             android:name="hasBackButton"
             app:argType="boolean"
             android:defaultValue="true" />
+        <argument
+            android:name="canRefresh"
+            app:argType="boolean"
+            android:defaultValue="true" />
     </fragment>
     <dialog
         android:id="@+id/customWebBottomFragmentChat"

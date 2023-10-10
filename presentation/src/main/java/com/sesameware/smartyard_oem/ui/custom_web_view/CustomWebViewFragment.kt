@@ -22,6 +22,7 @@ class CustomWebViewFragment : Fragment() {
     private var code: String? = null
     private var title = ""
     var hasBackButton = true
+    private var canRefresh = true
 
     private var stateBundle: Bundle? = null
 
@@ -35,6 +36,7 @@ class CustomWebViewFragment : Fragment() {
             code = it.getString(CODE)
             title = it.getString(TITLE, title)
             hasBackButton = it.getBoolean(HAS_BACK_BUTTON, hasBackButton)
+            canRefresh = it.getBoolean(CAN_REFRESH, canRefresh)
         }
     }
 
@@ -75,10 +77,17 @@ class CustomWebViewFragment : Fragment() {
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
         binding.wvExt.clearCache(true)
-        binding.srlCustomWebView.setOnRefreshListener {
-            binding.srlCustomWebView.isRefreshing = false
-            binding.wvExt.reload()
+        if (canRefresh) {
+            binding.srlCustomWebView.isEnabled = true
+            binding.srlCustomWebView.setOnRefreshListener {
+                binding.srlCustomWebView.isRefreshing = false
+                binding.wvExt.reload()
+            }
+        } else {
+            binding.srlCustomWebView.setOnRefreshListener(null)
+            binding.srlCustomWebView.isEnabled = false
         }
+
         disableSomeEvents()
 
         if (stateBundle != null) {
@@ -146,5 +155,6 @@ class CustomWebViewFragment : Fragment() {
         const val CODE = "code"
         const val TITLE = "title"
         const val HAS_BACK_BUTTON = "hasBackButton"
+        const val CAN_REFRESH = "canRefresh"
     }
 }
