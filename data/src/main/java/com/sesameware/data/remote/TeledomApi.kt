@@ -190,6 +190,11 @@ interface TeledomApi {
         @Body request: CCTVAllRequest): Response<CCTVGetResponse>
 
     @POST
+    suspend fun getCCTVAllTree(
+        @Url url: String,
+        @Body request: CCTVAllRequest): Response<CCTVTreeResponse>
+
+    @POST
     suspend fun recPrepare(
         @Url url: String,
         @Body request: CCTVRecPrepareRequest): Response<CCTVRecPrepareResponse>

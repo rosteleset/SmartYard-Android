@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_addressFragment_to_eventLogFragment"
             app:destination="@id/eventLogFragment" />
+        <action
+            android:id="@+id/action_addressFragment_to_CCTVTreeFragment"
+            app:destination="@id/CCTVTreeFragment" />
     </fragment>
     <fragment
         android:id="@+id/inputAddressFragment"
@@ -202,4 +205,14 @@
         android:name="com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogDetailFragment"
         android:label="fragment_event_log_detail"
         tools:layout="@layout/fragment_event_log_detail" />
+    <fragment
+        android:id="@+id/CCTVTreeFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVTreeFragment"
+        android:label="fragment_cctv_tree"
+        tools:layout="@layout/fragment_cctv_tree" >
+        <argument
+            android:name="cameraGroup"
+            app:argType="com.sesameware.domain.model.response.CCTVDataTree"
+            app:nullable="true" />
+    </fragment>
 </navigation>

@@ -6,6 +6,7 @@ import retrofit2.http.Url
 import com.sesameware.domain.interfaces.CCTVRepository
 import com.sesameware.domain.model.response.CCTVCityCameraData
 import com.sesameware.domain.model.response.CCTVData
+import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVYoutubeData
 import com.sesameware.domain.model.response.RangeObject
 
@@ -20,6 +21,10 @@ class CCTVInteractor(
 
     suspend fun getCCTV(houseId: Int): List<CCTVData>? {
         return repository.getCCTVAll(houseId)?.data
+    }
+
+    suspend fun getCCTVTree(houseId: Int): List<CCTVDataTree>? {
+        return repository.getCCTVAllTree(houseId)?.data
     }
 
     suspend fun recDownload(fragmentID: Int): String? {

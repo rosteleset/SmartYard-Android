@@ -18,6 +18,7 @@ import org.threeten.bp.ZoneId
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.model.response.CCTVData
+import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.utils.listenerEmpty
@@ -53,7 +54,9 @@ class CCTVViewModel(
 ) : GenericViewModel() {
     val cctvModel = state.getLiveData<VideoCameraModelP?>(cctvModel_Key, null)
     val cameraList = state.getLiveData<List<CCTVData>?>(cameraList_Key, null)
+    val cameraGroups = state.getLiveData<List<CCTVDataTree>?>(cameraGroups_Key, null)
     val chosenIndex = state.getLiveData<Int?>(chosenIndex_Key, null)
+    val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)
     var initialThumb: Bitmap? = null
     var stateFullScreen = MutableLiveData<Boolean>()
@@ -193,8 +196,10 @@ class CCTVViewModel(
     companion object {
         private const val cctvModel_Key = "cctvModel_Key"
         private const val cameraList_Key = "cameraList_Key"
+        private const val cameraGroups_Key = "cameraGroups_Key"
         private const val chosenIndex_Key = "chosenIndex_Key"
         private const val chosenCamera_Key = "chosenCamera_Key"
+        private const val chosenGroup_Key = "chosenGroup_Key"
 
         const val ONLINE_TAB_POSITION = 0
         const val ARCHIVE_TAB_POSITION = 1

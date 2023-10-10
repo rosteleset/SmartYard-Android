@@ -2,6 +2,7 @@ package com.sesameware.domain.interfaces
 
 import retrofit2.http.Url
 import com.sesameware.domain.model.response.CCTVGetResponse
+import com.sesameware.domain.model.response.CCTVTreeResponse
 import com.sesameware.domain.model.response.CCTVRecDownloadResponse
 import com.sesameware.domain.model.response.CCTVRecPrepareResponse
 import com.sesameware.domain.model.response.CCTVYoutubeResponse
@@ -15,6 +16,7 @@ import com.sesameware.domain.model.response.RangeObject
  */
 interface CCTVRepository {
     suspend fun getCCTVAll(houseId: Int): CCTVGetResponse?
+    suspend fun getCCTVAllTree(houseId: Int): CCTVTreeResponse?
     suspend fun recDownload(fragmentID: Int): CCTVRecDownloadResponse?
     suspend fun recPrepare(cameraID: Int, from: String, to: String): CCTVRecPrepareResponse?
     suspend fun loadPeriods(@Url url: String): List<RangeObject>?
