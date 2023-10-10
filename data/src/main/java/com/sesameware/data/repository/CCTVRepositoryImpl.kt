@@ -10,6 +10,7 @@ import com.sesameware.domain.model.request.CCTVRecPrepareRequest
 import com.sesameware.domain.model.request.CCTVYoutubeRequest
 import com.sesameware.domain.model.request.CCTVRangesRequest
 import com.sesameware.domain.model.response.CCTVGetResponse
+import com.sesameware.domain.model.response.CCTVTreeResponse
 import com.sesameware.domain.model.response.CCTVRecDownloadResponse
 import com.sesameware.domain.model.response.CCTVRecPrepareResponse
 import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
@@ -35,6 +36,15 @@ class CCTVRepositoryImpl(
                 CCTVAllRequest(houseId)).getResponseBody()
         }
     }
+
+    override suspend fun getCCTVAllTree(houseId: Int): CCTVTreeResponse? {
+        return safeApiCall {
+            teledomApi.getCCTVAllTree(
+                DataModule.BASE_URL + "cctv/allTree",
+                CCTVAllRequest(houseId)).getResponseBody()
+        }
+    }
+
     override suspend fun recDownload(fragmentID: Int): CCTVRecDownloadResponse? {
         return safeApiCall {
             teledomApi.recDownload(
