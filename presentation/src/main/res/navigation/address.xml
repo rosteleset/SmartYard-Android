@@ -214,5 +214,14 @@
             android:name="cameraGroup"
             app:argType="com.sesameware.domain.model.response.CCTVDataTree"
             app:nullable="true" />
+        <action
+            android:id="@+id/action_CCTVTreeFragment_self"
+            app:destination="@id/CCTVTreeFragment" />
+        <action
+            android:id="@+id/action_CCTVTreeFragment_to_CCTVMapFragment"
+            app:destination="@id/CCTVMapFragment" />
+        <action
+            android:id="@+id/action_CCTVTreeFragment_to_CCTVDetailFragment"
+            app:destination="@id/CCTVDetailFragment" />
     </fragment>
 </navigation>
