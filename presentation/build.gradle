@@ -92,7 +92,7 @@ android {
         }
 
         sarkor {
-            applicationId "com.sesameware.smartyard_oem"
+            applicationId "uz.sarkor.smartyard"
         }
     }
 
