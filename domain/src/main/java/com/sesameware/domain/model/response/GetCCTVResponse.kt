@@ -10,6 +10,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 typealias CCTVGetResponse = ApiResult<List<CCTVData>>
+typealias CCTVTreeResponse = ApiResult<CCTVDataTree>
 typealias CCTVCityCameraGetResponse = ApiResult<List<CCTVCityCameraData>>
 typealias CCTVYoutubeResponse = ApiResult<List<CCTVYoutubeData>>
 typealias CCTVRangesResponse = ApiResult<List<RangeObject>>
@@ -126,5 +127,36 @@ enum class MediaServerType {
         const val MEDIA_TYPE_NIMBLE = "nimble"
         const val MEDIA_TYPE_MACROSCOP = "macroscop"
         const val MEDIA_TYPE_FORPOST = "forpost"
+    }
+}
+
+@Parcelize
+data class CCTVDataTree(
+    @Json(name = "groupId") val groupId: Int = DEFAULT_GROUP_ID,
+    @Json(name = "groupName") val groupName: String?,
+    @Json(name = "type") val _type: String? = CCTVRepresentationType.TYPE_MAP,
+    @Json(name = "childGroups") val childGroups: List<CCTVDataTree>?,
+    @Json(name = "cameras") val cameras: List<CCTVData>?
+) : Parcelable {
+    val type: CCTVRepresentationType
+        get() {
+            return when (_type) {
+                CCTVRepresentationType.TYPE_LIST -> CCTVRepresentationType.LIST
+                else -> CCTVRepresentationType.MAP
+            }
+        }
+
+    companion object {
+        const val DEFAULT_GROUP_ID = -1
+    }
+}
+
+enum class CCTVRepresentationType {
+    MAP,
+    LIST;
+
+    companion object {
+        const val TYPE_MAP = "map"
+        const val TYPE_LIST = "list"
     }
 }
