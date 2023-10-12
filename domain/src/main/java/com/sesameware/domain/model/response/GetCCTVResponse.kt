@@ -10,7 +10,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.format.DateTimeFormatter
 
 typealias CCTVGetResponse = ApiResult<List<CCTVData>>
-typealias CCTVTreeResponse = ApiResult<List<CCTVDataTree>>
+typealias CCTVTreeResponse = ApiResult<CCTVDataTree>
 typealias CCTVCityCameraGetResponse = ApiResult<List<CCTVCityCameraData>>
 typealias CCTVYoutubeResponse = ApiResult<List<CCTVYoutubeData>>
 typealias CCTVRangesResponse = ApiResult<List<RangeObject>>
@@ -132,7 +132,7 @@ enum class MediaServerType {
 
 @Parcelize
 data class CCTVDataTree(
-    @Json(name = "groupId") val groupId: Int?,
+    @Json(name = "groupId") val groupId: Int = DEFAULT_GROUP_ID,
     @Json(name = "groupName") val groupName: String?,
     @Json(name = "type") val _type: String? = CCTVRepresentationType.TYPE_MAP,
     @Json(name = "childGroups") val childGroups: List<CCTVDataTree>?,
@@ -145,6 +145,10 @@ data class CCTVDataTree(
                 else -> CCTVRepresentationType.MAP
             }
         }
+
+    companion object {
+        const val DEFAULT_GROUP_ID = -1
+    }
 }
 
 enum class CCTVRepresentationType {

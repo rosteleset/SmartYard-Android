@@ -19,6 +19,7 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.CCTVDataTree
+import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.utils.listenerEmpty
@@ -54,7 +55,7 @@ class CCTVViewModel(
 ) : GenericViewModel() {
     val cctvModel = state.getLiveData<VideoCameraModelP?>(cctvModel_Key, null)
     val cameraList = state.getLiveData<List<CCTVData>?>(cameraList_Key, null)
-    val cameraGroups = state.getLiveData<List<CCTVDataTree>?>(cameraGroups_Key, null)
+    val cameraGroups = state.getLiveData<CCTVDataTree?>(cameraGroups_Key, null)
     val chosenIndex = state.getLiveData<Int?>(chosenIndex_Key, null)
     val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)
@@ -153,16 +154,66 @@ class CCTVViewModel(
         }
     }
 
-    fun refreshCameras(model: VideoCameraModelP, onComplete: listenerEmpty = {}) {
+    fun getCamerasTree(model: VideoCameraModelP, onComplete: listenerEmpty = {}) {
         viewModelScope.withProgress {
-            mPreferenceStorage.xDmApiRefresh = true
-            cctvInteractor.getCCTV(model.houseId)?.let {
-                state[cameraList_Key] = it.filter { camera ->
-                    camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
-                }
+            cctvInteractor.getCCTVTree(model.houseId)?.let {
                 state[cctvModel_Key] = model
-                chosenIndex.value?.let { it1 -> chooseCamera(it1) }
+                state[cameraGroups_Key] = it
                 onComplete()
+            }
+        }
+    }
+
+    private fun findGroupById(data: CCTVDataTree?, groupId: Int): CCTVDataTree? {
+        data?.let {group ->
+            if (group.groupId == groupId) {
+                return group
+            } else {
+                group.childGroups?.forEach() {child ->
+                    val found = findGroupById(child, groupId)
+                    if (found != null) {
+                        return found
+                    }
+                }
+            }
+        }
+
+        return null
+    }
+
+    fun getCameraList(cameras: List<CCTVData>, onComplete: listenerEmpty = {}) {
+        state[cameraList_Key] = cameras.filter { camera ->
+            camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
+        }
+        onComplete()
+    }
+
+    fun refreshCameras(model: VideoCameraModelP, onComplete: listenerEmpty = {}) {
+        Timber.d("__Q__   call refreshCameras")
+        when (DataModule.providerConfig.cctvView) {
+            CCTVViewTypeType.TREE -> {
+                getCamerasTree(model) {
+                    Timber.d("__Q__   call findGroupById    ${chosenGroup.value}")
+                    findGroupById(cameraGroups.value, chosenGroup.value ?: CCTVDataTree.DEFAULT_GROUP_ID)?.let { group ->
+                        Timber.d("__Q__   found group  ${group.groupName}")
+                        getCameraList(group.cameras ?: listOf())
+                        chosenIndex.value?.let { it1 -> chooseCamera(it1) }
+                        onComplete()
+                    }
+                }
+            }
+            else -> {
+                viewModelScope.withProgress {
+                    mPreferenceStorage.xDmApiRefresh = true
+                    cctvInteractor.getCCTV(model.houseId)?.let {
+                        state[cameraList_Key] = it.filter { camera ->
+                            camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
+                        }
+                        state[cctvModel_Key] = model
+                        chosenIndex.value?.let { it1 -> chooseCamera(it1) }
+                        onComplete()
+                    }
+                }
             }
         }
     }
@@ -175,6 +226,10 @@ class CCTVViewModel(
             downloadMaskImage(camera.preview)
             loadPeriod()
         }
+    }
+
+    fun chooseGroup(index: Int) {
+        state[chosenGroup_Key] = index
     }
 
     fun setCurrentTabPosition(position: Int) {

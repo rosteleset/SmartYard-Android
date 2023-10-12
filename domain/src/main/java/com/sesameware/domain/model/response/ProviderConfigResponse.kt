@@ -34,7 +34,10 @@ data class ProviderConfig(
     @Json(name = TIME_ZONE) val timeZone: String? = null,
 
     //настройки гостевого доступа
-    @Json(name = GUEST_ACCESS) val _guestAccess: String = GUEST_ACCESS_TURN_ON_ONLY
+    @Json(name = GUEST_ACCESS) val _guestAccess: String = GUEST_ACCESS_TURN_ON_ONLY,
+
+    //представление камер
+    @Json(name = CCTV_VIEW) val _cctvView: String = CCTV_VIEW_LIST,
 ) {
     val hasNotification: Boolean
         get() = _hasNotifications == "t"
@@ -58,6 +61,8 @@ data class ProviderConfig(
     )
 
     val guestAccess: GuestAccessType get() = GuestAccessType.getType(_guestAccess)
+
+    val cctvView: CCTVViewTypeType get() = CCTVViewTypeType.getType(_cctvView)
 
     companion object {
         //уведомления
@@ -95,6 +100,11 @@ data class ProviderConfig(
         const val GUEST_ACCESS = "guestAccess"
         const val GUEST_ACCESS_TURN_ON_ONLY = "turnOnOnly"
         const val GUEST_ACCESS_TURN_ON_AND_OFF = "turnOnAndOff"
+
+        //представление камер
+        const val CCTV_VIEW = "cctvView"
+        const val CCTV_VIEW_LIST = "list"
+        const val CCTV_VIEW_TREE = "tree"
     }
 }
 
@@ -107,6 +117,20 @@ enum class GuestAccessType {
             return when (type) {
                 ProviderConfig.GUEST_ACCESS_TURN_ON_AND_OFF -> TURN_ON_AND_OFF
                 else -> TURN_ON_ONLY
+            }
+        }
+    }
+}
+
+enum class CCTVViewTypeType {
+    LIST,
+    TREE;
+
+    companion object {
+        fun getType(type: String): CCTVViewTypeType {
+            return when (type) {
+                ProviderConfig.CCTV_VIEW_TREE -> TREE
+                else -> LIST
             }
         }
     }

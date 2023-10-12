@@ -23,7 +23,7 @@ class CCTVInteractor(
         return repository.getCCTVAll(houseId)?.data
     }
 
-    suspend fun getCCTVTree(houseId: Int): List<CCTVDataTree>? {
+    suspend fun getCCTVTree(houseId: Int): CCTVDataTree? {
         return repository.getCCTVAllTree(houseId)?.data
     }
 
