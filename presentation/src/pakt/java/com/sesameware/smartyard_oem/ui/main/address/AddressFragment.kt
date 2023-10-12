@@ -18,6 +18,10 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import com.sesameware.data.DataModule
+import com.sesameware.domain.model.response.CCTVDataTree
+import com.sesameware.domain.model.response.CCTVRepresentationType
+import com.sesameware.domain.model.response.CCTVViewTypeType
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.smartyard_oem.EventObserver
@@ -149,8 +153,24 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                 clickQrCode = {
                 },
                 clickCamera = {
-                    mCCTVViewModel.getCameras(it.toParcelable()) {
-                        this.findNavController().navigate(R.id.action_addressFragment_to_mapCameraFragment)
+                    when (DataModule.providerConfig.cctvView) {
+                        CCTVViewTypeType.TREE -> {
+                            mCCTVViewModel.getCamerasTree(it.toParcelable()) {
+                                val group = mCCTVViewModel.cameraGroups.value
+                                mCCTVViewModel.chosenIndex.value = null
+                                mCCTVViewModel.chosenCamera.value = null
+                                mCCTVViewModel.chooseGroup(group?.groupId ?: CCTVDataTree.DEFAULT_GROUP_ID)
+                                mCCTVViewModel.getCameraList(group?.cameras ?: listOf()) {
+                                    val action = if (group?.type == CCTVRepresentationType.LIST) AddressFragmentDirections.actionAddressFragmentToCCTVTreeFragment(group) else AddressFragmentDirections.actionAddressFragmentToMapCameraFragment()
+                                    this.findNavController().navigate(action)
+                                }
+                            }
+                        }
+                        else -> {
+                            mCCTVViewModel.getCameras(it.toParcelable()) {
+                                this.findNavController().navigate(R.id.action_addressFragment_to_mapCameraFragment)
+                            }
+                        }
                     }
                 },
                 clickEventLog = {
