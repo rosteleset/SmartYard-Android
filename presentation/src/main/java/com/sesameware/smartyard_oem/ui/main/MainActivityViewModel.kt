@@ -63,15 +63,20 @@ class MainActivityViewModel(
     private fun unread() {
         viewModelScope.withProgress({ false }, null) {
             val res = inboxInteractor.unread()
-            if (res.data.count <= 0)
+            if (res.data.count <= 0) {
                 badge.postValue(false)
-            else
+            } else {
                 badge.postValue(true)
+            }
         }
     }
 
     fun badgeParse(count: Int) {
-        if (count <= 0) badge.postValue(false) else badge.postValue(true)
+        if (count <= 0) {
+            badge.postValue(false)
+        } else {
+            badge.postValue(true)
+        }
     }
 
     fun navigateToChatAndMsg(context: Context, data: SettingsViewModel.DialogServiceData) {

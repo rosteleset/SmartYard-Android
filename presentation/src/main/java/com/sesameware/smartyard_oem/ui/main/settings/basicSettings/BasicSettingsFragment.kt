@@ -105,7 +105,7 @@ class BasicSettingsFragment : Fragment() {
             updateAllWidget(requireContext())
         }
 
-        binding.cvNotifications.isVisible = DataModule.providerConfig.hasNotification
+        binding.cvNotifications.isVisible = true
 
         // для Андроид версии 8.0 и выше отключаем настройку звука уведомлений,
         // так как для этого используются настройки категорий уведомлений

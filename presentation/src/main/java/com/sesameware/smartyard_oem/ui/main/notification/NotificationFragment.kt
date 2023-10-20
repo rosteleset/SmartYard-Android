@@ -23,7 +23,6 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNotificationBinding
@@ -127,9 +126,7 @@ class NotificationFragment : Fragment() {
                     it.code,
                     "text/html", "UTF-8", null
                 )
-                if (DataModule.providerConfig.hasNotification) {
-                    (activity as MainActivity).removeBadge()
-                }
+                (activity as MainActivity).removeBadge()
             }
         )
         mViewModel.progress.observe(

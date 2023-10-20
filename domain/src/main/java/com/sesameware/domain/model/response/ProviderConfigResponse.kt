@@ -5,9 +5,6 @@ import com.squareup.moshi.Json
 typealias ProviderConfigResponse = ApiResult<ProviderConfig>?
 
 data class ProviderConfig(
-    //уведомления
-    @Json(name = HAS_NOTIFICATIONS) val _hasNotifications: String? = "t",
-
     //чат
     @Json(name = HAS_CHAT) val _hasChat: String? = "f",
 
@@ -39,9 +36,6 @@ data class ProviderConfig(
     //представление камер
     @Json(name = CCTV_VIEW) val _cctvView: String = CCTV_VIEW_LIST,
 ) {
-    val hasNotification: Boolean
-        get() = _hasNotifications == "t"
-
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
 
@@ -65,9 +59,6 @@ data class ProviderConfig(
     val cctvView: CCTVViewTypeType get() = CCTVViewTypeType.getType(_cctvView)
 
     companion object {
-        //уведомления
-        const val HAS_NOTIFICATIONS = "notifications"
-
         //чат
         const val HAS_CHAT = "chat"
 
