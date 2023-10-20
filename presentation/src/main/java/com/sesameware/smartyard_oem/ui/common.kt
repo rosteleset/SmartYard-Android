@@ -310,6 +310,7 @@ fun sendCallNotification(
 
         val notificationBuilder = NotificationCompat.Builder(this, FirebaseMessagingService.CHANNEL_CALLS_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
             .setContentTitle(getString(R.string.call))
             .setContentText(getString(R.string.from, data.callerId))

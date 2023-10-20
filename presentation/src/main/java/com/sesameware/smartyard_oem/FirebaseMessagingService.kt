@@ -229,6 +229,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             )
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_INBOX_ID)
             .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setContentTitle(title)
             .setContentText(message)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)

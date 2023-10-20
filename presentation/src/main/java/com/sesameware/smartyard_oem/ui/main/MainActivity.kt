@@ -111,33 +111,26 @@ class MainActivity : CommonActivity() {
         } // Else, need to wait for onRestoreInstanceState
 
         binding.bottomNav.itemIconTintList = null
-
-        if (DataModule.providerConfig.hasNotification) {
-            showBadge(this, binding.bottomNav, R.id.notification, "")
-        }
+        showBadge(this, binding.bottomNav, R.id.notification, "")
         mViewModel.onCreate()
 
         mViewModel.badge.observe(
             this
         ) { badge ->
-            if (DataModule.providerConfig.hasNotification) {
-                if (badge) {
-                    showBadge(this, binding.bottomNav, R.id.notification, "")
-                } else {
-                    removeBadge()
-                }
+            if (badge) {
+                showBadge(this, binding.bottomNav, R.id.notification, "")
+            } else {
+                removeBadge()
             }
         }
 
         mViewModel.chat.observe(
             this
         ) { chat ->
-            if (DataModule.providerConfig.hasNotification) {
-                if (chat) {
-                    showBadge(this, binding.bottomNav, R.id.chat, "")
-                } else {
-                    removeBadge(R.id.chat)
-                }
+            if (chat) {
+                showBadge(this, binding.bottomNav, R.id.chat, "")
+            } else {
+                removeBadge(R.id.chat)
             }
         }
 
@@ -198,12 +191,17 @@ class MainActivity : CommonActivity() {
 
     private fun rootingTabMessage(messageType: TypeMessage) {
         Timber.d("debug_dmm  call rootingTabMessage    messageType = $messageType")
-        if (messageType == TypeMessage.INBOX) {
-            mViewModel.bottomNavigate(R.id.notification)
-            //binding.bottomNav.selectedItemId = R.id.notification
-        } else {
-            mViewModel.bottomNavigate(R.id.address)
-            //binding.bottomNav.selectedItemId = R.id.address
+        when (messageType) {
+            TypeMessage.INBOX -> {
+                mViewModel.bottomNavigate(R.id.notification)
+            }
+
+            TypeMessage.CHAT -> {
+                mViewModel.bottomNavigate(R.id.chat)
+            }
+            else -> {
+                mViewModel.bottomNavigate(R.id.address)
+            }
         }
     }
 
@@ -246,11 +244,7 @@ class MainActivity : CommonActivity() {
 
         //основное меню
         navGraphIds.add(R.navigation.address)  //вкладка адреса есть всегда
-        if (DataModule.providerConfig.hasNotification) {
-            navGraphIds.add(R.navigation.notification)
-        } else {
-            bottomNavigationView.menu.removeItem(R.id.notification)
-        }
+        navGraphIds.add(R.navigation.notification)  //вкладка уведомления есть всегда
         if (DataModule.providerConfig.hasChat) {
             navGraphIds.add(R.navigation.chat)
         } else {
@@ -272,13 +266,17 @@ class MainActivity : CommonActivity() {
             resume = resume
         )
 
-        // Whenever the selected controller changes, setup the action bar.
         controller.observe(
-            this,
-            Observer { navController ->
-                // setupActionBarWithNavController(navController)
+            this
+        ) { navController ->
+            if (navController.graph.id == R.id.chat) {
+                (application as App).isChatActive = true
+                mViewModel.chat.postValue(false)
+            } else {
+                (application as App).isChatActive = false
             }
-        )
+        }
+
         currentNavController = controller
         mViewModel.bottomNavigateTo.observe(
             this,
