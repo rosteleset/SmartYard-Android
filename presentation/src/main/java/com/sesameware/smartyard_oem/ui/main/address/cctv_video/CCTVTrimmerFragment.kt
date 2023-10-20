@@ -396,8 +396,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         binding.videoWrap.clipToOutline = true
 
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack(R.id.CCTVDetailFragment, true)
-            this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
+            this.findNavController().popBackStack()
         }
         binding.mFullScreens.setOnClickListener {
             mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)

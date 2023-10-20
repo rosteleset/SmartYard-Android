@@ -435,8 +435,7 @@ class MainActivity : CommonActivity() {
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         if (currentNavController?.value?.currentDestination?.id == R.id.CCTVTrimmerFragment) {
-            currentNavController?.value?.popBackStack(R.id.CCTVDetailFragment, true)
-            currentNavController?.value?.navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
+            currentNavController?.value?.popBackStack()
         } else {
             if (currentNavController?.value?.currentDestination?.id == R.id.eventLogDetailFragment) {
                 (supportFragmentManager.primaryNavigationFragment?.childFragmentManager
