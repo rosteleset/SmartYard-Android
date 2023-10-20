@@ -19,6 +19,7 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.CCTVDataTree
+import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.RangeObject
@@ -181,9 +182,12 @@ class CCTVViewModel(
         return null
     }
 
-    fun getCameraList(cameras: List<CCTVData>, onComplete: listenerEmpty = {}) {
+    fun getCameraList(cameras: List<CCTVData>, groupType: CCTVRepresentationType = CCTVRepresentationType.MAP, onComplete: listenerEmpty = {}) {
         state[cameraList_Key] = cameras.filter { camera ->
-            camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
+            when (groupType) {
+                CCTVRepresentationType.MAP -> camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
+                else -> true
+            }
         }
         onComplete()
     }
@@ -196,7 +200,7 @@ class CCTVViewModel(
                     Timber.d("__Q__   call findGroupById    ${chosenGroup.value}")
                     findGroupById(cameraGroups.value, chosenGroup.value ?: CCTVDataTree.DEFAULT_GROUP_ID)?.let { group ->
                         Timber.d("__Q__   found group  ${group.groupName}")
-                        getCameraList(group.cameras ?: listOf())
+                        getCameraList(group.cameras ?: listOf(), group.type)
                         chosenIndex.value?.let { it1 -> chooseCamera(it1) }
                         onComplete()
                     }

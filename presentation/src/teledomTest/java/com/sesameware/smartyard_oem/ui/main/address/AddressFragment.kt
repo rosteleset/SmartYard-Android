@@ -172,7 +172,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                                 mCCTVViewModel.chosenIndex.value = null
                                 mCCTVViewModel.chosenCamera.value = null
                                 mCCTVViewModel.chooseGroup(group?.groupId ?: CCTVDataTree.DEFAULT_GROUP_ID)
-                                mCCTVViewModel.getCameraList(group?.cameras ?: listOf()) {
+                                mCCTVViewModel.getCameraList(group?.cameras ?: listOf(), group?.type ?: CCTVRepresentationType.MAP) {
                                     val action = if (group?.type == CCTVRepresentationType.LIST) AddressFragmentDirections.actionAddressFragmentToCCTVTreeFragment(group) else AddressFragmentDirections.actionAddressFragmentToMapCameraFragment()
                                     this.findNavController().navigate(action)
                                 }

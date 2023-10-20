@@ -177,7 +177,7 @@ class CCTVTreeFragment : Fragment() {
                         mCCTVViewModel.chosenIndex.value = null
                         mCCTVViewModel.chosenCamera.value = null
                         mCCTVViewModel.chooseGroup(group.groupId)
-                        mCCTVViewModel.getCameraList(group.cameras ?: listOf()) {
+                        mCCTVViewModel.getCameraList(group.cameras ?: listOf(), group.type) {
                             val action = when(group.type) {
                                 CCTVRepresentationType.LIST -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentSelf(group)
                                 else -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVMapFragment()
@@ -220,7 +220,7 @@ class CCTVTreeFragment : Fragment() {
                 modifier = Modifier
                     .height(IntrinsicSize.Min)
                     .clickable {
-                        mCCTVViewModel.getCameraList(parent.cameras ?: listOf()) {
+                        mCCTVViewModel.getCameraList(parent.cameras ?: listOf(), parent.type) {
                             mCCTVViewModel.chooseCamera(index)
                             val action = CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVDetailFragment()
                             findNavController().navigate(action)
