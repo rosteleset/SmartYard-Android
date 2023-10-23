@@ -21,6 +21,7 @@ data class FcmCallData(
     val stun_transport: String? = null,
     val hash: String? = null,
     var eyeState: Boolean = false,
+    var webRtcUrl: String = ""
 ) : Serializable
 
 enum class FcmTransport {

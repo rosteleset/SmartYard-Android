@@ -106,6 +106,13 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                                 msg.live = "${preferenceStorage.providerBaseUrl}call/live/$hash"
                                 msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/$hash"
                             }
+
+                            //for test
+                            //msg.webRtcUrl = "https://v06.sputnik.systems/d9ee069d-f16a-4859-8756-647d80c85c76/whap"
+                            if (msg.callerId == "Support") {
+                                msg.webRtcUrl = "https://fl3.lanta.me:8443/98996/whap"
+                            }
+
                             waitForLinServiceAndRun(msg) {
                                 Timber.d("debug_dmm linphone service is running")
                                 it.listenAndGetNotifications(msg)
