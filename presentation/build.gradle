@@ -276,6 +276,10 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata"
     implementation "androidx.compose.ui:ui-tooling"
 
+
+    // WebRTC
+    implementation "com.dafruits:webrtc:${rootProject.webrtc_version}"
+
     // Test
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test:runner:1.4.0'
