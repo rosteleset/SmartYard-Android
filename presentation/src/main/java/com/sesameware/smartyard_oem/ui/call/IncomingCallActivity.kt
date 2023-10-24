@@ -55,38 +55,20 @@ import org.webrtc.SessionDescription
 import timber.log.Timber
 import kotlin.math.min
 
-open class AppSdpObserver : SdpObserver {
-    override fun onSetFailure(p0: String?) {
-    }
-
-    override fun onSetSuccess() {
-    }
-
-    override fun onCreateSuccess(p0: SessionDescription?) {
-    }
-
-    override fun onCreateFailure(p0: String?) {
-    }
-}
-
 class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListener {
     private lateinit var binding: ActivityIncomingCallBinding
 
     //WebRTC staff
     private val rootEglBase: EglBase = EglBase.create()
 
-    private val sdpObserver = object : AppSdpObserver() {
-        override fun onCreateSuccess(p0: SessionDescription?) {
-            super.onCreateSuccess(p0)
-            //signallingClient.send(p0)
-        }
-    }
-
     fun addIceCandidate(iceCandidate: IceCandidate?) {
         peerConnection?.addIceCandidate(iceCandidate)
     }
 
-    private val peerConnectionFactory by lazy { buildPeerConnectionFactory() }
+    private val peerConnectionFactory by lazy {
+        buildPeerConnectionFactory()
+    }
+
     private val peerConnection by lazy {
         buildPeerConnection(object : PeerConnection.Observer {
             override fun onSignalingChange(p0: PeerConnection.SignalingState?) {
@@ -162,14 +144,14 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         PeerConnectionFactory.initialize(options)
     }
 
-    private fun call(sdpObserver: SdpObserver) = peerConnection?.call(sdpObserver)
+    private fun call() = peerConnection?.call()
 
-    private fun PeerConnection.call(sdpObserver: SdpObserver) {
+    private fun PeerConnection.call() {
         val constraints = MediaConstraints().apply {
             mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         }
 
-        createOffer(object : SdpObserver by sdpObserver {
+        createOffer(object : SdpObserver {
             override fun onCreateSuccess(desc: SessionDescription?) {
                 setLocalDescription(object : SdpObserver {
                     override fun onSetFailure(p0: String?) {
@@ -225,7 +207,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         Timber.e("debug_webrtc onCreateFailure: $p0")
                     }
                 }, desc)
-                sdpObserver.onCreateSuccess(desc)
+            }
+
+            override fun onSetSuccess() {
+                Timber.d("debug_webrtc onSetSuccess")
             }
 
             override fun onSetFailure(p0: String?) {
@@ -331,7 +316,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 visibility = View.VISIBLE
                 bringToFront()
             }
-            call(sdpObserver)
+            call()
         }
     }
 
