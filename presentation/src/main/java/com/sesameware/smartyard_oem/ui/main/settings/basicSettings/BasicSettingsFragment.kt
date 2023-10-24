@@ -22,6 +22,7 @@ import com.sesameware.smartyard_oem.databinding.FragmentBasicSettingsBinding
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.firstCharacter
 import com.sesameware.smartyard_oem.ui.main.settings.dialog.DialogChangeName
+import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
 import com.sesameware.smartyard_oem.ui.updateAllWidget
 import timber.log.Timber
 
@@ -99,9 +100,9 @@ class BasicSettingsFragment : Fragment() {
         mViewModel.logout.observe(
             viewLifecycleOwner
         ) {
-            NavHostFragment.findNavController(this)
-                .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
             activity?.finish()
+            val intent = Intent(requireContext(), RegistrationActivity::class.java)
+            startActivity(intent)
             updateAllWidget(requireContext())
         }
 
