@@ -108,9 +108,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             }
 
                             //for test
-                            //msg.webRtcUrl = "https://v06.sputnik.systems/d9ee069d-f16a-4859-8756-647d80c85c76/whap"
                             if (msg.callerId == "Support") {
-                                msg.webRtcUrl = "https://fl3.lanta.me:8443/98996/whap"
+                                msg.webRtcUrl = "https://fl4.lanta.me:8443/95594/whap"
                             }
 
                             waitForLinServiceAndRun(msg) {
