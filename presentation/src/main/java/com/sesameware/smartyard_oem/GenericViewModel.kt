@@ -5,9 +5,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
-import com.google.firebase.installations.Utils
 import com.google.firebase.messaging.FirebaseMessaging
+import com.sesameware.data.BuildConfig
+import com.sesameware.data.DataModule
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,7 +26,6 @@ import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
-typealias SuccessHandler<T> = suspend (T) -> Unit
 typealias ExceptionHandler = suspend (CommonError) -> Boolean
 
 open class GenericViewModel : ViewModel(), KoinComponent {
@@ -125,6 +124,7 @@ open class GenericViewModel : ViewModel(), KoinComponent {
             mPreferenceStorage.sentName = null
             mPreferenceStorage.fcmTokenRegistered = null
             databaseInteractor.deleteAll()
+            DataModule.BASE_URL = BuildConfig.PROVIDER_URL
             refreshFcmToken()
             logout.postValue(Event(true))
         }
