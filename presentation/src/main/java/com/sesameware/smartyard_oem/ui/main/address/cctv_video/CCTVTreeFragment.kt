@@ -19,6 +19,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -176,10 +178,12 @@ class CCTVTreeFragment : Fragment() {
                     .clickable {
                         mCCTVViewModel.chosenIndex.value = null
                         mCCTVViewModel.chosenCamera.value = null
-                        mCCTVViewModel.chooseGroup(group.groupId)
+                        mCCTVViewModel.chooseGroup(group.groupId, group.groupName)
                         mCCTVViewModel.getCameraList(group.cameras ?: listOf(), group.type) {
-                            val action = when(group.type) {
-                                CCTVRepresentationType.LIST -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentSelf(group)
+                            val action = when (group.type) {
+                                CCTVRepresentationType.LIST -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentSelf(
+                                    group
+                                )
                                 else -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVMapFragment()
                             }
                             findNavController().navigate(action)
@@ -217,18 +221,21 @@ class CCTVTreeFragment : Fragment() {
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .height(IntrinsicSize.Min)
                     .clickable {
                         mCCTVViewModel.getCameraList(parent.cameras ?: listOf(), parent.type) {
                             mCCTVViewModel.chooseCamera(index)
-                            val action = CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVDetailFragment()
+                            val action =
+                                CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVDetailFragment()
                             findNavController().navigate(action)
                         }
                     }
             ) {
                 Text(
                     modifier = Modifier
+                        .weight(1f, fill = false)
                         .padding(start = 24.dp, top = 16.dp, bottom = 16.dp),
                     textAlign = TextAlign.Start,
                     fontSize = 14.sp,
@@ -240,8 +247,8 @@ class CCTVTreeFragment : Fragment() {
                     contentDescription = null,
                     alignment = Alignment.CenterEnd,
                     modifier = Modifier
-                        .fillMaxHeight()
-                        .padding(end = 24.dp),
+                        .padding(top = 16.dp, bottom = 16.dp, end = 24.dp)
+                        .size(24.dp),
                     colorFilter = ColorFilter.tint(colorResource(id = R.color.grey_100))
                 )
             }

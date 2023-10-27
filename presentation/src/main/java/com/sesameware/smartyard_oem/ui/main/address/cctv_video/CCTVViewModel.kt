@@ -59,6 +59,7 @@ class CCTVViewModel(
     val cameraGroups = state.getLiveData<CCTVDataTree?>(cameraGroups_Key, null)
     val chosenIndex = state.getLiveData<Int?>(chosenIndex_Key, null)
     val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
+    var chosenGroupName: String? = null
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)
     var initialThumb: Bitmap? = null
     var stateFullScreen = MutableLiveData<Boolean>()
@@ -232,8 +233,9 @@ class CCTVViewModel(
         }
     }
 
-    fun chooseGroup(index: Int) {
+    fun chooseGroup(index: Int, groupName: String? = null) {
         state[chosenGroup_Key] = index
+        chosenGroupName = groupName
     }
 
     fun setCurrentTabPosition(position: Int) {
