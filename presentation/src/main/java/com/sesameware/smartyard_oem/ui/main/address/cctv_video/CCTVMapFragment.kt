@@ -45,7 +45,7 @@ class CCTVMapFragment : MapFragment() {
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        binding.tvTitleSub.text = mCCTVViewModel.cctvModel.value?.address
+        binding.tvTitleSub.text = mCCTVViewModel.chosenGroupName ?: mCCTVViewModel.cctvModel.value?.address
         mCCTVViewModel.cameraList.value?.let { list ->
             createMapProvider(context, list)
         }
