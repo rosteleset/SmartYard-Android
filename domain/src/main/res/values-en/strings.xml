@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Текст ошибок -->
+    <string name="common_error_connection">Connection Error.</string>
+    <string name="common_timeout">Timeout</string>
+    <string name="common_too_many">Too many attempts. Please wait.</string>
+    <string name="common_unauthorized">UNAUTHORIZED</string>
+    <string name="common_do_authorization_on_another">Authorization has been performed on another device.</string>
+    <string name="common_error">Error.</string>
+    <string name="common_not_found">Not Found.</string>
+    <string name="no_content">No content.</string>
+    <string name="title_0">Attention!</string>
+
+    <string name="type_internet">Internet</string>
+    <string name="type_iptv">Television</string>
+    <string name="type_phone">Telephony</string>
+    <string name="type_domophone">Smart Intercom</string>
+    <string name="type_cctv">Video Surveillance</string>
+    <string name="type_ctv">CTV</string>
+    <string name="type_gsm">GSM</string>
+</resources>
