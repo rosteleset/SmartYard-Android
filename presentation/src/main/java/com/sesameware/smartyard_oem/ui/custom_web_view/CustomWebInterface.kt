@@ -4,7 +4,6 @@ import android.webkit.JavascriptInterface
 import com.sesameware.data.prefs.PreferenceStorage
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import timber.log.Timber
 
 class CustomWebInterface(private val callback: Callback? = null) : KoinComponent {
     private val preferenceStorage: PreferenceStorage by inject()
@@ -29,9 +28,15 @@ class CustomWebInterface(private val callback: Callback? = null) : KoinComponent
         callback?.onPostLoadingFinished()
     }
 
+    @JavascriptInterface
+    fun postRefreshParent(timeout: Int) {
+        callback?.onPostRefreshParent(timeout)
+    }
+
     interface Callback {
         fun onPostLoadingStarted()
         fun onPostLoadingFinished()
+        fun onPostRefreshParent(timeout: Int)
     }
 
     companion object {

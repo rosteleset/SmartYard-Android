@@ -9,6 +9,7 @@ import android.webkit.CookieManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.domain.utils.doDelayed
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
 import com.sesameware.smartyard_oem.ui.getStatusBarHeight
 
@@ -74,6 +75,10 @@ class CustomWebViewFragment : Fragment() {
                 requireActivity().runOnUiThread {
                     binding.pbWebView.visibility = View.INVISIBLE
                 }
+            }
+
+            override fun onPostRefreshParent(timeout: Int) {
+                refreshPage(timeout)
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
         binding.wvExt.clearCache(true)
@@ -146,6 +151,15 @@ class CustomWebViewFragment : Fragment() {
         binding.wvExt.setOnDragListener { _, _ ->
             true
         }
+    }
+
+    fun refreshPage(timeout: Int) {
+        doDelayed(
+            {
+                requireActivity().runOnUiThread {
+                    binding.wvExt.reload()
+                }
+            }, timeout * 1000L)
     }
 
     companion object {
