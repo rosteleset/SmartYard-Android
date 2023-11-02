@@ -63,6 +63,22 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
                     binding.pbWebViewBottom.visibility = View.INVISIBLE
                 }
             }
+
+            override fun onPostRefreshParent(timeout: Int) {
+                requireActivity().runOnUiThread {
+                    requireActivity()
+                        .supportFragmentManager
+                        .primaryNavigationFragment
+                        ?.childFragmentManager
+                        ?.fragments
+                        ?.forEach {
+                            (it as? CustomWebViewFragment)?.let {f ->
+                                f.refreshPage(timeout)
+                                return@forEach
+                            }
+                        }
+                }
+            }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
 
         //костыль для подгона высоты
