@@ -1,5 +1,6 @@
 package com.sesameware.domain.model
 
+import com.sesameware.domain.model.response.MediaServerType
 import com.squareup.moshi.Json
 import java.io.Serializable
 
@@ -21,8 +22,25 @@ data class FcmCallData(
     val stun_transport: String? = null,
     val hash: String? = null,
     var eyeState: Boolean = false,
-    var webRtcUrl: String = ""
-) : Serializable
+    var videoType: String = "",
+    var videoServer: String = "",
+    var videoStream: String = "",
+    var videoToken: String = ""
+) : Serializable {
+    private val mediaServerType: MediaServerType
+        get() {
+            return when (videoServer) {
+                MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
+                MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
+                MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                else -> MediaServerType.FLUSSONIC
+            }
+        }
+    val webRtcVideoUrl: String get() =
+        when (mediaServerType) {
+            else -> "$videoStream/whap?token=$videoToken"
+        }
+}
 
 enum class FcmTransport {
     @Json(name = "udp") Udp,

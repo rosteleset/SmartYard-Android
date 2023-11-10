@@ -60,6 +60,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     //WebRTC staff
     private val rootEglBase: EglBase = EglBase.create()
+    private var firstFrameRendered = false
 
     fun addIceCandidate(iceCandidate: IceCandidate?) {
         peerConnection?.addIceCandidate(iceCandidate)
@@ -153,6 +154,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
         createOffer(object : SdpObserver {
             override fun onCreateSuccess(desc: SessionDescription?) {
+                Timber.d("debug_webrtc    onCreateSuccess    ${desc?.description}")
+
                 setLocalDescription(object : SdpObserver {
                     override fun onSetFailure(p0: String?) {
                         Timber.e("debug_webrtc onSetFailure: $p0")
@@ -162,7 +165,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         val body = RequestBody.create("application/sdp".toMediaTypeOrNull(), desc?.description ?: "")
                         Timber.d("debug_webrtc    ${body.contentType()}    ${body.contentLength()}")
                         val request = Request.Builder()
-                            .url(mFcmCallData.webRtcUrl)
+                            .url(mFcmCallData.webRtcVideoUrl)
                             .method("POST", body)
                             .build()
                         val httpClient = OkHttpClient.Builder().build()
@@ -196,7 +199,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         }
 
                         Timber.d("debug_webrtc onSetSuccess")
-                        //Timber.d("debug_webrtc     ${desc?.description}")
                     }
 
                     override fun onCreateSuccess(p0: SessionDescription?) {
@@ -285,12 +287,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.routeAudioToValue(useSpeaker)
 
         //WebRTC
-        if (mFcmCallData.webRtcUrl.isNotEmpty()) {
+        if (mFcmCallData.videoStream.isNotEmpty()) {
             initPeerConnectionFactory(application)
             binding.mWebRTCView.run {
                 setEnableHardwareScaler(true)
                 init(rootEglBase.eglBaseContext, object : RendererEvents {
                     override fun onFirstFrameRendered() {
+                        firstFrameRendered = true
+                        if (mLinphone.isConnected()) {
+                            alpha = 1.0f
+                            binding.mPeekView.visibility = View.INVISIBLE
+                        }
                     }
 
                     override fun onFrameResolutionChanged(p0: Int, p1: Int, p2: Int) {
@@ -303,11 +310,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                                     lp.width = (k * p0).toInt()
                                     lp.height = (k * p1).toInt()
                                 }
-                                binding.mPeekView.visibility = View.INVISIBLE
-                                binding.mPeekButton.isEnabled = false
-                                binding.mPeekButton.setOnClickListener(null)
                                 mViewModel.eyeState.value = false
-                                binding.mWebRTCView.alpha = 1.0f
                             }
                         }
                     }
@@ -386,8 +389,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         override fun onLoadCleared(placeholder: Drawable?) {
                         }
                     })
-                //binding.mPeekView.visibility = View.VISIBLE
-                //binding.mPeekView.bringToFront()
             }
         )
 
@@ -454,17 +455,20 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             setPeek(false)
             binding.mPeekButton.setOnClickListener(null)
         } else
-            if (binding.mPeekButton.isEnabled) {
-                binding.mPeekButton.setOnClickListener {
-                    mViewModel.eyeState.value = !binding.mPeekButton.isChecked
-                    mLinphone.stopRinging()
-                }
+            binding.mPeekButton.setOnClickListener {
+                mViewModel.eyeState.value = !binding.mPeekButton.isChecked
+                mLinphone.stopRinging()
             }
 
         toggleCallClock(connected)
-        if (mFcmCallData.webRtcUrl.isEmpty()) {
+        if (mFcmCallData.videoStream.isEmpty()) {
             binding.mVideoSip.show(connected)
             binding.mVideoSip.bringToFront()
+        } else {
+            if (firstFrameRendered) {
+                binding.mWebRTCView.alpha = 1.0f
+                binding.mPeekView.visibility = View.INVISIBLE
+            }
         }
         binding.mHangUpButton.setText(if (connected) R.string.reject else R.string.ignore)
         binding.mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
@@ -478,6 +482,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         setTitleState(mLinphone.isConnected(), peek)
         mViewModel.switchStreamMode(peek)
         binding.mPeekButton.isChecked = peek
+        if (peek) {
+            if (firstFrameRendered) {
+                binding.mWebRTCView.alpha = 1.0f
+                binding.mPeekView.visibility = View.INVISIBLE
+            } else {
+                binding.mPeekView.visibility = View.VISIBLE
+            }
+        } else if (!mLinphone.isConnected()) {
+            binding.mWebRTCView.alpha = 0.0f
+            binding.mPeekView.visibility = View.VISIBLE
+        }
     }
 
     private fun setTitleState(connected: Boolean, peek: Boolean) {
@@ -560,7 +575,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     override fun onDestroy() {
         super.onDestroy()
 
-        if (mFcmCallData.webRtcUrl.isNotEmpty()) {
+        if (mFcmCallData.videoStream.isNotEmpty()) {
             peerConnection?.close()
             peerConnection?.dispose()
             binding.mWebRTCView.release()

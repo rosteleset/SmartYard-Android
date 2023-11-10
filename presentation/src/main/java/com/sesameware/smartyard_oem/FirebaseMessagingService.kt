@@ -27,6 +27,7 @@ import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -109,7 +110,10 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
                             //for test
                             if (msg.callerId == "Support") {
-                                msg.webRtcUrl = "https://fl4.lanta.me:8443/95594/whap"
+                                msg.videoToken = ""
+                                msg.videoStream = "https://fl4.lanta.me:8443/95594"
+                                msg.videoServer = "flussonic"
+                                msg.videoType = "webrtc"
                             }
 
                             waitForLinServiceAndRun(msg) {
@@ -234,8 +238,9 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_CANCEL_CURRENT
             )
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_INBOX_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setSmallIcon(R.drawable.ic_notification)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+            .setColor(ContextCompat.getColor(context, R.color.colorAccent))
             .setContentTitle(title)
             .setContentText(message)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)

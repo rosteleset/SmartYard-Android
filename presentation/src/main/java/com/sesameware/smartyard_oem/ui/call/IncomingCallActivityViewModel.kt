@@ -35,7 +35,9 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
 
     fun switchStreamMode(on: Boolean) {
         if (on) {
-            playSlideShow(mFcmCallData.live)
+            if (mFcmCallData.videoStream.isEmpty()) {
+                playSlideShow(mFcmCallData.live)
+            }
         } else {
             stopSlideShow()
             imageStringData.postValue(Event(mFcmCallData.image))
