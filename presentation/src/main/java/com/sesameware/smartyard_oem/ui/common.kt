@@ -309,7 +309,7 @@ fun sendCallNotification(
                 if (VERSION.SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT)
 
         val notificationBuilder = NotificationCompat.Builder(this, FirebaseMessagingService.CHANNEL_CALLS_ID)
-            .setSmallIcon(R.mipmap.ic_launcher_round)
+            .setSmallIcon(R.drawable.ic_notification)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
             .setContentTitle(getString(R.string.call))
