@@ -10,5 +10,7 @@ typealias UnreadedResponse = ApiResult<Unreaded>
 
 data class Unreaded(
     @Json(name = "count")
-    val count: Int = 0 // 0
+    val count: Int = 0, // 0
+    @Json(name = "chat")
+    val chat: Int = 0 // 0
 )
