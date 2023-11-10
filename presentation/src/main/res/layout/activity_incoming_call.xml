@@ -59,26 +59,28 @@
             android:id="@+id/mImageViewWrap"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="32dp"
             android:background="@drawable/layout_rounded_bg"
             android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/mPanel"
-            app:layout_constraintTop_toBottomOf="@id/mStatusWrap">
+            app:layout_constraintDimensionRatio="H,16:9"
+            app:layout_constraintTop_toBottomOf="@id/mStatusWrap"
+            tools:layout_editor_absoluteX="16dp">
 
             <TextureView
                 android:id="@+id/mVideoSip"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:visibility="invisible" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <ImageView
                 android:id="@+id/mPeekView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -102,11 +104,13 @@
             android:id="@+id/mPanel"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="47dp"
             android:baselineAligned="false"
             android:paddingTop="28dp"
-            android:layout_marginBottom="47dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/guidelineBottom">
+            app:layout_constraintTop_toBottomOf="@+id/mImageViewWrap"
+            tools:layout_editor_absoluteX="16dp">
 
             <LinearLayout
                 android:id="@+id/mTopRow"
@@ -122,12 +126,11 @@
                 <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mPeekButton"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    app:buttonBG="@drawable/checkbox_round_state_peek"
-                    app:buttonCheckable="true"
+                    android:layout_weight="1"
                     android:text="@string/peek"
-                />
+                    app:buttonBG="@drawable/checkbox_round_state_peek"
+                    app:buttonCheckable="true" />
 
                 <View
                     android:layout_width="0dp"
@@ -166,39 +169,30 @@
                 <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mHangUpButton"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    app:buttonBG="@drawable/checkbox_round_state_hang"
+                    android:layout_weight="1"
                     android:text="@string/ignore"
-                />
+                    app:buttonBG="@drawable/checkbox_round_state_hang" />
 
                 <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mOpenedButton"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    app:buttonBG="@drawable/checkbox_round_state_unlocked"
+                    android:layout_weight="1"
                     android:text="@string/opened"
-                    tools:visibility="visible"
                     android:visibility="invisible"
-                    />
+                    app:buttonBG="@drawable/checkbox_round_state_unlocked"
+                    tools:visibility="visible" />
+
                 <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
                     android:id="@+id/mOpenButton"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
                     android:layout_height="match_parent"
-                    app:buttonBG="@drawable/checkbox_round_state_unlock"
+                    android:layout_weight="1"
                     android:text="@string/open"
-                />
+                    app:buttonBG="@drawable/checkbox_round_state_unlock" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineBottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.56" />
 
         <ImageView
             android:id="@+id/ivFullscreenMinimalize"
