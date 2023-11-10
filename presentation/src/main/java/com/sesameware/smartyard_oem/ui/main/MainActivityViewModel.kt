@@ -68,6 +68,11 @@ class MainActivityViewModel(
             } else {
                 badge.postValue(true)
             }
+            if (res.data.chat <= 0) {
+                chat.postValue(false)
+            } else {
+                chat.postValue(true)
+            }
         }
     }
 
