@@ -39,7 +39,8 @@
         android:supportsRtl="true"
         android:requestLegacyExternalStorage="true"
         android:preserveLegacyExternalStorage="true"
-        android:theme="@style/AppTheme.Launcher">
+        android:theme="@style/AppTheme.Launcher"
+        android:localeConfig="@xml/locales_config">
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />
