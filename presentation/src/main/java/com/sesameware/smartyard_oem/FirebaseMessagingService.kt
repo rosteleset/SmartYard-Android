@@ -109,12 +109,12 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             }
 
                             //for test
-                            if (msg.callerId == "Support") {
+                            /*if (msg.callerId == "Support") {
                                 msg.videoToken = ""
                                 msg.videoStream = "https://fl4.lanta.me:8443/95594"
                                 msg.videoServer = "flussonic"
                                 msg.videoType = "webrtc"
-                            }
+                            }*/
 
                             waitForLinServiceAndRun(msg) {
                                 Timber.d("debug_dmm linphone service is running")
