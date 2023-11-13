@@ -57,6 +57,7 @@ buildscript {
         preference_version = "1.2.0"
         kotlin_version = '1.4.31'
         splashscreen_version = '1.0.0'
+        webrtc_version = '118.0.0'
     }
 
     repositories {
