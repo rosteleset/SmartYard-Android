@@ -29,9 +29,10 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdk rootProject.minSdkVersion
         targetSdk rootProject.targetSdkVersion
-        versionCode 47
-        versionName '1.0.47'
+        versionCode 48
+        versionName '1.0.48'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resourceConfigurations += ["ru", "en"]
     }
     buildTypes {
         disableLint {
