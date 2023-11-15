@@ -263,10 +263,16 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
             binding.mOpenButton.setOnClickListener { openDoor() }
             binding.mAnswerButton.setOnClickListener { answerCall() }
-            mViewModel.eyeState.value = LinphoneService.instance?.provider?.fcmData?.eyeState == true
-            binding.mPeekButton.setOnClickListener {
-                mViewModel.eyeState.value = !binding.mPeekButton.isChecked
-                mLinphone.stopRinging()
+            if (mFcmCallData.image.isEmpty() && mFcmCallData.videoStream.isNotEmpty()) {
+                mViewModel.eyeState.value = true
+                binding.mPeekButton.setOnClickListener(null)
+                binding.mPeekView.alpha = 0.0f
+            } else {
+                mViewModel.eyeState.value = LinphoneService.instance?.provider?.fcmData?.eyeState == true
+                binding.mPeekButton.setOnClickListener {
+                    mViewModel.eyeState.value = !binding.mPeekButton.isChecked
+                    mLinphone.stopRinging()
+                }
             }
             binding.mHangUpButton.setOnClickListener { hangUp() }
         } else {
@@ -294,7 +300,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 init(rootEglBase.eglBaseContext, object : RendererEvents {
                     override fun onFirstFrameRendered() {
                         firstFrameRendered = true
-                        if (mLinphone.isConnected()) {
+                        if (mLinphone.isConnected() || mFcmCallData.image.isEmpty() || mViewModel.eyeState.value == true) {
                             alpha = 1.0f
                             binding.mPeekView.visibility = View.INVISIBLE
                         }
@@ -310,7 +316,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                                     lp.width = (k * p0).toInt()
                                     lp.height = (k * p1).toInt()
                                 }
-                                mViewModel.eyeState.value = false
                             }
                         }
                     }
@@ -376,6 +381,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.imageStringData.observe(
             this,
             EventObserver { string ->
+                if (string.isEmpty()) {
+                    return@EventObserver
+                }
+
                 Glide.with(binding.mPeekView)
                     .asBitmap()
                     .load(string)
@@ -455,9 +464,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             setPeek(false)
             binding.mPeekButton.setOnClickListener(null)
         } else
-            binding.mPeekButton.setOnClickListener {
-                mViewModel.eyeState.value = !binding.mPeekButton.isChecked
-                mLinphone.stopRinging()
+            if (mFcmCallData.image.isNotEmpty()) {
+                binding.mPeekButton.setOnClickListener {
+                    mViewModel.eyeState.value = !binding.mPeekButton.isChecked
+                    mLinphone.stopRinging()
+                }
             }
 
         toggleCallClock(connected)
@@ -489,7 +500,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             } else {
                 binding.mPeekView.visibility = View.VISIBLE
             }
-        } else if (!mLinphone.isConnected()) {
+        } else if (!mLinphone.isConnected() && mFcmCallData.image.isNotEmpty()) {
             binding.mWebRTCView.alpha = 0.0f
             binding.mPeekView.visibility = View.VISIBLE
         }

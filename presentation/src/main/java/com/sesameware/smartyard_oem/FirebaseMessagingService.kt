@@ -114,6 +114,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                                 msg.videoStream = "https://fl4.lanta.me:8443/95594"
                                 msg.videoServer = "flussonic"
                                 msg.videoType = "webrtc"
+                                msg.image = ""
                             }*/
 
                             waitForLinServiceAndRun(msg) {

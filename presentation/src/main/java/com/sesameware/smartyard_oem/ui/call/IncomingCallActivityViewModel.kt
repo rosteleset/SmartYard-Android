@@ -18,6 +18,10 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
     val routeAudioTo = MutableLiveData<Boolean>()
 
     private fun playSlideShow(live: String) {
+        if (live.isEmpty()) {
+            return
+        }
+
         slideShowTimer = fixedRateTimer("timer", false, 0, 1000) {
             Timber.d("debug_dmm slideshow tick")
             imageStringData.postValue(Event(live))
