@@ -123,6 +123,7 @@ android {
             buildConfigField "String", "SERVER_TZ", "\"Asia/Tashkent\""
         }
     }
+    namespace 'com.sesameware.data'
 }
 
 project.afterEvaluate {
