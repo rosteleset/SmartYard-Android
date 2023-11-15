@@ -324,9 +324,10 @@ class MainActivity : CommonActivity() {
     }
 
     fun removeBadge(id: Int = R.id.notification) {
-        val itemView: BottomNavigationItemView = binding.bottomNav.findViewById(id)
-        if (itemView.childCount == 3) {
-            itemView.removeViewAt(2)
+        (binding.bottomNav.findViewById(id) as? BottomNavigationItemView)?.let {itemView ->
+            if (itemView.childCount == 3) {
+                itemView.removeViewAt(2)
+            }
         }
     }
 
