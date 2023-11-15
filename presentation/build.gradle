@@ -69,6 +69,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.3.2'
     }
+    namespace 'com.sesameware.smartyard_oem'
 }
 
 project.afterEvaluate {
