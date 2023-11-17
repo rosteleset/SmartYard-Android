@@ -104,8 +104,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             //и вычисляются из hash
                             msg.hash?.let { hash ->
                                 msg.pass = hash
-                                msg.live = "${preferenceStorage.providerBaseUrl}call/live/$hash"
-                                msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/$hash"
+                                msg.live = "${preferenceStorage.providerBaseUrl}call/live/${hash}"
+                                msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
                             }
 
                             //for test
@@ -114,6 +114,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                                 msg.videoStream = "https://fl4.lanta.me:8443/95594"
                                 msg.videoServer = "flussonic"
                                 msg.videoType = "webrtc"
+                                msg.live = ""
                                 msg.image = ""
                             }*/
 
