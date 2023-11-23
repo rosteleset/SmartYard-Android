@@ -1,0 +1,499 @@
+<resources>
+
+    <!-- Main -->
+    <string name="app_name">Теледом</string>
+    <string name="app_title">Нұсқа ескірген</string>
+    <string name="app_message">Қосымшаны жаңарту?</string>
+    <string name="default_notification_channel_id">channel_inbox</string>
+    <string name="widget_title">Ақылды аула</string>
+
+    <!-- Настройки -->
+    <string name="setting_dialog_exit_caption">Қосымшадан шығу</string>
+    <string name="setting_dialog_exit_caption_msg">Сіз шынымен де, өзіңіздің есептік жазбаңыздан шыққыңыз келеді ме?</string>
+    <string name="setting_dialog_exit_yes">Иә</string>
+    <string name="setting_dialog_exit_no">Жок</string>
+    <string name="setting_dialog_delete_title">Сіз сенімдісіз бе?</string>
+    <string name="setting_dialog_delete_yes">Иә</string>
+    <string name="setting_dialog_delete_no">қайтару</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_skip">Өткізіп жіберу</string>
+    <string name="onboarding_next">Келесі</string>
+    <string name="onboarding_complete">Керемет, кәне, бастайық!</string>
+    <string name="onboarding_cam_title">Бейнебақылау</string>
+    <string name="onboarding_cam_subtitle">Үйдің жанында болып жатқан оқиғалардан хабардар болыңыз.</string>
+    <string name="onboarding_donation_title">Барлығы бақылауда</string>
+    <string name="onboarding_donation_subtitle">Қызметтерді басқарыңыз және оларды қосымша арқылы төлеңіз.</string>
+    <string name="onboarding_intercom_title">ақылды үйбақылауы</string>
+    <string name="onboarding_intercom_subtitle">Смартфон арқылы үй бақылауымен есік алдын, тосқауыл таяқшаларын бақылай аласыз.</string>
+
+    <!-- Заявки -->
+    <string name="issue_dialog_caption_0">Өтінім жасалды.</string>
+
+    <!-- Регистрация номер телефона-->
+    <string name="reg_tel_caption">Тіркелу үшін телефон нөмірін енгізіңіз</string>
+    <string name="reg_back_to_providers">Провайдерді таңдауға оралу</string>
+
+    <!-- Регистрация код из смс-->
+    <string name="reg_sms_code_tel">Нөмірге жіберілген SMS тен кодты енгізіңіз</string>
+    <string name="reg_flash_call_code_tel">
+       Біз нөмірдің шынымен сіздікі екеніне көз 
+•	   жеткізуіміз керек. 
+\n
+       Кіріс қоңырауды қабылдамай оның нөмірінің соңғы 4 цифрын енгізу керек.
+    </string>
+    <string name="reg_sms_correct_tel">Телефон нөмірін түзету. Телефон нөмірін түзету керек</string>
+    <string name="reg_sms_send_code_repeat">Кодты қайта жіберуге болады \n%1$s</string>
+    <string name="reg_sms_error_code">Қате код. Қайталап көріңіз</string>
+    <string name="send_sms_error_code">Жіберу мүмкін болмады. Күте тұрыңыз. </string>
+
+    <!-- Восстановление доступа -->
+    <string name="restore_access_title">Кіруді қалпына келтіру</string>
+    <string name="restore_access_caption">Келісімшарт нөміріңізді енгізіп, келісімшартты тіркеу кезінде пайдаланған электрондық поштаны немесе телефонды көрсетіңіз.</string>
+    <string name="restore_access_edit_hint">Шарт нөмірі</string>
+    <string name="restore_access_edit_btn_get_recovery">Қол жетімді қалпына келтіру әдістерін алу</string>
+    <string name="restore_access_edit_btn_get_code">Растау кодын алыңызі</string>
+    <string name="restore_access_input_code_phone">Растау коды телефонға жіберілді</string>
+    <string name="restore_access_input_code_email">Растау коды поштаға жіберілді</string>
+
+    <string name="restore_access_btn_text_confirm">Растау</string>
+    <string name="restore_access_btn_resent_text">Кодты қайта жіберіңіз</string>
+    <string name="restore_access_dialog_ok_title">Есептік жазбаның құпия сөзі жіберілді.</string>
+    <string name="restore_access_dialog_ok_yes">Авторизация бетіне өтіңіз тіркелу бетіне өтіңіз</string>
+
+
+    <!-- Bottom Menu -->
+    <string name="title_address">Мекен-жайлары</string>
+    <string name="title_notification">Хабарламалар</string>
+    <string name="title_chat">Чат</string>
+    <string name="title_pay">Төлеу</string>
+    <string name="title_burger">Мәзір</string>
+
+    <!-- Мои адреса-->
+    <string name="dialog_title">Бір сағатқа қонаққа кіруді қосыңыз</string>
+    <string name="dialog_message">Сіздің пәтер нөміріңізді  үйбақылауын теретіндердің барлығына есік 60 минут ішінде автоматты түрде ашылады. Осы уақыттан кейін үйбақылауының  жұмысы автоматты түрде қалыпты жағдайға оралады.</string>
+    <string name="dialog_yes">Қосу</string>
+    <string name="dialog_no">Бас тарту</string>
+    <string name="dialog_sms">Қонаққа арналған ақпарат сәтті жіберілді</string>
+    <string name="addresses_video_cameras">Бейнекамералар</string>
+    <string name="addresses_events">Оқиғалар</string>
+    <string name="dialog_title2">Қонақтарға кіруді өшіріңіз?</string>
+    <string name="dialog_message2" />
+    <string name="dialog_turn_off">Өшіру</string>
+    <string name="guest_access_open">Ашу</string>
+    <string name="guest_access_opened">Ашық</string>
+
+    <!-- Qr code -->
+    <string name="qr_code_dialog_title">Мекенжай қосылды.</string>
+    <string name="qr_code_dialog_ok">Ок</string>
+    <string name="qr_code_title">Камераны QR кодына бағыттаңыз</string>
+    <string name="qr_code_error_permission_title">QR кодтарымен жұмыс істеу үшін камераны пайдалануға рұқсат қажет.</string>
+
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">Сізде оператормен келісім бар ма?</string>
+    <string name="auth_where_is_contract_caption">Осы мекен-жайға байланысты келісімшарттың нөмірі мен паролін енгізіп, осы қосымшадан қызметтерді басқарыңыз.</string>
+    <string name="auth_numer_pass0">Құпия сөз есімде жоқ</string>
+    <string name="auth_number_pass1">Ештеңе есімде жоқ</string>
+    <string name="auth_number_btn_ok">Кіру</string>
+    <string name="auth_number_btn_no">Менде оператормен келісім жоқ</string>
+    <string name="auth_dialog_title">Шарт бойынша деректерді қалпына келтіруге өтінім жасау</string>
+    <string name="auth_dialog_yes">Жасау</string>
+    <string name="auth_dialog_no">Бас тарту</string>
+    <string name="auth_contract_hint">Шарт нөмірі</string>
+
+
+    <!-- Ввод адреса -->
+    <string name="input_address_title">Мекенжайды енгізіңіз</string>
+    <string name="input_address_ok">Қол жетімді қызметтерді тексеріңіз</string>
+    <string name="input_address_text_qr">Менде QR коды бар</string>
+
+    <!-- Потверждение адреса -->
+    <string name="address_verification_title">Мекенжайды растау</string>
+    <string name="address_verification_descriptions">Мұны істеу сізге қалай ыңғайлы болады?</string>
+    <string name="address_verification_courier_block1_title">Өтініш қалдырыңыз</string>
+    <string name="address_verification_courier_block1_description">Бір апта ішінде курьер құпия конвертті әкеледі</string>
+    <string name="address_verification_courier_block2_title">QR кодын сканерлеңіз</string>
+    <string name="address_verification_courier_block2_description">Ол конверттің ішінде болады</string>
+    <string name="address_verification_courier_block3_title">Пайдаланыңыз!</string>
+    <string name="address_verification_courier_block3_description">Сіз "ақылды домофон" қосымшасының барлық функционалдығына бірден қол жеткізе аласыз.</string>
+    <string name="address_verification_courier_btn_done">Тамаша! Өтініш қалдырыңыз</string>
+    <string name="address_verification_office_description">Осы пәтердің  тұрғын үй коммуналдық шаруашылық түбіртегімен жақын жердегі оператор кеңсесіне барыңыз, біз ақылды домофон мен бейнебақылау функциясын бірден іске қосамыз</string>
+    <string name="address_verification_office_btn_done">Мен мұны істеймін</string>
+    <string name="address_verification_tab_title_1">Курьер арқылы</string>
+    <string name="address_verification_tab_title_2">Кеңсеге бару</string>
+
+    <!-- Диалоговые окны. Настройки. -->
+    <string name="setting_dialog_service_connected_title">Қосылған</string>
+    <string name="setting_dialog_service_connected_caption">Егер сіз тарифті өзгерткіңіз келсе, өтінім қалдырыңыз</string>
+    <string name="setting_dialog_service_connected_button">Тарифті өзгерту</string>
+    <string name="setting_dialog_service_connected_chat">Сәлеметсіз бе, мен келісімшарттағы қызметі үшін тарифті өзгерткім келеді</string>
+    <string name="setting_dialog_service_not_connected_title">қосылмаған</string>
+    <string name="setting_dialog_service_not_connected_caption">Егер сіз қызметті қосқыңыз келсе, өтініш қалдырыңыз</string>
+    <string name="setting_dialog_service_not_connected_button">Өтініш қалдыру</string>
+    <string name="setting_dialog_service_not_connected_chat">Сәлеметсіз бе, мен келісімшартқа "%s " қызметін қосқым келеді!</string>
+    <string name="setting_dialog_service_unavailable_title">әлі қол жетімді емес</string>
+    <string name="setting_dialog_service_unavailable_caption">Қазіргі уақытта қызмет Сіздің мекен-жайыңызда қол жетімді емес. Оны қосу үшін үйіңізден бірнеше өтініш жинау керек. Өтінімді бірінші қалдырыңыз</string>
+    <string name="setting_dialog_service_unavailable_button">Өтініш қалдыру</string>
+    <string name="setting_dialog_service_unavailable_chat">Сәлеметсіз бе, "%s " қызметі менің мекен-жайымда жоқ, бірақ мен оны келісімшартта қолданғым келеді</string>
+    <string name="setting_dialog_service_domophone_connected_title">Қосылған</string>
+    <string name="setting_dialog_service_domophone_connected_caption">Егер сіз қол жеткізгіңіз келсе, хабарлама қалдырыңыз</string>
+    <string name="setting_dialog_service_domophone_connected_button">Қол жеткізу</string>
+    <string name="setting_dialog_service_domophone_connected_chat">Сәлеметсіз бе, менің мекен-жайыма домофон қосылған, маған кіру керек</string>
+    <string name="setting_dialog_service_cctv_connected_title">Қосылған</string>
+    <string name="setting_dialog_service_cctv_connected_caption">Егер сіз қол жеткізгіңіз келсе, хабарлама қалдырыңыз</string>
+    <string name="setting_dialog_service_cctv_connected_button">Қол жеткізу</string>
+    <string name="setting_dialog_service_cctv_connected_chat">Қол жеткізгіңіз келетін адамның телефон нөмірін енгізіңіз немесе оны контактілерден таңдаңыз</string>
+
+    <!-- Диалог предоставление доступа -->
+    <string name="dialog_share_access_title">Қол жеткізуді бөлісу</string>
+    <string name="dialog_share_access_caption">Қол жеткізгіңіз келетін адамның телефон нөмірін енгізіңіз немесе оны контактілерден таңдаңыз</string>
+    <string name="dialog_share_access_btn_ok">Бөлісу</string>
+
+    <!-- Нет сети по адресу. -->
+    <string name="address_no_network_title">Упс :(</string>
+    <string name="address_no_network_caption">Сіздің мекен-жайыңыз нақтылауды қажет етеді. Маманның қоңырауын күтіңіз.\n \ сіз қандай қызметті қосқыңыз келеді?</string>
+    <string name="address_no_network_btn_ok">Өтініш қалдыру</string>
+
+    <!-- Скоро все заработает офис. -->
+    <string name="address_work_soon_office_title">Жақында бәрі жұмыс істейді!</string>
+    <string name="address_work_soon_office_caption">Мекен жайынызда курьерді күтіңіз және ол әкелетін QR кодын суретке түсіріңіз.</string>
+    <string name="address_work_soon_office_btn_0">суретке түсіріңіз QR кодын</string>
+    <string name="address_work_soon_office_btn_1">Мен кеңсеге өзім келемін</string>
+    <string name="address_work_soon_office_btn_2">Өтінімді жою</string>
+    <string name="address_work_soon_office_btn_3">Жалғастыру</string>
+    <string name="address_work_soon_office_btn_4">Артқа</string>
+
+    <!-- Скоро все заработает курьер. -->
+    <string name="address_work_soon_courier_title">Жақында бәрі жұмыс істейді!</string>
+    <string name="address_work_soon_courier_caption">Мекенжайды растау үшін сізге үш айдан аспайтын ТКШ түбіртегін жақын жердегі оператор кеңсесіне әкелу қажет.</string>
+    <string name="address_work_soon_courier_btn_0">Курьерді шақыру</string>
+
+    <!-- Как к вам обращаться? -->
+    <string name="appeal_validation_error">Аты бос болмауы керек</string>
+    <string name="appeal_title">Сізге қалай хабарласуға болады</string>
+    <string name="appeal_title_patronymic">Әкеніздің аты</string>
+
+    <!-- Temp -->
+    <string name="terminate">Үзу</string>
+    <string name="enter_sip_address">Қоңырау нөмірін енгізіңіз</string>
+    <string name="sip_address">Нөмірі</string>
+    <string name="doCall">Қоңырау шалу</string>
+    <string name="tls">TLS</string>
+    <string name="tcp">TCP</string>
+    <string name="udp">UDP</string>
+    <string name="domain">домен</string>
+    <string name="password">Құпия сөз</string>
+    <string name="username">Кіру</string>
+    <string name="connect">Қосылу</string>
+    <string name="disconnect">Өшіру</string>
+    <string name="connected_to">Қосылған %s</string>
+    <string name="connecting">Қосылу…</string>
+    <string name="error">Қате</string>
+    <string name="connected">Қосылған</string>
+    <string name="call">Қоңырау</string>
+    <string name="from">Кімнен  %s</string>
+    <string name="call_from">Қоңырау %s</string>
+    <string name="cancel">Бас тарту</string>
+
+    <!-- IncomingCallActivity -->
+    <string name="reject">Аяқтау </string>
+    <string name="ignore">Елемеу</string>
+    <string name="opened">Ашық</string>
+    <string name="open">Ашу</string>
+    <string name="answer">Жауап беру</string>
+    <string name="speak">Даусыныныз қатты</string>
+    <string name="peek">Көз</string>
+    <string name="call_on_domophone">Интеркомға қоңырау шалу</string>
+    <string name="call_talk">Әңгіме </string>
+    <string name="call_peek_on">Көз қосулы</string>
+
+    <!-- Оплата -->
+    <string name="pay_title_address">Мекенжайды таңдаңыз</string>
+    <string name="pay_recomended_sum">Ұсынылатын - %1$s рублей</string>
+    <string name="pay_title_dialog">Балансты толтыру</string>
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Google Play дүкенінен сатып алыңыз</string>
+    <string name="googlepay_status_unavailable" translatable="false">Өкінішке орай, Google Play бұл телефонда Қол жетімді емес.</string>
+    <string name="googlepay_status_checking" translatable="false">Google Pay қол жетімді екенін тексеріңіз...</string>
+    <string name="payments_show_name" translatable="false">Төлем деректері сәтті алынды %s!</string>
+    <string name="payments_error" translatable="false">Google Play нәтижесі қатесі</string>
+    <string name="payments_error_1" translatable="false">Төлем тоқтатылды.</string>
+    <string name="payments_error_2" translatable="false">Сома 0 ден көп болуы керек.</string>
+    <string name="payments_error_3" translatable="false">Сіз төлемді аяқтаған жоқсыз.</string>
+    <string name="pay_web_title">Төлем</string>
+
+    <!-- Web View -->
+    <string name="web_bottom_back">Артқа</string>
+
+    <string name="sound">Дыбыс</string>
+    <string name="choose_sound">Дыбысты таңдаңыз</string>
+    <string name="next">Келесі</string>
+    <string name="save">Сақтау</string>
+    <string name="chat_no_contract">(Шарттың нөмірі жоқ)</string>
+    <string name="chat_test_msg">(Бұл мобильді клиенттің мәтіндік хабарламалары)</string>
+    <string name="appwidget_text">мысал</string>
+    <string name="add_widget">Виджет қосыңыз</string>
+    <string name="error_map_permission">Картаны қажетті рұқсатсыз іске қосу мүмкін емес</string>
+    <string name="address_choose_camera_title"> Камераны таңдаңыз</string>
+    <string name="cctv_detail_tab_online">Онлайн</string>
+    <string name="cctv_detail_tab_archive">Мұрағат</string>
+    <string name="cctv_video_from_date">Бейне %s</string>
+    <string name="cctv_choose_fragment">Фрагментті таңдаңыз</string>
+    <string name="cctv_download_and_get_link">Сілтемені жүктеп алыңыз және алыңыз</string>
+    <string name="downloading_fragment">Бейне үзіндісін жүктеу</string>
+    <string name="video_fragment">Бейне үзінді</string>
+    <string name="downloading">Жүктеу</string>
+    <string name="cctv_speed_template">%1$sx</string>
+    <string name="cctv_dialog_video_prepare_title">Бейне дайындалуда</string>
+    <string name="cctv_dialog_video_prepare_message">Процесс аяқталғаннан кейін сізге чатқа хабарлама келеді. Бейненің ұзындығына байланысты жүктеу процесі бірнеше минуттан бірнеше сағатқа дейін созылуы мүмкін.</string>
+    <string name="cctv_dialog_video_prepare_button">Рахмет</string>
+
+    <!-- Меню бургера  -->
+    <string name="burger_title">Мәзір</string>
+    <string name="burger_city_cameras_title">Қалалық камералар</string>
+    <string name="burger_address_settings_title">Мекенжай параметрлері</string>
+    <string name="burger_common_settings_title">Жалпы параметрлер</string>
+    <string name="burger_call_support_button">Техникалық қолдау қоңырауы</string>
+    <string name="burger_call_support_by_phone">Қоңырау шалу %s</string>
+
+    <!-- Городские камеры  -->
+    <string name="city_cameras_title">Қалалық камералар</string>
+    <string name="city_camera_events">Оқиғалар </string>
+    <string name="city_camera_events_count">Оқиғалар  (%d)</string>
+    <string name="city_camera_request_record">Жазбаны сұрау</string>
+    <string name="city_camera_send_request">Сұрау жіберу</string>
+    <string name="city_camera_scroll_up">Жоғары</string>
+    <string name="city_camera_load_more">+ Көбірек жүктеу(%d)</string>
+    <string name="city_camera_youtube_msg">YouTube қолданбасын іске қосу мүмкін болмады</string>
+
+    <!-- Выбор провайдера -->
+    <string name="providers_title">Қызмет провайдері</string>
+    <string name="providers_caption">Тізімнен қызмет провайдерін таңдаңыз немесе іздеуді пайдаланыңыз.</string>
+    <string name="providers_filter_hint">Провайдердің атын енгізіңіз</string>
+    <string name="providers_choose">Келесі</string>
+
+    <!-- Авторизация исходящим звонком -->
+    <string name="outgoing_call_caption_1">Біз нөмірдің бар екеніне көз жеткізуіміз керек.</string>
+    <string name="outgoing_call_change_number">Телефон нөмірін түзету</string>
+    <string name="outgoing_call_caption_2">Нөмірге тегін қоңырау шалыңыз</string>
+    <string name="outgoing_call_caption_3">
+        Бұл сіздің нөміріңіз екенін растау үшін
+    </string>
+    <string name="outgoing_call_make_call">Қоңырау шалу</string>
+
+    <string name="request_record_title">Жазбаны сұрау</string>
+    <string name="request_record_date">Жазу күні: %s</string>
+    <string name="request_record_time">Жазу уақыты: %s</string>
+    <string name="request_record_duration">Ұзақтығы:</string>
+
+    <string-array name="request_record_duration_list">
+        <item>5 мин</item>
+        <item>10 мин</item>
+        <item>15 мин</item>
+        <item>20 мин</item>
+        <item>30 мин</item>
+        <item>40 мин</item>
+        <item>50 мин</item>
+        <item>60 мин</item>
+    </string-array>
+
+    <string name="request_record_comments">Пікір:</string>
+    <string name="request_record_description">Сіз 1 сағаттан аспайтын үзінді сұрай аласыз. Біздің қызмет бейнежазбаларды 7 тәуліктен артық сақтауға мүмкіндік береді, содан кейін бейне мұрағаттан біржола жойылады. Сұрауды өңдеу ұзақтығы 1 жұмыс күніне дейін болуы мүмкін.\n\nПродолжительность обработки запроса может составлять до 1 рабочего дня.</string>
+
+    <string-array name="event_log_types">
+        <item>Барлығы</item>
+        <item>Интерком</item>
+        <item>Кілт</item>
+        <item>Тұлға бойынша</item>
+        <item>Қосымша</item>
+        <item>Қоңырау қақпасы</item>
+        <item>Пәтер коды</item>
+    </string-array>
+
+    <string name="event_log_unanswered_call">  Қабылданбаған қоңырау</string>
+    <string name="event_log_answered_call"> Жауап қоңырауы, есік %s</string>
+    <string name="event_log_detail_friend">Өзіңдікі</string>
+    <string name="event_log_detail_foe">Бөтен</string>
+    <string name="event_log_detail_friend_description">
+        \"Өзіңдікі" параметрін таңдағанда, пайдаланушының бет-әлпетін одан әрі тану үшін осы оқиғадан фотосурет қосамыз. Жүйеде тіркелген барлық адамдарды мекен-жай параметрлері - > кіруді басқару - > кілтсіз бетке кіру бөлімінен табуға болады..
+    </string>
+    <string name="event_log_detail_foe_description">
+        \"Бөтен\" таңдау кезінде біз сіздің алгоритмдеріміздің жалған позитиві болған тіркелген адамыңызды жоямыз.\ N Жүйеде тіркелген барлық адамдарды мекен-жай параметрлері - > кіруді басқару - > кілтсіз бетке кіру бөлімінен табуға болады..
+    </string>
+    <string name="event_log_key">Кілт: %s</string>
+    <string name="event_log_phone">Телефон: %s</string>
+    <string name="event_log_code">Код: %s</string>
+    <string name="settings_by_face_comments">Сіз өзіңіздің бетіңіздің фотосуреттерін бетті тану жүйесінде сақтауға келісім бересіз.</string>
+    <string name="face_settings_comments">
+        Қонақтарыңыздың суреттері \ "оқиғалар\" бөлімінде сақталады.Тұлғаны таңдау және тіркеу үшін Плюс батырмасын басу арқылы көрсетілген бөлімге өтіңіз.\ N оқиғаларда қажетті оқиғаға қарама-қарсы ақпарат белгішесін нұқыңыз және ашылған экранда қажетті фотосуретті таңдаңыз..
+    </string>
+    <string name="settings_white_rabbit">Ақ қоян режимі</string>
+
+    <string name="help_white_rabbit">
+        <![CDATA[
+            <h2 style=\"text-align: center\">"Ақ қоян" </h2>
+            <p>пәтерге қоңырау шалған кезде қақпаны ашуға және пәтерге қоңырау шалмай пәтер нөмірі бойынша кіреберіс панелін ашуға арналған Функция.</p>
+            <p>Келесідей жұмыс істейді:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;қонақ викетке келіп, пәтердің қажетті нөмірін тереді;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;пәтер иесі қонаққа жауап береді және қосымшада немесе аналогтық түтікте Ашу батырмасын басады;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;қонақ домофон панеліне жақындап, пәтер нөмірін тереді. Домофон пәтерге қоңырау шалмай ашылады .</p>
+            <p>бұл функцияның әрекет ету уақыты қақпаны ашқаннан кейін: 5 минут.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_share_access">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Бір сағатқа қонаққа кіру</h2>
+            <p>Бұл функция сіздің қонақтарыңызға сіздің қатысуыңызсыз интеркомды ашуға мүмкіндік береді: қоңырау тақтасында пәтеріңіздің нөмірін теру жеткілікті, ал қақпа немесе кіреберістің есігі бірден ашылады.</p>
+            <p>Әрекет ету уақыты-қосылған сәттен бастап бір сағат.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_log_details">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Подсказка</h2>
+            <p>Соңғы оқиғалар үшін бейне қысқа уақыт ішінде көрсетіледі. Қалғандары үшін-оқиға кезінде сақталған кадр.</p>
+            <p>. Сондай - ақ, солға немесе оңға сырғыту қимылдарын қолдануға болады:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; солға немесе оңға сырғыту қимылдарын қолдануға болады - оқиға таспасын айналдыру;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;бір рет түрту/кідірту бейнесі экранның сол/оң жағындағы қос түрту - бейнені 10 секундқа артқа/алға айналдыру ұзақ түрту;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;оң жағындағы қос түрту - бейнені 10 секундқа артқа/алға айналдыру ұзақ түрту - оқиғаның кадрын көрсету;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;ұзақ түрту - оқиғаның кадрын көрсету.</p>
+        ]]>
+    </string>
+
+    <string name="channel_inbox_title">Хабарламалар</string>
+    <string name="channel_calls_title">Кіріс қоңыраулар</string>
+    <string name="event_log_pause">Кідірту</string>
+    <string name="event_log_playing">Бейне</string>
+    <string name="event_log_screenshot">Оқиға кадры</string>
+    <string name="event_log_flat">Пәтер %s</string>
+    <string name="event_log_all_flats">Барлық пәтерлер</string>
+    <string name="event_log_opened">Ашылды</string>
+    <string name="event_log_not_opened">ашылған жоқ</string>
+
+    <string name="event_door_phone_call_unanswered">Интеркомға қоңырау шалу</string>
+    <string name="event_door_phone_call_answered">Интеркомға қоңырау шалу</string>
+    <string name="event_open_by_key">Кілтпен ашу</string>
+    <string name="event_open_from_app">Қолданбадан ашу</string>
+    <string name="event_open_by_face">Бет ашылуы</string>
+    <string name="event_open_by_code">Код бойынша ашу</string>
+    <string name="event_open_gates_by_call">Қақпаны қоңырау арқылы ашу</string>
+    <string name="event_unknown">Белгісіз оқиға</string>
+
+    <!-- xml layouts -->
+    <string name="turn_on_guest_access">Бір сағатқа қонаққа кіруді қосу керек пе?</string>
+    <string name="open_barrier_info">Көрсетілген телефонға біз шлагбаумды автоматты түрде ашу үшін қоңырау шалуға болатын нөмірмен SMS жібереміз. Шлагбаум 6 сағат ішінде қол жетімді болады, содан кейін ол автоматты түрде стандартты жұмыс режиміне оралады.</string>
+    <string name="share_access">Бөлісу</string>
+    <string name="service_name_sample">Ақылды интерком</string>
+    <string name="address_setup">Мекенжай параметрлері</string>
+    <string name="address_sample">Тамбов қаласы, Советская көшесі, 16, 4-пәтер</string>
+    <string name="domophone_notif_title">Интерком</string>
+    <string name="get_paper_bill">Қағаз түбіртегін алыңыз</string>
+    <string name="switch_intercom">Түтікті қосыңыз (интерком)</string>
+    <string name="switch_voip">Қоңырауларды қабылдау</string>
+    <string name="switch_use_event_log">Оқиғалар журналын жүргізу</string>
+    <string name="switch_owner_event_log">Оқиғалар журналын басқа пайдаланушылардан жасыру</string>
+    <string name="switch_use_frs">Беттерді тану</string>
+    <string name="switch_use_speaker">Байланыс жоғары дауысыныз қатты</string>
+    <string name="delete_address">Мекенжайды жою </string>
+    <string name="text_next">Келесі</string>
+    <string name="available_services">Қолжетімді қызметтер</string>
+    <string name="service_address_sample">Тамбов қ., Астрахан к-сі, 24, 60 пәтер</string>
+    <string name="address_access_contact_sample">Саша (жалға алушы)</string>
+    <string name="text_sms">SMS</string>
+    <string name="text_empty_list">Тізім бос</string>
+    <string name="reg_sms_code_resend">Кодты қайта жіберіңіз</string>
+    <string name="payment_done">Дайын!</string>
+    <string name="payment_being_processed">Төлем өңделеді; күтіңіз</string>
+    <string name="appeal_title_first_name">Аты*</string>
+    <string name="dialog_add_contact">+ Контактіні қосыңыз</string>
+    <string name="dialog_close">Жабу</string>
+    <string name="event_sample">1.03.2021, в 17:06</string>
+    <string name="event_log_type_sample">Қолданбадан ашу</string>
+    <string name="item_title_sample">Интернет және теледидар</string>
+    <string name="item_description_sample">250-ден астам арна</string>
+    <string name="cctv_map_address_sample">Тамбов қаласы, Советская көшесі, 16</string>
+    <string name="provider_sample">Қызмет провайдері</string>
+    <string name="face_registration">Тұлғаны тіркеу</string>
+    <string name="registered_faces">Тіркелген тұлғалар</string>
+    <string name="event_name">Оқиға атауы</string>
+    <string name="text_address">Мекен-жайы</string>
+    <string name="text_date_time">Күні, уақыты</string>
+    <string name="text_additional">Қосымша мәтін</string>
+    <string name="hint_city">Қала</string>
+    <string name="hint_street">Көше</string>
+    <string name="hint_house">Үй</string>
+    <string name="hint_flat">Пәтер</string>
+    <string name="specify_reason">Себебін көрсетіңіз</string>
+    <string name="dialog_delete_reason_description">Мекенжайды жойған кезде мекенжай қызметтерін басқару Сізге қол жетімді болмайды</string>
+    <string name="text_delete">Жою</string>
+    <string name="text_dismiss">Бас тарту</string>
+    <string name="pay_number_sample">№68992</string>
+    <string name="pay_sum">Сомасы:</string>
+    <string name="pay_recommended_sample">Ұсынылған - 480 рубль</string>
+    <string name="all_payment_types">Толтырудың барлық тәсілдері</string>
+    <string name="pay_by_card">Банк картасымен төлеу</string>
+    <string name="text_event_sample">Оқиғалар</string>
+    <string name="text_count_sample">4</string>
+    <string name="events_title">Оқиғалар</string>
+    <string name="title_my_addresses">Менің мекен-жайларым</string>
+    <string name="dow_mon">Дүйсенбі</string>
+    <string name="dow_tue">Сейсенбі</string>
+    <string name="dow_wed">Сәрсенбі</string>
+    <string name="sow_tue">Бейсенбі</string>
+    <string name="dow_fri">Жұма</string>
+    <string name="dow_sat">Сенбі</string>
+    <string name="dow_sun">Жексенбі</string>
+    <string name="event_day_sample">Дүйсенбі, 19 сәуір</string>
+    <string name="payment_error">Қате!</string>
+    <string name="payment_error_description">Қате орын алды.</string>
+    <string name="auth_password">Құпия сөз</string>
+    <string name="pay_contract">Шарт:</string>
+    <string name="contract_sample">68992</string>
+    <string name="contract_balance">Баланс</string>
+    <string name="balance_sample">120 ₽</string>
+    <string name="balance_recommendations">Толтыру ұсынылады:</string>
+    <string name="ballance_recom_sample">480 ₽</string>
+    <string name="contract_action_pay">Төлеу</string>
+    <string name="full_lc_version">Жеке кабинеттің толық нұсқасы</string>
+    <string name="title_support">Техникалық қолдау</string>
+    <string name="call_support">Қоңырау шалу</string>
+    <string name="order_callback">Кері қоңырауға тапсырыс беріңіз</string>
+    <string name="title_cctv">Бейнекамералар</string>
+    <string name="cctv_count_sample">4</string>
+    <string name="title_city_camera_sample">Камера 1</string>
+    <string name="text_scroll_up">Жоғары</string>
+    <string name="title_common_settings">Жалпы параметрлер</string>
+    <string name="user_name_sample">Алексеев В.Б.</string>
+    <string name="title_notifications">Хабарламалар</string>
+    <string name="receive_notifications">Хабарламалар алу</string>
+    <string name="lack_funds_notifications">Қаражаттың жетіспеушілігі туралы хабарлаңыз</string>
+    <string name="balance_notify_near_zero">Баланс нөлге жақындаған кезде хабарлама жіберіңіз</string>
+    <string name="title_security">Қауіпсіздік</string>
+    <string name="fingerprint_entrance">Саусақ ізі арқылы кіру</string>
+    <string name="fingerprint_entrance_description">Саусақ ізі арқылы қолданбаға кіру</string>
+    <string name="pin_code_entrance">PIN коды бойынша кіру</string>
+    <string name="pin_code_entrance_description">PIN кодын енгізу арқылы қолданбаға кіріңіз</string>
+    <string name="text_logout">Шығу</string>
+    <string name="object_name_sample">Тосқауыл Солтүстік</string>
+    <string name="contract_number_sample">Шарт нөмірі: 68992</string>
+    <string name="text_address_settings">Мекенжай параметрлері</string>
+    <string name="text_provide_access">Қол жеткізуді басқару</string>
+    <string name="text_open_lc">Жеке кабинеттің веб-нұсқасын ашыңыз</string>
+    <string name="item_sample">Тосқауыл Солтүстік</string>
+    <string name="title_access_address">Мекен-жайға кіру</string>
+    <string name="temporary_intercom_access">Интеркомға уақытша қол жеткізу</string>
+    <string name="code_to_open">Ашу коды</string>
+    <string name="entrance_by_face">Кілтсіз бетке кіру</string>
+    <string name="manage_faces">Орнату</string>
+    <string name="temporary_barrier_access">Шлагбаумға/қақпаға уақытша қол жеткізу</string>
+    <string name="barrier_add_contact">Контактіні қосу</string>
+    <string name="permanent_access_address">Постоянный доступ к адресу</string>
+    <string name="permanent_add_contact">Мекен-жайға тұрақты қол жетімділік</string>
+    <string name="title_delete_face">Бұл бетті алып тастайсыз ба?</string>
+    <string name="delete_face">Жою</string>
+    <string name="dialog_face_cancel">Бас тарту</string>
+    <string name="title_add_face">Бұл бетті қосу керек пе??</string>
+    <string name="add_face">Қосу</string>
+</resources>
