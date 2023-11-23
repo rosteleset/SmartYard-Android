@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Текст ошибок -->
+    <string name="common_error_connection">Қосылу қатесі.</string>
+    <string name="common_timeout">Тайм-аут</string>
+    <string name="common_too_many">Тым көп әрекет. Күте тұрыңыз.</string>
+    <string name="common_unauthorized">рұқсат етілмеген</string>
+    <string name="common_do_authorization_on_another">Басқа құрылғыда авторизация жасалды.</string>
+    <string name="common_error">Қате.</string>
+    <string name="common_not_found">Табылған жоқ.</string>
+    <string name="no_content">Мазмұны жоқ.</string>
+    <string name="title_0">Назар аударыңыз!</string>
+
+    <string name="type_internet">Интернет</string>
+    <string name="type_iptv">Теледидар</string>
+    <string name="type_phone">Телефония</string>
+    <string name="type_domophone">Ақылды  домофон</string>
+    <string name="type_cctv">Бейнебақылау</string>
+    <string name="type_ctv">CTV</string>
+    <string name="type_gsm">GSM</string>
+</resources>
