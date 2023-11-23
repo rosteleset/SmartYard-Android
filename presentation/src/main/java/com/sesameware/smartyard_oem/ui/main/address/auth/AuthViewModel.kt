@@ -7,6 +7,7 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
 import com.sesameware.smartyard_oem.Event
@@ -69,7 +70,8 @@ class AuthViewModel(
                 x11841 = x11841,
                 x12440 = x12440
             ),
-            ACTION1
+            ACTION1,
+            IssueClass.DontRememberAnythingIssue
         )
     }
 

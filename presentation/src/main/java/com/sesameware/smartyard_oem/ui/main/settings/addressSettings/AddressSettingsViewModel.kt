@@ -6,6 +6,7 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
@@ -94,23 +95,23 @@ class AddressSettingsViewModel(
     }
 
     /**    """issue"": {
-     ""project"": ""REM"",
-     ""summary"": ""Авто: Заявка с сайта"",
-     ""description"":ФИО: $как к вам обращаться$\nТелефон: $телефон$\nАдрес, введённый пользователем: $адрес$\nУдаление адреса из приложения. Причина $описание$
-     ""type"": 32
-     },
-     ""customFields"": {
-     ""10011"": ""-1"",
-     ""11841"": $телефон, введенный пользователем$,
-     ""12440"": ""Приложение"",
-     ""10743"": $широта$,
-     ""10744"": $долгота$,
-     },
-     ""actions"": [
-     ""Начать работу"",
-     ""Позвонить ""
-     ]
-     }"*/
+    ""project"": ""REM"",
+    ""summary"": ""Авто: Заявка с сайта"",
+    ""description"":ФИО: $как к вам обращаться$\nТелефон: $телефон$\nАдрес, введённый пользователем: $адрес$\nУдаление адреса из приложения. Причина $описание$
+    ""type"": 32
+    },
+    ""customFields"": {
+    ""10011"": ""-1"",
+    ""11841"": $телефон, введенный пользователем$,
+    ""12440"": ""Приложение"",
+    ""10743"": $широта$,
+    ""10744"": $долгота$,
+    },
+    ""actions"": [
+    ""Начать работу"",
+    ""Позвонить ""
+    ]
+    }"*/
 
     fun createIssue(address: String, reasonText: String, reasonList: String) {
         val summary = "Авто: Заявка с сайта"
@@ -128,7 +129,8 @@ class AddressSettingsViewModel(
                 x11841 = x11841,
                 x12440 = x12440
             ),
-            ACTION1
+            ACTION1,
+            IssueClass.DeleteAddressIssue
         )
     }
 }

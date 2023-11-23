@@ -9,6 +9,7 @@ import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.request.CreateIssuesRequest
 import com.sesameware.domain.model.response.CCTVCityCameraData
 import com.sesameware.domain.model.response.CCTVYoutubeData
@@ -69,7 +70,8 @@ class CityCamerasViewModel(
             description,
             null,
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
-            CreateIssuesRequest.TypeAction.ACTION3
+            CreateIssuesRequest.TypeAction.ACTION3,
+            IssueClass.RequestRec
         )
     }
 

@@ -1,5 +1,7 @@
 package com.sesameware.domain.model.request
 
+import com.sesameware.domain.model.IssueClass
+import com.sesameware.domain.model.response.Issue
 import com.squareup.moshi.Json
 
 /**
@@ -12,7 +14,9 @@ data class CreateIssuesRequest(
     @Json(name = "customFields")
     val customFields: CustomFields?,
     @Json(name = "actions")
-    val actions: List<String>?
+    val actions: List<String>?,
+    @Json(name = "class")
+    val cls: String
 ) {
     enum class TypeAction(var list: List<String> = listOf()) {
         ACTION1(listOf("Начать работу", "Позвонить")),
@@ -51,12 +55,13 @@ data class CreateIssuesRequest(
     data class Builder(
         var issue: Issue? = null,
         var customFields: CustomFields? = null,
-        var actions: List<String>? = null
+        var actions: List<String>? = null,
+        var cls: IssueClass? = null
     ) {
         fun issue(issue: Issue) = apply { this.issue = issue }
         fun customFields(customFields: CustomFields) = apply { this.customFields = customFields }
         fun actions(actions: List<String>) = apply { this.actions = actions }
-
-        fun build() = CreateIssuesRequest(issue, customFields, actions)
+        fun cls(cls: IssueClass) = apply { this.cls = cls }
+        fun build() = CreateIssuesRequest(issue, customFields, actions, cls?.value.toString())
     }
 }

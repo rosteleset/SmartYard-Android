@@ -8,6 +8,7 @@ import com.sesameware.domain.interactors.ExtInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.interactors.SipInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.request.CreateIssuesRequest
 import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
@@ -58,7 +59,8 @@ class BurgerViewModel(
             description,
             null,
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
-            CreateIssuesRequest.TypeAction.ACTION1
+            CreateIssuesRequest.TypeAction.ACTION1,
+            IssueClass.OrderCallback
         )
     }
 

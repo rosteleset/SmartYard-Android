@@ -4,6 +4,7 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.model.IssueClass
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
@@ -55,7 +56,8 @@ class DialogDeleteReasonViewModel(
                 x12440 = x12440,
                 x10941 = x10941
             ),
-            ACTION2
+            ACTION2,
+            IssueClass.DeleteAddressIssue
         )
     }
 }
