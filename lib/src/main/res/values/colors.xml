@@ -4,4 +4,6 @@
     <color name="yellow_100">#FFE38E</color>
     <color name="white_transparent_temp">#4DFFFFFF</color>
     <color name="black">#000000</color>
+    <color name="light_brand">#FF96E6CD</color>
+    <color name="dark_brand">#FF009688</color>
 </resources>

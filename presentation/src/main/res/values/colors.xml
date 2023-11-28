@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- MAIN -->
-    <color name="colorPrimary">#0075FF</color>
-    <color name="colorPrimaryDark">#0075FF</color>
-    <color name="colorAccent">#0075FF</color>
-    <color name="brandColor">#298BFF</color>
-    <color name="splashColor">#1D5ECD</color>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#009688</color>
+    <color name="colorAccent">#009688</color>
+    <color name="brandColor">#009688</color>
+    <color name="splashColor">#007E72</color>
 
     <!-- BRAND colors -->
-    <color name="blue">#298BFF</color>
-    <color name="blue_200">#0075FF</color>
-    <color name="brand_pressed">#0075FF</color>
+    <color name="blue">#96E6CD</color>
+    <color name="blue_200">#009688</color>
+    <color name="brand_pressed">#009688</color>
 
     <!-- WHITE -->
     <color name="white_0">#FFFFFF</color>
