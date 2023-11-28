@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Main -->
-    <string name="app_name">Teledom</string>
+    <string name="app_name">Test</string>
     <string name="app_title">An outdated version</string>
     <string name="app_message">Update app?</string>
     <string name="default_notification_channel_id">channel_inbox</string>

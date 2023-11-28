@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Main -->
-    <string name="app_name">Теледом</string>
+    <string name="app_name">Тест</string>
     <string name="app_title">Нұсқа ескірген</string>
     <string name="app_message">Қосымшаны жаңарту?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
