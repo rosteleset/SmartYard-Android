@@ -76,6 +76,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         remoteMessage.data.let { data: MutableMap<String, String> ->
             Timber.tag(TAG).d("debug_dmm push: $data")
             with(data) {
+                val dataTitle = get("title")
+                val dataBody = get("body")
                 when {
                     get("action") == "newAddress" -> {
                         val intentBroadcast = Intent(MainActivity.BROADCAST_LIST_UPDATE)
@@ -84,8 +86,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val messageId = get("messageId")
                         val messageType = "inbox"
                         val badge = get("badge")?.toInt()
-                        val title = remoteMessage.notification?.title
-                        val message = remoteMessage.notification?.body
+                        val title = dataTitle ?: remoteMessage.notification?.title
+                        val message = dataBody ?: remoteMessage.notification?.body
 
                         sendNotificationInbox(
                             messageId ?: "",
@@ -129,8 +131,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val messageId = get("messageId")
                         val messageType = "inbox"
                         val badge = get("badge")?.toInt()
-                        val title = remoteMessage.notification?.title
-                        val message = remoteMessage.notification?.body
+                        val title = dataTitle ?: remoteMessage.notification?.title
+                        val message = dataBody ?: remoteMessage.notification?.body
 
                         sendNotificationInbox(
                             messageId ?: "",
@@ -148,8 +150,8 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         val messageId = get("messageId")
                         val messageType = get("messageType")
                         val badge = get("badge")?.toInt()
-                        val title = remoteMessage.notification?.title
-                        val message = remoteMessage.notification?.body
+                        val title = dataTitle ?: remoteMessage.notification?.title
+                        val message = dataBody ?: remoteMessage.notification?.body
 
                         sendNotificationInbox(
                             messageId ?: "",
@@ -161,22 +163,18 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                     }
 
                     get("action") == "chat" -> {
-                        if ((application as? App)?.isChatActive == false) {
-                            val badge = get("badge")?.toInt()
-                            val title = remoteMessage.notification?.title
-                            val message = remoteMessage.notification?.body
+                        val badge = get("badge")?.toInt()
+                        val title = dataTitle ?: remoteMessage.notification?.title
+                        val message = dataBody ?: remoteMessage.notification?.body
 
-                            sendNotificationInbox(
-                                "",
-                                title ?: "",
-                                message ?: "",
-                                "chat",
-                                badge ?: 0,
-                                true
-                            )
-                        }  else {
-                            
-                        }
+                        sendNotificationInbox(
+                            "",
+                            title ?: "",
+                            message ?: "",
+                            "chat",
+                            badge ?: 0,
+                            true
+                        )
                     }
 
                     else -> {
