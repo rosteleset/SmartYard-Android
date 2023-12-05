@@ -35,6 +35,9 @@ data class ProviderConfig(
 
     //представление камер
     @Json(name = CCTV_VIEW) val _cctvView: String = CCTV_VIEW_LIST,
+
+    //активная вкладка
+    @Json(name = ACTIVE_TAB) val activeTab: String = TAB_ADDRESSES,
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
@@ -96,6 +99,14 @@ data class ProviderConfig(
         const val CCTV_VIEW = "cctvView"
         const val CCTV_VIEW_LIST = "list"
         const val CCTV_VIEW_TREE = "tree"
+
+        //вкладки
+        const val ACTIVE_TAB = "activeTab"
+        const val TAB_ADDRESSES = "addresses"
+        const val TAB_NOTIFICATIONS = "notifications"
+        const val TAB_CHAT = "chat"
+        const val TAB_PAY = "pay"
+        const val TAB_MENU = "menu"
     }
 }
 
