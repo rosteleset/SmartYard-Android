@@ -29,6 +29,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.CommonErrorThrowable
+import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.smartyard_oem.*
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
@@ -199,8 +200,22 @@ class MainActivity : CommonActivity() {
             TypeMessage.CHAT -> {
                 mViewModel.bottomNavigate(R.id.chat)
             }
+
             else -> {
-                mViewModel.bottomNavigate(R.id.address)
+                val tabDefault = R.id.address
+                val tabId =
+                    when (DataModule.providerConfig.activeTab) {
+                        ProviderConfig.TAB_NOTIFICATIONS -> R.id.notification
+                        ProviderConfig.TAB_CHAT -> R.id.chat
+                        ProviderConfig.TAB_PAY -> R.id.pay
+                        ProviderConfig.TAB_MENU -> R.id.settings
+                        else -> tabDefault
+                    }
+                if (binding.bottomNav.findViewById(tabId) as? BottomNavigationItemView == null) {
+                    mViewModel.bottomNavigate(tabDefault)
+                } else {
+                    mViewModel.bottomNavigate(tabId)
+                }
             }
         }
     }
