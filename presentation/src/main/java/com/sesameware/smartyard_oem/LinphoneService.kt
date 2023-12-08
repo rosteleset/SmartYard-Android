@@ -41,6 +41,7 @@ class LinphoneService : Service() {
         core.transportsUsed.run {
             Timber.i("debug_dmm linphone ports:\ntls: $tlsPort udp: $udpPort tcp:$tcpPort")
         }
+        //mCore?.micGainDb = 5.0f
     }
 
     override fun onDestroy() {
@@ -76,27 +77,27 @@ class LinphoneService : Service() {
 
             if (stun.startsWith("turn:")) {
                 stun = stun.substring(5)
-                nat.enableStun(false)
-                nat.enableIce(true)
-                nat.enableTurn(true)
+                nat.isStunEnabled = false
+                nat.isIceEnabled = true
+                nat.isTurnEnabled = true
                 nat.stunServer = stun
                 nat.stunServerUsername = turnUsername
 
                 when (turnTransport.lowercase(Locale.getDefault())) {
                     "tcp" -> {
-                        nat.enableUdpTurnTransport(false)
-                        nat.enableTcpTurnTransport(true)
-                        nat.enableTlsTurnTransport(false)
+                        nat.isUdpTurnTransportEnabled = false
+                        nat.isTcpTurnTransportEnabled = true
+                        nat.isTlsTurnTransportEnabled = false
                     }
                     "tls" -> {
-                        nat.enableUdpTurnTransport(false)
-                        nat.enableTcpTurnTransport(false)
-                        nat.enableTlsTurnTransport(true)
+                        nat.isUdpTurnTransportEnabled = false
+                        nat.isTcpTurnTransportEnabled = false
+                        nat.isTlsTurnTransportEnabled = true
                     }
                     else -> {
-                        nat.enableUdpTurnTransport(true)
-                        nat.enableTcpTurnTransport(false)
-                        nat.enableTlsTurnTransport(false)
+                        nat.isUdpTurnTransportEnabled = true
+                        nat.isTcpTurnTransportEnabled = false
+                        nat.isTlsTurnTransportEnabled = false
                     }
                 }
 
@@ -114,9 +115,9 @@ class LinphoneService : Service() {
                 Timber.d("debug_dmm Linphone is using turn $stun")
             } else if (stun.startsWith("stun:")) {
                 stun = stun.substring(5)
-                nat.enableStun(true)
-                nat.enableIce(true)
-                nat.enableTurn(false)
+                nat.isStunEnabled = true
+                nat.isIceEnabled = true
+                nat.isTurnEnabled = false
                 nat.stunServer = stun
 
                 Timber.d("debug_dmm Linphone is using stun $stun")
@@ -134,7 +135,7 @@ class LinphoneService : Service() {
         mCore?.let { core ->
             core.start()
             Factory.instance().enableLogCollection(LogCollectionState.EnabledWithoutPreviousLogHandler)
-            Factory.instance().loggingService.setListener { _, _, _, message ->
+            Factory.instance().loggingService.addListener { _, _, _, message ->
                 Timber.i("debug_dmm message: $message")
             }
             core.clearAllAuthInfo()
