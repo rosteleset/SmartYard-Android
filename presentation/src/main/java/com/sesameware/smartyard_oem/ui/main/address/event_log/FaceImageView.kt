@@ -46,7 +46,7 @@ class FaceImageView : AppCompatImageView {
         }
     }
 
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
         val iw = drawable?.intrinsicWidth ?: 0
