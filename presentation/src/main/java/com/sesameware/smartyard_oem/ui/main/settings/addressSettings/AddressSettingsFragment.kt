@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -236,8 +237,11 @@ class AddressSettingsFragment : Fragment() {
             mSettingsVM.getDataList(true)
             mAddressVM.getDataList(true)
 
+            val option = NavOptions.Builder()
+                .setPopUpTo(R.id.settingsFragment, true)
+                .build()
             NavHostFragment.findNavController(this)
-                .navigate(R.id.action_addressSettingsFragment_to_settingsFragment)
+                .navigate(R.id.action_addressSettingsFragment_to_settingsFragment, null, option)
         }
 
         binding.switchIntercom.setOnCheckedChangeListener { compoundButton, check ->
