@@ -6,7 +6,7 @@ import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
 import android.os.Build
-import android.view.TextureView
+import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
@@ -47,8 +47,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     private var mCoreListener = object : CoreListenerStub() {
         override fun onRegistrationStateChanged(
-            core: Core?,
-            cfg: ProxyConfig?,
+            core: Core,
+            proxyConfig: ProxyConfig,
             state: RegistrationState,
             message: String
         ) {
@@ -61,7 +61,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                 else -> {
                 }
             }
-            super.onRegistrationStateChanged(core, cfg, state, message)
+            super.onRegistrationStateChanged(core, proxyConfig, state, message)
         }
 
         private fun isAppVisible(): Boolean {
@@ -73,8 +73,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         }
 
         override fun onCallStateChanged(
-            core: Core?,
-            call: Call?,
+            core: Core,
+            call: Call,
             state: Call.State,
             message: String
         ) {
@@ -84,7 +84,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
             when (cState.state) {
                 CallStateSimple.INCOMING -> {
-                    call?.let { _ ->
+                    call.let { _ ->
                         fcmData?.let { data ->
                             if (!isAppVisible()) {
                                 sendCallNotification(data, service, preferenceStorage)
@@ -121,8 +121,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         }
     }
 
-    fun setNativeVideoWindowId(videoWindow: TextureView) {
-        core.setNativeVideoWindowId(videoWindow)
+    fun setNativeVideoWindowId(videoWindow: View) {
+        core.nativeVideoWindowId = videoWindow
     }
 
     private fun deleteCallNotifications(context: Context) {
@@ -167,8 +167,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     fun acceptCall() {
         core.currentCall?.let { call ->
             val params = core.createCallParams(call)
-            params?.enableVideo(true)
-            params?.enableAudio(true)
+            params?.isVideoEnabled = true
+            params?.isAudioEnabled = true
             call.acceptWithParams(params)
         }
     }
@@ -176,8 +176,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     fun acceptCallForDoor() {
         core.currentCall?.let { call ->
             val params = core.createCallParams(call)
-            params?.enableVideo(true)
-            params?.enableAudio(true)
+            params?.isVideoEnabled = true
+            params?.isAudioEnabled = true
             call.acceptWithParams(params)
         }
     }
@@ -211,12 +211,12 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                 core.removeListener(mCoreListener)
                 val mAccountCreator = core.createAccountCreator(null)
                 val cfg = config.setAccount(mAccountCreator).createProxyConfig()
-                core.addProxyConfig(cfg)
+                core.addProxyConfig(cfg!!)
                 core.ringback = null
                 core.ring = null
 
-                core.enableVideoDisplay(true)
-                core.enableVideoCapture(true)
+                core.isVideoDisplayEnabled = true
+                core.isVideoCaptureEnabled = true
                 core.useInfoForDtmf = false
                 core.useRfc2833ForDtmf = true
                 for (pt in core.audioPayloadTypes) {
@@ -354,6 +354,7 @@ private fun convertCallState(state: Call.State): CallStateSimple {
         Call.State.EarlyUpdating,
         Call.State.IncomingEarlyMedia,
         Call.State.OutgoingRinging,
+        Call.State.PushIncomingReceived,
         Call.State.OutgoingEarlyMedia -> {
             CallStateSimple.OTHER_CONNECTED
         }
