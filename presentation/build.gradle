@@ -39,7 +39,7 @@ android {
         versionCode 51
         versionName '1.0.51'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        resourceConfigurations += ["ru", "en", "kk"]
+        resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
     }
     buildTypes {
         disableLint {
