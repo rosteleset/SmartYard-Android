@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Текст ошибок -->
+    <string name="common_error_connection">Ulanishda xatolik.</string>
+    <string name="common_timeout">Taym-aut</string>
+    <string name="common_too_many">Sifatli ko‘p urinishlar. Kutib turing.</string>
+    <string name="common_unauthorized">MAHSUS YO‘Q</string>
+    <string name="common_do_authorization_on_another">Boshqa qurilmada autorizatsiya o‘tkazildi.</string>
+    <string name="common_error">Xatolik.</string>
+    <string name="common_not_found">Topilmadi.</string>
+    <string name="no_content">Mazmun yo‘q.</string>
+    <string name="title_0">E‘tibor!</string>
+
+    <string name="type_internet">Internet</string>
+    <string name="type_iptv">Televideniya</string>
+    <string name="type_phone">Telefoniya</string>
+    <string name="type_domophone">Aqlli darboza</string>
+    <string name="type_cctv">Videonazorat</string>
+    <string name="type_ctv">CTV</string>
+    <string name="type_gsm">GSM</string>
+</resources>
