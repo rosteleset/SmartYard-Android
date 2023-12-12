@@ -1,0 +1,20 @@
+<resources>
+    <!-- Текст ошибок -->
+    <string name="common_error_connection">Միացման սխալ.</string>
+    <string name="common_timeout">Ընդմիջում</string>
+    <string name="common_too_many">Չափազանց շատ փորձեր: Սպասեք։</string>
+    <string name="common_unauthorized">ՉԼԻՕՐՎԱԾ</string>
+    <string name="common_do_authorization_on_another">Թույլտվությունը կատարվել է մեկ այլ սարքի վրա:</string>
+    <string name="common_error">Սխալ.</string>
+    <string name="common_not_found">Չի գտնվել.</string>
+    <string name="no_content">Բովանդակություն չկա։</string>
+    <string name="title_0">Ուշադրություն.</string>
+
+    <string name="type_internet">Համացանց</string>
+    <string name="type_iptv">Հեռուստացույց</string>
+    <string name="type_phone">Հեռախոսակապ</string>
+    <string name="type_domophone">Խելացի ինտերկոմ</string>
+    <string name="type_cctv">Տեսահսկում</string>
+    <string name="type_ctv">CTV</string>
+    <string name="type_gsm">GSM</string>
+</resources>

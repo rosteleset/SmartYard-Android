@@ -1,0 +1,499 @@
+<resources>
+
+    <!-- Main -->
+    <string name="app_name">Tele-uy</string>
+    <string name="app_title">Versiya eskirgan</string>
+    <string name="app_message">Dastur yangilansinmi?</string>
+    <string name="default_notification_channel_id">channel_inbox</string>
+    <string name="widget_title">Aqlli ichki ko‘cha</string>
+
+    <!-- Настройки -->
+    <string name="setting_dialog_exit_caption">Dasturdan chiqish</string>
+    <string name="setting_dialog_exit_caption_msg">Siz haqiqatan ham hisobingizdan chiqmoqchimisiz?</string>
+    <string name="setting_dialog_exit_yes">Ha</string>
+    <string name="setting_dialog_exit_no">Yo‘q</string>
+    <string name="setting_dialog_delete_title">Ishonchingiz komilmi?</string>
+    <string name="setting_dialog_delete_yes">Ha</string>
+    <string name="setting_dialog_delete_no">Bekor qilish</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_skip">O‘tkazish</string>
+    <string name="onboarding_next">Keyingi</string>
+    <string name="onboarding_complete">Ajoyib, boshlaymiz!</string>
+    <string name="onboarding_cam_title">Videonazorat</string>
+    <string name="onboarding_cam_subtitle">Uyingizning yaqinida nima bo‘lganini bilib oling</string>
+    <string name="onboarding_donation_title">Hammasi nazoratda</string>
+    <string name="onboarding_donation_subtitle">Xizmatlarni boshqarib va ularni to‘lash imkoniyatini ta‘minlang</string>
+    <string name="onboarding_intercom_title">Aqlli domofon</string>
+    <string name="onboarding_intercom_subtitle">Telefon orqali domofon, vortalarni yoki shlagbaumni boshqarish</string>
+
+    <!-- Заявки -->
+    <string name="issue_dialog_caption_0">Murojaat yaratildi.</string>
+
+    <!-- Регистрация номер телефона-->
+    <string name="reg_tel_caption">Ro‘yxatdan o‘tish uchun\ntelefon raqamini kiriting</string>
+    <string name="reg_back_to_providers">Provayder tanlashga qaytish</string>
+
+    <!-- Регистрация код из смс-->
+    <string name="reg_sms_code_tel">SMS orqali yuborilgan koddan foydalanib,\n+%1$s raqamini kiriting</string>
+    <string name="reg_flash_call_code_tel">
+        +%1$s raqami sizning ehtiyotingiz\nhaqiqiyligiga ishonishimiz kerak.\n
+        Sizga kiringan chiqindilar soni o‘rtasidagi oxirgi 4 raqamni kiriting</string>
+    <string name="reg_sms_correct_tel">Telefon raqamini to‘g‘rilash</string>
+    <string name="reg_sms_send_code_repeat">Koddan qaytadan yuborish\n%1$s ichida mumkin</string>
+    <string name="reg_sms_error_code">Noto‘g‘ri kod. Qayta urinib ko‘ring</string>
+    <string name="send_sms_error_code">Jo‘natishda xatolik. Kutib turing.</string>
+
+    <!-- Восстановление доступа -->
+    <string name="restore_access_title">Kirishni tiklash</string>
+    <string name="restore_access_caption">Iltimos, shartnoma raqamingizni kiriting va shartnoma ro‘yxatga olingan elektron pochtangiz yoki telefon raqamingizni ko‘rsating</string>
+    <string name="restore_access_edit_hint">Shartnoma raqami</string>
+    <string name="restore_access_edit_btn_get_recovery">Qayta tiklash uchun mavjud usullarni olish</string>
+    <string name="restore_access_edit_btn_get_code">Tasdiqlash kodi olish</string>
+    <string name="restore_access_input_code_phone">Tasdiqlash kodi\n %1$s telefon raqamiga yuborildi</string>
+    <string name="restore_access_input_code_email">Tasdiqlash kodi\n %1$s elektron pochtasiga yuborildi</string>
+
+    <string name="restore_access_btn_text_confirm">Tasdiqlash</string>
+    <string name="restore_access_btn_resent_text">Kodni qayta yuborish</string>
+    <string name="restore_access_dialog_ok_title">Hisob qaytarish paroli yuborildi.</string>
+    <string name="restore_access_dialog_ok_yes">Avtorizatsiya sahifasiga o‘tish</string>
+
+    <!-- Bottom Menu -->
+    <string name="title_address">Manzillar</string>
+    <string name="title_notification">Bildirishnomalar</string>
+    <string name="title_chat">Chat</string>
+    <string name="title_pay">To‘lash</string>
+    <string name="title_burger">Menyu</string>
+
+    <!-- Мои адреса-->
+    <string name="dialog_title">Soatlik mehmon kirishini yoqish?</string>
+    <string name="dialog_message">Barcha, kim uyingizning raqamini domofondan terib, eshik 60 daqiqa mobaynida avtomatik ravishda ochiladi. Ushbu vaqtni o‘tgandan so‘ng, domofon ish xolati avtomatik ravishda qayta tiklanadi.</string>
+    <string name="dialog_yes">YOQISH</string>
+    <string name="dialog_no">BEKOR QILISH</string>
+    <string name="dialog_sms">Mehmon uchun ma‘lumot muvaffaqiyatli jo‘natildi!</string>
+    <string name="addresses_video_cameras">Videokameralar</string>
+    <string name="addresses_events">Hodisalar</string>
+    <string name="dialog_title2">Soatlik mehmon kirishini o‘chirish?</string>
+    <string name="dialog_message2" />
+    <string name="dialog_turn_off">O‘CHIRISH</string>
+    <string name="guest_access_open">Ochish</string>
+    <string name="guest_access_opened">Ochiq</string>
+
+    <!-- Qr code -->
+    <string name="qr_code_dialog_title">Manzil qo‘shildi.</string>
+    <string name="qr_code_dialog_ok">Ok</string>
+    <string name="qr_code_title">QR-kodni kameraga yo‘nating</string>
+    <string name="qr_code_error_permission_title">QR-kodlardan foydalanish uchun kamerani ishlatishga ruxsat kerak.</string>
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">Sizning operator bilan shartnomaingiz bormi?</string>
+    <string name="auth_where_is_contract_caption">Ushbu manzilga bog‘liq shartnomaningiz raqamini va parolini kiriting va ushbu ilovadan xizmatlarni boshqarib turishingiz mumkin.</string>
+    <string name="auth_numer_pass0">Parolni eslay olmayman</string>
+    <string name="auth_number_pass1">Nimadir eslay olmayman</string>
+    <string name="auth_number_btn_ok">Kirish</string>
+    <string name="auth_number_btn_no">Menim operator bilan shartnomam yo‘q</string>
+    <string name="auth_dialog_title">Shartnoma ma‘lumotlarini tiklash uchun so‘rov yaratish?</string>
+    <string name="auth_dialog_yes">Yaratish</string>
+    <string name="auth_dialog_no">Bekor qilish</string>
+    <string name="auth_contract_hint">Shartnoma raqami</string>
+
+    <!-- Ввод адреса -->
+    <string name="input_address_title">Manzilni kiriting</string>
+    <string name="input_address_ok">Mavjud xizmatlarni tekshirish</string>
+    <string name="input_address_text_qr">Meni QR-kod bor</string>
+
+    <!-- Потверждение адреса -->
+    <string name="address_verification_title">Manzilni tasdiqlash</string>
+    <string name="address_verification_descriptions">Bu nima uchun qulay?</string>
+    <string name="address_verification_courier_block1_title">Buyurtma qoldiring</string>
+    <string name="address_verification_courier_block1_description">Hafta ichida kuryer maxfiy konvertni olib keladi</string>
+    <string name="address_verification_courier_block2_title">QR-kodni skan qiling</string>
+    <string name="address_verification_courier_block2_description">U konvert ichida bo‘ladi</string>
+    <string name="address_verification_courier_block3_title">Foydalaning!</string>
+    <string name="address_verification_courier_block3_description">Siz dasturimiz "Aqlli domofon"ning barcha funksiyalariga tez ko‘rish imkoniyatiga ega bo‘lasiz</string>
+    <string name="address_verification_courier_btn_done">Ajoyib! Buyurtma qoldirish</string>
+    <string name="address_verification_office_description">Ushbu kvartira uchun Kommunal xizmatlar chekasi bilan operatorning eng yaqin ofisini tashrif qiling va biz tez orada aqlli domofon va videonazoratning funktsiyalarini faollashtiramiz.</string>
+    <string name="address_verification_office_btn_done">Mana, shunday qilaman</string>
+    <string name="address_verification_tab_title_1">Kuryer orqali</string>
+    <string name="address_verification_tab_title_2">Ofisga tashrif</string>
+
+    <!-- Диалоговые окны. Настройки. -->
+    <string name="setting_dialog_service_connected_title">ulangan</string>
+    <string name="setting_dialog_service_connected_caption">Agar tarifni almashtirmoqchi bo‘lsangiz, ariza qoldiring</string>
+    <string name="setting_dialog_service_connected_button">Tarifni almashtirish</string>
+    <string name="setting_dialog_service_connected_chat">Salom, men "%2$s" dogovori bilan "%1$s" xizmatini o‘zgartirmoqchiman</string>
+    <string name="setting_dialog_service_not_connected_title">ulangan emas</string>
+    <string name="setting_dialog_service_not_connected_caption">Agar xizmatni faollashtirmoqchi bo‘lsangiz, ariza qoldiring</string>
+    <string name="setting_dialog_service_not_connected_button">Ariza qoldirish</string>
+    <string name="setting_dialog_service_not_connected_chat">Salom, men "%2$s" dogovori bilan "%1$s" xizmatini ulamoqchiman</string>
+    <string name="setting_dialog_service_unavailable_title">hali mavjud emas</string>
+    <string name="setting_dialog_service_unavailable_caption">Hozirgi paytda sizning manzilingizga xizmat mavjud emas. Ulashish uchun bir nechta arizalarni to‘plash kerak. Birinchi ariza qoldiring!</string>
+    <string name="setting_dialog_service_unavailable_button">Ariza qoldirish</string>
+    <string name="setting_dialog_service_unavailable_chat">Salom, "%2$s" dogovori bilan "%1$s" manzilimda xizmat mavjud emas, lekin men uni istamoqchiman</string>
+    <string name="setting_dialog_service_domophone_connected_title">ulangan</string>
+    <string name="setting_dialog_service_domophone_connected_caption">Agar kirishni istasangiz, xabar qoldiring</string>
+    <string name="setting_dialog_service_domophone_connected_button">Kirish olish</string>
+    <string name="setting_dialog_service_domophone_connected_chat">Salom, mening manzilimda domofon ulangan, menda kirish kerak</string>
+    <string name="setting_dialog_service_cctv_connected_title">ulangan</string>
+    <string name="setting_dialog_service_cctv_connected_caption">Agar kirishni istasangiz, xabar qoldiring</string>
+    <string name="setting_dialog_service_cctv_connected_button">Kirish olish</string>
+    <string name="setting_dialog_service_cctv_connected_chat">Salom, mening manzilimda videonazorat ulangan, menda kirish kerak</string>
+
+    <!-- Диалог предоставление доступа -->
+    <string name="dialog_share_access_title">Dostlikni baham qilish</string>
+    <string name="dialog_share_access_caption">Dostlikni berishni istagan odamning telefon raqamini kiriting yoki uning kontaktdan tanlang</string>
+    <string name="dialog_share_access_btn_ok">Baham qilish</string>
+
+    <!-- Скоро все заработает офис. -->
+    <string name="address_work_soon_office_title">Tez orada barchasi ishga tushadi!</string>
+    <string name="address_work_soon_office_caption">Iltimos, "%s" manzilidagi kuryer kutib turing va u olib kelingan QR-kodni surating.</string>
+    <string name="address_work_soon_office_btn_0">QR-kodni surating</string>
+    <string name="address_work_soon_office_btn_1">Ozim ofisga kelaman</string>
+    <string name="address_work_soon_office_btn_2">Arizani bekor qilish</string>
+    <string name="address_work_soon_office_btn_3">Davom ettirish</string>
+    <string name="address_work_soon_office_btn_4">Orqaga</string>
+
+    <!-- Нет сети по адресу. -->
+    <string name="address_no_network_title">Oyoqqa tushdiz :(</string>
+    <string name="address_no_network_caption">Sizning manzilingiz aniqlash talab qiladi. Mutaxassisning qo‘ng‘irog‘ini kuting.\n\nQaysi xizmatni ulashni istardiz?</string>
+    <string name="address_no_network_btn_ok">Ariza qoldirish</string>
+
+    <!-- Скоро все заработает курьер. -->
+    <string name="address_work_soon_courier_title">Tez orada, hammasi ishga tushadi!</string>
+    <string name="address_work_soon_courier_caption">Manzilni tasdiqlash uchun sizning uchun xizmatlar to‘g‘risida ko‘rsatilgan 3 oydan ortiq eski bo‘lmagan HSO hisobotini yaqin operatorning ofisiga olib keling.</string>
+    <string name="address_work_soon_courier_btn_0">Kuryer chaqirish</string>
+
+    <!-- Как к вам обращаться? -->
+    <string name="appeal_validation_error">Ism bo‘sh bo‘lishi mumkin emas</string>
+    <string name="appeal_title">Sizga\nqanday murojaat qilish kerak?</string>
+    <string name="appeal_title_patronymic">Otasining ismi</string>
+
+    <!-- Temp -->
+    <string name="terminate">To‘xtatish</string>
+    <string name="enter_sip_address">Qo‘ng‘iroq uchun raqamni kiriting</string>
+    <string name="sip_address">Raqam</string>
+    <string name="doCall">Qo‘ng‘iroq</string>
+    <string name="tls">TLS</string>
+    <string name="tcp">TCP</string>
+    <string name="udp">UDP</string>
+    <string name="domain">Domen</string>
+    <string name="password">Parol</string>
+    <string name="username">Foydalanuvchi nomi</string>
+    <string name="connect">Ulashing</string>
+    <string name="disconnect">Ulanshni bekor qilish</string>
+    <string name="connected_to">%s ga ulangan</string>
+    <string name="connecting">Ulansh…</string>
+    <string name="error">Xatolik</string>
+    <string name="connected">Ulansh</string>
+    <string name="call">Qo‘ng‘iroq</string>
+    <string name="from">%s dan</string>
+    <string name="call_from">%s dan qo‘ng‘iroq</string>
+    <string name="cancel">Bekor qilish</string>
+
+    <!-- IncomingCallActivity -->
+    <string name="reject">Rad etish</string>
+    <string name="ignore">E‘tiborsiz o‘tkazish</string>
+    <string name="opened">Ochilgan</string>
+    <string name="open">Ochish</string>
+    <string name="answer">Javob berish</string>
+    <string name="speak">Ovozli aloqa</string>
+    <string name="peek">Ko‘z o‘ngroq</string>
+    <string name="call_on_domophone">Domofon qo‘ng‘iroqi</string>
+    <string name="call_talk">Muloqot</string>
+    <string name="call_peek_on">Ko‘z o‘ngroqi yoqildi</string>
+
+    <!-- Оплата -->
+    <string name="pay_title_address">Manzilni tanlang</string>
+    <string name="pay_recomended_sum">Tavsiya etilgan - %1$s so‘m</string>
+    <string name="pay_title_dialog">Balansni to‘ldirish</string>
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Google Pay bilan sotib olish</string>
+    <string name="googlepay_status_unavailable" translatable="false">Afsuski, ushbu telefonlarda Google Pay mavjud emas.</string>
+    <string name="googlepay_status_checking" translatable="false">Google Pay mavjudligi tekshirilmoqda...</string>
+    <string name="payments_show_name" translatable="false">%s uchun muvaffaqiyatli to‘lov ma’lumotlari qabul qilindi!</string>
+    <string name="payments_error" translatable="false">Google Play natijasi xatosi</string>
+    <string name="payments_error_1" translatable="false">To‘lov bekor qilindi.</string>
+    <string name="payments_error_2" translatable="false">Summa 0 dan katta bo‘lishi kerak.</string>
+    <string name="payments_error_3" translatable="false">Siz to‘lovni yakunlamadingiz.</string>
+    <string name="pay_web_title">To‘lov</string>
+
+    <!-- Web View -->
+    <string name="web_bottom_back">Orqaga</string>
+
+    <string name="sound">Ovoz</string>
+    <string name="choose_sound">Ovozni tanlash</string>
+    <string name="next">Keyingi</string>
+    <string name="save">Saqlash</string>
+    <string name="chat_no_contract">(Shartnoma raqami mavjud emas)</string>
+    <string name="chat_test_msg">(Bu mobil klientning test xabarlari)</string>
+    <string name="appwidget_text">NAMUNA</string>
+    <string name="add_widget">Vidjetni qo‘shish</string>
+    <string name="error_map_permission">Kerakli ruxsatlarsiz xaritani ishga tushirmasdan</string>
+    <string name="address_choose_camera_title">Kamerani tanlang</string>
+    <string name="cctv_detail_tab_online">Onlayn</string>
+    <string name="cctv_detail_tab_archive">Arxiv</string>
+    <string name="cctv_video_from_date">%s sanadan videolar</string>
+    <string name="cctv_choose_fragment">Bo‘limni tanlash</string>
+    <string name="cctv_download_and_get_link">Yuklab olish va havolani olish</string>
+    <string name="downloading_fragment">Video bo‘limi yuklanmoqda</string>
+    <string name="video_fragment">Video bo‘limi</string>
+    <string name="downloading">Yuklanmoqda</string>
+    <string name="cctv_speed_template">%1$sx</string>
+    <string name="cctv_dialog_video_prepare_title">Video tayyorlanmoqda</string>
+    <string name="cctv_dialog_video_prepare_message">Amal tugaguncha, sizga chatda xabar keladi. Video uzunligiga qarab, yuklash jarayoni bir necha daqiqadan bir necha soatgacha bo‘lishi mumkin.</string>
+    <string name="cctv_dialog_video_prepare_button">Rahmat</string>
+
+    <!-- Меню бургера  -->
+    <string name="burger_title">Menyu</string>
+    <string name="burger_city_cameras_title">Shahar kameralari</string>
+    <string name="burger_address_settings_title">Manzil sozlamalari</string>
+    <string name="burger_common_settings_title">Umumiy sozlamalar</string>
+    <string name="burger_call_support_button">Texnik xizmatga qo‘ng‘iroq</string>
+    <string name="burger_call_support_by_phone">%s ga qo‘ng‘iroq</string>
+
+    <!-- Городские камеры  -->
+    <string name="city_cameras_title">Shahar kameralari</string>
+    <string name="city_camera_events">Voqealar</string>
+    <string name="city_camera_events_count">Voqealar (%d)</string>
+    <string name="city_camera_request_record">Yozuv so‘rash</string>
+    <string name="city_camera_send_request">So‘rovnoma jo‘natish</string>
+    <string name="city_camera_scroll_up">Yuqoriga o‘tish</string>
+    <string name="city_camera_load_more">+ Yana yuklash(%d)</string>
+    <string name="city_camera_youtube_msg">YouTube ilovasini boshlash muvaffaqiyatsiz</string>
+
+    <!-- Выбор провайдера -->
+    <string name="providers_title">Xizmat ta‘minovchi</string>
+    <string name="providers_caption">Iltimos, ro‘yxatdan o‘tkazilgan xizmat ta‘minovchini tanlang yoki qidiruvdan foydalaning.</string>
+    <string name="providers_filter_hint">Xizmat ta‘minovchining nomini kiriting</string>
+    <string name="providers_choose">Keyingisi</string>
+
+    <!-- Авторизация исходящим звонком -->
+    <string name="outgoing_call_caption_1">+%1$s raqamingizning haqiqiyligiga ishonch hosil qilish kerak.</string>
+    <string name="outgoing_call_change_number">Telefon raqamini to‘g‘rilash</string>
+    <string name="outgoing_call_caption_2">Bepul qo‘ng‘iroq qiling</string>
+    <string name="outgoing_call_caption_3">
+        Biz sizning raqamingizning sizningga tegishli bo‘lishini tasdiqlay olamiz,\n
+        uchun
+    </string>
+    <string name="outgoing_call_make_call">Qo‘ng‘iroq qiling</string>
+
+    <string name="request_record_title">Yozuv so‘roq</string>
+    <string name="request_record_date">Yozuv sanasi: %s</string>
+    <string name="request_record_time">Yozuv vaqti: %s</string>
+    <string name="request_record_duration">Davomiyligi:</string>
+
+    <string-array name="request_record_duration_list">
+        <item>5 daqiqa</item>
+        <item>10 daqiqa</item>
+        <item>15 daqiqa</item>
+        <item>20 daqiqa</item>
+        <item>30 daqiqa</item>
+        <item>40 daqiqa</item>
+        <item>50 daqiqa</item>
+        <item>60 daqiqa</item>
+    </string-array>
+
+    <string name="request_record_comments">Izoh:</string>
+    <string name="request_record_description">Siz so‘rovni 1 soatdan ko‘proq davom etadigan videofragmentni so‘ray olasiz. Bizning xizmatimiz 7 kundan ko‘proq video saqlashga imkon beradi, so‘nggi paytda arxivdagi video o‘chiriladi va qaytarilmasdan o‘chadi.\n\nSo‘rovni ishlab chiqish davri 1 ish kuniga qadar bo‘lishi mumkin.</string>
+
+    <string-array name="event_log_types">
+        <item>Все</item>
+        <item>Домофон</item>
+        <item>Ключом</item>
+        <item>По лицу</item>
+        <item>Приложение</item>
+        <item>Ворота по звонку</item>
+        <item>Код квартиры</item>
+    </string-array>
+
+    <string name="event_log_unanswered_call">  Qo‘ng‘iroq o‘tkazildi</string>
+    <string name="event_log_answered_call">  Javob qilingan qo‘ng‘iroq, eshik %s</string>
+    <string name="event_log_detail_friend">Do‘st</string>
+    <string name="event_log_detail_foe">Noto‘g‘ri</string>
+    <string name="event_log_detail_friend_description">
+        "Do‘st" tanlaganingizda biz ushbu hodisadan foydalanuvchini yuzini tanima uchun tasvirlarni qo‘shamiz.\n
+        Barcha tizimda ro‘yxatdan o‘tgan yuzlarini "Sozlashlar" bo‘limida "Xavfsiz kirish yuz orqali" qismida topishingiz mumkin.
+    </string>
+    <string name="event_log_detail_foe_description">
+        "Noto‘g‘ri" tanlaganingizda, tizimimizning algoritmlari yolg‘ondagi aktivlikni tanlab o‘tgan yuzingizni o‘chiradi.\n
+        Barcha tizimda ro‘yxatdan o‘tgan yuzlarini "Sozlashlar" bo‘limida "Xavfsiz kirish yuz orqali" qismida topishingiz mumkin.
+    </string>
+    <string name="event_log_key">Kalit: %s</string>
+    <string name="event_log_phone">Telefon: %s</string>
+    <string name="event_log_code">Kod: %s</string>
+    <string name="settings_by_face_comments">Siz o‘zingizning yuzingizning tasvirlarini yig‘ishga rozilik berasiz.</string>
+    <string name="face_settings_comments">
+        Mehmonlaringizning tasvirlari "Hodislar" bo‘limida saqlanadi.\n
+        Yuzni tanlash va ro‘yxatga olish uchun ko‘rsatilgan bo‘limga o‘tib, ko‘rsatilgan hodisning ma‘lumotlar belgisining yonida bo‘lgan "Plyus" belgisini bosishingiz kerak.
+    </string>
+    <string name="settings_white_rabbit">"Oq urug‘li" rejimi</string>
+
+    <string name="help_white_rabbit">
+        <![CDATA[
+            <h2 style=\"text-align: center\">“Oq urug‘li”</h2>
+            <p>Qo‘ng‘iroq qilganida dardoqning ochilishini va qavat panelelari to‘g‘risidagi kalitki ochishni yo‘qotish funktsiyasi.</p>
+            <p>Ishlashi quyidagicha:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Mehmon kalitkaga yaqinlashadi va kerakli uy raqamini yozadi;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Uy egasi mehmonga javob beradi va ilovada yoki analog qo‘ng‘iroq taxtasida Ochish tugmasini bosing;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Mehmon dardoqning panelesiga yaqinlashadi va uy raqamini yozadi. Dardoq dardoqni qo‘riqcha qilib ochiladi.</p>
+            <p>Kalitka ochilgandan so‘ng ushbu funktsiya amal qilish muddati: <b>5 daqiqa.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_share_access">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Soat davomida Mehmon kirishi</h2>
+            <p>Ushbu funktsiya mehmonlaringizga sizsiz dardoqni ochishga imkoniyat beradi: chaqiruvli panelga sizning uy raqamingizni yozib, kalitka yoki dardoqni to‘g‘risida ochiladi.</p>
+            <p>Amal qilish muddati - <b>bir soat.</b></p>
+        ]]>
+    </string>
+
+    <string name="help_log_details">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Yordam</h2>
+            <p>Oxirgi voqealarga yaqin vaqtdagi videoni ko‘rsatadi. Qolganlari uchun, voqea paydo bo‘lgan vaqtdagi o‘zgartirilgan rasm saqlanadi.</p>
+            <p>Shuningdek, quyidagi ishlatish mumkin:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Chap yoki o‘ngga kaydirish - voqealar ketma-ketligini o‘tkazib yuborish;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Bitta tip - video boshlash/to‘xtatish;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Ekranning chap/yo‘q tarafida ikki marta tip - 10 soniya oldinga/oldingi video orqali o‘tish;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp; Uzoq tip - voqea rasmini ko‘rsatish.</p>
+        ]]>
+    </string>
+
+    <string name="channel_inbox_title">Xabarlar</string>
+    <string name="channel_calls_title">Kiruvchi qo‘ng‘iroqlar</string>
+    <string name="event_log_pause">To‘xtatish</string>
+    <string name="event_log_playing">Video</string>
+    <string name="event_log_screenshot">Voqea rasmi</string>
+    <string name="event_log_flat">%s kvartira</string>
+    <string name="event_log_all_flats">Barcha kvartiralar</string>
+    <string name="event_log_opened">ochirdi</string>
+    <string name="event_log_not_opened">ochirmadi</string>
+
+    <string name="event_door_phone_call_unanswered">Domofon qo‘ng‘iroqi</string>
+    <string name="event_door_phone_call_answered">Domofon qo‘ng‘iroqi</string>
+    <string name="event_open_by_key">Kalit orqali ochish</string>
+    <string name="event_open_from_app">Ilovadan ochish</string>
+    <string name="event_open_by_face">Yuz bilan ochish</string>
+    <string name="event_open_by_code">Kod bilan ochish</string>
+    <string name="event_open_gates_by_call">Qo‘ng‘iroq orqali eynak ochish</string>
+    <string name="event_unknown">Noma‘lum voqea</string>
+
+    <!-- xml layouts -->
+    <string name="turn_on_guest_access">Soatlik mehmon kirishini yoqish?</string>
+    <string name="open_barrier_info">Ko‘rsatilgan telefon raqamiga SMS jo‘natamiz, shu raqam orqali avtomatik ravishda shlagbaumni ochish mumkin. Shlagbaum 6 soat ichida foydalanish uchun mavjud bo‘ladi, so‘ng avtomatik ravishda standart ish rejimiga qaytadi.</string>
+    <string name="share_access">Ulashish</string>
+    <string name="service_name_sample">Aqlli domofon</string>
+    <string name="address_setup">Manzil sozlamalari</string>
+    <string name="address_sample">Tambov sh., Sovetskaya ko‘chasi, 16, kv.4</string>
+    <string name="domophone_notif_title">Domofon</string>
+    <string name="get_paper_bill">Qog‘ozli kvitanitsa olish</string>
+    <string name="switch_intercom">Trubkani yoqish (interkom)</string>
+    <string name="switch_voip">Qo‘ng‘iroqlarni qabul qilish</string>
+    <string name="switch_use_event_log">Voqealar jurnalini olib bormoq</string>
+    <string name="switch_owner_event_log">Boshqa foydalanuvchilardan voqealar jurnalini yashirish</string>
+    <string name="switch_use_frs">Yuzlarni aniqlash</string>
+    <string name="switch_use_speaker">Ovozli aloqa</string>
+    <string name="delete_address">Manzilni o‘chirish</string>
+    <string name="text_next">Keyingi</string>
+    <string name="available_services">Mavjud xizmatlar</string>
+    <string name="service_address_sample">Tambov sh., Astraxanskaya ko‘chasi, 24, kv.60</string>
+    <string name="address_access_contact_sample">Sasha (ijarachi)</string>
+    <string name="text_sms">SMS</string>
+    <string name="text_empty_list">Ro‘yxat bo‘sh</string>
+    <string name="reg_sms_code_resend">Kodni qayta yuborish</string>
+
+    <string name="payment_done">Tayyor!</string>
+    <string name="payment_being_processed">Kuting, to‘lov ishlab chiqilmoqda</string>
+    <string name="appeal_title_first_name">Ism*</string>
+    <string name="dialog_add_contact">+ Kontakt qo‘shish</string>
+    <string name="dialog_close">Yopish</string>
+    <string name="event_sample">01.03.2021, 17:06</string>
+    <string name="event_log_type_sample">Illovadan ochish</string>
+    <string name="item_title_sample">Internet va TV</string>
+    <string name="item_description_sample">250 dan ortiq kanallar</string>
+    <string name="cctv_map_address_sample">Tambov sh., Sovetskaya ko‘chasi, 16</string>
+    <string name="provider_sample">Xizmat ta‘minovchi</string>
+    <string name="face_registration">Yuzni ro‘yxatga olish</string>
+    <string name="registered_faces">Ro‘yxatdan o‘tgan yuzlar</string>
+    <string name="event_name">Tadbir nomi</string>
+    <string name="text_address">Manzil</string>
+    <string name="text_date_time">Sana, vaqt</string>
+    <string name="text_additional">Qo‘shimcha matn</string>
+    <string name="hint_city">Shahar</string>
+    <string name="hint_street">Ko‘cha</string>
+    <string name="hint_house">Uy</string>
+    <string name="hint_flat">Kvartira</string>
+    <string name="specify_reason">Sababni ko‘rsating</string>
+    <string name="dialog_delete_reason_description">Manzilni o‘chirishda sizga manzil xizmatlarini boshqarish imkoniyati berilmaydi</string>
+    <string name="text_delete">O‘chirish</string>
+    <string name="text_dismiss">Bekor qilish</string>
+    <string name="pay_number_sample">#68992</string>
+    <string name="pay_sum">Umumiy summa:</string>
+    <string name="pay_recommended_sample">Tavsiya etilgan - 480 rubl</string>
+    <string name="all_payment_types">Barcha to‘lov usullari</string>
+    <string name="pay_by_card">Bank kartasi orqali to‘lov</string>
+    <string name="text_event_sample">Tadbirlar</string>
+    <string name="text_count_sample">4</string>
+    <string name="events_title">Tadbirlar</string>
+    <string name="title_my_addresses">Mening manzillarim</string>
+    <string name="dow_mon">dush</string>
+    <string name="dow_tue">sesh</string>
+    <string name="dow_wed">chor</string>
+    <string name="sow_tue">pay</string>
+    <string name="dow_fri">jum</string>
+    <string name="dow_sat">shan</string>
+    <string name="dow_sun">yak</string>
+
+    <string name="event_day_sample">Dushanba, 19-aprel</string>
+    <string name="payment_error">Xatolik!</string>
+    <string name="payment_error_description">Xato yuz berdi.</string>
+    <string name="auth_password">Parol</string>
+    <string name="pay_contract">Shartnoma:</string>
+    <string name="contract_sample">68992</string>
+    <string name="contract_balance">Balans</string>
+    <string name="balance_sample">120 ₽</string>
+    <string name="balance_recommendations">Tavsiya etilgan qo‘shish:</string>
+    <string name="ballance_recom_sample">480 ₽</string>
+    <string name="contract_action_pay">To‘lash</string>
+    <string name="full_lc_version">Shaxsiy kabinetning to‘liq versiyasi</string>
+    <string name="title_support">Texnik qo‘llab-quvvat</string>
+    <string name="call_support">Qo‘ng‘iroq qilish</string>
+    <string name="order_callback">Qaytarib qo‘ng‘iroq buyurtirish</string>
+    <string name="title_cctv">Videokameralar</string>
+    <string name="cctv_count_sample">4</string>
+    <string name="title_city_camera_sample">Kamera 1</string>
+    <string name="text_scroll_up">Yuqoriga o‘tish</string>
+    <string name="title_common_settings">Umumiy sozlamalar</string>
+    <string name="user_name_sample">Alekseyev V.B.</string>
+    <string name="title_notifications">Bildirishnomalar</string>
+    <string name="receive_notifications">Bildirishnomalarni olish</string>
+    <string name="lack_funds_notifications">Mablag‘ yetarlichasini ogohlantirish</string>
+    <string name="balance_notify_near_zero">Balansni yaqinlashishi haqidagi ogohlantirish</string>
+    <string name="title_security">Xavfsizlik</string>
+    <string name="fingerprint_entrance">Qo‘llab-quvvat kiritish Fingerprint orqali</string>
+    <string name="fingerprint_entrance_description">Ilova uchun qo‘llab-quvvatni ishlatishda barmoq izini foydalanish</string>
+    <string name="pin_code_entrance">PIN-kod orqali kiritish</string>
+    <string name="pin_code_entrance_description">Ilova uchun kiritish PIN-kodi bilan</string>
+    <string name="text_logout">Chiqish</string>
+    <string name="object_name_sample">Shlagmaum Shimoliy</string>
+    <string name="contract_number_sample">Shartnoma raqami: 68992</string>
+    <string name="text_address_settings">Manzil sozlamalari</string>
+    <string name="text_provide_access">Kirishni boshqarish</string>
+    <string name="text_open_lc">Shaxsiy kabinetning veb-versiyasini ochish</string>
+    <string name="item_sample">Shlagmaum Shimoliy</string>
+    <string name="title_access_address">Manzilga kirish</string>
+    <string name="temporary_intercom_access">Vaqti bilan qisqa vaqtli kirish</string>
+    <string name="code_to_open">Ochish kodi</string>
+    <string name="entrance_by_face">Yuz bilan kalit ishsiz kirish</string>
+    <string name="manage_faces"> Sozlash </string>
+    <string name="temporary_barrier_access">Vaqti bilan qisqa vaqtli shlagmaum/garajga kirish</string>
+    <string name="barrier_add_contact">Kontakt qo‘shish</string>
+    <string name="permanent_access_address">Manzilga doimiy kirish</string>
+    <string name="permanent_add_contact">Kontakt qo‘shish</string>
+    <string name="title_delete_face">Bu yuzni o‘chirmoqchimisiz?</string>
+    <string name="delete_face">O‘chirish</string>
+    <string name="dialog_face_cancel">Bekor qilish</string>
+    <string name="title_add_face">Bu yuzni qo‘shmoqchimisiz?</string>
+    <string name="add_face">Qo‘shish</string>
+</resources>

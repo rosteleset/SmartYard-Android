@@ -1,0 +1,497 @@
+<resources>
+
+    <!-- Main -->
+    <string name="app_name">Տելետոմ</string>
+    <string name="app_title">Տարբերակը հարթավորված է</string>
+    <string name="app_message">Թարմացնել ծրագիրը։</string>
+    <string name="default_notification_channel_id">channel_inbox</string>
+    <string name="widget_title">Ծանր դարակ</string>
+
+    <!-- Настройки -->
+    <string name="setting_dialog_exit_caption">Դուրս գալ ծրագրից</string>
+    <string name="setting_dialog_exit_caption_msg">Կարող եք հեռանալ ձեր հաշիվը։</string>
+    <string name="setting_dialog_exit_yes">Այո</string>
+    <string name="setting_dialog_exit_no">Ոչ</string>
+    <string name="setting_dialog_delete_title">Դուք վստահ եք։</string>
+    <string name="setting_dialog_delete_yes">Այո</string>
+    <string name="setting_dialog_delete_no">Չեղարկել</string>
+
+    <!-- onboarding -->
+    <string name="onboarding_skip">Բացատրել</string>
+    <string name="onboarding_next">Հաջորդ</string>
+    <string name="onboarding_complete">Կլաս, սկսենք!</string>
+    <string name="onboarding_cam_title">Տեսականաքում</string>
+    <string name="onboarding_cam_subtitle">Դիտեք բոլոր ինչպես նորությունները ձեր տանը շրջանում</string>
+    <string name="onboarding_donation_title">Բոլորը կարգավորված է</string>
+    <string name="onboarding_donation_subtitle">Կարգավորեք ծառայությունները ու վճարեք դրանք ծրագրով</string>
+    <string name="onboarding_intercom_title">Մասնակից դառնալ</string>
+    <string name="onboarding_intercom_subtitle">Կարգավերեք դառնալը, բաժանեքը կամ գտնեք այն էլ։</string>
+
+    <!-- Заявки -->
+    <string name="issue_dialog_caption_0">Դիմումը ստեղծված է։</string>
+
+    <!-- Регистрация номер телефона-->
+    <string name="reg_tel_caption">Մուտքագրեք հեռախոսահամարը\nգրանցման համար</string>
+    <string name="reg_back_to_providers">Վերադառնալ մատակարարների ընտրությանը</string>
+
+    <!-- Регистрация код из смс-->
+    <string name="reg_sms_code_tel">Մուտքագրեք կոդը SMS-ով, որը ուղարկվել է +%1$s համար</string>
+    <string name="reg_flash_call_code_tel">
+        Մեզ պետք է հաստատել,\nոր +%1$s համարը ձեզ է։\n
+        Դուք պետք է մերժեք մուտքագրեք այնի վերջի 4 թիվերը
+    </string>
+    <string name="reg_sms_correct_tel">Խմբագրել հեռախոսահամարը</string>
+    <string name="reg_sms_send_code_repeat">կոդը կկրկնարկվի %1$s</string>
+    <string name="reg_sms_error_code">Սխալ կոդ։ Փորձեք կրկին</string>
+    <string name="send_sms_error_code">Ոչ հաջողված է ուղարկել։ Խնդրում ենք սպասել։</string>
+
+    <!-- Восстановление доступа -->
+    <string name="restore_access_title">Վերականգնել մուտքը</string>
+    <string name="restore_access_caption">Խնդրում ենք մուտքագրել ձեր պայմանագրի համարը և նշել էլ. փոստի կամ հեռախոսահամարը, որոնք դուք օգտագործել եք ձեր պայմանագրի գրանցման ժամանակ</string>
+    <string name="restore_access_edit_hint">Պայմանագրի համարը</string>
+    <string name="restore_access_edit_btn_get_recovery">Ստանալ վերականգնման հասանելի մեթոդները</string>
+    <string name="restore_access_edit_btn_get_code">Ստանալ հաստատման կոդ</string>
+    <string name="restore_access_input_code_phone">Հաստատման կոդը ուղարկվել է\n +%1$s հեռախոսահամարին</string>
+    <string name="restore_access_input_code_email">Հաստատման կոդը ուղարկվել է\n %1$s էլ. փոստին</string>
+
+    <string name="restore_access_btn_text_confirm">Հաստատել</string>
+    <string name="restore_access_btn_resent_text">Կրկնել կոդը ուղարկել</string>
+    <string name="restore_access_dialog_ok_title">Գաղտնաբառը հաշիվը ուղարկված է։</string>
+    <string name="restore_access_dialog_ok_yes">Առանց դիմելու էջից մտնել</string>
+
+    <!-- Bottom Menu -->
+    <string name="title_address">Հասցեներ</string>
+    <string name="title_notification">Ծանուցումներ</string>
+    <string name="title_chat">Զրուցարան</string>
+    <string name="title_pay">Վճարել</string>
+    <string name="title_burger">Գազալ</string>
+
+    <!-- Мои адреса-->
+    <string name="dialog_title">Միացնել Հյուրանոցային մուտքը ժամանակահատվածում?</string>
+    <string name="dialog_message">Բոլորի համար, ովքեր կլինեն մուտքագրել Ձեր բնակարանի համարը բնակարանի կայացման ժամանակ, դառնալը կսկսի ավտոմատ մինչև 60 րոպե։ Այս ժամանակի ավարտից հետո դոմոֆոնը կվերադառնա ստանդարտ ռեժիմին։</string>
+    <string name="dialog_yes">ՄԱՑԱՆԱԿԵԼ</string>
+    <string name="dialog_no">ՉԻՆԳԻՆԵՐ</string>
+    <string name="dialog_sms">Հյուրի համար տեղեկացումը հաջողությամբ ուղարկված է։</string>
+    <string name="addresses_video_cameras">Տեսախցիկներ</string>
+    <string name="addresses_events">Իրավունքներ</string>
+    <string name="dialog_title2">Անջատել Հյուրանոցային մուտքը?</string>
+    <string name="dialog_message2" />
+    <string name="dialog_turn_off">ԱՆՋԱՏԵԼ</string>
+    <string name="guest_access_open">Բացել</string>
+    <string name="guest_access_opened">Բացված է</string>
+
+    <!-- Qr code -->
+    <string name="qr_code_dialog_title">Հասցեն ավելացվեց։</string>
+    <string name="qr_code_dialog_ok">Լավ</string>
+    <string name="qr_code_title">Սլանեք տեսախցիկը QR-կոդի վրա</string>
+    <string name="qr_code_error_permission_title">Ներողության կոդերի աշխատանքի համար անհրաժեշտ է կամեցված թույլտվությունը օգտագործելու համար։</string>
+
+    <!-- Авторизация по номеру договора -->
+    <string name="auth_where_is_contract_title">Արդեն ունեք պայմանագիր օպերատորին։</string>
+    <string name="auth_where_is_contract_caption">Մուտքագրեք այս հասցեին կցված պայմանագրի համարը և գալուցէք վարումները այս ծրագրով։</string>
+    <string name="auth_numer_pass0">Չյուսականացնել գաղտնաբառը</string>
+    <string name="auth_number_pass1">Ոչինչ չեմ հիշիս</string>
+    <string name="auth_number_btn_ok">Մուտք</string>
+    <string name="auth_number_btn_no">ՈՒ ես ունեմ օպերատորի հետ պայմանագիր չէ</string>
+    <string name="auth_dialog_title">Ստեղծել դիմում պայմանագրի տվյալների վերականգման համար։</string>
+    <string name="auth_dialog_yes">Ստեղծել</string>
+    <string name="auth_dialog_no">Չեղարկել</string>
+    <string name="auth_contract_hint">Պայմանագրի համարը</string>
+
+    <!-- Ввод адреса -->
+    <string name="input_address_title">Մուտքագրեք հասցեն</string>
+    <string name="input_address_ok">Ստուգել հասատատեղ ծառայությունները</string>
+    <string name="input_address_text_qr">Կոդով QR-կոդ ունեցում եմ</string>
+
+    <!-- Потверждение адреса -->
+    <string name="address_verification_title">Հասցեի հաստատում</string>
+    <string name="address_verification_descriptions">Ինչպես կլայնացնելու է ձեզ այնպիսի հասցեներին?</string>
+    <string name="address_verification_courier_block1_title">Առաքիչին նամակ գրեք</string>
+    <string name="address_verification_courier_block1_description">Ուղղակի տառատեսակով մեր առաքիչը կարող է ձեզ արձագանք արարած փոստով ներկայացնել գաղտնի պուտակը</string>
+    <string name="address_verification_courier_block2_title">Ընդացիք QR-կոդը</string>
+    <string name="address_verification_courier_block2_description">Իր մեջ այն կլինի թղթածրած պուտակում</string>
+    <string name="address_verification_courier_block3_title">Մատչել!</string>
+    <string name="address_verification_courier_block3_description">Դուք անմիջապես կունենաք մուտք հասցեային զարգացման բոլոր գործիքներին «Մեծ դոմոֆոն» ծրագրում</string>
+    <string name="address_verification_courier_btn_done">Հաճախ! Առաքել նամակը</string>
+    <string name="address_verification_office_description">Այցելեք մուտք գործելու համար ձեր վարպետական գրասենյակին հասցեային հաշվի համարը հետևյալ էջերի փաստաթղթով և մենք անմիջապես կակտիվացնենք մուտքագրման բոլոր գործիքները՝ «Մեծ դոմոֆոն» եւ տեսախցիկների համար</string>
+    <string name="address_verification_office_btn_done">Վաստակելու եմ</string>
+    <string name="address_verification_tab_title_1">Առաքիչի միջոցով</string>
+    <string name="address_verification_tab_title_2">Աշխատանք գրասենյակում</string>
+
+    <!-- Диалоговые окны. Настройки. -->
+    <string name="setting_dialog_service_connected_title">կապված է</string>
+    <string name="setting_dialog_service_connected_caption">Եթե ցանկանում եք փոխել տարեցիկ տարիֆը, թողեք հայտարարություն</string>
+    <string name="setting_dialog_service_connected_button">Փոխել տարիֆը</string>
+    <string name="setting_dialog_service_connected_chat">Բարև, ես ցանկանում եմ փոխել "%s" ծառայությունի տարիֆը "%s" պայմանագրում</string>
+    <string name="setting_dialog_service_not_connected_title">չի կապված</string>
+    <string name="setting_dialog_service_not_connected_caption">Եթե ցանկանում եք ակտիվացնել ծառայությունը, թողեք հայտարարություն</string>
+    <string name="setting_dialog_service_not_connected_button">Թողնել հայտարարություն</string>
+    <string name="setting_dialog_service_not_connected_chat">Բարև, ես ցանկանում եմ կապել "%s" ծառայությանը "%s" պայմանագրում</string>
+    <string name="setting_dialog_service_unavailable_title">այժմ հասանելի չէ</string>
+    <string name="setting_dialog_service_unavailable_caption">Այս պահին ծառայությունը հասանելի չէ ձեր հասցեում։ Դրա կապը ակտիվացնելու համար պետք է մեկ քանական հայտեր հայտնաբերեք ձեր տանը։ Թողեք առաքելը առաջինը։</string>
+    <string name="setting_dialog_service_unavailable_button">Թողնել հայտարարություն</string>
+    <string name="setting_dialog_service_unavailable_chat">Բարև, "%s" ծառայությունը այս պահին հասանելի չէ իմ հասցեում, բայց ես ցանկանում եմ օգտագործել այն "%s" պայմանագրում</string>
+    <string name="setting_dialog_service_domophone_connected_title">կապված է</string>
+    <string name="setting_dialog_service_domophone_connected_caption">Եթե ցանկանում եք ստանալ մուտք, թողեք նամակ</string>
+    <string name="setting_dialog_service_domophone_connected_button">Ստանալ մուտք</string>
+    <string name="setting_dialog_service_domophone_connected_chat">Բարև, իմ հասցեում դոմոֆոնը կապված է, ես պետք եմ ստանալ մուտք</string>
+    <string name="setting_dialog_service_cctv_connected_title">կապված է</string>
+    <string name="setting_dialog_service_cctv_connected_caption">Եթե ցանկանում եք ստանալ մուտք, թողեք նամակ</string>
+    <string name="setting_dialog_service_cctv_connected_button">Ստանալ մուտք</string>
+    <string name="setting_dialog_service_cctv_connected_chat">Բարև, իմ հասցեում տեսախցիկը կապված է, ես պետք եմ ստանալ մուտք</string>
+
+    <!-- Диалог предоставление доступа -->
+    <string name="dialog_share_access_title">Կիսել մուտքով</string>
+    <string name="dialog_share_access_caption">Մուտքով տրամադրեք այն անձի հեռախոսահամարը, որը ցանկանում եք տալ մուտք</string>
+    <string name="dialog_share_access_btn_ok">Կիսել</string>
+
+    <!-- Нет сети по адресу. -->
+    <string name="address_no_network_title">Ոչինչ :(</string>
+    <string name="address_no_network_caption">Ձեր հասցեն հարցման է առնում: Սպասեք մասնակցի զանգին։\n\nԻնչպես որ ծառայություն կցանք՝ նշեք, թե ինչպես ցանկանաք կատարել մի մուտք:</string>
+    <string name="address_no_network_btn_ok">Կատարել հայտը</string>
+
+    <!-- Скоро все заработает офис. -->
+    <string name="address_work_soon_office_title">Ամենամոռացումը, բարեհաջող կլինի!</string>
+    <string name="address_work_soon_office_caption">Սպասեք քուրիերին "%s" հասցեում և ստացեք նրանց հետ գալով QR-կոդը:</string>
+    <string name="address_work_soon_office_btn_0">Ստացել QR-կոդը</string>
+    <string name="address_work_soon_office_btn_1">Գալ աշխատել գրասենյակ</string>
+    <string name="address_work_soon_office_btn_2">Չեղարկել հայտը</string>
+    <string name="address_work_soon_office_btn_3">Շարունակել</string>
+    <string name="address_work_soon_office_btn_4">Հետ</string>
+
+    <!-- Скоро все заработает курьер. -->
+    <string name="address_work_soon_courier_title">Ամենամոռացումը, բարեհաջող կլինի!</string>
+    <string name="address_work_soon_courier_caption">Դուք պետք է համաձայնեք ձեր հասցեն կայքագործողի մոտ տեղադրելու համար անցնել մատակարարչի կատարյալ գրասենյակ:</string>
+    <string name="address_work_soon_courier_btn_0">Դիմել քուրիեր</string>
+
+    <!-- Как к вам обращаться? -->
+    <string name="appeal_validation_error">Անունը չի կարող լրացնել դատարկ լինի</string>
+    <string name="appeal_title">Ինչպես\nկարելի է Ձեզ\nկանչել?</string>
+    <string name="appeal_title_patronymic">Հայրանուն</string>
+
+    <!-- Temp -->
+    <string name="terminate">Անջատել</string>
+    <string name="enter_sip_address">Մուտքագրեք զանգերի համարը</string>
+    <string name="sip_address">Հեռախոսահամար</string>
+    <string name="doCall">Զանգել</string>
+    <string name="tls">TLS</string>
+    <string name="tcp">TCP</string>
+    <string name="udp">UDP</string>
+    <string name="domain">Դոմեն</string>
+    <string name="password">Գաղտնաբառ</string>
+    <string name="username">Օգտանուն</string>
+    <string name="connect">Կապը</string>
+    <string name="disconnect">Անջատել</string>
+    <string name="connected_to">%s-ին կապված է</string>
+    <string name="connecting">Կապը հաստատվում է…</string>
+    <string name="error">Սխալ</string>
+    <string name="connected">Միացված է</string>
+    <string name="call">Զանգերի</string>
+    <string name="from">%s-ից</string>
+    <string name="call_from">Զանգերի մասին %s-ից</string>
+    <string name="cancel">Չեղարկել</string>
+
+    <!-- IncomingCallActivity -->
+    <string name="reject">Կավարտել</string>
+    <string name="ignore">Անտեսել</string>
+    <string name="opened">Բաց</string>
+    <string name="open">Բացել</string>
+    <string name="answer">Պատասխանել</string>
+    <string name="speak">Խոսք</string>
+    <string name="peek">Աչք</string>
+    <string name="call_on_domophone">Զանգեր դոմոֆոնում</string>
+    <string name="call_talk">Խոսարկություն</string>
+    <string name="call_peek_on">Աչքը միացված է</string>
+
+    <!-- Оплата -->
+    <string name="pay_title_address">Ընտրեք հասցեն</string>
+    <string name="pay_recomended_sum">Առաջարկվող - %1$s ռուբլի</string>
+    <string name="pay_title_dialog">Բալանսի ավելացում</string>
+    <string name="googlepay_button_content_description">Google Pay</string>
+    <string name="buy_with_googlepay_button_content_description">Գնել Google Pay-ով</string>
+    <string name="googlepay_status_unavailable" translatable="false">Այս հեռախոսի Google Pay-ը անհասանելի է:</string>
+    <string name="googlepay_status_checking" translatable="false">Ստուգվում է Google Pay-ի առկայությունը...</string>
+    <string name="payments_show_name" translatable="false">%s-ի վրա հաջողությամբ ստացվել է վճարման տվյալները!</string>
+    <string name="payments_error" translatable="false">Google Play-ի արդյունքները</string>
+    <string name="payments_error_1" translatable="false">Վճարումը չեղարկվեց։</string>
+    <string name="payments_error_2" translatable="false">Գումարը պետք է լինի 0-ից մեծ:</string>
+    <string name="payments_error_3" translatable="false">Դուք չեք ավարտել վճարումը։</string>
+    <string name="pay_web_title">Վճարում</string>
+
+    <!-- Web View -->
+    <string name="web_bottom_back">Հետ</string>
+    <string name="sound">Ձայն</string>
+    <string name="choose_sound">Ընտրել ձայնը</string>
+    <string name="next">Հաջորդ</string>
+    <string name="save">Պահպանել</string>
+    <string name="chat_no_contract">(Դուք չունեք դատարկ պայմանագրի համար)</string>
+    <string name="chat_test_msg">(Այս աղյուսակի թեստային նամակները մոբայլ հաճախորդից են)</string>
+    <string name="appwidget_text">Օգտագործում</string>
+    <string name="add_widget">Ավելացնել ցուցադրիչ</string>
+    <string name="error_map_permission">Քարտեզի աշխատանքը հնարավոր չէ աշխատել առանց անհրաժեշտ լիցքավորումների</string>
+    <string name="address_choose_camera_title">Ընտրեք տեսախցիկը</string>
+    <string name="cctv_detail_tab_online">Ուղղարկված է</string>
+    <string name="cctv_detail_tab_archive">Պահոց</string>
+    <string name="cctv_video_from_date">Տեսախցիկները %s-ից</string>
+    <string name="cctv_choose_fragment">Ընտրել մասը</string>
+    <string name="cctv_download_and_get_link">Ներբեռնել և ստանալ հղում</string>
+    <string name="downloading_fragment">Մասը ներբեռնում</string>
+    <string name="video_fragment">Տեսախցիկային մաս</string>
+    <string name="downloading">Ներբեռնում</string>
+    <string name="cctv_speed_template">%1$sx</string>
+    <string name="cctv_dialog_video_prepare_title">Տեսախցիկի պատրաստում</string>
+    <string name="cctv_dialog_video_prepare_message">Երբ պրոցեսը ավարտի, դուք կստանաք նամակ շատ ժամանակից մինչև մի քանի ժամանակ։</string>
+    <string name="cctv_dialog_video_prepare_button">Շնորհակալություն</string>
+
+    <!-- Меню бургера  -->
+    <string name="burger_title">Մենյու</string>
+    <string name="burger_city_cameras_title">Քաղաքացիական տեսախցիկներ</string>
+    <string name="burger_address_settings_title">Հասցեների կարգավորում</string>
+    <string name="burger_common_settings_title">Ընդհանուր կարգավորում</string>
+    <string name="burger_call_support_button">Զանգահարել տեխնիկական աջակցությանը</string>
+    <string name="burger_call_support_by_phone">%s-ին զանգահարել</string>
+
+    <!-- Городские камеры  -->
+    <string name="city_cameras_title">Քաղաքացիական տեսախցիկներ</string>
+    <string name="city_camera_events">Միջազգային իրավունքի պատճառներ</string>
+    <string name="city_camera_events_count">Միջազգային իրավունքի պատճառներ (%d)</string>
+    <string name="city_camera_request_record">Հրաժարվել գրանցումը</string>
+    <string name="city_camera_send_request">Ուղարկել հարցումը</string>
+    <string name="city_camera_scroll_up">Վերև</string>
+    <string name="city_camera_load_more">+ Բեռնել ավելին(%d)</string>
+    <string name="city_camera_youtube_msg">YouTube հավելվածը սկսելու չհաջողվեց</string>
+
+    <!-- Выбор провайдера -->
+    <string name="providers_title">Ծառայությունների մատակարար</string>
+    <string name="providers_caption">Ընտրեք ձեր ծառայության մատակարարը ցանկից կամ օգտագործեք փնտրումը:</string>
+    <string name="providers_filter_hint">Մուտքագրեք մատակարարի անվանումը</string>
+    <string name="providers_choose">Հաջորդ</string>
+
+    <!-- Авторизация исходящим звонком -->
+    <string name="outgoing_call_caption_1">Մենք պարտադիր ենք հաստատել,\nոր +%1$s համարը իրականացված է ձեր հաշվին</string>
+    <string name="outgoing_call_change_number">Ուղղել հեռախոսահամարը</string>
+    <string name="outgoing_call_caption_2">Կատարեք անվճար զանգ +%1$s համարին</string>
+    <string name="outgoing_call_caption_3">
+        Որպեսզի հաստատենք,\n
+        որ այն ձեր համար է
+    </string>
+    <string name="outgoing_call_make_call">Զանգ անել</string>
+
+    <string name="request_record_title">Հրավիրել ձեր գրանցմանը</string>
+    <string name="request_record_date">Ամսաթիվը: %s</string>
+    <string name="request_record_time">Ժամանակը: %s</string>
+    <string name="request_record_duration">Տևողությունը:</string>
+
+    <string-array name="request_record_duration_list">
+        <item>5 րոպե</item>
+        <item>10 րոպե</item>
+        <item>15 րոպե</item>
+        <item>20 րոպե</item>
+        <item>30 րոպե</item>
+        <item>40 րոպե</item>
+        <item>50 րոպե</item>
+        <item>60 րոպե</item>
+    </string-array>
+
+    <string name="request_record_comments">Կոմենտար:</string>
+    <string name="request_record_description">Դուք կարող եք հրավիրել միայն 1 ժամանակի տևողությունով կտեսնելու ֆրագմենտը։ Մեր ծառայությունը թույլ է տալիս պահել վիդեոնային շարքերը մինչև 7 օր, այնպես չէ՝ վիդեոնային տվյալները արտահայտվում են արդեն հեռացված։\n\nՀրամանի մշակումը կարող է ընթացնել մինչև 1 աշխատանքային օր։</string>
+
+    <string-array name="event_log_types">
+        <item>Բոլորը</item>
+        <item>Դոմոֆոն</item>
+        <item>Բանալինի միջոցով</item>
+        <item>Հեղինակի դեմ</item>
+        <item>Հավելված</item>
+        <item>Պատվերի զանգումով</item>
+        <item>Բնակարանի կոդով</item>
+    </string-array>
+
+    <string name="event_log_unanswered_call">Անպատասխան զանգ</string>
+    <string name="event_log_answered_call">Պատասխանված զանգ, դուրս %s</string>
+    <string name="event_log_detail_friend">Իմ</string>
+    <string name="event_log_detail_foe">Ուրիշ</string>
+    <string name="event_log_detail_friend_description">
+        Ընտրելով "Իմ", մենք կարողանանք ավելացնել այս իրավունքը դառնալով նախատեսված դիմացից ներկայացված նկարը ցանկացած անգամների համար։\n
+        Ինչ-որ տարբերակի մարդկանց ենթակա ներկայացուցիչ նախատեսված լցված "դիմացից ներկայացված նկարներ" բաժնում կարող եք գտնել։
+    </string>
+    <string name="event_log_detail_foe_description">
+        Ընտրելով "Ուրիշ", մենք կհեռացնենք ձեր գրանցված դիմացից ներկայացված դիմացից նկարը, եթե մեր ալգորիթմները անհաստատվել են։\n
+        Ինչ-որ տարբերակի մարդկանց ենթակա ներկայացուցիչ նախատեսված լցված "դիմացից ներկայացված նկարներ" բաժնում կարող եք գտնել։
+    </string>
+    <string name="event_log_key">Ստեղծագործած բանալին: %s</string>
+    <string name="event_log_phone">Հեռախոս: %s</string>
+    <string name="event_log_code">Կոդ: %s</string>
+    <string name="settings_by_face_comments">Դուք համաձայն եք ձեր դիմացից ներկայացված ձեր նկարները պահելու համար։</string>
+    <string name="face_settings_comments">
+        Ձեր հյութի նկարները պահելու համար, ձեր հյութի գործարկիչները պահանջում են "Անցնել բաժին" բաժնում։\n
+        Նախատեսված ներկայացուցիչները կարող եք գտնել "Իմ հայցեր" բաժնում։ Նկարի ընտրման արագությունը հյութի գործարկիչների "Ստեղնաշարի վրա ներկայացված մուտքեր" բաժնում է։
+    </string>
+    <string name="settings_white_rabbit">"Սպիտակ հաղորդագրություն" ռեժիմ</string>
+
+    <string name="help_white_rabbit">
+        <![CDATA[
+            <h2 style=\"text-align: center\">«Սպիտակ շնչառակ»</h2>
+            <p>Գործում է տանը բացելու կալիտկան նախաձեռնության ժամանակ լսումից առաջ՝ և բացելու մոտակա բլոկների պանելի՝ բլոկի համարը նախաձեռնելով լսման կամայականը:</p>
+            <p>Գործում է հետեւյալ ձևով:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;հյուրը մուտք է գործում կալիտկային պանելի մուտքային նումբերով:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;բնականը պատասխանում է հյուրին և սեղմում է «Բացել» կոճակը հավաքածուի կամ նմանատիպ զանգահարի վրա:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;հյուրը մուտք է գործում տնտեսական կալիտկային պանելին և նումբերում է բնակավայրերի համարը: Տնտեսումը բացվում է լսումից առաջ։</p>
+            <p>Գործումի ժամանակը կալիտկայի բացելուց հետո՝ <b>5 րոպե:</b></p>
+        ]]>
+    </string>
+
+    <string name="help_share_access">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Այցելու հասանելիությունը ժամանակագրական միացում</h2>
+            <p>Այս ֆունկցիան թույլ է տալիս ձեր հյուրերին բացել տնտեսական կալիտկան պանելին ձեր կիսագրով՝ ձեր մասին չիմանալու հարցում: Արձագանքը կլսվի դրանով, որպեսզի բացելուց հետո կալիտկան կամ բլոկի մուտքը բացվի:</p>
+            <p>Գործումի ժամանակը - <b>մեկ ժամ առաջին միացման պահից:</b></p>
+        ]]>
+    </string>
+
+    <string name="help_log_details">
+        <![CDATA[
+            <h2 style=\"text-align: center\">Հատկանիշ</h2>
+            <p>Վերջին իրավունքների համար ցուցադրվում է տեսանյութ ներկայացված ժամանակի համար: Այլ - պահված անիմացված կատերն է ակտիվացված:</p>
+            <p>Այնուհետև, կարող եք օգտագործել ժամանակագրով հարկավորությունները:</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;ձախ կամ աջ վերևում շայլակեք - հատկացված իրավունքների համար էջերը;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;մեկ հատարակած սեղմում - վիդեոնախառնման սկիզբ/դադարին՝ ռեստարտ/դադարին;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;երկար սեղմում ձախ/աջ էկրանի մասում - վիդեոնախառնում հետեւյալը/առաջը հետեւյալ 10 վարկյաններով;</p>
+            <p><span style=\"color: #007AFF\">&#8226;</span>&nbsp;&nbsp;երկար սեղմում - իրավաբանական անիմացիայի ցուցադրում:</p>
+        ]]>
+    </string>
+
+    <string name="channel_inbox_title">Տեղեկանային նամակներ</string>
+    <string name="channel_calls_title">Մուտքագրված զանգեր</string>
+    <string name="event_log_pause">Դադարեցուցադրում</string>
+    <string name="event_log_playing">Տեսանյութ</string>
+    <string name="event_log_screenshot">Իրավունքի էկրան</string>
+    <string name="event_log_flat">Բնակարան %s</string>
+    <string name="event_log_all_flats">Բոլոր բնակարանները</string>
+    <string name="event_log_opened">բացվեց</string>
+    <string name="event_log_not_opened">չի բացվել</string>
+
+    <string name="event_door_phone_call_unanswered">Տանը կալում դուրսավորված չէ</string>
+    <string name="event_door_phone_call_answered">Տանը կալում դուրսավորված է</string>
+    <string name="event_open_by_key">Ստատիկով բացվեց</string>
+    <string name="event_open_from_app">Բացվեց ծրագրից</string>
+    <string name="event_open_by_face">Օգտագործելով դեմքից բացվեց</string>
+    <string name="event_open_by_code">Կոդից բացվեց</string>
+    <string name="event_open_gates_by_call">Պատասխանելով զանգով բացեց դառնումները</string>
+    <string name="event_unknown">Անհայտ իրավունք</string>
+
+    <!-- xml layouts -->
+    <string name="turn_on_guest_access">Արտագծել հյուրանոցային մուտքը մեկ ժամվա համարով?</string>
+    <string name="open_barrier_info">Նշված հեռախոսահամարին մենք կուղարկենք SMS-ը, որով կարող եք զանգամենել շլագբումի ավտոմատ բացման համար: Էլ պատահական ժամվայրում շլագբումը կլինի հասանելի 6 ժամվայրի ընթացքում, հետո ավտոմատ կվերադարձնի ստանդարտ ռեժիմին:</string>
+    <string name="share_access">Կիսել</string>
+    <string name="service_name_sample">Խնդրի տարածք</string>
+    <string name="address_setup">Հասցեի կազմաձևում</string>
+    <string name="address_sample">Ք. Թամբով, Սովետական փողոց, 16, բն.4</string>
+    <string name="domophone_notif_title">Դոմոֆոն</string>
+    <string name="get_paper_bill">Ստանալ թերթիկ հաշիվը</string>
+    <string name="switch_intercom">Միջանցավորման միանվագ միջնորդ</string>
+    <string name="switch_voip">Ստանալ զանգեր</string>
+    <string name="switch_use_event_log">Ներգրավվել միջավայրի մուտքերը</string>
+    <string name="switch_owner_event_log">Թաքցնել միջավայրի մուտքերը այլ օգտատերերից</string>
+    <string name="switch_use_frs">Լուսանկարների ճանաչում</string>
+    <string name="switch_use_speaker">Դաշտային խոսակցում</string>
+    <string name="delete_address">Ջնջել հասցեը</string>
+    <string name="text_next">Հաջորդը</string>
+    <string name="available_services">Հասանելի ծառայություններ</string>
+    <string name="service_address_sample">Ք. Թամբով, Սովետական փողոց, 24, բն.60</string>
+    <string name="address_access_contact_sample">Սաշա (վարձակալ)</string>
+    <string name="text_sms">SMS</string>
+    <string name="text_empty_list">Ցանկը դատարկ է</string>
+    <string name="reg_sms_code_resend">Ուղարկել կոդը կրկնել</string>
+    <string name="payment_done">Գումարը վճարված է!</string>
+    <string name="payment_being_processed">Սպասեք, վճարումը մշակվում է</string>
+    <string name="appeal_title_first_name">Անուն*</string>
+    <string name="dialog_add_contact">+ Ավելացնել կոնտակտ</string>
+    <string name="dialog_close">Փակել</string>
+    <string name="event_sample">01.03.2021, 17:06</string>
+    <string name="event_log_type_sample">Ավելացում ծրագրից</string>
+    <string name="item_title_sample">Ինտերնետ և հեռուստաընկերություն</string>
+    <string name="item_description_sample">Ավելին քան 250 հեռուստաշարը</string>
+    <string name="cctv_map_address_sample">Ք. Թամբով, Սովետական փողոց, 16</string>
+    <string name="provider_sample">Ծառայության մատակարար</string>
+    <string name="face_registration">Մարդկանց գրանցում</string>
+    <string name="registered_faces">Գրանցված դեմքեր</string>
+    <string name="event_name">Միջոցառումի անվանումը</string>
+    <string name="text_address">Հասցե</string>
+    <string name="text_date_time">Ամսաթիվ, ժամ</string>
+    <string name="text_additional">Լրացուցիչ տեքստ</string>
+    <string name="hint_city">Քաղաք</string>
+    <string name="hint_street">Փողոց</string>
+    <string name="hint_house">Տուն</string>
+    <string name="hint_flat">Բնակարան</string>
+    <string name="specify_reason">Նշեք պատճառը</string>
+    <string name="dialog_delete_reason_description">Հեռացնելով հասցեն, Ձեզ հասանելի չեն լինել հասցեի ծառայությունները</string>
+    <string name="text_delete">Ջնջել</string>
+    <string name="text_dismiss">Չեղարկել</string>
+    <string name="pay_number_sample">Համար №68992</string>
+    <string name="pay_sum">Գումարը:</string>
+    <string name="pay_recommended_sample">Խումբային - 480 ռուբլի</string>
+    <string name="all_payment_types">Բոլոր ավելացումները</string>
+    <string name="pay_by_card">Ավելացնել բանկային քարտով</string>
+    <string name="text_event_sample">Իրադարձություններ</string>
+    <string name="text_count_sample">4</string>
+    <string name="events_title">Իրադարձություններ</string>
+    <string name="title_my_addresses">Իմ հասցեները</string>
+    <string name="dow_mon">երկ</string>
+    <string name="dow_tue">երեք</string>
+    <string name="dow_wed">չոր</string>
+    <string name="sow_tue">հին</string>
+    <string name="dow_fri">ուր</string>
+    <string name="dow_sat">շբթ</string>
+    <string name="dow_sun">կիր</string>
+    <string name="event_day_sample">Երկուշաբթի, 19 Ապրիլ</string>
+    <string name="payment_error">Սխալ!</string>
+    <string name="payment_error_description">Սխալ է գնացել։</string>
+    <string name="auth_password">Գաղտնաբառ</string>
+    <string name="pay_contract">Պայմանագիրը:</string>
+    <string name="contract_sample">68992</string>
+    <string name="contract_balance">Մնացորդ</string>
+    <string name="balance_sample">120 ₽</string>
+    <string name="balance_recommendations">Խումբային վճարումը:</string>
+    <string name="ballance_recom_sample">480 ₽</string>
+    <string name="contract_action_pay">Վճարել</string>
+    <string name="full_lc_version">Լիարար անձնական էջի լրիվ տարբերակ</string>
+    <string name="title_support">Հաստատություն</string>
+    <string name="call_support">Զանգել</string>
+    <string name="order_callback">Պատվիրել հետադարձ զանգահարելու համար</string>
+    <string name="title_cctv">Տեսախցիկներ</string>
+    <string name="cctv_count_sample">4</string>
+    <string name="title_city_camera_sample">Կամերա 1</string>
+    <string name="text_scroll_up">Վերև</string>
+    <string name="title_common_settings">Ընդհանուր կարգավորումներ</string>
+    <string name="user_name_sample">Ալեքսեեվ Վ.Բ.</string>
+    <string name="title_notifications">Ծանուցումներ</string>
+    <string name="receive_notifications">Ստանալ ծանուցումներ</string>
+    <string name="lack_funds_notifications">Տեղեկացնել մնացորդի սահմանը</string>
+    <string name="balance_notify_near_zero">Ուղարկել ծանուցում, երբ մնացորդը մոռացում է կետավորը</string>
+    <string name="title_security">Անվտանգություն</string>
+    <string name="fingerprint_entrance">Մուտք Fingerprint-ով</string>
+    <string name="fingerprint_entrance_description">Մուտք մուտքագրել մատչելի մասնագիտությամբ</string>
+    <string name="pin_code_entrance">Մուտք PIN-կոդով</string>
+    <string name="pin_code_entrance_description">Մուտք մուտքագրել PIN-կոդով</string>
+    <string name="text_logout">Դուրս գալ</string>
+    <string name="object_name_sample">Հարթակամաս Հյուսիս</string>
+    <string name="contract_number_sample">Կոնտրակտի համարը: 68992</string>
+    <string name="text_address_settings">Հասցեի կարգավորում</string>
+    <string name="text_provide_access">Առաքելու հասանելիություն</string>
+    <string name="text_open_lc">Բացել անձնական էջի վեբ տարբերակը</string>
+    <string name="item_sample">Հարթամաս Հյուսիս</string>
+    <string name="title_access_address">Հասանելիություն հասցեին</string>
+    <string name="temporary_intercom_access">Ժամանակավոր հասանելիություն դառնալու տակ դռներին</string>
+    <string name="code_to_open">Բացման կոդ</string>
+    <string name="entrance_by_face">Մուտք առանց բանալին</string>
+    <string name="manage_faces"> Կարգավիճակել  </string>
+    <string name="temporary_barrier_access">Ժամանակավոր հասանելիություն շագամանքի/դառնակարգի համար</string>
+    <string name="barrier_add_contact">Ավելացնել կոնտակտ</string>
+    <string name="permanent_access_address">Մշտական հասանելիություն հասցեին</string>
+    <string name="permanent_add_contact">Ավելացնել կոնտակտ</string>
+    <string name="title_delete_face">Ջնջել այս դեռևստանիչը։</string>
+    <string name="delete_face">Ջնջել</string>
+    <string name="dialog_face_cancel">Չեղարկել</string>
+    <string name="title_add_face">Ավելացնել այս դեռևստանիչը։</string>
+    <string name="add_face">Ավելացնել</string>
+</resources>
