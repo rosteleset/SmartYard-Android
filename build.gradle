@@ -3,9 +3,9 @@
 buildscript { 
 
     ext {
-        compileSdkVersion = 33
-        minSdkVersion = 21
-        targetSdkVersion = 33
+        compileSdkVersion = 34
+        minSdkVersion = 23
+        targetSdkVersion = 34
         kotlinVersion = '1.7.20'
         kotlinReflect = '1.7.20'
         appCompatVersion = '1.4.2'
@@ -34,7 +34,7 @@ buildscript {
         pinEntryEditText = '2.0.6'
         morphBottomNavigation = '1.0.1'
         androidxTransition = '1.4.1'
-        linphoneVersion = '4.4.35'
+        linphoneVersion = '5.1.4'
         expandablelayoutVersion = '2.9.2'
         adapterdelegates = '4.2.0'
         openStreetMapVersion = '6.1.5'
