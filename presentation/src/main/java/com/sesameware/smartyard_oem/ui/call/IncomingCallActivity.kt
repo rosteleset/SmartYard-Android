@@ -502,7 +502,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             }
 
         toggleCallClock(connected)
-        if (mFcmCallData.videoStream.isEmpty()) {
+        if (mFcmCallData.videoStream.isEmpty() || mLinphone.remoteVideoEnabled) {
             binding.mVideoSip.show(connected)
             binding.mVideoSip.bringToFront()
         } else {

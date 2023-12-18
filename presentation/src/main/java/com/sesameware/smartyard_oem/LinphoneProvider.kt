@@ -44,6 +44,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
 
     private var shouldVibrate = false
+    var remoteVideoEnabled = false
 
     private var mCoreListener = object : CoreListenerStub() {
         override fun onRegistrationStateChanged(
@@ -81,7 +82,6 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             Timber.d("debug_dmm call_state: $state message: $message")
             val cState = CCallState(state, message, call, core)
             callState.value = cState
-
             when (cState.state) {
                 CallStateSimple.INCOMING -> {
                     call.let { _ ->
@@ -102,6 +102,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                                 service.startActivity(intent)
                             }
                             startRinging()
+                            remoteVideoEnabled = call.remoteParams?.isVideoEnabled ?: false
                         }
                     }
                 }
