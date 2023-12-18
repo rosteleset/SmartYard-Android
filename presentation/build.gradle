@@ -24,14 +24,6 @@ android {
         jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-    signingConfigs {
-        debug {
-            storeFile file('../keys/keyAppBundle')
-            storePassword 'UhokpzDhQ'
-            keyAlias = 'MadBrains'
-            keyPassword 'UhokpzDhQ'
-        }
-    }
     defaultConfig {
         applicationId "com.sesameware.smartyard_oem"
         minSdk rootProject.minSdkVersion
@@ -69,34 +61,6 @@ android {
         teledomTest {
             applicationId "com.sesameware.smartyard_oem"
         }
-
-        freedom1 {
-            applicationId "com.freedom1.freedom_isp"
-        }
-
-        grin {
-            applicationId "by.grin.smartyard"
-        }
-
-        insit {
-            applicationId "ru.insit.intercom"
-        }
-
-        pakt {
-            applicationId "ru.pakt.cctv"
-        }
-
-        garant {
-            applicationId "tv.garant.provider"
-        }
-
-        korvet {
-            applicationId "pro.korvet.smartyard"
-        }
-
-        sarkor {
-            applicationId "uz.sarkor.smartyard"
-        }
     }
 
     buildFeatures {
@@ -108,6 +72,14 @@ android {
         kotlinCompilerExtensionVersion '1.3.2'
     }
     namespace 'com.sesameware.smartyard_oem'
+}
+
+if (project.file('signing.gradle').exists()) {
+    apply from: 'signing.gradle'
+}
+
+if (project.file('flavors.gradle').exists()) {
+    apply from: 'flavors.gradle'
 }
 
 project.afterEvaluate {

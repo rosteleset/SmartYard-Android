@@ -1,0 +1,10 @@
+android {
+    signingConfigs {
+        debug {
+            storeFile file('../keys/keyAppBundle')
+            storePassword 'UhokpzDhQ'
+            keyAlias = 'MadBrains'
+            keyPassword 'UhokpzDhQ'
+        }
+    }
+}
