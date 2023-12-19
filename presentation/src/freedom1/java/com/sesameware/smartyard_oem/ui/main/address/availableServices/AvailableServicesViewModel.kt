@@ -34,6 +34,15 @@ class AvailableServicesViewModel(
         else _stateEnabledButtonNext.value = Event(true)
     }
 
+    // По требованию клиента всегда создается заявка
+    fun alwaysIssueOnlyService(servicesList: MutableList<AvailableModel>, address: String) {
+        issueOnlyService(
+            address,
+            servicesList.filter { it.active && it.check }.joinToString { it -> "\'${it.title}\'" }
+        )
+    }
+
+    /*
     fun checkServices(servicesList: MutableList<AvailableModel>, address: String) {
         // Количество общедомовых сервисов
         val commonHouse = servicesList.filter { !it.active }.size
@@ -64,6 +73,7 @@ class AvailableServicesViewModel(
             )
         }
     }
+     */
 
     /**    """issue"": {
      ""project"": ""REM"",

@@ -16,7 +16,6 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAvailableServicesBinding
 import com.sesameware.smartyard_oem.ui.DividerItemDecorator
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.availableServices.AvailableServicesViewModel
 
 class AvailableServicesFragment : Fragment() {
     private var _binding: FragmentAvailableServicesBinding? = null
@@ -57,7 +56,8 @@ class AvailableServicesFragment : Fragment() {
         }
         binding.tvAddress.text = address
         binding.btnNext.setOnClickListener {
-            viewModel.checkServices(servicesList, address)
+//            viewModel.checkServices(servicesList, address)
+            viewModel.alwaysIssueOnlyService(servicesList, address)
         }
         setupObserve()
         viewModel.avalaibleOkayBtn(servicesList)
