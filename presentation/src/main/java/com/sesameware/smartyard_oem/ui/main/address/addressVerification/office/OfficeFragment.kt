@@ -84,7 +84,6 @@ class OfficeFragment : Fragment() {
     }
 
     private fun initMap() {
-        binding.map.setTileSource(TileSourceFactory.MAPNIK)
         binding.map.setBuiltInZoomControls(true)
         binding.map.setMultiTouchControls(true)
     }
