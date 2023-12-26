@@ -59,11 +59,14 @@ android {
     namespace 'com.sesameware.data'
 }
 
+if (project.file('flavors.gradle').exists()) {
+    apply from: 'flavors.gradle'
+}
+
 project.afterEvaluate {
     //preDebugBuild.dependsOn ktlint
     //preReleaseBuild.dependsOn ktlint
 }
-
 
 dependencies {
     implementation project(':domain')
