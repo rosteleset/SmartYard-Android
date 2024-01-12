@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.sesameware.domain.model.request.DELIVERY_COURIER
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.databinding.FragmentWorkSoonCourierBinding
@@ -38,7 +39,7 @@ class WorkSoonCourierFragment : Fragment() {
             viewModel.changeDelivery(
                 "Cменился способ доставки. Подготовить пакет для курьера.",
                 issueModel?.key ?: "",
-                "Курьер"
+                DELIVERY_COURIER
             )
         }
         binding.btnCancel.setOnClickListener {

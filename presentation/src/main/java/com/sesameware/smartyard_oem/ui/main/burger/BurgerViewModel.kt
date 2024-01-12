@@ -9,7 +9,9 @@ import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.interactors.SipInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
 import com.sesameware.domain.model.request.ExtRequest
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.R
@@ -25,7 +27,7 @@ class BurgerViewModel(
     val dialNumber: LiveData<String>
         get() = _dialNumber
 
-    var chosenSupportOption = MutableLiveData<SupportOption>()
+    var chosenSupportOption = MutableLiveData(SupportOption.NONE)
 
     private val _burgerList = MutableLiveData<List<BurgerModel>>()
     val burgerList: LiveData<List<BurgerModel>>
@@ -49,6 +51,14 @@ class BurgerViewModel(
     }
 
     fun createIssue() {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1()
+        } else {
+            createIssueV2()
+        }
+    }
+
+    private fun createIssueV1() {
         val summary = "Авто: Звонок с приложения"
         val description = "Выполнить звонок клиенту по запросу с приложения"
         val x10011 = "-3"
@@ -60,6 +70,13 @@ class BurgerViewModel(
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
             CreateIssuesRequest.TypeAction.ACTION1
         )
+    }
+
+    private fun createIssueV2() {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REQUEST_CALLBACK
+        )
+        super.createIssueV2(issue)
     }
 
     private fun getBurgerMenu() {
@@ -132,6 +149,6 @@ class BurgerViewModel(
     }
 
     enum class SupportOption {
-        CALL_TO_SUPPORT_BY_PHONE, ORDER_CALLBACK
+        NONE, CALL_TO_SUPPORT_BY_PHONE, ORDER_CALLBACK
     }
 }

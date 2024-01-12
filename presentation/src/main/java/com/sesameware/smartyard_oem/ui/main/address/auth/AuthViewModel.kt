@@ -3,12 +3,15 @@ package com.sesameware.smartyard_oem.ui.main.address.auth
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
@@ -34,6 +37,14 @@ class AuthViewModel(
         }
     }
 
+    fun createIssue() {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1()
+        } else {
+            createIssueV2()
+        }
+    }
+
     /**
      """issue"": {
      ""project"": ""REM"",
@@ -53,7 +64,7 @@ class AuthViewModel(
      }"
      **/
 
-    fun createIssue() {
+    private fun createIssueV1() {
         val description =
             "Выполнить звонок клиенту для напоминания номера договора и пароля от личного кабинета."
         val summary = "Авто: Звонок с приложения"
@@ -71,6 +82,13 @@ class AuthViewModel(
             ),
             ACTION1
         )
+    }
+
+    private fun createIssueV2() {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REQUEST_CREDENTIALS
+        )
+        super.createIssueV2(issue)
     }
 
     fun seenWarning() {

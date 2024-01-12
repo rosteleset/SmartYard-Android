@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem.ui.main.address
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
@@ -106,7 +107,7 @@ class AddressViewModel(
                 }
             } else {
                 Timber.d(this.javaClass.simpleName, res.data.size)
-                databaseInteractor.deleteAll()
+                //databaseInteractor.deleteAll()
                 var hasExpanded = false
                 val list: MutableList<DisplayableItem> = (
                     res.data.map { addressItem ->
@@ -190,7 +191,7 @@ class AddressViewModel(
                         parent.isExpanded = true
                     }
                 }
-                val listConnect = issueInteractor.listConnectIssue()?.data
+                val listConnect = if (DataModule.providerConfig.issuesVersion != "2") issueInteractor.listConnectIssue()?.data else issueInteractor.listConnectIssueV2()?.data
                 _dataList.value = list.plus(
                     listConnect?.map {
                         IssueModel(

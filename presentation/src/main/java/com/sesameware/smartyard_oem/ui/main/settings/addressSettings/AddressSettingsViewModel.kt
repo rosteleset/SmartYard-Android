@@ -2,6 +2,7 @@ package com.sesameware.smartyard_oem.ui.main.settings.addressSettings
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
@@ -9,6 +10,8 @@ import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.domain.model.response.Intercom
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
@@ -93,6 +96,14 @@ class AddressSettingsViewModel(
         preferenceStorage.addressOptions = addressOpts
     }
 
+    fun createIssue(address: String, reasonText: String, reasonList: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address, reasonText, reasonList)
+        } else {
+            createIssueV2(address, reasonText, reasonList)
+        }
+    }
+
     /**    """issue"": {
      ""project"": ""REM"",
      ""summary"": ""Авто: Заявка с сайта"",
@@ -111,8 +122,7 @@ class AddressSettingsViewModel(
      ""Позвонить ""
      ]
      }"*/
-
-    fun createIssue(address: String, reasonText: String, reasonList: String) {
+    private fun createIssueV1(address: String, reasonText: String, reasonList: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName}\n Телефон: ${preferenceStorage.phone}\n Адрес, введённый пользователем: $address.\nУдаление адреса из приложения. Причина: $reasonText($reasonList)"
@@ -130,5 +140,15 @@ class AddressSettingsViewModel(
             ),
             ACTION1
         )
+    }
+
+    private fun createIssueV2(address: String, reasonText: String, reasonList: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REMOVE_ADDRESS,
+            inputAddress = address,
+            userName = preferenceStorage.sentName.toString(),
+            comments = "$reasonText($reasonList)"
+        )
+        super.createIssueV2(issue)
     }
 }

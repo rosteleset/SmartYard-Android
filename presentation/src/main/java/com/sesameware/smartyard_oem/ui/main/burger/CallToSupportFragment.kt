@@ -34,14 +34,10 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        if (DataModule.providerConfig.hasIssues) {
-            binding.llOrderCallback.visibility = View.VISIBLE
-            binding.llOrderCallback.setOnClickListener {
-                viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)
-                dismiss()
-            }
-        } else {
-            binding.llOrderCallback.visibility = View.INVISIBLE
+        binding.llOrderCallback.visibility = View.VISIBLE
+        binding.llOrderCallback.setOnClickListener {
+            viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)
+            dismiss()
         }
 
         setupObservers()

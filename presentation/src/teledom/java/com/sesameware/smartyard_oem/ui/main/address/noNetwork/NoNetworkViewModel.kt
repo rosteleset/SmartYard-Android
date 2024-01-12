@@ -1,10 +1,13 @@
 package com.sesameware.smartyard_oem.ui.main.address.noNetwork
 
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
 /**
@@ -16,6 +19,13 @@ class NoNetworkViewModel(
     issueInteractor: IssueInteractor,
     private val preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
+    fun createIssue(address: String, services: List<String>) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address, services)
+        } else {
+            createIssueV2(address, services)
+        }
+    }
 
     /**
      """issue"": {
@@ -36,8 +46,7 @@ class NoNetworkViewModel(
      ""Позвонить""
      ]
      }"*/
-
-    fun createIssue(address: String, services: List<String>) {
+    fun createIssueV1(address: String, services: List<String>) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName}\n Телефон: ${preferenceStorage.phone}\n Адрес, введённый пользователем: $address\n Список подключаемых услуг: ${services.joinToString { it -> "\'${it}\'" }}"
@@ -55,5 +64,15 @@ class NoNetworkViewModel(
             ),
             ACTION1
         )
+    }
+
+    fun createIssueV2(address: String, services: List<String>) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.CONNECT_SERVICES_NO_NETWORK,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address,
+            services = services.joinToString { "\'${it}\'" }
+        )
+        super.createIssueV2(issue)
     }
 }

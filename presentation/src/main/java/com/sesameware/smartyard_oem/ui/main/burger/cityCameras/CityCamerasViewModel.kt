@@ -2,6 +2,7 @@ package com.sesameware.smartyard_oem.ui.main.burger.cityCameras
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import org.osmdroid.util.BoundingBox
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -10,6 +11,8 @@ import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.domain.model.response.CCTVCityCameraData
 import com.sesameware.domain.model.response.CCTVYoutubeData
 import com.sesameware.domain.utils.listenerEmpty
@@ -57,6 +60,14 @@ class CityCamerasViewModel(
     }
 
     fun createIssue(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(recordDate, recordTime, duration, comments)
+        } else {
+            createIssueV2(recordDate, recordTime, duration, comments)
+        }
+    }
+
+    private fun createIssueV1(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
         val summary = "Авто: Запрос на получение видеофрагмента с архива"
         val description =
             "Обработать запрос на добавление видеофрагмента из архива видовой видеокамеры ${chosenCamera.value?.name} (id = ${chosenCamera.value?.id}) по парамертам: дата: ${recordDate.format(
@@ -71,6 +82,19 @@ class CityCamerasViewModel(
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
             CreateIssuesRequest.TypeAction.ACTION3
         )
+    }
+
+    private fun createIssueV2(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REQUEST_FRAGMENT,
+            cameraName = chosenCamera.value?.name,
+            cameraId = chosenCamera.value?.id.toString(),
+            fragmentDate = recordDate.format(DateTimeFormatter.ofPattern("d.MM.yyyy")),
+            fragmentTime = recordTime.format(DateTimeFormatter.ofPattern("HH-mm")),
+            fragmentDuration = duration.toString(),
+            comments = comments
+        )
+        super.createIssueV2(issue)
     }
 
     companion object {

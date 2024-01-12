@@ -1,10 +1,13 @@
 package com.sesameware.smartyard_oem.ui.main.address.workSoon.courier
 
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION2
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
 /**
@@ -16,6 +19,13 @@ class WorkSoonCourierViewModel(
     issueInteractor: IssueInteractor,
     private val preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
+    fun createIssue(address: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address)
+        } else {
+            createIssueV2(address)
+        }
+    }
 
     /** Для смены способа доставки надо кинуть 2 запроса.
      Запрос api/issues/action:
@@ -30,7 +40,7 @@ class WorkSoonCourierViewModel(
      comment - коммент для оператора. Доступно два значения, в зависимости от нового способа доставки:
      "Cменился способ доставки. Клиент подойдет в офис." и "Cменился способ доставки. Подготовить пакет для курьера."*/
 
-    fun createIssue(address: String) {
+    private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName}\n Адрес, введённый пользователем: $address.\n   клиент подойдет в офис для получения подтверждения."
@@ -50,5 +60,15 @@ class WorkSoonCourierViewModel(
             ),
             ACTION2
         )
+    }
+
+    private fun createIssueV2(address: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REQUEST_QR_CODE_OFFICE,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address,
+            services = ""
+        )
+        super.createIssueV2(issue)
     }
 }
