@@ -85,6 +85,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             EventObserver {
                 NavHostFragment.findNavController(this)
                     .navigate(R.id.action_global_addressFragment2)
+                mViewModel.getDataList(true)
             }
         )
 

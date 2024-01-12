@@ -167,7 +167,15 @@ interface TeledomApi {
         @Body request: CreateIssuesRequest): CreateIssuesResponse
 
     @POST
+    suspend fun createIssueV2(
+        @Url url: String,
+        @Body request: CreateIssuesRequestV2): CreateIssuesResponse
+
+    @POST
     suspend fun listConnectIssue(@Url url: String): Response<ListConnectIssueResponse>
+
+    @POST
+    suspend fun listConnectIssueV2(@Url url: String): Response<ListConnectIssueResponse>
 
     @POST
     suspend fun actionIssue(
@@ -175,7 +183,17 @@ interface TeledomApi {
         @Body request: ActionIssueRequest): Response<ActionIssueResponse>
 
     @POST
+    suspend fun actionIssueV2(
+        @Url url: String,
+        @Body request: ActionIssueRequestV2): Response<ActionIssueResponse>
+
+    @POST
     suspend fun comment(
+        @Url url: String,
+        @Body request: CommentRequest): Response<CommentResponse>
+
+    @POST
+    suspend fun commentV2(
         @Url url: String,
         @Body request: CommentRequest): Response<CommentResponse>
 

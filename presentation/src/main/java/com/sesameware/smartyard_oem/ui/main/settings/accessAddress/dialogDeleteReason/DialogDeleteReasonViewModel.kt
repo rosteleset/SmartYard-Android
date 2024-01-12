@@ -1,11 +1,14 @@
 package com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogDeleteReason
 
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION2
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
 /**
@@ -18,6 +21,13 @@ class DialogDeleteReasonViewModel(
     issueInteractor: IssueInteractor,
     private val preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
+    fun createIssue(address: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address)
+        } else {
+            createIssueV2(address)
+        }
+    }
 
     /**      """issue"": {
      ""project"": ""REM"",
@@ -37,7 +47,7 @@ class DialogDeleteReasonViewModel(
      ""Позвонить ""
      ]
      }"*/
-    fun createIssue(address: String) {
+    private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName} Телефон: ${preferenceStorage.phone} Адрес, введённый пользователем: $address nУдаление адреса из приложения. Причина описание\$"
@@ -57,5 +67,15 @@ class DialogDeleteReasonViewModel(
             ),
             ACTION2
         )
+    }
+
+    private fun createIssueV2(address: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REMOVE_ADDRESS,
+            inputAddress = address,
+            userName = preferenceStorage.sentName.toString(),
+            comments = ""
+        )
+        super.createIssueV2(issue)
     }
 }

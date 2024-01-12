@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.domain.model.request.DELIVERY_OFFICE
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
@@ -51,7 +52,7 @@ class WorkSoonOfficeFragment() : Fragment() {
             viewModel.changeDelivery(
                 "Cменился способ доставки. Клиент подойдет в офис.",
                 issueModel?.key ?: "",
-                "Самовывоз"
+                DELIVERY_OFFICE
             )
         }
         setupObserve()

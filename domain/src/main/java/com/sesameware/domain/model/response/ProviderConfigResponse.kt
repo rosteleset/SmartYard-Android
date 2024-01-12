@@ -11,9 +11,6 @@ data class ProviderConfig(
     //городские камеры (по умолчанию нет)
     @Json(name = HAS_CITY_CAMS) val _hasCityCams: String? = "f",
 
-    //работа с заявками (по умолчанию нет)
-    @Json(name = HAS_ISSUES) val _hasIssues: String? = "f",
-
     //платежи
     @Json(name = HAS_PAYMENTS) val _hasPayments: String? = "f",
 
@@ -38,15 +35,15 @@ data class ProviderConfig(
 
     //активная вкладка
     @Json(name = ACTIVE_TAB) val activeTab: String = TAB_ADDRESSES,
+
+    //версия заявок
+    @Json(name = ISSUES_VERSION) val issuesVersion: String = "1"
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
 
     val hasCityCams: Boolean
         get() = _hasCityCams == "t"
-
-    val hasIssues: Boolean
-        get() = _hasIssues == "t"
 
     val hasPayments: Boolean
         get() = _hasPayments == "t" || paymentsUrl?.isNotEmpty() == true
@@ -67,9 +64,6 @@ data class ProviderConfig(
 
         //городские камеры
         const val HAS_CITY_CAMS = "cityCams"
-
-        //работа с заявками
-        const val HAS_ISSUES = "issues"
 
         //платежи
         const val HAS_PAYMENTS = "payments"
@@ -107,6 +101,9 @@ data class ProviderConfig(
         const val TAB_CHAT = "chat"
         const val TAB_PAY = "pay"
         const val TAB_MENU = "menu"
+
+        //версия заявок
+        const val ISSUES_VERSION = "issuesVersion"
     }
 }
 

@@ -1,10 +1,13 @@
 package com.sesameware.smartyard_oem.ui.main.address.workSoon.office
 
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
 /**
@@ -16,6 +19,13 @@ class WorkSoonOfficeViewModel(
     private val issueInteractor: IssueInteractor,
     private val preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
+    fun createIssue(address: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address)
+        } else {
+            createIssueV2(address)
+        }
+    }
 
     /**    """issue"": {
      ""project"": ""REM"",
@@ -37,7 +47,7 @@ class WorkSoonOfficeViewModel(
      ""Позвонить""
      ]
      }"*/
-    fun createIssue(address: String) {
+    private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName}\n Адрес, введённый пользователем: $address.\n Требуется подтверждение адреса и подключение выбранных услуг"
@@ -57,5 +67,15 @@ class WorkSoonOfficeViewModel(
             ),
             CreateIssuesRequest.TypeAction.ACTION1
         )
+    }
+
+    private fun createIssueV2(address: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.CONNECT_SERVICES_HAS_COMMON,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address,
+            services = ""
+        )
+        super.createIssueV2(issue)
     }
 }

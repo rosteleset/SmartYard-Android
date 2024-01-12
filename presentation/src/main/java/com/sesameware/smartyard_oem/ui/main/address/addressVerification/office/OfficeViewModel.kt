@@ -3,12 +3,15 @@ package com.sesameware.smartyard_oem.ui.main.address.addressVerification.office
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION2
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.domain.model.response.Office
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
@@ -38,6 +41,14 @@ class OfficeViewModel(
         }
     }
 
+    fun createIssue(address: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address)
+        } else {
+            createIssueV2(address)
+        }
+    }
+
     /**        """issue"": {
      ""project"": ""REM"",
      ""summary"": ""Авто: Заявка с сайта"",
@@ -59,7 +70,7 @@ class OfficeViewModel(
      ]
      }"*/
 
-    fun createIssue(address: String) {
+    private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName} Адрес, введённый пользователем: $address.\n клиент подойдет в офис для получения подтверждения."
@@ -79,5 +90,15 @@ class OfficeViewModel(
             ),
             ACTION2
         )
+    }
+
+    private fun createIssueV2(address: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REQUEST_QR_CODE_OFFICE,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address,
+            services = ""
+        )
+        super.createIssueV2(issue)
     }
 }

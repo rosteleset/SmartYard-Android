@@ -2,13 +2,17 @@ package com.sesameware.smartyard_oem.ui.main.address.availableServices
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -50,13 +54,13 @@ class AvailableServicesViewModel(
         if (commonHouse > 0 && otherSelect == 0) {
             // 1)
             _navigateToAddressVerificationFragmentAction.value = Event(Unit)
-        } else if (commonHouse > 0 && otherSelect > 0) {
+        } else if (commonHouse > 0) {
             // 2)
             issueGoToTheOfficeMy(
                 address,
                 servicesList.filter { it.active && it.check }.joinToString { it -> "\'${it.title}\'" }
             )
-        } else if (commonHouse <= 0 && otherSelect > 0) {
+        } else if (otherSelect > 0) {
             // 3)
             issueOnlyService(
                 address,
@@ -65,25 +69,33 @@ class AvailableServicesViewModel(
         }
     }
 
-    /**    """issue"": {
-     ""project"": ""REM"",
-     ""summary"": ""Авто: Заявка с сайта"",
-     ""description"":ФИО: $как к вам обращаться$\nТелефон: $телефон$\nАдрес, введённый пользователем: $адрес$.\nПодключение услуг(и): $перечень выбранного$.\n Выполнить звонок клиенту и осуществить консультацию
-     ""type"": 32
-     },
-     ""customFields"": {
-     ""10011"": ""-1"",
-     ""11841"": $телефон, введенный пользователем$,
-     ""12440"": ""Приложение"",
-     ""10743"": $широта$,
-     ""10744"": $долгота$,
-     },
-     ""actions"": [
-     ""Начать работу"",
-     ""Позвонить""
-     ]
-     }"*/
     private fun issueOnlyService(address: String, connectedServicesText: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            issueOnlyServiceV1(address, connectedServicesText)
+        } else {
+            issueOnlyServiceV2(address, connectedServicesText)
+        }
+    }
+
+    /**    """issue"": {
+    ""project"": ""REM"",
+    ""summary"": ""Авто: Заявка с сайта"",
+    ""description"":ФИО: $как к вам обращаться$\nТелефон: $телефон$\nАдрес, введённый пользователем: $адрес$.\nПодключение услуг(и): $перечень выбранного$.\n Выполнить звонок клиенту и осуществить консультацию
+    ""type"": 32
+    },
+    ""customFields"": {
+    ""10011"": ""-1"",
+    ""11841"": $телефон, введенный пользователем$,
+    ""12440"": ""Приложение"",
+    ""10743"": $широта$,
+    ""10744"": $долгота$,
+    },
+    ""actions"": [
+    ""Начать работу"",
+    ""Позвонить""
+    ]
+    }"*/
+    private fun issueOnlyServiceV1(address: String, connectedServicesText: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName}.\n Телефон: ${preferenceStorage.phone}.\n Адрес, введённый пользователем: $address.\n" +
@@ -102,6 +114,24 @@ class AvailableServicesViewModel(
             ),
             ACTION1
         )
+    }
+
+    private fun issueOnlyServiceV2(address: String, connectedServicesText: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.CONNECT_SERVICES_NO_COMMON,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address,
+            services = connectedServicesText
+        )
+        super.createIssueV2(issue)
+    }
+
+    private fun issueGoToTheOfficeMy(address: String, connectedServicesText: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            issueGoToTheOfficeMyV1(address, connectedServicesText)
+        } else {
+            issueGoToTheOfficeMyV2(address, connectedServicesText)
+        }
     }
 
     /**    """issue"": {
@@ -123,7 +153,7 @@ class AvailableServicesViewModel(
      ""Позвонить""
      ]
      }"*/
-    fun issueGoToTheOfficeMy(address: String, connectedServicesText: String) {
+    private fun issueGoToTheOfficeMyV1(address: String, connectedServicesText: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName}\n Адрес, введённый пользователем: $address.\n $connectedServicesText \n Требуется подтверждение адреса и подключение выбранных услуг"
@@ -143,5 +173,15 @@ class AvailableServicesViewModel(
             ),
             ACTION1
         )
+    }
+
+    private fun issueGoToTheOfficeMyV2(address: String, connectedServicesText: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.CONNECT_SERVICES_HAS_COMMON,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address,
+            services = connectedServicesText
+        )
+        super.createIssueV2(issue)
     }
 }

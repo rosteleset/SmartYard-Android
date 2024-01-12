@@ -1,10 +1,13 @@
 package com.sesameware.smartyard_oem.ui.main.address.addressVerification.courier
 
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequest.TypeAction.ACTION2
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
 /**
@@ -16,6 +19,13 @@ class CourierViewModel(
     issueInteractor: IssueInteractor,
     private var preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
+    fun createIssue(address: String) {
+        if (DataModule.providerConfig.issuesVersion != "2") {
+            createIssueV1(address)
+        } else {
+            createIssueV2(address)
+        }
+    }
 
     /**
      """issue"": {
@@ -37,7 +47,7 @@ class CourierViewModel(
      ""Передать в офис""
      ]
      }"*/
-    fun createIssue(address: String) {
+    private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
             "ФИО: ${preferenceStorage.sentName} Адрес, введённый пользователем: $address.\n  Подготовить конверт с qr-кодом. Далее заявку отправить курьеру."
@@ -57,5 +67,14 @@ class CourierViewModel(
             ),
             ACTION2
         )
+    }
+
+    private fun createIssueV2(address: String) {
+        val issue = CreateIssuesRequestV2(
+            type = IssueTypeV2.REQUEST_QR_CODE_COURIER,
+            userName = preferenceStorage.sentName.toString(),
+            inputAddress = address
+        )
+        super.createIssueV2(issue)
     }
 }
