@@ -15,10 +15,10 @@ data class CommonErrorThrowable(
     val data: CommonError
 ) : Throwable()
 
-enum class ErrorStatus(@StringRes val messageId: Int, http: Boolean = true) {
-    ERROR_CONNECTION(R.string.common_error_connection, false),
-    TIMEOUT(R.string.common_timeout, false),
-    OTHER(R.string.common_error, false),
+enum class ErrorStatus(@StringRes val messageId: Int) {
+    ERROR_CONNECTION(R.string.common_error_connection),
+    TIMEOUT(R.string.common_timeout),
+    OTHER(R.string.common_error),
     UNAUTHORIZED(R.string.common_unauthorized),
     AUTHORIZATION_ON_ANOTHER(R.string.common_do_authorization_on_another),
     NOT_FOUND(R.string.common_not_found),

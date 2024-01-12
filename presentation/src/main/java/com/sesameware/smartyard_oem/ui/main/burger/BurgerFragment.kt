@@ -60,10 +60,17 @@ class BurgerFragment : Fragment() {
         ) {
             it?.let { supportOption ->
                 when (supportOption) {
-                    BurgerViewModel.SupportOption.CALL_TO_SUPPORT_BY_PHONE -> callToSupportByPhone(
-                        viewModel.dialNumber.value ?: ""
-                    )
-                    BurgerViewModel.SupportOption.ORDER_CALLBACK -> orderCallback()
+                    BurgerViewModel.SupportOption.CALL_TO_SUPPORT_BY_PHONE -> {
+                        viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.NONE)
+                        callToSupportByPhone(
+                            viewModel.dialNumber.value ?: ""
+                        )
+                    }
+                    BurgerViewModel.SupportOption.ORDER_CALLBACK -> {
+                        viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.NONE)
+                        orderCallback()
+                    }
+                    else -> {}
                 }
             }
         }
@@ -71,9 +78,7 @@ class BurgerFragment : Fragment() {
         viewModel.navigateToIssueSuccessDialogAction.observe(
             viewLifecycleOwner,
             EventObserver {
-                showStandardAlert(requireContext(), R.string.issue_dialog_caption_0) {
-                    this.findNavController().popBackStack()
-                }
+                showStandardAlert(requireContext(), R.string.issue_dialog_caption_0)
             }
         )
 
