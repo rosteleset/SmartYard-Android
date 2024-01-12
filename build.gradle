@@ -6,10 +6,10 @@ buildscript {
         compileSdkVersion = 34
         minSdkVersion = 23
         targetSdkVersion = 34
-        kotlinVersion = '1.7.20'
-        kotlinReflect = '1.7.20'
-        appCompatVersion = '1.4.2'
-        coreKtxVersion = '1.8.0'
+        kotlinVersion = '1.9.0'
+        kspVersion = '1.9.0-1.0.13'
+        appCompatVersion = '1.6.1'
+        coreKtxVersion = '1.12.0'
         constraintLayoutVersion = '2.1.4'
         junitVersion = '4.13.2'
         extJunitVersion = '1.1.0'
@@ -18,29 +18,29 @@ buildscript {
         firebaseCrashlyticsVersion = '18.2.7'
         firebaseMessagingVersion = '21.1.0'
         timberVersion = '4.7.1'
-        navigationVersion = "2.2.2"
-        roomVersion = '2.4.3'
-        coroutinesVersion = '1.6.1'
+        navigationVersion = '2.7.6'
+        roomVersion = '2.6.1'
+        coroutinesVersion = '1.7.1'
         retrofitVersion = '2.6.0'
         okHttpVersion = '4.9.2'
         ktlintVersion = '0.37.2'
         archCoreVersion = '2.0.1'
         pagingVersion = '1.0.1'
         lifecycleVersion = '2.2.0'
-        lifecycleViewModelVersion = '2.5.1'
+        lifecycleViewModelVersion = '2.7.0'
         moshi_version = '1.11.0'
         koin_version = '3.1.5'
         glide_version = '4.12.0'
         pinEntryEditText = '2.0.6'
         morphBottomNavigation = '1.0.1'
         androidxTransition = '1.4.1'
-        linphoneVersion = '5.1.4'
+        linphoneVersion = '5.3.7'
         expandablelayoutVersion = '2.9.2'
         adapterdelegates = '4.2.0'
         openStreetMapVersion = '6.1.5'
         swipeLayout = '1.1.0'
         inputMask = '5.0.0'
-        materialMaterial = '1.6.1'
+        materialMaterial = '1.11.0'
         kotlinCodegen = '1.11.0'
         cameraxVersion = '1.0.0-alpha02'
         viewpagerVersion = '1.0.0'
@@ -53,10 +53,9 @@ buildscript {
         playServicesWallet = '19.1.0'
         exoPlayer = '2.18.5'
         installreferrer = '2.2'
-        recyclerView = '1.2.1'
+        recyclerView = '1.3.2'
         preference_version = "1.2.0"
-        kotlin_version = '1.4.31'
-        splashscreen_version = '1.0.0'
+        splashscreen_version = '1.0.1'
         webrtc_version = '118.0.0'
     }
 
@@ -65,16 +64,14 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:8.1.2'
+        classpath 'com.android.tools.build:gradle:8.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath 'com.google.gms:google-services:4.3.14'
-        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.2'
-        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.5.2'
+        classpath 'com.google.gms:google-services:4.4.0'
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
+        classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.7.6'
         classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
     }
 }
-
-configurations.all { resolutionStrategy { force "org.jetbrains.kotlin:kotlin-reflect:1.6.10" } }
 
 allprojects {
     //apply from: "$rootDir/ktlint.gradle"

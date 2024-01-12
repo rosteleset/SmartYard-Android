@@ -3,7 +3,6 @@ package com.sesameware.smartyard_oem.ui.call
 import android.content.Context
 import android.media.AudioManager
 import android.os.Vibrator
-import androidx.core.content.getSystemService
 
 /**
  * @author Nail Shakurov
@@ -11,7 +10,7 @@ import androidx.core.content.getSystemService
  */
 class AndroidAudioManager(var context: Context) {
 
-    var mAudioManager: AudioManager? = null
+    private var mAudioManager: AudioManager? = null
         private set
     var vibrator: Vibrator? = null
         private set

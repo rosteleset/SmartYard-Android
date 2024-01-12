@@ -1,14 +1,25 @@
-apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'kotlin-kapt'
+plugins {
+    id 'com.android.library'
+    id 'kotlin-android'
+    id 'kotlin-parcelize'
+    id 'com.google.devtools.ksp' version "${kspVersion}"
+}
 
 android {
-    compileSdkVersion rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdkVersion
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = "17"
+    }
 
     defaultConfig {
-        minSdkVersion rootProject.minSdkVersion
-        targetSdkVersion rootProject.targetSdkVersion
+        minSdk rootProject.minSdkVersion
+        targetSdk rootProject.targetSdkVersion
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -44,7 +55,7 @@ dependencies {
     implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpVersion"
     implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofitVersion"
-    kapt("com.squareup.moshi:moshi-kotlin-codegen:$rootProject.kotlinCodegen")
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$rootProject.kotlinCodegen"
 
     // Coroutines
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
@@ -57,7 +68,7 @@ dependencies {
     // Room
     implementation "androidx.room:room-runtime:$rootProject.roomVersion"
     implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
-    kapt "androidx.room:room-compiler:$rootProject.roomVersion"
+    ksp "androidx.room:room-compiler:$rootProject.roomVersion"
 
     // Koin Core features
     implementation "io.insert-koin:koin-core:$koin_version"
@@ -70,8 +81,4 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
 
     implementation "com.jakewharton.threetenabp:threetenabp:${threetenabp}"
-
 }
-
-sourceCompatibility = "7"
-targetCompatibility = "7"
