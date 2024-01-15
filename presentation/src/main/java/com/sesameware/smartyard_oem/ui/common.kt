@@ -1,7 +1,14 @@
 package com.sesameware.smartyard_oem.ui
 
-import android.app.*
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Activity.RESULT_OK
+import android.app.DatePickerDialog
+import android.app.Dialog
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TimePickerDialog
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
@@ -9,9 +16,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
 import android.graphics.BlendMode.SRC_ATOP
+import android.graphics.BlendModeColorFilter
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.PorterDuff.Mode
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
@@ -29,6 +41,7 @@ import android.widget.DatePicker
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TimePicker
+import android.widget.Toast
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -37,8 +50,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.google.android.material.datepicker.CalendarConstraints
-import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -55,7 +66,12 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
-import org.threeten.bp.*
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
@@ -144,6 +160,7 @@ class ProgressDialog {
         if (VERSION.SDK_INT >= VERSION_CODES.Q) {
             drawable.colorFilter = BlendModeColorFilter(color, SRC_ATOP)
         } else {
+            @Suppress("DEPRECATION")
             drawable.setColorFilter(color, Mode.SRC_ATOP)
         }
     }
@@ -241,6 +258,7 @@ class SoundChooser {
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, currentTone.uri)
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, false)
                 intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true)
+                @Suppress("DEPRECATION")
                 fragment.startActivityForResult(intent, RESULT_SOUND)
             }
         }
@@ -254,7 +272,7 @@ class SoundChooser {
         ) {
             if (requestCode == RESULT_SOUND && resultCode == RESULT_OK) {
                 data?.let {
-                    val uri = it.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
+                    @Suppress("DEPRECATION") val uri = it.getParcelableExtra<Uri>(RingtoneManager.EXTRA_RINGTONE_PICKED_URI)
                     uri?.let {
                         context?.let {
                             callback(RingtoneU(uri))
@@ -284,6 +302,7 @@ fun dpToPx(dp: Int): Float {
     return (dp * Resources.getSystem().displayMetrics.density)
 }
 
+@SuppressLint("InternalInsetResource")
 fun getBottomNavigationHeight(context: Context?): Int {
     return context?.resources?.let {
         val resourceId = it.getIdentifier("navigation_bar_height", "dimen", "android")
@@ -293,6 +312,7 @@ fun getBottomNavigationHeight(context: Context?): Int {
     } ?: 0
 }
 
+@SuppressLint("ObsoleteSdkInt")
 fun sendCallNotification(
     data: FcmCallData,
     context: Context,
@@ -432,22 +452,20 @@ private const val CHANNEL_ID = "smartyard_v6_"
 
 //Анимация: fade in, затем fade out
 fun animationFadeInFadeOut(view: View?) {
-    view?.let {
-        it.apply {
-            alpha = 0f
-            visibility = View.VISIBLE
-            animate()
-                .alpha(1f)
-                .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
-                .withEndAction {
-                    animate()
-                        .alpha(0f)
-                        .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
-                        .withEndAction {
-                            visibility = View.INVISIBLE
-                        }
-                }
-        }
+    view?.apply {
+        alpha = 0f
+        visibility = View.VISIBLE
+        animate()
+            .alpha(1f)
+            .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+            .withEndAction {
+                animate()
+                    .alpha(0f)
+                    .setDuration(resources.getInteger(android.R.integer.config_longAnimTime).toLong())
+                    .withEndAction {
+                        visibility = View.INVISIBLE
+                    }
+            }
     }
 }
 
@@ -490,4 +508,9 @@ fun Fragment.getStatusBarHeight(): Int {
     val rect = Rect()
     requireActivity().window.decorView.getWindowVisibleDisplayFrame(rect)
     return rect.top
+}
+
+fun Context.toast(@StringRes resId: Int, long: Boolean = true) {
+    val length = if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+    Toast.makeText(this, getString(resId), length).show()
 }

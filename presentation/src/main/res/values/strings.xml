@@ -422,6 +422,7 @@
     <string name="registered_faces">Зарегистрированные лица</string>
     <string name="event_name">Название события</string>
     <string name="text_address">Адрес</string>
+    <string name="text_no_image">Нет изображения</string>
     <string name="text_date_time">Дата, время</string>
     <string name="text_additional">Дополнительный текст</string>
     <string name="hint_city">Город</string>

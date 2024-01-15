@@ -3,7 +3,6 @@ package com.sesameware.smartyard_oem.ui.main.address.event_log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.sesameware.data.DataModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
@@ -29,6 +28,9 @@ data class EventDayData(
     val eventCount: Int
 )
 
+/**
+ * Камера домофона
+ */
 data class DoorphoneData(
     val url: String,
     val token: String,
@@ -144,7 +146,7 @@ class EventLogViewModel(
         return -1
     }
 
-    fun getEventDaysFilter() {
+    fun loadEventDaysFilter() {
         if (isLoading) {
             return
         }
@@ -159,35 +161,13 @@ class EventLogViewModel(
         viewModelScope.withProgress(progress = null /* _progress */) {
             _eventDaysFilter.clear()
             _eventsByDaysFilter.clear()
-            var flats = mutableListOf<Flat>()
-            if (filterFlat == null) {
-                flats = flatsAll.toMutableList()
-            } else {
-                flats.add(filterFlat!!)
-            }
+            
+            val selectedFlats = getSelectedFlats()
 
-            val dayToEventCount = hashMapOf<LocalDate, Int>()
+            val allFlatsDayToEventCount = getAllFlatsDayToEventCount(selectedFlats)
 
-            flats.forEach {flat ->
-                try {
-                    addressInteractor.plogDays(flat.flatId, filterEventType)?.let {response ->
-                        response.data.forEach {plogDays ->
-                            val d = LocalDate.parse(plogDays.day, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
-                            val ec = plogDays.events
-                            if (dayToEventCount.containsKey(d)) {
-                                var dd = dayToEventCount[d] ?: 0
-                                dd += ec
-                                dayToEventCount[d] = dd
-                            } else {
-                                dayToEventCount[d] = ec
-                            }
-                        }
-                    }
-                } catch (e: Throwable) {}
-            }
-
-            dayToEventCount.keys.sortedDescending().forEach {
-                _eventDaysFilter.add(EventDayData(it, dayToEventCount[it] ?: 0))
+            allFlatsDayToEventCount.keys.sortedDescending().forEach {
+                _eventDaysFilter.add(EventDayData(it, allFlatsDayToEventCount[it] ?: 0))
             }
 
             withContext(Dispatchers.Main) {
@@ -197,17 +177,58 @@ class EventLogViewModel(
                 _progress.postValue(false)
             }
 
-            getMoreEvents()
+            loadMoreEvents()
         }
     }
 
-    fun getMoreEvents() {
+    private suspend fun getAllFlatsDayToEventCount(flats: List<Flat>): HashMap<LocalDate, Int> {
+        val allFlatsDayToEventCount = hashMapOf<LocalDate, Int>()
+
+        flats.forEach { flat ->
+            try {
+                addressInteractor.plogDays(flat.flatId, filterEventType)?.let { response ->
+                    response.data.forEach { plogDays ->
+                        val day =
+                            LocalDate.parse(plogDays.day, DateTimeFormatter.ofPattern("yyyy-MM-dd"))
+                        val newFlatEventsCount = plogDays.eventCount
+                        if (allFlatsDayToEventCount.containsKey(day)) {
+                            val previousFlatEventsCount = allFlatsDayToEventCount[day] ?: 0
+                            allFlatsDayToEventCount[day] =
+                                previousFlatEventsCount + newFlatEventsCount
+                        } else {
+                            allFlatsDayToEventCount[day] = newFlatEventsCount
+                        }
+                    }
+                }
+            } catch (_: Throwable) {
+            }
+        }
+        return allFlatsDayToEventCount
+    }
+
+    private fun getSelectedFlats(): MutableList<Flat> {
+        var flats = mutableListOf<Flat>()
+        if (filterFlat == null) {
+            flats = flatsAll.toMutableList()
+        } else {
+            flats.add(filterFlat!!)
+        }
+        return flats
+    }
+
+    fun loadMoreEvents() {
         if (isLoading) {
             return
         }
 
         Timber.d("__Q__ call getMoreEvents")
 
+        val days = determineDaysToLoad()
+
+        loadEventsByDays(days)
+    }
+
+    private fun determineDaysToLoad(): MutableList<LocalDate> {
         var eventCount = 0
         val days = mutableListOf<LocalDate>()
         var canBreak = false
@@ -234,11 +255,10 @@ class EventLogViewModel(
                 break
             }
         }
-
-        getEvents(days)
+        return days
     }
 
-    fun getMoreEvents(days: List<LocalDate>) {
+    fun loadMoreEvents(days: List<LocalDate>) {
         if (isLoading) {
             return
         }
@@ -252,62 +272,20 @@ class EventLogViewModel(
             _lastLoadedDayFilterIndex = _eventDaysFilter.size - 1
         }
 
-        getEvents(days)
+        loadEventsByDays(days)
     }
 
-    private fun getEvents(days: List<LocalDate>) {
+    private fun loadEventsByDays(days: List<LocalDate>) {
         Timber.d("__Q__ getEvents: $days")
         isLoading = true
         viewModelScope.withProgress(progress = _progress) {
             days.forEach {day ->
                 _eventsByDaysFilter[day] = mutableListOf()
 
-                var flats = mutableListOf<Flat>()
-                if (filterFlat == null) {
-                    flats = flatsAll.toMutableList()
-                } else {
-                    flats.add(filterFlat!!)
-                }
+                val selectedFlats = getSelectedFlats()
 
-                flats.forEach {flat ->
-                    try {
-                        val dayFormat = day.format(DateTimeFormatter.ofPattern(DAY_FORMAT))
-                        val cacheKey = "${dayFormat}_${flat.flatId}"
-                        if (cacheEvents.containsKey(cacheKey) && day != LocalDate.now()) {
-                            Timber.d("__Q__ from cache $cacheKey")
-                            cacheEvents[cacheKey]?.let {logDataList ->
-                                logDataList.forEach {logElement ->
-                                    if (filterEventType.contains(logElement.eventType)) {
-                                        _eventsByDaysFilter.getOrPut(day) {mutableListOf()}
-                                            .add(logElement)
-                                    }
-                                }
-                            }
-                        } else {
-                            Timber.d("__Q__ from server $cacheKey")
-                            cacheEvents[cacheKey] = mutableListOf()
-                            addressInteractor.plog(flat.flatId, dayFormat)?.let {plogResponse ->
-                                plogResponse.data.forEach {plog ->
-                                    if (flat.flatNumber.isNotEmpty()) {
-                                        plog.address = address + ", кв. ${flat.flatNumber}"
-                                    } else {
-                                        plog.address = address
-                                    }
-                                    if (plog.mechanizmaDescription.isNotEmpty()) {
-                                        plog.address += " [${plog.mechanizmaDescription}]"
-                                    }
-                                    plog.frsEnabled = flat.frsEnabled
-                                    cacheEvents.getOrPut(cacheKey) {mutableListOf()}.add(plog)
-                                    if (filterEventType.contains(plog.eventType)) {
-                                        _eventsByDaysFilter.getOrPut(day) {mutableListOf()}
-                                            .add(plog)
-                                    }
-                                }
-                            }
-                        }
-                    } catch(e: Throwable) {
-                        
-                    }
+                selectedFlats.forEach {flat ->
+                    addNewEventsByDay(day, flat)
                 }
 
                 _eventsByDaysFilter[day]?.sortByDescending {eventLogData ->
@@ -320,6 +298,50 @@ class EventLogViewModel(
                 lastLoadedDayFilterIndex.value = _lastLoadedDayFilterIndex
                 isLoading = false
             }
+        }
+    }
+
+    private suspend fun addNewEventsByDay(
+        day: LocalDate,
+        flat: Flat
+    ) {
+        try {
+            val dayFormat = day.format(DateTimeFormatter.ofPattern(DAY_FORMAT))
+            val cacheKey = "${dayFormat}_${flat.flatId}"
+            if (cacheEvents.containsKey(cacheKey) && day != LocalDate.now()) {
+                Timber.d("__Q__ from cache $cacheKey")
+                cacheEvents[cacheKey]?.let { logDataList ->
+                    logDataList.forEach { logElement ->
+                        if (filterEventType.contains(logElement.eventType)) {
+                            _eventsByDaysFilter.getOrPut(day) { mutableListOf() }
+                                .add(logElement)
+                        }
+                    }
+                }
+            } else {
+                Timber.d("__Q__ from server $cacheKey")
+                cacheEvents[cacheKey] = mutableListOf()
+                addressInteractor.plog(flat.flatId, dayFormat)?.let { plogResponse ->
+                    plogResponse.data.forEach { plog ->
+                        if (flat.flatNumber.isNotEmpty()) {
+                            plog.address = address + ", кв. ${flat.flatNumber}"
+                        } else {
+                            plog.address = address
+                        }
+                        if (plog.mechanizmaDescription.isNotEmpty()) {
+                            plog.address += " [${plog.mechanizmaDescription}]"
+                        }
+                        plog.frsEnabled = flat.frsEnabled
+                        cacheEvents.getOrPut(cacheKey) { mutableListOf() }.add(plog)
+                        if (filterEventType.contains(plog.eventType)) {
+                            _eventsByDaysFilter.getOrPut(day) { mutableListOf() }
+                                .add(plog)
+                        }
+                    }
+                }
+            }
+        } catch (_: Throwable) {
+
         }
     }
 

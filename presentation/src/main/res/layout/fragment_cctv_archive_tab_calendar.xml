@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fillViewport="true"
-    tools:context=".ui.main.address.cctv_video.detail.arhive.CCTVArchiveTab">
+    tools:context=".ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -29,7 +29,8 @@
                 android:padding="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_right_calendar" />
+                app:srcCompat="@drawable/ic_arrow_right_calendar"
+                tools:ignore="ContentDescription" />
 
             <ImageView
                 android:id="@+id/monthBack"
@@ -40,7 +41,8 @@
                 android:padding="10dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_arrow_left_calendar" />
+                app:srcCompat="@drawable/ic_arrow_left_calendar"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/monthTitle"

@@ -44,8 +44,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
 
     private var shouldVibrate = false
-    var remoteVideoEnabled = false
 
+    @Suppress("DEPRECATION")
     private var mCoreListener = object : CoreListenerStub() {
         override fun onRegistrationStateChanged(
             core: Core,
@@ -65,14 +65,6 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             super.onRegistrationStateChanged(core, proxyConfig, state, message)
         }
 
-        private fun isAppVisible(): Boolean {
-            return ProcessLifecycleOwner
-                .get()
-                .lifecycle
-                .currentState
-                .isAtLeast(Lifecycle.State.STARTED)
-        }
-
         override fun onCallStateChanged(
             core: Core,
             call: Call,
@@ -82,29 +74,10 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             Timber.d("debug_dmm call_state: $state message: $message")
             val cState = CCallState(state, message, call, core)
             callState.value = cState
+
             when (cState.state) {
                 CallStateSimple.INCOMING -> {
-                    call.let { _ ->
-                        fcmData?.let { data ->
-                            if (!isAppVisible()) {
-                                sendCallNotification(data, service, preferenceStorage)
-                            } else {
-                                val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                    val notification = notificationManager.getNotificationChannel(FirebaseMessagingService.CHANNEL_CALLS_ID)
-                                    shouldVibrate = notification?.shouldVibrate() ?: false
-                                }
-                                val intent =
-                                    Intent(service, IncomingCallActivity::class.java).apply {
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                                        putExtra(FCM_DATA, data)
-                                    }
-                                service.startActivity(intent)
-                            }
-                            startRinging()
-                            remoteVideoEnabled = call.remoteParams?.isVideoEnabled ?: false
-                        }
-                    }
+                    notifyIncomingCall()
                 }
                 CallStateSimple.END,
                 CallStateSimple.ERROR -> {
@@ -122,6 +95,36 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         }
     }
 
+    private fun isAppVisible(): Boolean {
+        return ProcessLifecycleOwner
+            .get()
+            .lifecycle
+            .currentState
+            .isAtLeast(Lifecycle.State.STARTED)
+    }
+
+    private fun notifyIncomingCall() {
+        val data = fcmData ?: return
+
+        if (!isAppVisible()) {
+            sendCallNotification(data, service, preferenceStorage)
+        } else {
+            val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                val notification =
+                    notificationManager.getNotificationChannel(FirebaseMessagingService.CHANNEL_CALLS_ID)
+                shouldVibrate = notification?.shouldVibrate() ?: false
+            }
+            val intent =
+                Intent(service, IncomingCallActivity::class.java).apply {
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                    putExtra(FCM_DATA, data)
+                }
+            service.startActivity(intent)
+        }
+        startRinging()
+    }
+
     fun setNativeVideoWindowId(videoWindow: View) {
         core.nativeVideoWindowId = videoWindow
     }
@@ -135,6 +138,13 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     fun isConnected(): Boolean {
         return callState.value?.state == CallStateSimple.CONNECTED ||
             callState.value?.state == CallStateSimple.OTHER_CONNECTED
+    }
+
+
+    fun isVideoCall(): Boolean = if (isConnected()) {
+        core.currentCall?.params?.isVideoEnabled ?: false
+    } else {
+        false
     }
 
     fun listenAndGetNotifications(pendingData: FcmCallData) {
@@ -155,6 +165,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     private fun startRinging() {
         currentRingtone?.play()
         if (shouldVibrate) {
+            @Suppress("DEPRECATION")
             mAudioManager.vibrator?.vibrate(FirebaseMessagingService.CALL_VIBRATION_PATTERN, 0)
         }
     }
@@ -211,7 +222,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             core.let { core ->
                 core.removeListener(mCoreListener)
                 val mAccountCreator = core.createAccountCreator(null)
-                val cfg = config.setAccount(mAccountCreator).createProxyConfig()
+                @Suppress("DEPRECATION") val cfg = config.setAccount(mAccountCreator).createProxyConfig()
                 core.addProxyConfig(cfg!!)
                 core.ringback = null
                 core.ring = null

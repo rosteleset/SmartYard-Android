@@ -494,4 +494,5 @@
     <string name="dialog_face_cancel">Չեղարկել</string>
     <string name="title_add_face">Ավելացնել այս դեռևստանիչը։</string>
     <string name="add_face">Ավելացնել</string>
+    <string name="text_no_image">Պատկեր չկա</string>
 </resources>

@@ -8,28 +8,29 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import com.sesameware.smartyard_oem.EventObserver
-import org.threeten.bp.LocalDate
-import org.threeten.bp.YearMonth
-import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailArchiveBinding
+import com.sesameware.smartyard_oem.databinding.FragmentCctvArchiveTabCalendarBinding
 import com.sesameware.smartyard_oem.daysOfWeekFromLocale
 import com.sesameware.smartyard_oem.setTextColorRes
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVDetailFragment
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVDetailFragmentDirections
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CalendarDayBinder
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.isDateInAvailableRanges
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.threeten.bp.LocalDate
+import org.threeten.bp.YearMonth
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import java.util.*
 
-class CCTVArchiveTab : Fragment() {
-    private var _binding: FragmentCctvDetailArchiveBinding? = null
+class CCTVArchiveTabCalendarFragment : Fragment() {
+    private var _binding: FragmentCctvArchiveTabCalendarBinding? = null
     private val binding get() = _binding!!
 
     private lateinit var rangeDays: ClosedRange<LocalDate>
@@ -44,7 +45,7 @@ class CCTVArchiveTab : Fragment() {
 
     companion object {
         fun newInstance(
-        ) = CCTVArchiveTab().apply {
+        ) = CCTVArchiveTabCalendarFragment().apply {
             Timber.d("debug_dmm __new instance $this")
         }
     }
@@ -54,7 +55,7 @@ class CCTVArchiveTab : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View  {
-        _binding = FragmentCctvDetailArchiveBinding.inflate(inflater, container, false)
+        _binding = FragmentCctvArchiveTabCalendarBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -98,10 +99,24 @@ class CCTVArchiveTab : Fragment() {
     }
 
     private fun clickOnDate(date: LocalDate) {
+//        if (rangeDays.contains(date) && isDateInAvailableRanges(date, mCCTVViewModel.availableRanges)) {
+//            selectDate(date)
+//            (parentFragment as CCTVDetailFragment).navigateToCCTVTrimmerFragment(date)
+//        }
         if (rangeDays.contains(date) && isDateInAvailableRanges(date, mCCTVViewModel.availableRanges)) {
             selectDate(date)
-            (parentFragment as CCTVDetailFragment).archiveCallback(date)
+            navigateToCCTVArchivePlayerFragment(date)
         }
+    }
+
+    private fun navigateToCCTVArchivePlayerFragment(chosenDate: LocalDate) {
+        val action =
+            CCTVDetailFragmentDirections.actionCCTVDetailFragmentToCCTVArchivePlayerFragment(
+                chosenDate,
+                mCCTVViewModel.startDate
+            )
+
+        findNavController().navigate(action)
     }
 
     private fun refreshArchiveCalendar() {

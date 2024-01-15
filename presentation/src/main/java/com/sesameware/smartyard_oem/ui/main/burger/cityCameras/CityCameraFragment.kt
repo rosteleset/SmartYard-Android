@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.sesameware.smartyard_oem.ui.main.burger.cityCameras
 
+import android.annotation.SuppressLint
 import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -15,13 +18,14 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.sesameware.domain.model.response.MediaServerType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -63,6 +67,12 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        bindViews()
+
+        setupObservers()
+    }
+
+    private fun bindViews() {
         binding.ivCityCameraBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
@@ -88,9 +98,6 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             binding.llCityCameraMain.layoutParams = lp2
             binding.llCityCameraMain.requestLayout()
         }
-        if (viewModel.isFullscreen) {
-            setFullScreenMode()
-        }
 
         binding.zlCityCamera.setSingleTapConfirmedListener {
             if (mPlayer?.isIdle() == true) {
@@ -102,7 +109,17 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             this.findNavController().navigate(R.id.action_cityCameraFragment_to_requestRecordFragment)
         }
 
-        setupObservers()
+        binding.ivCityCameraFullscreen.setOnClickListener {
+            viewModel.isFullscreen.value?.let {
+                viewModel.setFullscreen(!it)
+            }
+        }
+
+        binding.mMute.setOnClickListener {
+            viewModel.isMuted.value?.let {
+                viewModel.mute(!it)
+            }
+        }
     }
 
     override fun onDestroyView() {
@@ -129,6 +146,15 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
     }
 
+    override fun onStop() {
+        super.onStop()
+
+        mPlayer?.stop()
+        Timber.d("__Q__   releasePlayer from onStop")
+        releasePlayer()
+        viewModel.mute(true)
+    }
+
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
@@ -136,8 +162,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     }
 
     override fun onExitFullscreen() {
-        if (viewModel.isFullscreen) {
-            setNormalMode()
+        if (viewModel.isFullscreen.value == true) {
+            viewModel.setFullscreen(false)
         }
     }
 
@@ -151,8 +177,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                     binding.tvCityCameraTitle.text = this.name.substring(0, slash).trim()
                     binding.tvCityCameraTitleSub.text = this.name.substring(slash + 1).trim()
                 } else {
-                    binding.tvCityCameraTitle.text = this.name;
-                    binding.tvCityCameraTitleSub.text = this.name;
+                    binding.tvCityCameraTitle.text = this.name
+                    binding.tvCityCameraTitleSub.text = this.name
                 }
 
                 viewModel.getEvents(it.id) {
@@ -167,6 +193,26 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                     }
                     setupEventAdapter()
                 }
+            }
+        }
+
+        viewModel.isFullscreen.observe(
+            viewLifecycleOwner
+        ) { fullscreen ->
+            if (fullscreen) {
+                setFullscreenMode()
+            } else {
+                setNormalMode()
+            }
+        }
+
+        viewModel.isMuted.observe(
+            viewLifecycleOwner
+        ) { mute ->
+            if (mute) {
+                mute()
+            } else {
+                unMute()
             }
         }
     }
@@ -302,6 +348,11 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
                 viewModel.showGlobalError(exception)
             }
+
+            override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
+                binding.mMute.isVisible = isAvailable
+                if (isAvailable) viewModel.mute(true)
+            }
         }
 
         val player = when (serverType) {
@@ -317,16 +368,17 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         p.removeView(videoView)
         p.addView(videoView, 0)
 
-        binding.ivCityCameraFullscreen.setOnClickListener {
-            viewModel.isFullscreen = !viewModel.isFullscreen
-            if (viewModel.isFullscreen) {
-                setFullScreenMode()
-            } else {
-                setNormalMode()
-            }
-        }
-
         return player
+    }
+
+    private fun unMute() {
+        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_on_24px)
+        mPlayer?.unMute()
+    }
+
+    private fun mute() {
+        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_off_24px)
+        mPlayer?.mute()
     }
 
     private fun changeVideoSource(hls_url: String) {
@@ -340,7 +392,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
     }
 
-    private fun setFullScreenMode() {
+    private fun setFullscreenMode() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         //сохраняем дефолтный layout
@@ -367,6 +419,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         (binding.pvCityCamera.parent as ZoomLayout).resetZoom()
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun setNormalMode() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)

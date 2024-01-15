@@ -1,5 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
@@ -8,6 +9,7 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,13 +21,14 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.Player
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
@@ -37,19 +40,20 @@ import com.sesameware.lib.timeInMs
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.clamp
-import com.sesameware.smartyard_oem.databinding.FragmentCctvTrimmerBinding
+import com.sesameware.smartyard_oem.databinding.FragmentCctvArchivePlayerBinding
 import com.sesameware.smartyard_oem.removeTrailingZeros
 import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
+import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.UserInteractionListener
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVTrimmerViewModel.Companion.dialogPrepareVideo
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVArchivePlayerViewModel.Companion.dialogPrepareVideo
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.TimeFragmentButtonsAdapter
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import timber.log.Timber
 
-class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
-    private var _binding: FragmentCctvTrimmerBinding? = null
+class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFullscreenListener {
+    private var _binding: FragmentCctvArchivePlayerBinding? = null
     private val binding get() = _binding!!
 
     private var mPlayer: BaseCCTVPlayer? = null
@@ -58,11 +62,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
     private val mDateFormatter = DateTimeFormatter.ofPattern("dd.MM.yy")
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
-    private val mViewModel by viewModel<CCTVTrimmerViewModel>()
-    private var mCurrentPlaybackData: CCTVTrimmerViewModel.PlayerIntervalChangeData? = null
+    private val mViewModel by viewModel<CCTVArchivePlayerViewModel>()
+    private var mCurrentPlaybackData: CCTVArchivePlayerViewModel.PlayerIntervalChangeData? = null
 
+    @Suppress("DEPRECATION")
     private var mExoPlayerView: PlayerView? = null
-    private var mExoPlayerFullscreen = false
 
     //для полноэкранного режима
     private var lpContentWrap: ViewGroup.LayoutParams? = null
@@ -70,7 +74,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private var lpRangeSlider: ViewGroup.LayoutParams? = null
     private var playerResizeMode: Int = 0
     private var areVideoControllersShown = false
-    private val hideVideoControllersHandler = Handler()
+    private val hideVideoControllersHandler = Handler(Looper.getMainLooper())
     private val hideVideoControllersRunnable = Runnable {
         hideVideoControllers()
     }
@@ -207,7 +211,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     override fun onUserInteraction() {
-        if (mExoPlayerFullscreen) {
+        if (mCCTVViewModel.isFullscreen.value == true) {
             resetInactiveTimer()
         }
     }
@@ -218,17 +222,19 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     private fun hideVideoControllers() {
-        if (mExoPlayerFullscreen) {
+        if (mCCTVViewModel.isFullscreen.value == true) {
             binding.contentWrap.visibility = View.GONE
             binding.mFullScreens.visibility = View.GONE
+            binding.mMute.visibility = View.GONE
             areVideoControllersShown = false
         }
     }
 
     private fun showVideoControllers() {
-        if (mExoPlayerFullscreen) {
+        if (mCCTVViewModel.isFullscreen.value == true) {
             binding.contentWrap.visibility = View.VISIBLE
             binding.mFullScreens.visibility = View.VISIBLE
+            binding.mMute.visibility = View.VISIBLE
             areVideoControllersShown = true
             resetInactiveTimer()
         }
@@ -240,12 +246,12 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         savedInstanceState: Bundle?
     ): View {
         (activity as? MainActivity)?.setUserInteractionListener(this)
-        _binding = FragmentCctvTrimmerBinding.inflate(inflater, container, false)
+        _binding = FragmentCctvArchivePlayerBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onDestroyView() {
-        if (mExoPlayerFullscreen) {
+        if (mCCTVViewModel.isFullscreen.value == true) {
             (activity as? MainActivity)?.showSystemUI()
         }
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -254,11 +260,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         super.onDestroyView()
     }
 
-    @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        @Suppress("DEPRECATION")
         super.onActivityCreated(savedInstanceState)
         requireNotNull(arguments).let {
-            chosenDate = CCTVTrimmerFragmentArgs.fromBundle(it).chosenDate
+            chosenDate = CCTVArchivePlayerFragmentArgs.fromBundle(it).chosenDate
         }
 
         val camera = mCCTVViewModel.chosenCamera.value
@@ -340,6 +346,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         binding.rangePlayer.setupRV(requireContext())
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun setNormalMode() {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             binding.contentWrap.visibility = View.VISIBLE
@@ -399,7 +406,15 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             this.findNavController().popBackStack()
         }
         binding.mFullScreens.setOnClickListener {
-            mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
+            mCCTVViewModel.isFullscreen.value?.let {
+                mCCTVViewModel.setFullscreen(!it)
+            }
+        }
+
+        binding.mMute.setOnClickListener {
+            mCCTVViewModel.isMuted.value?.let {
+                mCCTVViewModel.mute(!it)
+            }
         }
         binding.tvTitle.text = getString(R.string.cctv_video_from_date, chosenDate.format(mDateFormatter))
         binding.rvTimeFragmentButtons.apply {
@@ -448,7 +463,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             mViewModel.pressMainButton(context)
         }
         binding.btnToPlayMode.setOnClickListener {
-            mViewModel.changeUIMode(CCTVTrimmerViewModel.UiMode.Play)
+            mViewModel.changeUIMode(CCTVArchivePlayerViewModel.UiMode.Play)
         }
         binding.btnStepPlus.setOnClickListener {
             binding.rangeTrimmer.slider.interval?.let {
@@ -480,6 +495,12 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
     }
 
+    override fun onExitFullscreen() {
+        if (mCCTVViewModel.isFullscreen.value == true) {
+            mCCTVViewModel.setFullscreen(false)
+        }
+    }
+
     override fun onStart() {
         super.onStart()
         Timber.d("__Q__   createPlayer from onStart")
@@ -492,6 +513,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     override fun onStop() {
         super.onStop()
 
+        mCCTVViewModel.mute(true)
         mViewModel.stopVideoPlay()
         Timber.d("__Q__   releasePlayer from onStop")
         releasePlayer()
@@ -579,8 +601,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         ) { mode ->
             mode?.run {
                 when (this) {
-                    CCTVTrimmerViewModel.UiMode.Trim -> setTrimMode(true)
-                    CCTVTrimmerViewModel.UiMode.Play -> setTrimMode(false)
+                    CCTVArchivePlayerViewModel.UiMode.Trim -> setTrimMode(true)
+                    CCTVArchivePlayerViewModel.UiMode.Play -> setTrimMode(false)
                 }
             }
         }
@@ -637,14 +659,23 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             view?.findViewById<ImageView>(R.id.mPreview)?.setImageBitmap(image)
         }
 
-        mCCTVViewModel.stateFullScreen.observe(
+        mCCTVViewModel.isFullscreen.observe(
             viewLifecycleOwner
-        ) {
-            mExoPlayerFullscreen = it
-            if (it) {
+        ) { fullscreen ->
+            if (fullscreen) {
                 setFullscreenMode()
             } else {
                 setNormalMode()
+            }
+        }
+
+        mCCTVViewModel.isMuted.observe(
+            viewLifecycleOwner
+        ) { mute ->
+            if (mute) {
+                mute()
+            } else {
+                unMute()
             }
         }
 
@@ -665,12 +696,23 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
     }
 
+    private fun unMute() {
+        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_on_24px)
+        mPlayer?.unMute()
+    }
+
+    private fun mute() {
+        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_off_24px)
+        mPlayer?.mute()
+    }
+
     private fun setTrimMode(active: Boolean) {
         view?.findViewById<ImageView>(R.id.mPreview)?.show(active)
         binding.panelTrim.show(active)
         binding.panelPlay.show(!active)
         binding.btnMainAction.setText(if (active) R.string.cctv_download_and_get_link else R.string.cctv_choose_fragment)
         binding.mFullScreens.isVisible = !active
+        binding.mMute.isVisible = !active
         binding.rangePlayer.show(!active, true)
         binding.rangeTrimmer.show(active, true)
         binding.rvTimeFragmentButtonsWrap.show(!active)
@@ -678,7 +720,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
     private fun createPlayer(
         serverType: MediaServerType?,
-        videoView: PlayerView
+        @Suppress("DEPRECATION") videoView: PlayerView
     ): BaseCCTVPlayer {
         Timber.d("__Q__ createPlayer()")
 
@@ -757,6 +799,11 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
 
                 mCCTVViewModel.showGlobalError(exception)
             }
+
+            override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
+                binding.mMute.isVisible = isAvailable
+                if (isAvailable) mCCTVViewModel.mute(true)
+            }
         }
 
         val player = when (serverType) {
@@ -772,7 +819,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         p.addView(videoView, 0)
 
         binding.zlArchive.setSingleTapConfirmedListener {
-            if (mExoPlayerFullscreen) {
+            if (mCCTVViewModel.isFullscreen.value == true) {
                 if (areVideoControllersShown) {
                     hideVideoControllers()
                 } else {
@@ -785,7 +832,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         binding.zlArchive.setDoubleTapConfirmedListener { x_pos ->
             if (mPlayer?.isReady() == true && x_pos != null) {
                 var currentPosition = playerCurrentPosition()
-                var seekStep = CCTVTrimmerViewModel.SEEK_STEP
+                var seekStep = CCTVArchivePlayerViewModel.SEEK_STEP
                 if (x_pos.toInt() < binding.zlArchive.width / 2) {
                     seekStep = -seekStep
                 }
@@ -812,8 +859,9 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private fun prepareMedia(seekMediaTo: Long = 0, doPlay: Boolean = false) {
         mViewModel.showVideoLoader(true)
         try {
-            val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRanges[currentArchiveRangeIndex].from, archiveRanges[currentArchiveRangeIndex].durationSeconds, DataModule.serverTz)
-            mPlayer?.prepareMedia(hls, archiveRanges[currentArchiveRangeIndex].fromUtc, archiveRanges[currentArchiveRangeIndex].durationSeconds, seekMediaTo, doPlay)
+            val archiveRange = archiveRanges[currentArchiveRangeIndex]
+            val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRange.from, archiveRange.durationSeconds, DataModule.serverTz)
+            mPlayer?.prepareMedia(hls, archiveRange.fromUtc, archiveRange.durationSeconds, seekMediaTo, doPlay)
         } catch (e: Throwable) {
             mViewModel.showVideoLoader(false)
             mViewModel.handleError(e)
@@ -821,7 +869,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     }
 
     private fun changeVideoSource(
-        data: CCTVTrimmerViewModel.PlayerIntervalChangeData
+        data: CCTVArchivePlayerViewModel.PlayerIntervalChangeData
     ) {
         mCurrentPlaybackData = data
 

@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Main -->
     <string name="app_name">Teledom</string>
@@ -71,7 +71,7 @@
     <string name="dialog_title">Enable guest access for an hour?</string>
     <string name="dialog_message">Anyone dialing your apartment number on the intercom will have the door automatically unlocked for 60 minutes. After this time, the intercom will return to its standard mode automatically.</string>
     <string name="dialog_yes">TURN ON</string>
-    <string name="dialog_no">CANCEL</string>
+    <string name="dialog_no" tools:ignore="ButtonCase">CANCEL</string>
     <string name="dialog_sms">Information for the guest has been successfully sent!</string>
     <string name="addresses_video_cameras">Video cameras</string>
     <string name="addresses_events">Events</string>
@@ -499,4 +499,5 @@
     <string name="dialog_face_cancel">Cancel</string>
     <string name="title_add_face">Add this face?</string>
     <string name="add_face">Add</string>
+    <string name="text_no_image">No Image</string>
 </resources>

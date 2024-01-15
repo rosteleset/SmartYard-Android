@@ -496,4 +496,5 @@
     <string name="dialog_face_cancel">Бас тарту</string>
     <string name="title_add_face">Бұл бетті қосу керек пе??</string>
     <string name="add_face">Қосу</string>
+    <string name="text_no_image">Сурет жоқ</string>
 </resources>

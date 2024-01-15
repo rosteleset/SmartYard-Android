@@ -5,7 +5,7 @@
     android:id="@+id/flVideoPlayback"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.main.address.cctv_video.CCTVTrimmerFragment">
+    tools:context=".ui.main.address.cctv_video.CCTVArchivePlayerFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/clVideoPlayback"
@@ -20,7 +20,8 @@
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/ivBack"
@@ -32,7 +33,8 @@
             android:src="@drawable/ic_back_arrow"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintVertical_bias="0.0"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tvTitle"
@@ -68,7 +70,7 @@
                 android:layout_height="match_parent"
                 android:background="@color/white"
                 android:fillViewport="true"
-                tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTab">
+                tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTabFragment">
 
                 <LinearLayout
                     android:id="@+id/llControls"
@@ -118,7 +120,8 @@
                             android:layout_marginStart="32dp"
                             android:alpha="0"
                             android:src="@drawable/ic_backward_15"
-                            android:visibility="invisible" />
+                            android:visibility="invisible"
+                            tools:ignore="ContentDescription" />
 
                         <ImageView
                             android:id="@+id/ivForwardArchive"
@@ -128,7 +131,8 @@
                             android:layout_marginEnd="32dp"
                             android:alpha="0"
                             android:src="@drawable/ic_forward_15"
-                            android:visibility="invisible" />
+                            android:visibility="invisible"
+                            tools:ignore="ContentDescription" />
 
                         <com.sesameware.lib.RangeSlider
                             android:id="@+id/rangePlayer"
@@ -153,7 +157,19 @@
                             android:layout_gravity="end"
                             android:layout_marginTop="12dp"
                             android:layout_marginEnd="12dp"
-                            android:background="@drawable/ic_cctv_enter_fullscreen" />
+                            android:background="@drawable/ic_cctv_enter_fullscreen"
+                            tools:ignore="ContentDescription" />
+
+                        <ImageButton
+                            android:id="@+id/mMute"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="top|start"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginStart="12dp"
+                            android:background="@drawable/ic_cctv_volume_on_24px"
+                            android:visibility="gone"
+                            tools:ignore="ContentDescription" />
 
                         <com.sesameware.lib.RangeSlider
                             android:id="@+id/rangeTrimmer"
@@ -193,7 +209,8 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/ic_cctv_time_gradient_start"
                             android:focusable="false"
-                            app:layout_constraintStart_toStartOf="parent" />
+                            app:layout_constraintStart_toStartOf="parent"
+                            tools:ignore="ContentDescription" />
 
                         <ImageView
                             android:id="@+id/gradMiddle"
@@ -201,7 +218,8 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/ic_cctv_time_gradient_middle"
                             android:focusable="false"
-                            app:layout_constraintStart_toEndOf="@id/gradStart" />
+                            app:layout_constraintStart_toEndOf="@id/gradStart"
+                            tools:ignore="ContentDescription" />
 
                         <ImageView
                             android:id="@+id/gradEnd"
@@ -209,7 +227,8 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/ic_cctv_time_gradient_end"
                             android:focusable="false"
-                            app:layout_constraintEnd_toEndOf="parent" />
+                            app:layout_constraintEnd_toEndOf="parent"
+                            tools:ignore="ContentDescription" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
@@ -245,7 +264,8 @@
                             android:id="@+id/btnPlay"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:background="@drawable/ic_cctv_p_button" />
+                            android:background="@drawable/ic_cctv_p_button"
+                            tools:ignore="ContentDescription" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -288,7 +308,8 @@
                                 android:id="@+id/btnStepMinus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ic_cctv_minus_15" />
+                                android:background="@drawable/ic_cctv_minus_15"
+                                tools:ignore="ContentDescription" />
                         </LinearLayout>
 
                         <ImageButton
@@ -296,7 +317,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical"
-                            android:background="@drawable/ic_video_camera" />
+                            android:background="@drawable/ic_video_camera"
+                            tools:ignore="ContentDescription" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -309,7 +331,8 @@
                                 android:id="@+id/btnStepPlus"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:background="@drawable/ic_cctv_plus_15" />
+                                android:background="@drawable/ic_cctv_plus_15"
+                                tools:ignore="ContentDescription" />
                         </LinearLayout>
                     </LinearLayout>
 

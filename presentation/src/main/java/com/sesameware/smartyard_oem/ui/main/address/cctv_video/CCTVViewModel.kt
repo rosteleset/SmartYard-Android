@@ -4,8 +4,10 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.os.Parcelable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
+import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.DataModule
 import kotlinx.parcelize.Parcelize
@@ -61,8 +63,12 @@ class CCTVViewModel(
     val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
     var chosenGroupName: String? = null
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)
+    val chosenCameraDistinct = chosenCamera.distinctUntilChanged()
     var initialThumb: Bitmap? = null
-    var stateFullScreen = MutableLiveData<Boolean>()
+    private val _isFullScreen = MutableLiveData<Boolean>(false)
+    val isFullscreen: LiveData<Boolean> get() = _isFullScreen
+    private val _isMuted = MutableLiveData<Boolean>(true)
+    val isMuted: LiveData<Boolean> get() = _isMuted
     var closedRangeCalendar = MutableLiveData<Event<ClosedRange<LocalDate>>>()
 
     var endDate: LocalDate = LocalDate.now(ZoneId.of(DataModule.serverTz))
@@ -71,11 +77,16 @@ class CCTVViewModel(
     //доступные интервалы архива для выбранной камеры
     var availableRanges = mutableListOf<AvailableRange>()
 
-    fun fullScreen(flag: Boolean) {
-        stateFullScreen.value = flag
+    var currentTabId = ONLINE_TAB_POSITION
+
+    fun setFullscreen(flag: Boolean) {
+        _isFullScreen.value = flag
     }
 
-    var currentTabId = ONLINE_TAB_POSITION
+    fun mute(flag: Boolean) {
+        _isMuted.value = flag
+        Timber.d("__Q__   isMuted = ${_isMuted.value}")
+    }
 
     private fun getDateTime(s: Long): String? {
         return try {

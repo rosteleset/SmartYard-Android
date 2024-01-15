@@ -1,5 +1,7 @@
 package com.sesameware.smartyard_oem.ui.main.burger.cityCameras
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.DataModule
@@ -27,8 +29,19 @@ class CityCamerasViewModel(
     var cityCameraList = listOf<CCTVCityCameraData>()
     val chosenCamera = state.getLiveData<CCTVCityCameraData?>(chosenCityCamera_Key, null)
     var eventList = mutableListOf<CCTVYoutubeData>()
-    var isFullscreen = false
+    private val _isFullScreen = MutableLiveData<Boolean>(false)
+    val isFullscreen: LiveData<Boolean> get() = _isFullScreen
+    private val _isMuted = MutableLiveData<Boolean>(true)
+    val isMuted: LiveData<Boolean> get() = _isMuted
     var camerasBoundingBox: BoundingBox? = null
+
+    fun setFullscreen(flag: Boolean) {
+        _isFullScreen.value = flag
+    }
+
+    fun mute(flag: Boolean) {
+        _isMuted.value = flag
+    }
 
     fun getCityCameras(onComplete: listenerEmpty) {
         viewModelScope.withProgress {

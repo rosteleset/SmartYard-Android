@@ -6,5 +6,5 @@ typealias PlogDaysResponse = ApiResult<List<PlogDays>>?
 
 data class PlogDays(
     @Json(name = "day") val day: String,
-    @Json(name = "events") val events: Int
+    @Json(name = "events") val eventCount: Int
 )

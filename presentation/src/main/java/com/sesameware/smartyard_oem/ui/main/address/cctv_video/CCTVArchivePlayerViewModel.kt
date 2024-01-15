@@ -6,6 +6,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.os.Handler
+import android.os.Looper
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -32,7 +33,7 @@ import java.net.URL
 import java.util.Timer
 import kotlin.concurrent.fixedRateTimer
 
-class CCTVTrimmerViewModel(
+class CCTVArchivePlayerViewModel(
     private val cctvInteractor: CCTVInteractor
 ) : GenericViewModel() {
     private var mPlaybackState: Int = -1
@@ -340,7 +341,7 @@ class CCTVTrimmerViewModel(
 
     class Debounce<T> {
         private var data: T? = null
-        private val handler: Handler = Handler()
+        private val handler: Handler = Handler(Looper.getMainLooper())
         private var block: Boolean = false
         private var pending: Boolean = false
         fun doBlocking(data: T, listenerGeneric: listenerGeneric<T>) {
