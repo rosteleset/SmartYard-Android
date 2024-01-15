@@ -5,7 +5,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.domain.model.response.Plog
@@ -41,7 +40,7 @@ class EventLogChildAdapter(
         private val tvTime: TextView = itemView.findViewById(R.id.tvEventLogChildTime)
         private val vLine: View = itemView.findViewById(R.id.vEventLogChildLine)
 
-        private fun getEventTypeResource(eType: Int): Int {
+        private fun getEventTypeResource(@Plog.IntercomEvent eType: Int): Int {
             return when (eType) {
                 Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> R.drawable.ic_el_call_doorphone
                 Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> R.drawable.ic_el_call_doorphone
@@ -54,7 +53,7 @@ class EventLogChildAdapter(
             }
         }
 
-        private fun getEventTypeDescription(eType: Int): String {
+        private fun getEventTypeDescription(@Plog.IntercomEvent eType: Int): String {
             return when (eType) {
                 Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> itemView.context.getString(R.string.event_door_phone_call_unanswered)
                 Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> itemView.context.getString(R.string.event_door_phone_call_answered)

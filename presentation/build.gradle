@@ -253,5 +253,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test:runner:1.4.0'
     androidTestImplementation 'androidx.test:rules:1.4.0'
-    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.1.0'
+    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.5.3'
 }

@@ -1,5 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main.address.event_log
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -43,6 +44,7 @@ class EventLogFragment : Fragment() {
 
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
+        @Suppress("DEPRECATION")
         super.onActivityCreated(savedInstanceState)
 
         binding.spinnerEventLogType.adapter = ArrayAdapter.createFromResource(requireContext(),
@@ -101,7 +103,7 @@ class EventLogFragment : Fragment() {
                 mViewModel.currentEventItem = null
                 prevLoadedIndex = -1
 
-                mViewModel.getEventDaysFilter()
+                mViewModel.loadEventDaysFilter()
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -133,7 +135,7 @@ class EventLogFragment : Fragment() {
                     mViewModel.currentEventItem = null
                     prevLoadedIndex = -1
 
-                    mViewModel.getEventDaysFilter()
+                    mViewModel.loadEventDaysFilter()
                 }
 
                 override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -158,7 +160,7 @@ class EventLogFragment : Fragment() {
             prevLoadedIndex = -1
             mViewModel.currentEventItem = null
 
-            mViewModel.getEventDaysFilter()
+            mViewModel.loadEventDaysFilter()
         }
 
         initRecycler()
@@ -183,6 +185,7 @@ class EventLogFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initRecycler() {
         binding.rvEventLogParent.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -204,7 +207,7 @@ class EventLogFragment : Fragment() {
                 val itemCount = binding.rvEventLogParent.adapter?.itemCount ?: 0
                 if (dy > 0 && llm.findLastVisibleItemPosition() == itemCount - 1
                     && itemCount < mViewModel.eventDaysFilter.size) {
-                    mViewModel.getMoreEvents()
+                    mViewModel.loadMoreEvents()
                 }
             }
 
@@ -310,7 +313,7 @@ class EventLogFragment : Fragment() {
                             needScrollToPosition = nearestIndex
                         }
                         Timber.d("__Q__ event days: $days")
-                        mViewModel.getMoreEvents(days)
+                        mViewModel.loadMoreEvents(days)
                     }
                 }
             }

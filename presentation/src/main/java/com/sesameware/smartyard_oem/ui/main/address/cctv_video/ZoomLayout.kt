@@ -7,7 +7,7 @@ import android.view.*
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.widget.FrameLayout
 
-class MyGestureDetector(
+class ZoomLayoutOnGestureListener(
     private var singleTapListener: () -> Unit = {},
     private var doubleTapListener: (x: Float?) -> Unit = {},
     private var longPressListener: () -> Unit = {}
@@ -80,7 +80,7 @@ class ZoomLayout : FrameLayout, OnScaleGestureListener {
     @SuppressLint("ClickableViewAccessibility")
     private fun init(context: Context) {
         val scaleDetector = ScaleGestureDetector(context, this)
-        val q = GestureDetector(context, MyGestureDetector(
+        val q = GestureDetector(context, ZoomLayoutOnGestureListener(
             {
                 singleTapListener?.invoke()
             }, {

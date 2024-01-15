@@ -2,27 +2,36 @@ package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.content.Context
 import android.net.Uri
-import android.provider.ContactsContract.Data
-import com.google.android.exoplayer2.*
+import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.ExoPlayer
+import com.google.android.exoplayer2.MediaItem
+import com.google.android.exoplayer2.PlaybackException
+import com.google.android.exoplayer2.PlaybackParameters
+import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.Timeline
+import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.video.VideoSize
 import com.sesameware.data.DataModule
-import com.squareup.moshi.Json
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.FormBody
-import okhttp3.HttpUrl
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import org.json.JSONObject
-import org.threeten.bp.*
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
-import java.util.*
+import java.util.Timer
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
 
@@ -36,7 +45,10 @@ abstract class BaseCCTVPlayer {
     abstract fun setPlaybackSpeed(speed: Float)
     abstract fun isReady(): Boolean
     abstract fun isPlaying(): Boolean
+    abstract fun isEnded(): Boolean
     abstract fun isIdle(): Boolean
+    abstract fun mute()
+    abstract fun unMute()
     abstract fun prepareMedia(mediaUrl: String?, from: Long = INVALID_POSITION, mediaDuration: Long = INVALID_DURATION, seekMediaTo: Long = 0L, doPlay: Boolean = false)
     abstract fun releasePlayer()
     open var playWhenReady: Boolean = false
@@ -49,6 +61,7 @@ abstract class BaseCCTVPlayer {
         fun onPlayerError(exception: Exception) {}
         fun onRenderFirstFrame() {}
         fun onVideoSizeChanged(videoSize: VideoSize) {}
+        fun onAudioAvailabilityChanged(isAvailable: Boolean) {}
     }
 
     companion object {
@@ -65,6 +78,8 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         set(value) {
             mPlayer?.playWhenReady = value
         }
+
+    private var mCurrentVolume: Float = 1.0f
 
     init {
         createPlayer()
@@ -106,8 +121,25 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         return mPlayer?.isPlaying == true
     }
 
+    override fun isEnded(): Boolean {
+        return mPlayer?.playbackState == Player.STATE_ENDED
+    }
+
     override fun isIdle(): Boolean {
         return mPlayer?.playbackState == Player.STATE_IDLE
+    }
+
+    override fun mute() {
+        mPlayer?.let {
+            if (it.volume != 0.0f) mCurrentVolume = it.volume
+        }
+        mPlayer?.volume = 0f
+        Timber.d("__P__   Muting. Current volume = $mCurrentVolume. Player volume = ${mPlayer?.volume}")
+    }
+
+    override fun unMute() {
+        mPlayer?.volume = mCurrentVolume
+        Timber.d("__P__   Unmuting. Current volume = $mCurrentVolume. Player volume = ${mPlayer?.volume}")
     }
 
     override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
@@ -130,8 +162,9 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         return mPlayer
     }
 
+
     private fun createPlayer() {
-        Timber.d("__Q__   call createPlayer")
+        Timber.d("__P__ createPlayer called")
         val trackSelector = DefaultTrackSelector(context)
         mPlayer  = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
@@ -161,60 +194,88 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
 
-                Timber.d("debug_dmm onPlayerError")
+                Timber.d("__P__  Player error: ${error.errorCode} - ${error.message}")
                 callbacks?.onPlayerError(error)
             }
 
             override fun onTracksChanged(tracks: Tracks) {
                 super.onTracksChanged(tracks)
 
+                callbacks?.onAudioAvailabilityChanged(containsAudioTrack(tracks.groups))
+
                 if (!forceVideoTrack) {
                     return
                 }
 
-                val decoderInfo = MediaCodecUtil.getDecoderInfo(MimeTypes.VIDEO_H264, false, false)
-                val maxSupportedWidth = (decoderInfo?.capabilities?.videoCapabilities?.supportedWidths?.upper ?: 0) * RESOLUTION_TOLERANCE
-                val maxSupportedHeight = (decoderInfo?.capabilities?.videoCapabilities?.supportedHeights?.upper ?: 0) * RESOLUTION_TOLERANCE
-
-                (mPlayer?.trackSelector as? DefaultTrackSelector)?.let{ trackSelector ->
-                    trackSelector.currentMappedTrackInfo?.let { mappedTrackInfo ->
-                        for (k in 0 until mappedTrackInfo.rendererCount) {
-                            if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
-                                val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
-                                for (i in 0 until rendererTrackGroups.length) {
-                                    val tracks2 = mutableListOf<Int>()
-                                    for (j in 0 until rendererTrackGroups[i].length) {
-                                        if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
-                                            mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                            (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                    maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
-                                            tracks2.add(j)
-                                        }
-                                    }
-                                    val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks2.toIntArray())
-                                    trackSelector.setParameters(
-                                        trackSelector.buildUponParameters()
-                                            .setSelectionOverride(k, rendererTrackGroups, selectionOverride)
-                                    )
-                                }
-                            }
-                        }
-                    }
-                }
+                forcePlayableTracksSelection()
             }
 
             override fun onRenderedFirstFrame() {
                 super.onRenderedFirstFrame()
 
+                Timber.d("__P__  Player rendered first frame")
                 callbacks?.onRenderFirstFrame()
             }
 
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 super.onVideoSizeChanged(videoSize)
 
+                Timber.d("__P__  Player video size changed")
                 callbacks?.onVideoSizeChanged(videoSize)
             }
         })
+    }
+
+    private fun containsAudioTrack(trackGroups: List<Tracks.Group>): Boolean {
+        Timber.d("__P__  Player searching audio track")
+        trackGroups.forEach { group ->
+            val trackGroup = group.mediaTrackGroup
+            for (i in 0 until trackGroup.length) {
+                if (MimeTypes.isAudio(trackGroup.getFormat(i).sampleMimeType)) {
+                    return true
+                }
+            }
+        }
+        return false
+    }
+
+    // ExoPlayer не всегда подбирает читаемый трек из набора треков разного разрешения для одного видео
+    // Метод вручную собирает набор подходящих треков
+    private fun forcePlayableTracksSelection() {
+        Timber.d("__P__  Player selecting playable tracks")
+        val decoderInfo = MediaCodecUtil.getDecoderInfo(MimeTypes.VIDEO_H264, false, false)
+        val maxSupportedWidth =
+            (decoderInfo?.capabilities?.videoCapabilities?.supportedWidths?.upper ?: 0) * RESOLUTION_TOLERANCE
+        val maxSupportedHeight =
+            (decoderInfo?.capabilities?.videoCapabilities?.supportedHeights?.upper ?: 0) * RESOLUTION_TOLERANCE
+
+        (mPlayer?.trackSelector as? DefaultTrackSelector)?.let { trackSelector ->
+            trackSelector.currentMappedTrackInfo?.let { mappedTrackInfo ->
+                for (k in 0 until mappedTrackInfo.rendererCount) {
+                    if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
+                        val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
+                        for (i in 0 until rendererTrackGroups.length) {
+                            val tracks2 = mutableListOf<Int>()
+                            for (j in 0 until rendererTrackGroups[i].length) {
+                                if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
+                                    mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
+                                    (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
+                                            maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)
+                                ) {
+                                    tracks2.add(j)
+                                }
+                            }
+                            val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks2.toIntArray())
+                            @Suppress("DEPRECATION")
+                            trackSelector.setParameters(
+                                trackSelector.buildUponParameters()
+                                    .setSelectionOverride(k, rendererTrackGroups, selectionOverride)
+                            )
+                        }
+                    }
+                }
+            }
+        }
     }
 
     companion object {
@@ -240,12 +301,12 @@ abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, call
     protected var processSeeking = false
 
     init {
-        Timber.d("__Q__  call init")
+        Timber.d("__P__ init called")
         mPlayer?.addListener(object : Player.Listener {
             override fun onTimelineChanged(timeline: Timeline, reason: Int) {
                 super.onTimelineChanged(timeline, reason)
 
-                //Timber.d("__Q__  onTimelineChanged    currentPosition = ${mPlayer?.currentPosition}")
+                //Timber.d("__P__  onTimelineChanged    currentPosition = ${mPlayer?.currentPosition}")
                 isNewTimeline = true
                 internalCurrentPosition = mPlayer?.currentPosition ?: 0L
             }
@@ -257,7 +318,7 @@ abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, call
                     progressTimer = fixedRateTimer("playerTimer", false, 0, 300) {
                         launch(Dispatchers.Main) {
                             mPlayer?.let { player ->
-                                //Timber.d("__Q__ progressTimer    ${player.currentPosition}      $internalCurrentPosition     $isNewTimeline")
+                                //Timber.d("__P__ progressTimer    ${player.currentPosition}      $internalCurrentPosition     $isNewTimeline")
                                 if (player.currentPosition > internalCurrentPosition && !isNewTimeline) {
                                     val delta = player.currentPosition - internalCurrentPosition
                                     currentSegmentTimePlayed += delta
@@ -294,7 +355,7 @@ abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, call
     }
 
     override fun seekTo(position: Long) {
-        Timber.d("__Q__   call seekTo position = $position    playWhenReady = ${mPlayer?.playWhenReady}")
+        Timber.d("__P__   call seekTo position = $position    playWhenReady = ${mPlayer?.playWhenReady}")
 
         if (processSeeking) {
             return
@@ -312,7 +373,7 @@ abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, call
     }
 
     override fun currentPosition(): Long {
-        //Timber.d("__Q__   currentPosition = $currentMediaPosition")
+        //Timber.d("__P__   currentPosition = $currentMediaPosition")
         return currentMediaPosition
     }
 
@@ -358,7 +419,7 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
     }
 
     override fun setMediaSeek(doPlay: Boolean) {
-        Timber.d("__Q__    call setMediaSeek")
+        Timber.d("__P__    call setMediaSeek")
         launch(Dispatchers.IO) {
             var requestUrl = mUrl
             if (fromUtc != INVALID_POSITION) {
@@ -412,7 +473,7 @@ class ForpostPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callb
     }
 
     override fun setMediaSeek(doPlay: Boolean) {
-        Timber.d("__Q__    call setMediaSeek")
+        Timber.d("__P__    call setMediaSeek")
         launch(Dispatchers.IO) {
             val bodyBuilder = FormBody.Builder()
             mUrl.toHttpUrlOrNull()?.let { forpostUrl ->

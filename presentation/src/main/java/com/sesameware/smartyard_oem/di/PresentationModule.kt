@@ -15,7 +15,7 @@ import com.sesameware.smartyard_oem.ui.main.address.auth.AuthViewModel
 import com.sesameware.smartyard_oem.ui.main.address.auth.restoreAccess.RestoreAccessViewModel
 import com.sesameware.smartyard_oem.ui.main.address.auth.restoreAccess.codeSmsRestore.CodeSmsRestoreViewModel
 import com.sesameware.smartyard_oem.ui.main.address.availableServices.AvailableServicesViewModel
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVTrimmerViewModel
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVArchivePlayerViewModel
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 import com.sesameware.smartyard_oem.ui.main.address.inputAdress.InputAddressViewModel
@@ -79,7 +79,7 @@ object PresentationModule {
         viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CityCamerasViewModel(handle, get(), get(), get()) }
         viewModel { BurgerViewModel( get(), get(), get(), get()) }
-        viewModel { CCTVTrimmerViewModel(get()) }
+        viewModel { CCTVArchivePlayerViewModel(get()) }
         viewModel { PayAddressViewModel(get()) }
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }

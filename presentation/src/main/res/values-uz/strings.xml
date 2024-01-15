@@ -496,4 +496,5 @@
     <string name="dialog_face_cancel">Bekor qilish</string>
     <string name="title_add_face">Bu yuzni qo‘shmoqchimisiz?</string>
     <string name="add_face">Qo‘shish</string>
+    <string name="text_no_image">Rasm yo\'q</string>
 </resources>

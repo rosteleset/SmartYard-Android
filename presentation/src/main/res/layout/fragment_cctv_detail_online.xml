@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:fillViewport="true"
-    tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTab">
+    tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTabFragment">
 
 
     <LinearLayout
@@ -56,7 +56,19 @@
                 android:layout_marginTop="12dp"
                 android:layout_marginEnd="12dp"
                 android:background="@drawable/ic_cctv_enter_fullscreen"
-                android:visibility="visible" />
+                android:visibility="visible"
+                tools:ignore="ContentDescription" />
+
+            <ImageButton
+                android:id="@+id/mMute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|start"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="12dp"
+                android:background="@drawable/ic_cctv_volume_on_24px"
+                android:visibility="gone"
+                tools:ignore="ContentDescription" />
         </FrameLayout>
 
 

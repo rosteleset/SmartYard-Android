@@ -37,8 +37,8 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
         slideShowTimer = null
     }
 
-    fun switchStreamMode(on: Boolean) {
-        if (on) {
+    fun setSlideShowEnabled(isEnabled: Boolean) {
+        if (isEnabled) {
             if (mFcmCallData.videoStream.isEmpty()) {
                 playSlideShow(mFcmCallData.live)
             }
@@ -55,7 +55,7 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
 
     fun start(data: FcmCallData) {
         mFcmCallData = data
-        switchStreamMode(false)
+        setSlideShowEnabled(false)
     }
 
     fun connectedChangeStateUiAudioToSpeaker() {

@@ -19,7 +19,8 @@
             android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/ivCityCameraBack"
@@ -30,7 +31,8 @@
             android:padding="16dp"
             android:src="@drawable/ic_back_arrow"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tvCityCameraTitle"
@@ -92,9 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:focusable="true"
-                        app:resize_mode="fixed_height">
-
-                    </com.google.android.exoplayer2.ui.PlayerView>
+                        app:resize_mode="fixed_height" />
 
                 </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
 
@@ -109,13 +109,25 @@
                     android:id="@+id/ivCityCameraFullscreen"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|end"
+                    android:layout_gravity="end"
                     android:layout_marginStart="12dp"
                     android:layout_marginTop="12dp"
                     android:layout_marginEnd="12dp"
                     android:layout_marginBottom="12dp"
                     android:background="@drawable/ic_cctv_enter_fullscreen"
-                    android:visibility="visible" />
+                    android:visibility="visible"
+                    tools:ignore="ContentDescription" />
+
+                <ImageButton
+                    android:id="@+id/mMute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="12dp"
+                    android:background="@drawable/ic_cctv_volume_on_24px"
+                    android:visibility="gone"
+                    tools:ignore="ContentDescription" />
 
             </FrameLayout>
 
@@ -184,7 +196,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent">
 
-                    <Space
+                    <View
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
@@ -194,7 +206,8 @@
                         android:layout_width="20dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/ic_arrow_top" />
+                        android:src="@drawable/ic_arrow_top"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/tvCityCameraScroll"
@@ -204,7 +217,7 @@
                         android:textColor="@color/grey_100"
                         android:textSize="17sp" />
 
-                    <Space
+                    <View
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />

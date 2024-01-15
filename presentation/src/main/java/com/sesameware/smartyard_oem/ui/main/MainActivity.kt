@@ -1,5 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.NotificationManager
 import android.content.ActivityNotFoundException
@@ -21,7 +22,6 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
@@ -98,6 +98,7 @@ class MainActivity : CommonActivity() {
         appVersion()
         val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
         ViewCompat.setOnApplyWindowInsetsListener(binding.relativeLayout) { _, insets ->
+            @Suppress("DEPRECATION")
             ViewCompat.onApplyWindowInsets(
                 binding.relativeLayout,
                 insets.replaceSystemWindowInsets(
@@ -184,7 +185,7 @@ class MainActivity : CommonActivity() {
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(notificationId)
-        val messageType = bundle.getSerializable(NOTIFICATION_MESSAGE_TYPE) as? TypeMessage
+        @Suppress("DEPRECATION") val messageType = bundle.getSerializable(NOTIFICATION_MESSAGE_TYPE) as? TypeMessage
         if (messageType != null) {
             rootingTabMessage(messageType)
         }
@@ -305,6 +306,7 @@ class MainActivity : CommonActivity() {
         return currentNavController?.value?.navigateUp() ?: false
     }
 
+    @Suppress("DEPRECATION")
     fun hideSystemUI() {
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         binding.navHostContainer.post {
@@ -318,6 +320,7 @@ class MainActivity : CommonActivity() {
         binding.bottomNav.isVisible = false
     }
 
+    @Suppress("DEPRECATION")
     fun showSystemUI() {
         window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
         binding.navHostContainer.post {
@@ -422,7 +425,7 @@ class MainActivity : CommonActivity() {
 
     private fun appVersion() {
         val pInfo: PackageInfo = this.packageManager.getPackageInfo(packageName, 0)
-        val version: String = pInfo.versionCode.toString()
+        @Suppress("DEPRECATION") val version: String = pInfo.versionCode.toString()
         mViewModel.appVersion(version)
     }
 
@@ -446,20 +449,17 @@ class MainActivity : CommonActivity() {
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onBackPressed() {
         exitFullscreenListener?.onExitFullscreen()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        if (currentNavController?.value?.currentDestination?.id == R.id.CCTVTrimmerFragment) {
-            currentNavController?.value?.popBackStack()
-        } else {
-            if (currentNavController?.value?.currentDestination?.id == R.id.eventLogDetailFragment) {
-                (supportFragmentManager.primaryNavigationFragment?.childFragmentManager
-                    ?.fragments?.first() as? EventLogDetailFragment)?.releasePlayer()
-            }
-
-            super.onBackPressed()
+        if (currentNavController?.value?.currentDestination?.id == R.id.eventLogDetailFragment) {
+            (supportFragmentManager.primaryNavigationFragment?.childFragmentManager
+                ?.fragments?.first() as? EventLogDetailFragment)?.releasePlayer()
         }
+
+        super.onBackPressed()
     }
 
     override fun onUserInteraction() {

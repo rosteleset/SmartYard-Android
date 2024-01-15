@@ -1,11 +1,16 @@
 package com.sesameware.domain.model.response
 
+import androidx.annotation.IntDef
+import androidx.annotation.StringDef
 import com.squareup.moshi.Json
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
 typealias PlogResponse = ApiResult<List<Plog>>?
 
+/**
+ * Событие домофона
+ */
 data class Plog(
     @Json(name = "date") val _date: String, // дата и время события
     @Json(name = "uuid") val uuid: String,
@@ -59,6 +64,7 @@ data class Plog(
         const val EVENT_OPEN_BY_CODE = 6
         const val EVENT_OPEN_GATES_BY_CALL = 7
 
+        const val NO_PREVIEW = 0
         const val PREVIEW_FLUSSONIC = 1
         const val PREVIEW_FRS = 2
         const val PREVIEW_BASE64 = 3
@@ -67,4 +73,29 @@ data class Plog(
         const val FLAG_CAN_DISLIKE = "canDislike"
         const val FLAG_LIKED = "liked"
     }
+
+    @IntDef(EVENT_DOOR_PHONE_CALL_UNANSWERED,
+        EVENT_DOOR_PHONE_CALL_ANSWERED,
+        EVENT_OPEN_BY_KEY,
+        EVENT_OPEN_FROM_APP,
+        EVENT_OPEN_BY_FACE,
+        EVENT_OPEN_BY_CODE,
+        EVENT_OPEN_GATES_BY_CALL)
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class IntercomEvent
+
+    @IntDef(NO_PREVIEW,
+        PREVIEW_FLUSSONIC,
+        PREVIEW_FRS,
+        PREVIEW_BASE64)
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class PreviewType
+
+    @StringDef(FLAG_CAN_LIKE,
+        FLAG_CAN_DISLIKE,
+        FLAG_LIKED)
+    @Retention(AnnotationRetention.SOURCE)
+    annotation class LikeFlag
 }
+
+

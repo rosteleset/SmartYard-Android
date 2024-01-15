@@ -34,7 +34,7 @@
                 android:visibility="invisible" />
 
             <ImageView
-                android:id="@+id/mPeekView"
+                android:id="@+id/mPeekImageView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
@@ -42,7 +42,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_placeholder_image" />
+                tools:src="@drawable/ic_placeholder_image"
+                tools:ignore="ContentDescription" />
 
             <org.webrtc.SurfaceViewRenderer
                 android:id="@+id/mWebRTCView"
@@ -70,7 +71,7 @@
             app:layout_constraintTop_toTopOf="@+id/guidelineBottom">
 
             <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                android:id="@+id/mPeekButton"
+                android:id="@+id/mPeepholeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/peek"
@@ -152,7 +153,8 @@
             android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/mPanel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_minimize" />
+            app:srcCompat="@drawable/ic_minimize"
+            tools:ignore="ContentDescription" />
 
         <LinearLayout
             android:id="@+id/mStatusWrap"

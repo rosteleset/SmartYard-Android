@@ -1,5 +1,8 @@
+@file:Suppress("DEPRECATION")
+
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail
 
+import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
@@ -13,13 +16,14 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.ExoPlaybackException
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.MediaServerType
@@ -31,14 +35,13 @@ import com.sesameware.smartyard_oem.ui.main.address.cctv_video.*
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
 import timber.log.Timber
 
-class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
+class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCctvDetailOnlineBinding? = null
     private val binding get() = _binding!!
 
     private var mPlayer: BaseCCTVPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
-    private var mExoPlayerFullscreen = false
 
     //для полноэкранного режима
     private var lpVideoWrap: ViewGroup.LayoutParams? = null
@@ -69,6 +72,21 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm __onViewCreated")
         setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
         setupObserve()
+        bindViews()
+    }
+
+    private fun bindViews() {
+        binding.mFullScreen.setOnClickListener {
+            mCCTVViewModel.isFullscreen.value?.let {
+                mCCTVViewModel.setFullscreen(!it)
+            }
+        }
+
+        binding.mMute.setOnClickListener {
+            mCCTVViewModel.isMuted.value?.let {
+                mCCTVViewModel.mute(!it)
+            }
+        }
     }
 
     private fun setFullscreenMode() {
@@ -98,6 +116,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     private fun setNormalMode() {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) {
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -144,7 +163,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private fun setupObserve() {
         Timber.d("debug_dmm call setupObserve")
 
-        mCCTVViewModel.chosenCamera.observe(
+        mCCTVViewModel.chosenCameraDistinct.observe(
             viewLifecycleOwner
         ) {
             it?.run {
@@ -153,21 +172,43 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 Timber.d("__Q__   initPlayer from chosenCamera observer")
                 initPlayer(this.serverType)
                 changeVideoSource(this)
+                binding.mMute.isVisible = false
             }
         }
 
-        mCCTVViewModel.stateFullScreen.observe(
+        mCCTVViewModel.isFullscreen.observe(
             viewLifecycleOwner
-        ) {
-            mExoPlayerFullscreen = it
+        ) { fullscreen ->
             if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-                if (it) {
+                if (fullscreen) {
                     setFullscreenMode()
                 } else {
                     setNormalMode()
                 }
             }
         }
+
+        mCCTVViewModel.isMuted.observe(
+            viewLifecycleOwner
+        ) { mute ->
+            if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
+                if (mute) {
+                    mute()
+                } else {
+                    unMute()
+                }
+            }
+        }
+    }
+
+    private fun unMute() {
+        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_on_24px)
+        mPlayer?.unMute()
+    }
+
+    private fun mute() {
+        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_off_24px)
+        mPlayer?.mute()
     }
 
     private fun createPlayer(
@@ -189,6 +230,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 if (mPlayer?.playWhenReady == true) {
                     activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
+                mute()
             }
 
             override fun onPlayerStateEnded() {
@@ -238,6 +280,10 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
                 mCCTVViewModel.showGlobalError(exception)
             }
+
+            override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
+                binding.mMute.isVisible = isAvailable
+            }
         }
 
         val player = when (serverType) {
@@ -252,10 +298,6 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         val p = videoView.parent as ViewGroup
         p.removeView(videoView)
         p.addView(videoView, 0)
-
-        binding.mFullScreen.setOnClickListener {
-            mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
-        }
 
         return player
     }
@@ -280,7 +322,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     companion object {
-        fun newInstance() = CCTVOnlineTab().apply {
+        fun newInstance() = CCTVOnlineTabFragment().apply {
             Timber.d("debug_dmm __new instance $this")
         }
     }
@@ -309,10 +351,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     override fun onExitFullscreen() {
-        if (mExoPlayerFullscreen) {
-            mCCTVViewModel.fullScreen(false)
-            mExoPlayerFullscreen = false
-            setNormalMode()
+        if (mCCTVViewModel.isFullscreen.value == true) {
+            mCCTVViewModel.setFullscreen(false)
         }
     }
 
@@ -321,6 +361,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
         Timber.d("__Q__   releasePlayer from onStop")
         releasePlayer()
+        mCCTVViewModel.mute(true)
     }
 
     override fun onPause() {

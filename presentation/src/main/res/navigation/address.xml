@@ -101,21 +101,10 @@
         android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVDetailFragment"
         android:label="CCTVDetailFragment" >
         <action
-            android:id="@+id/action_CCTVDetailFragment_to_CCTVTrimmerFragment"
-            app:destination="@id/CCTVTrimmerFragment" />
+            android:id="@+id/action_CCTVDetailFragment_to_CCTVArchivePlayerFragment"
+            app:destination="@id/CCTVArchivePlayerFragment" />
     </fragment>
 
-    <fragment
-        android:id="@+id/CCTVTrimmerFragment"
-        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVTrimmerFragment"
-        android:label="CCTVTrimmerFragment" >
-        <argument
-            android:name="chosenDate"
-            app:argType="org.threeten.bp.LocalDate" />
-        <argument
-            android:name="startDate"
-            app:argType="org.threeten.bp.LocalDate" />
-    </fragment>
 
     <fragment
         android:id="@+id/restoreAccessFragment"
@@ -223,5 +212,17 @@
         <action
             android:id="@+id/action_CCTVTreeFragment_to_CCTVDetailFragment"
             app:destination="@id/CCTVDetailFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/CCTVArchivePlayerFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVArchivePlayerFragment"
+        android:label="fragment_cctv_archive_player"
+        tools:layout="@layout/fragment_cctv_archive_player">
+        <argument
+            android:name="chosenDate"
+            app:argType="org.threeten.bp.LocalDate" />
+        <argument
+            android:name="startDate"
+            app:argType="org.threeten.bp.LocalDate" />
     </fragment>
 </navigation>
