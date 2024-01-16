@@ -142,7 +142,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
 
     fun isVideoCall(): Boolean = if (isConnected()) {
-        core.currentCall?.params?.isVideoEnabled ?: false
+        core.currentCall?.remoteParams?.isVideoEnabled ?: false
     } else {
         false
     }
