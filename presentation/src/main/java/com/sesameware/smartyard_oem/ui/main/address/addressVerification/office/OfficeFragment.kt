@@ -1,13 +1,15 @@
 package com.sesameware.smartyard_oem.ui.main.address.addressVerification.office
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import com.sesameware.domain.model.response.Office
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -17,6 +19,8 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentOfficeBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.courier.CourierFragment
+import org.osmdroid.config.Configuration
+import java.io.File
 
 class OfficeFragment : Fragment() {
     private var _binding: FragmentOfficeBinding? = null
@@ -60,8 +64,14 @@ class OfficeFragment : Fragment() {
             listOffice.forEach {
                 addGeoPoint(binding.map, it.lat, it.lon, it.address)
             }
+            val offices = listOffice.toMutableList()
+            if (listOffice.size == 1) {
+                // adding fake offices for correct display
+                offices.add(Office(lat = listOffice[0].lat + 0.001, lon = listOffice[0].lon + 0.001))
+                offices.add(Office(lat = listOffice[0].lat - 0.001, lon = listOffice[0].lon - 0.001))
+            }
             binding.map.zoomToBoundingBox(
-                BoundingBox.fromGeoPoints(listOffice.map { GeoPoint(it.lat, it.lon) }),
+                BoundingBox.fromGeoPointsSafe(offices.map { GeoPoint(it.lat, it.lon) }),
                 true
             )
             binding.map.postInvalidate()
@@ -83,7 +93,24 @@ class OfficeFragment : Fragment() {
         mapView.overlays.add(marker)
     }
 
+    private fun configOsm(applicationContext: Context) {
+        Configuration.getInstance().userAgentValue = applicationContext.packageName
+        val osmConf = Configuration.getInstance()
+        val basePath = File(applicationContext.cacheDir.absolutePath, "osmdroid")
+        osmConf.osmdroidBasePath = basePath
+        val tileCache = File(osmConf.osmdroidBasePath.absolutePath, "tile")
+
+        osmConf.osmdroidTileCache = tileCache
+        Configuration.getInstance().load(
+            applicationContext,
+            PreferenceManager.getDefaultSharedPreferences(applicationContext)
+        )
+    }
+
     private fun initMap() {
+        context?.applicationContext?.let { ctx ->
+            configOsm(ctx)
+        }
         binding.map.setBuiltInZoomControls(true)
         binding.map.setMultiTouchControls(true)
     }
