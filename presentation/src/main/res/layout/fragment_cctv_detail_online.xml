@@ -20,60 +20,16 @@
         android:orientation="vertical"
         android:paddingBottom="40dp">
 
-        <FrameLayout
-            android:id="@+id/videoWrap"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/cctvPlayers"
             android:layout_width="match_parent"
             android:layout_height="222dp"
             android:layout_marginTop="24dp"
-            android:background="@drawable/background_radius_video_clip">
-
-            <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
-                android:id="@+id/zlOnline"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/mVideoView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:focusable="true"
-                    app:resize_mode="fixed_height" />
-
-            </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
-
-            <ProgressBar
-                android:id="@+id/mProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <ImageButton
-                android:id="@+id/mFullScreen"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
-                android:background="@drawable/ic_cctv_enter_fullscreen"
-                android:visibility="visible"
-                tools:ignore="ContentDescription" />
-
-            <ImageButton
-                android:id="@+id/mMute"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top|start"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="12dp"
-                android:background="@drawable/ic_cctv_volume_on_24px"
-                android:visibility="gone"
-                tools:ignore="ContentDescription" />
-        </FrameLayout>
-
+            android:orientation="horizontal"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
+            android:id="@+id/cctvButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"

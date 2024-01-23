@@ -26,6 +26,7 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -50,7 +51,7 @@ import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment.Companion.BRO
 import timber.log.Timber
 
 class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
-    private var mHandler = Handler()
+    private var mHandler = Handler(Looper.getMainLooper())
     private val preferenceStorage: PreferenceStorage by inject()
     private val mInteractor: AuthInteractor by inject()
     private val moshi: Moshi by inject()
