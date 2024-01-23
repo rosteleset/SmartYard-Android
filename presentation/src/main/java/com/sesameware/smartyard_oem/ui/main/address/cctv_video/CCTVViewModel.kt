@@ -60,6 +60,7 @@ class CCTVViewModel(
     val cameraList = state.getLiveData<List<CCTVData>?>(cameraList_Key, null)
     val cameraGroups = state.getLiveData<CCTVDataTree?>(cameraGroups_Key, null)
     val chosenIndex = state.getLiveData<Int?>(chosenIndex_Key, null)
+    val chosenIndexDistinct = chosenIndex.distinctUntilChanged()
     val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
     var chosenGroupName: String? = null
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)

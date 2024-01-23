@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/videoWrap"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_radius_video_clip">
+
+    <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
+        android:id="@+id/zlOnline"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.exoplayer2.ui.PlayerView
+            android:id="@+id/mVideoView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:focusable="true"
+            app:resize_mode="fixed_height" />
+
+    </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
+
+    <ProgressBar
+        android:id="@+id/mProgress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+
+    <ImageButton
+        android:id="@+id/mFullScreen"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="end"
+        android:background="@null"
+        app:srcCompat="@drawable/ic_cctv_enter_fullscreen"
+        android:scaleType="centerInside"
+        android:visibility="visible"
+        tools:ignore="ContentDescription" />
+
+    <ImageButton
+        android:id="@+id/mMute"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="top|start"
+        android:background="@null"
+        android:scaleType="centerInside"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_cctv_volume_on_24px"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible" />
+</FrameLayout>

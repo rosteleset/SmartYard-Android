@@ -514,3 +514,8 @@ fun Context.toast(@StringRes resId: Int, long: Boolean = true) {
     val length = if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
     Toast.makeText(this, getString(resId), length).show()
 }
+
+fun Context.toast(message: String, long: Boolean = true) {
+    val length = if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
+    Toast.makeText(this, message, length).show()
+}

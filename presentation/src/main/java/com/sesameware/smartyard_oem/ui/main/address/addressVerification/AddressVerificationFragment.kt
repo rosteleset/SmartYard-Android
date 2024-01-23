@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.tabs.TabLayoutMediator
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressVerificationBinding
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.courier.CourierFragment
@@ -31,18 +32,18 @@ class AddressVerificationFragment : Fragment() {
         binding.imageView7.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        activity?.supportFragmentManager?.let { // todo: use getChildFragmentManager instead?
-            val adapter = TabAdapter(it)
-            adapter.addFragment(
-                CourierFragment.getInstance(address),
-                resources.getString(R.string.address_verification_tab_title_1)
-            )
-            adapter.addFragment(
-                OfficeFragment.getInstance(address),
-                resources.getString(R.string.address_verification_tab_title_2)
-            )
-            binding.vpAddressVerification.adapter = adapter
-            binding.tlAddressVerification.setupWithViewPager(binding.vpAddressVerification)
-        }
+        val adapter = TabAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        adapter.addFragment(
+            { CourierFragment.getInstance(address) },
+            resources.getString(R.string.address_verification_tab_title_1)
+        )
+        adapter.addFragment(
+            { OfficeFragment.getInstance(address) },
+            resources.getString(R.string.address_verification_tab_title_2)
+        )
+        binding.vpAddressVerification.adapter = adapter
+        TabLayoutMediator(binding.tlAddressVerification, binding.vpAddressVerification) { tab, position ->
+            tab.text = adapter.getPageTitle(position)
+        }.attach()
     }
 }

@@ -17,6 +17,7 @@ class DetailButtonsAdapter(
     private val mItems: List<CCTVData>,
     private val mCallback: listenerGeneric<Int>
 ) : RecyclerView.Adapter<DetailButtonsAdapter.DetailButtonsViewHolder>() {
+    private var previousPos: Int = -1
 
     val colorWhite = ContextCompat.getColor(context, R.color.white)
     val colorBlack = ContextCompat.getColor(context, R.color.black)
@@ -35,22 +36,30 @@ class DetailButtonsAdapter(
         return mItems.size
     }
 
-    inner class DetailButtonsViewHolder constructor(itemView: View) : RecyclerView.ViewHolder
+    fun selectButton(position: Int) {
+        if (currentPos == position) return
+
+        previousPos = currentPos
+        currentPos = position
+        adapter.notifyItemChanged(previousPos)
+        adapter.notifyItemChanged(currentPos)
+//        adapter.notifyDataSetChanged()
+    }
+
+    inner class DetailButtonsViewHolder(itemView: View) : RecyclerView.ViewHolder
     (itemView) {
         private val button: TextView = itemView.findViewById(R.id.cctv_id)
 
         fun onBind(position: Int) {
             button.text = (position + 1).toString()
-            setSel(position == currentPos)
+            setSelected(position == currentPos)
             button.setOnClickListener { listener(position) }
         }
         private fun listener(position: Int) {
             mCallback(position)
-            currentPos = position
-            adapter.notifyDataSetChanged()
         }
 
-        private fun setSel(boolean: Boolean) {
+        private fun setSelected(boolean: Boolean) {
             button.isSelected = boolean
             button.setTextColor(if (boolean) colorWhite else colorBlack)
         }
