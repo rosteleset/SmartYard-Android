@@ -73,6 +73,6 @@ class ThumbView(
     }
 
     companion object {
-        private const val EXTEND_TOUCH_SLOP = 15
+        private const val EXTEND_TOUCH_SLOP = 24
     }
 }
