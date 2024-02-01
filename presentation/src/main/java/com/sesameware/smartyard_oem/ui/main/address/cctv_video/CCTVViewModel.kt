@@ -60,7 +60,6 @@ class CCTVViewModel(
     val cameraList = state.getLiveData<List<CCTVData>?>(cameraList_Key, null)
     val cameraGroups = state.getLiveData<CCTVDataTree?>(cameraGroups_Key, null)
     val chosenIndex = state.getLiveData<Int?>(chosenIndex_Key, null)
-    val chosenIndexDistinct = chosenIndex.distinctUntilChanged()
     val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
     var chosenGroupName: String? = null
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)
@@ -301,40 +300,15 @@ class CCTVViewModel(
                 return null
             }
 
-            val client = OkHttpClient()
             var imageUrl = url
-
             //forpost
             if (url.contains("/GetTranslationURL")) {
-                val bodyBuilder = FormBody.Builder()
-                url.toHttpUrlOrNull()?.let { forpostUrl ->
-                    var hasFormat = false
-                    for (i in 0 until forpostUrl.querySize) {
-                        val paramName = forpostUrl.queryParameterName(i)
-                        var paramValue = forpostUrl.queryParameterValue(i) ?: ""
-                        if (paramName.lowercase() == "format") {
-                            hasFormat = true
-                            paramValue = "JPG"
-                        }
-                        bodyBuilder.add(paramName, paramValue)
-                    }
-                    if (!hasFormat) {
-                        bodyBuilder.add("format", "JPG")
-                    }
-
-                    val request = Request.Builder()
-                        .url(forpostUrl.toString().split("?", limit = 1)[0])
-                        .post(bodyBuilder.build())
-                        .build()
-                    client.newCall(request).execute().use { response ->
-                        if (response.isSuccessful) {
-                            val json = JSONObject(response.body!!.string())
-                            imageUrl = json.optString("URL", "")
-                        }
-                    }
+                requestForpostPreview(url)?.let {
+                    imageUrl = it
                 }
             }
 
+            val client = OkHttpClient()
             val request = Request.Builder()
                 .url(imageUrl)
                 .build()
@@ -344,6 +318,40 @@ class CCTVViewModel(
                 }
             }
 
+            return null
+        }
+
+        fun requestForpostPreview(url: String): String? {
+            val client = OkHttpClient()
+            val bodyBuilder = FormBody.Builder()
+            url.toHttpUrlOrNull()?.let { forpostUrl ->
+                var hasFormat = false
+                for (i in 0 until forpostUrl.querySize) {
+                    val paramName = forpostUrl.queryParameterName(i)
+                    var paramValue = forpostUrl.queryParameterValue(i) ?: ""
+                    if (paramName.lowercase() == "format") {
+                        hasFormat = true
+                        paramValue = "JPG"
+                    }
+                    bodyBuilder.add(paramName, paramValue)
+                }
+                if (!hasFormat) {
+                    bodyBuilder.add("format", "JPG")
+                }
+
+                val request = Request.Builder()
+                    .url(forpostUrl.toString().split("?", limit = 1)[0])
+                    .post(bodyBuilder.build())
+                    .build()
+                client.newCall(request).execute().use { response ->
+                    if (response.isSuccessful) {
+                        val json = JSONObject(response.body!!.string())
+                        return json.optString("URL", "")
+                    } else {
+                        return null
+                    }
+                }
+            }
             return null
         }
     }

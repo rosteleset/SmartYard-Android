@@ -13,20 +13,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.ProgressBar
+import androidx.annotation.Px
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.google.android.exoplayer2.ui.PlayerView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.google.android.exoplayer2.ExoPlaybackException
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.smartyard_oem.R
@@ -35,10 +32,10 @@ import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.*
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
-import com.sesameware.smartyard_oem.ui.main.address.event_log.LinearHorizontalSpacingDecoration
 import com.sesameware.smartyard_oem.ui.main.address.event_log.OnSnapPositionChangeListener
 import com.sesameware.smartyard_oem.ui.main.address.event_log.SnapOnScrollListener
 import com.sesameware.smartyard_oem.ui.main.address.event_log.attachSnapHelperWithListener
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import timber.log.Timber
 
 class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
@@ -55,8 +52,10 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var canRenewToken = true
 
     private var currentViewHolder: CctvOnlineTabPlayerVH? = null
+    private var currentPosition: Int = RecyclerView.NO_POSITION
     private var cctvButtonsAdapter: DetailButtonsAdapter? = null
     private var cctvPlayersAdapter: CctvOnlineTabPlayerAdapter? = null
+    private var cctvPlayersDecoration: CctvPlayersDecoration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +72,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         (activity as? MainActivity)?.setExitFullscreenListener(null)
         cctvButtonsAdapter = null
         cctvPlayersAdapter = null
+        cctvPlayersDecoration = null
 
         super.onDestroyView()
     }
@@ -83,16 +83,19 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm __onViewCreated")
         setupCctvButtons(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
         if (mCCTVViewModel.cameraList.value != null && mCCTVViewModel.chosenIndex.value != null) {
-            setupCctvPlayers(mCCTVViewModel.cameraList.value!!.size, mCCTVViewModel.chosenIndex.value!!)
+            setupCctvPlayers()
         }
-        setupObserve()
+        setupObservers()
     }
 
-    private fun setupCctvPlayers(camerasCount: Int, selectedCamera: Int) {
+    private fun setupCctvPlayers() {
         binding.cctvPlayers.apply {
+            setHasFixedSize(true)
             val spacing = resources.getDimensionPixelSize(R.dimen.event_log_detail_spacing)
-            addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
-            cctvPlayersAdapter = CctvOnlineTabPlayerAdapter(::onAction, camerasCount)
+            cctvPlayersDecoration = CctvPlayersDecoration(spacing)
+            addItemDecoration(cctvPlayersDecoration!!)
+            val previewUrls = mCCTVViewModel.cameraList.value?.map { it.preview } ?: listOf()
+            cctvPlayersAdapter = CctvOnlineTabPlayerAdapter(::onAction, previewUrls)
             adapter = cctvPlayersAdapter
         }
 
@@ -103,12 +106,17 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
                 if (prevPosition != RecyclerView.NO_POSITION) {
                     mPlayer?.stop()
-                    currentViewHolder?.playerView?.player = null
+                    currentViewHolder?.playerView?.let {
+                        it.alpha = 0.0f
+                        it.videoSurfaceView?.isVisible = false
+                        it.videoSurfaceView?.isVisible = true
+                        it.player = null
+                    }
                 }
                 currentViewHolder = binding.cctvPlayers.findViewHolderForAdapterPosition(newPosition) as? CctvOnlineTabPlayerVH
+                currentPosition = newPosition
                 cctvButtonsAdapter!!.selectButton(newPosition)
                 mCCTVViewModel.chooseCamera(newPosition)
-
             }
         }
         binding.cctvPlayers.attachSnapHelperWithListener(
@@ -116,7 +124,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             SnapOnScrollListener.ScrollBehavior.NOTIFY_ON_SCROLL_IDLE,
             onSnapPositionChangeListener
         )
-        (binding.cctvPlayers.layoutManager as LinearLayoutManager).scrollToPosition(selectedCamera)
+        scrollToPosition(mCCTVViewModel.chosenIndex.value!!)
     }
 
     private fun setupCctvButtons(currentList: List<CCTVData>?, currentIndex: Int?) {
@@ -131,16 +139,27 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 currentIndex,
                 currentList
             ) {
-                // selectButton works when called from on Snap Position Changed only after manual scrolling,
+                // selectButton() fun works when called from onSnapPositionChanged() only after manual scrolling,
                 // so we need to add another call on button tap
                 cctvButtonsAdapter!!.selectButton(it)
-                (binding.cctvPlayers.layoutManager as LinearLayoutManager).scrollToPosition(it)
+                scrollToPosition(it)
             }
             binding.cctvButtons.adapter = cctvButtonsAdapter
         }
     }
 
-    private fun setupObserve() {
+    private fun scrollToPosition(position: Int) {
+        val lm = binding.cctvPlayers.layoutManager as LinearLayoutManager
+        (currentViewHolder?.preview?.parent as? View)?.let {
+            it.post {
+                val halfSpacing = resources.getDimensionPixelSize(R.dimen.event_log_detail_spacing) / 2
+                val offset = (binding.cctvPlayers.width - it.width) / 2
+                lm.scrollToPositionWithOffset(position, offset - halfSpacing)
+            }
+        }
+    }
+
+    private fun setupObservers() {
         Timber.d("debug_dmm call setupObserve")
 
         mCCTVViewModel.chosenCameraDistinct.observe(
@@ -162,7 +181,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 if (fullscreen) {
                     setFullscreenMode()
                 } else {
-                    setNormalMode()
+                    setWindowedMode()
                 }
             }
         }
@@ -203,6 +222,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.INVISIBLE
         (activity as? MainActivity)?.binding?.llMain?.addView(binding.cctvPlayers, 0)
+        binding.cctvPlayers.removeItemDecoration(cctvPlayersDecoration!!)
 
         (activity as? MainActivity)?.hideSystemUI()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -216,11 +236,11 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         binding.cctvPlayers.layoutParams = lp
         binding.cctvPlayers.requestLayout()
 
-
+        cctvPlayersAdapter?.setFullscreen(true)
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
-    private fun setNormalMode() {
+    private fun setWindowedMode() {
         if (activity?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) return
         
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
@@ -228,6 +248,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         (binding.cctvPlayers.parent as ViewGroup).removeView(binding.cctvPlayers)
         (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.VISIBLE
         binding.llVideoPlayback.addView(binding.cctvPlayers, 0)
+        binding.cctvPlayers.addItemDecoration(cctvPlayersDecoration!!)
 
         (activity as? MainActivity)?.showSystemUI()
 
@@ -238,6 +259,8 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         }
 
         (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white_200))
+
+        cctvPlayersAdapter?.setFullscreen(false)
     }
 
     private fun unMute() {
@@ -258,19 +281,18 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private fun createPlayer(
         serverType: MediaServerType?,
-        videoView: PlayerView,
-        progressView: ProgressBar,
-        mute: ImageView
+        viewHolder: CctvOnlineTabPlayerVH
     ): BaseCCTVPlayer {
         Timber.d("debug_dmm createPlayer()")
 
         val callbacks = object : BaseCCTVPlayer.Callbacks {
             override fun onPlayerStateReady() {
-                progressView.visibility = View.GONE
+                viewHolder.progress.visibility = View.GONE
+                viewHolder.playerView.alpha = 1.0f
                 canRenewToken = true
-                (mPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let {
+                mPlayer?.getPlayer()?.videoFormat?.let {
                     if (it.width > 0 && it.height > 0) {
-                        (videoView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
+                        (viewHolder.playerView.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
                     }
                 }
                 if (mPlayer?.playWhenReady == true) {
@@ -280,21 +302,22 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             }
 
             override fun onPlayerStateEnded() {
-                progressView.visibility = View.GONE
+                viewHolder.progress.visibility = View.GONE
                 activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
 
             override fun onPlayerStateBuffering() {
-                progressView.visibility = View.VISIBLE
+                viewHolder.progress.visibility = View.VISIBLE
+                viewHolder.playerView.alpha = 0.0f
             }
 
             override fun onPlayerStateIdle() {
-                progressView.visibility = View.GONE
+                viewHolder.progress.visibility = View.GONE
                 activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             }
 
             override fun onPlayerError(exception: Exception) {
-                progressView.visibility = View.GONE
+                viewHolder.progress.visibility = View.GONE
 
                 (exception as? ExoPlaybackException)?.let { error ->
                     if (error.type == ExoPlaybackException.TYPE_SOURCE) {
@@ -328,7 +351,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             }
 
             override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
-                mute.isVisible = isAvailable
+                viewHolder.mute.isVisible = isAvailable
             }
         }
 
@@ -337,8 +360,8 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             MediaServerType.FORPOST -> ForpostPlayer(requireContext(), forceVideoTrack, callbacks)
             else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
         }
-        videoView.player = player.getPlayer()
-        videoView.useController = false
+        viewHolder.playerView.player = player.getPlayer()
+        viewHolder.playerView.useController = false
         player.playWhenReady = true
         return player
     }
@@ -358,7 +381,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm  call initPlayer")
         val viewHolder = currentViewHolder
         if (mPlayer == null && view != null && viewHolder != null) {
-            mPlayer = createPlayer(serverType, viewHolder.playerView, viewHolder.progress, viewHolder.mute)
+            mPlayer = createPlayer(serverType, viewHolder)
         }
     }
 
@@ -430,5 +453,22 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         super.onConfigurationChanged(newConfig)
 
         (currentViewHolder?.playerView?.parent as? ZoomLayout)?.resetZoom()
+    }
+}
+
+class CctvPlayersDecoration(@Px private val innerSpacing: Int) : ItemDecoration() {
+
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        super.getItemOffsets(outRect, view, parent, state)
+        val itemPosition = parent.getChildAdapterPosition(view)
+        val halfInnerSpacing = innerSpacing / 2
+        val outerSpacing = (parent.width - view.layoutParams.width) / 2
+        outRect.left = if (itemPosition > 0) halfInnerSpacing else outerSpacing
+        outRect.right = if (itemPosition < state.itemCount - 1) halfInnerSpacing else outerSpacing
     }
 }

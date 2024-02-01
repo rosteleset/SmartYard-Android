@@ -5,7 +5,7 @@ plugins {
     id 'kotlin-parcelize'
     id 'com.google.firebase.crashlytics'
     id 'androidx.navigation.safeargs'
-    id 'com.google.devtools.ksp' version "${kspVersion}"
+    id 'com.google.devtools.ksp'
 }
 
 android {

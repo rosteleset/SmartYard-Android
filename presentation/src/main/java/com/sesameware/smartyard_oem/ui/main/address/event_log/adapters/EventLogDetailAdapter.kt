@@ -58,6 +58,6 @@ class EventLogDetailAdapter(
     }
 
     companion object {
-        const val ITEM_WIDTH_TO_RECYCLERVIEW_WIDTH_RATIO = 0.9
+        private const val ITEM_WIDTH_TO_RECYCLERVIEW_WIDTH_RATIO = 0.9
     }
 }

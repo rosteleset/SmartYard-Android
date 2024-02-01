@@ -70,6 +70,7 @@ buildscript {
         classpath 'com.google.firebase:firebase-crashlytics-gradle:2.9.9'
         classpath 'androidx.navigation:navigation-safe-args-gradle-plugin:2.7.6'
         classpath "io.insert-koin:koin-gradle-plugin:$koin_version"
+        classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$kspVersion"
     }
 }
 
