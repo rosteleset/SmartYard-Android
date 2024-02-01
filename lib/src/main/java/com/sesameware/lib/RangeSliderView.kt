@@ -157,21 +157,28 @@ class RangeSliderView(
                 val x = event.x.toInt()
                 val y = event.y.toInt()
                 mOriginalX = x
-                mLastX = mOriginalX
+                mLastX = x
                 mIsDragging = false
                 if (mTrimMode) {
                     val pressed = if (abs(x - mLeftThumb.x) < abs(x - mRightThumb.x)) mLeftThumb.press(x, y) else mRightThumb.press(x, y)
                     if (pressed) {
                         handle = true
                     }
-                } else if (mSeekThumb.press(x, y)) {
+                } else {
+                    if (!mSeekThumb.press(x, y)) {
+                        mSeekThumb.moveAndLimit(x.toFloat(), true)
+                        mSeekThumb.press(x, y)
+                        mSeekThumb.updateTimeFromPosition()
+                        mSeekThumb.invalidate()
+                        notifySeekChange()
+                    }
                     handle = true
                 }
             }
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
                 mIsDragging = false
                 mLastX = 0
-                mOriginalX = mLastX
+                mOriginalX = 0
                 parent.requestDisallowInterceptTouchEvent(false)
                 getActiveThumb()?.run {
                     this.isPressed = false
