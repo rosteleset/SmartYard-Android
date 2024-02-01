@@ -8,6 +8,13 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_radius_video_clip">
 
+    <ImageView
+        android:id="@+id/ivPreview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerInside"
+        tools:ignore="ContentDescription" />
+
     <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
         android:id="@+id/zlOnline"
         android:layout_width="match_parent"
@@ -18,6 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:alpha="0.0"
             android:focusable="true"
             app:resize_mode="fixed_height" />
 

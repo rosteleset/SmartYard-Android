@@ -14,8 +14,6 @@
         android:id="@+id/llVideoPlayback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:background="@color/white"
         android:orientation="vertical"
         android:paddingBottom="40dp">
@@ -32,9 +30,9 @@
             android:id="@+id/cctvButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
+            android:layout_marginStart="34dp"
             android:layout_marginTop="20dp"
-            android:layout_marginEnd="18dp"
+            android:layout_marginEnd="34dp"
             android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
