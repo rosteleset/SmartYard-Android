@@ -69,7 +69,7 @@ class CctvOnlineTabPlayerVH(
     fun bind(isFullscreen: Boolean, url: String) {
         this.isFullscreen = isFullscreen
         resetViews()
-        setFullscreen()
+        setFullscreen(isFullscreen)
         setPreview(url)
     }
 
@@ -134,7 +134,7 @@ class CctvOnlineTabPlayerVH(
         binding.ivPreview.setImageBitmap(null)
     }
 
-    fun setFullscreen() {
+    fun setFullscreen(isFullscreen: Boolean) {
         if (isFullscreen) {
             setFullscreenMode()
         } else {
