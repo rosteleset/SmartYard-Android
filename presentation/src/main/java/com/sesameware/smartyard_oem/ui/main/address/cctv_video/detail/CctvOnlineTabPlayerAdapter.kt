@@ -26,9 +26,11 @@ class CctvOnlineTabPlayerAdapter(
         holder.bind(isFullscreen, previewUrls[position])
     }
 
-    fun setFullscreen(isFullscreen: Boolean) {
+    fun setFullscreen(isFullscreen: Boolean, currentPos: Int) {
         this.isFullscreen = isFullscreen
-        notifyItemRangeChanged(0, previewUrls.size)
+        // notify all items except current
+        notifyItemRangeChanged(0, currentPos)
+        notifyItemRangeChanged(currentPos + 1, previewUrls.size - currentPos - 1)
     }
 
     companion object {

@@ -216,7 +216,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private fun setFullscreenMode() {
         if (activity?.requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) return
-        
+
         lpVideoWrap = LinearLayout.LayoutParams(binding.cctvPlayers.layoutParams as LinearLayout.LayoutParams)
         (binding.cctvPlayers.parent as ViewGroup).removeView(binding.cctvPlayers)
 
@@ -236,7 +236,11 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         binding.cctvPlayers.layoutParams = lp
         binding.cctvPlayers.requestLayout()
 
-        cctvPlayersAdapter?.setFullscreen(true)
+        cctvPlayersAdapter?.setFullscreen(true, currentPosition)
+        currentViewHolder?.setFullscreen(true)
+        currentViewHolder?.playerView?.post {
+            binding.cctvPlayers.scrollToPosition(currentPosition)
+        }
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
@@ -260,7 +264,11 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white_200))
 
-        cctvPlayersAdapter?.setFullscreen(false)
+        cctvPlayersAdapter?.setFullscreen(false, currentPosition)
+        currentViewHolder?.setFullscreen(false)
+        currentViewHolder?.playerView?.post {
+            scrollToPosition(currentPosition)
+        }
     }
 
     private fun unMute() {
