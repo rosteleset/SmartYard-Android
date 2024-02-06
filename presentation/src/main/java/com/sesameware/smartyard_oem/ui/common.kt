@@ -430,11 +430,9 @@ fun createIconWithText(
 
     text?.let {
         val textPaint: Paint = Paint().apply {
-            val customTypeface = ResourcesCompat.getFont(context, R.font.source_sans_pro_semi_bold)
             color = ResourcesCompat.getColor(context.resources, R.color.blue, null)
             isAntiAlias = true
             textSize = 40f
-            typeface = customTypeface
             textAlign = Paint.Align.CENTER
         }
         canvas.drawText(it, canvas.width / 2f, canvas.height / 2f + 25f, textPaint)
