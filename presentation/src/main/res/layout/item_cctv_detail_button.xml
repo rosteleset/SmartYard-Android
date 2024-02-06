@@ -15,7 +15,6 @@
         android:textAlignment="center"
         android:gravity="center"
         android:background="@drawable/ic_cctv_button_state"
-        android:fontFamily="@font/source_sans_pro_semi_bold"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
