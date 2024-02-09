@@ -38,7 +38,7 @@ data class DoorphoneData(
 ) {
     fun getHlsAt(time: LocalDateTime, durationSeconds: Long, timeZone: String): String {
         val zoned = time.atZone(ZoneId.of(timeZone))
-        val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
+        val timeStamp = zoned.toEpochSecond()
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
