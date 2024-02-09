@@ -3,7 +3,6 @@ package com.sesameware.domain.model.response
 import android.os.Parcelable
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
-import org.threeten.bp.DateTimeUtils
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
@@ -44,7 +43,7 @@ data class CCTVData(
 
     fun getHlsAt(time: LocalDateTime, durationSeconds: Long, timeZone: String): String {
         val zoned = time.atZone(ZoneId.of(timeZone))
-        val timeStamp = DateTimeUtils.toSqlTimestamp(zoned.toLocalDateTime()).time / 1000
+        val timeStamp = zoned.toEpochSecond()
         return when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
