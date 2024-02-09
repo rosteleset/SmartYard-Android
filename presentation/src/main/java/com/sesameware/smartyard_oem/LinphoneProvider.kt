@@ -28,6 +28,7 @@ import com.sesameware.smartyard_oem.ui.call.AndroidAudioManager
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
 import com.sesameware.smartyard_oem.ui.sendCallNotification
+import org.linphone.core.AudioDevice
 import timber.log.Timber
 
 class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinComponent {
@@ -44,6 +45,9 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
 
     private var shouldVibrate = false
+
+    private var speakerDevice: AudioDevice? = null
+    private var earpieceDevice: AudioDevice? = null
 
     @Suppress("DEPRECATION")
     private var mCoreListener = object : CoreListenerStub() {
@@ -284,6 +288,39 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     fun getCallDuration(): Int {
         return core.currentCall?.duration ?: 0
+    }
+
+    private fun routeAudioTo(type: AudioDevice.Type) {
+        val capability = AudioDevice.Capabilities.CapabilityPlay
+        val extendedAudioDevices = core.extendedAudioDevices
+        if (speakerDevice == null || earpieceDevice == null) {
+            extendedAudioDevices.forEach {
+                if (it.hasCapability(capability)) {
+                    Timber.d("__L__  name = ${it.deviceName}    driver = ${it.driverName}    ${it.type}")
+                    if (it.driverName.contains("openSLES", true)) {
+                        if (it.type == AudioDevice.Type.Speaker) {
+                            speakerDevice = it
+                        }
+                        if (it.type == AudioDevice.Type.Earpiece) {
+                            earpieceDevice = it
+                        }
+                    }
+                }
+            }
+        }
+        if (type == AudioDevice.Type.Speaker) {
+            core.currentCall?.outputAudioDevice = speakerDevice
+        } else {
+            core.currentCall?.outputAudioDevice = earpieceDevice
+        }
+    }
+
+    fun routeAudioToSpeaker() {
+        routeAudioTo(AudioDevice.Type.Speaker)
+    }
+
+    fun routeAudioToEarpiece() {
+        routeAudioTo(AudioDevice.Type.Earpiece)
     }
 
     companion object {
