@@ -450,10 +450,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             this
         ) {
             if (it) {
-                mLinphone.mAudioManager.routeAudioToSpeaker()
+                mLinphone.routeAudioToSpeaker()
                 binding.mSpeakerButton.isSelected = true
             } else {
-                mLinphone.mAudioManager.routeAudioToEarPiece()
+                mLinphone.routeAudioToEarpiece()
                 binding.mSpeakerButton.isSelected = false
             }
         }
@@ -609,7 +609,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         super.onPause()
 
         mSensorManager?.unregisterListener(this)
-        mLinphone.mAudioManager.routeAudioToEarPiece()
+        mLinphone.routeAudioToEarpiece()
         LinphoneService.instance?.provider?.fcmData?.eyeState = binding.mPeepholeButton.isChecked
     }
 
