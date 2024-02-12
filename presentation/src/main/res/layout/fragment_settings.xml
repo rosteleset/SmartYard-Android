@@ -11,12 +11,10 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/background_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:src="@drawable/background_1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:srcCompat="@drawable/background_1"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
