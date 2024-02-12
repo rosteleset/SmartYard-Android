@@ -13,12 +13,10 @@
 
         <ImageView
             android:id="@+id/ivCityCameraBackground"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/ic_background_address_map"
-            android:background="@drawable/ic_background_address_map"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_background_address_map"
             android:scaleType="centerCrop"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
