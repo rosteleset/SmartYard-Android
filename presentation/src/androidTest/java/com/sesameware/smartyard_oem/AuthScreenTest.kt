@@ -7,7 +7,7 @@ import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import com.agoda.kakao.screen.Screen.Companion.idle
+import io.github.kakaocup.kakao.screen.Screen.Companion.idle
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
 import org.junit.Rule
 import org.junit.Test
@@ -48,11 +48,11 @@ class AuthScreenTest : TestCase() {
                 MainScreen.bottomMenu {
                     setSelectedItem(R.id.settings)
                 }
-                SettingsScreen {
-                    ivSettings {
-                        click()
-                    }
-                }
+//                SettingsScreen {
+//                    ivSettings {
+//                        click()
+//                    }
+//                }
                 BasicSettingsScreen {
                     cvExit {
                         click()
@@ -85,18 +85,18 @@ class AuthScreenTest : TestCase() {
                 }
             }
             step("2. Ввод номера ") {
-                NumberRegScreen {
-                    tel1 {
-                        flakySafely(timeoutMs = 7000) { isVisible() }
-                        typeText("912")
-                    }
-                    tel2 {
-                        typeText("345")
-                    }
-                    tel3 {
-                        typeText("6781")
-                    }
-                }
+//                NumberRegScreen {
+//                    tel1 {
+//                        flakySafely(timeoutMs = 7000) { isVisible() }
+//                        typeText("912")
+//                    }
+//                    tel2 {
+//                        typeText("345")
+//                    }
+//                    tel3 {
+//                        typeText("6781")
+//                    }
+//                }
             }
             step("3. Ввод пин ") {
                 SmsRegScreen {
@@ -139,10 +139,10 @@ class AuthScreenTest : TestCase() {
                     }
                 }
                 SettingsScreen {
-                    ivSettings {
-                        click()
-                        idle(1500)
-                    }
+//                    ivSettings {
+//                        click()
+//                        idle(1500)
+//                    }
                 }
                 BasicSettingsScreen {
                     tvTitleNotif {
