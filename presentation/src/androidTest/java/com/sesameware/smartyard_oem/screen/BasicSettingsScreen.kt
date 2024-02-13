@@ -1,9 +1,9 @@
 package com.sesameware.smartyard_oem.screen
 
-import com.agoda.kakao.common.views.KView
-import com.agoda.kakao.dialog.KAlertDialog
-import com.agoda.kakao.switch.KSwitch
-import com.agoda.kakao.text.KTextView
+import io.github.kakaocup.kakao.common.views.KView
+import io.github.kakaocup.kakao.dialog.KAlertDialog
+import io.github.kakaocup.kakao.switch.KSwitch
+import io.github.kakaocup.kakao.text.KTextView
 import com.kaspersky.kaspresso.screens.KScreen
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.MainActivity

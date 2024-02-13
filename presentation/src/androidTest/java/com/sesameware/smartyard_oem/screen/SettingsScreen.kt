@@ -1,6 +1,6 @@
 package com.sesameware.smartyard_oem.screen
 
-import com.agoda.kakao.image.KImageView
+import io.github.kakaocup.kakao.image.KImageView
 import com.kaspersky.kaspresso.screens.KScreen
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.MainActivity
@@ -12,5 +12,5 @@ import com.sesameware.smartyard_oem.ui.main.MainActivity
 object SettingsScreen : KScreen<SettingsScreen>() {
     override val layoutId: Int? = R.layout.fragment_settings
     override val viewClass: Class<*>? = MainActivity::class.java
-    val ivSettings = KImageView { withId(R.id.ivSettings) }
+//    val ivSettings = KImageView { withId(R.id.ivSettings) }
 }

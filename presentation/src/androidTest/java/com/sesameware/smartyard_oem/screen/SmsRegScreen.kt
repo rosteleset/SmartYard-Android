@@ -1,6 +1,6 @@
 package com.sesameware.smartyard_oem.screen
 
-import com.agoda.kakao.edit.KEditText
+import io.github.kakaocup.kakao.edit.KEditText
 import com.kaspersky.kaspresso.screens.KScreen
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
