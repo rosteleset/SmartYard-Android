@@ -17,7 +17,7 @@
             android:id="@+id/imageView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
             app:srcCompat="@drawable/background_auth"
             app:layout_constraintTop_toTopOf="parent" />
 
