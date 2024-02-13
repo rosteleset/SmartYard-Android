@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/ic_background_address_map"
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="ContentDescription" />
 
