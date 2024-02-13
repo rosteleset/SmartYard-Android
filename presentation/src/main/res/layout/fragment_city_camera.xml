@@ -15,6 +15,7 @@
             android:id="@+id/ivCityCameraBackground"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/ic_background_address_map"
             android:adjustViewBounds="true"
             app:layout_constraintTop_toTopOf="parent"

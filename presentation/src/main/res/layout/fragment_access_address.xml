@@ -16,6 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
             app:srcCompat="@drawable/background_1"
             app:layout_constraintTop_toTopOf="parent" />
 
