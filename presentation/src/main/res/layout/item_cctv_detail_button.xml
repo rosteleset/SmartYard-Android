@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="36dp"
-    android:layout_height="36dp"
->
-
-    <TextView
-        android:id="@+id/cctv_id"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:text="1"
-        android:textAlignment="center"
-        android:gravity="center"
-        android:background="@drawable/ic_cctv_button_state"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    android:id="@+id/cctv_id"
+    android:layout_width="@dimen/cctv_detail_button_size"
+    android:layout_height="@dimen/cctv_detail_button_size"
+    tools:text="1"
+    android:textAlignment="center"
+    android:gravity="center"
+    android:background="@drawable/ic_cctv_button_state"
+    android:textColor="@color/color_cctv_button_text"
+    android:textSize="16sp" />
