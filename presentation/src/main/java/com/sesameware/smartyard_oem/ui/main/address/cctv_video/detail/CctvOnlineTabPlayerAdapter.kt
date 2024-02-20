@@ -16,7 +16,7 @@ class CctvOnlineTabPlayerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CctvOnlineTabPlayerVH {
         binding = ItemCctvDetailOnlinePlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val windowedWidth = (parent.measuredWidth * ITEM_WIDTH_TO_RECYCLERVIEW_WIDTH_RATIO).roundToInt()
+        val windowedWidth = (parent.measuredWidth * ITEM_TO_PARENT_WIDTH_RATIO).roundToInt()
         return CctvOnlineTabPlayerVH(binding, windowedWidth, onAction)
     }
 
@@ -34,6 +34,6 @@ class CctvOnlineTabPlayerAdapter(
     }
 
     companion object {
-        private const val ITEM_WIDTH_TO_RECYCLERVIEW_WIDTH_RATIO = 0.9
+        private const val ITEM_TO_PARENT_WIDTH_RATIO = 0.9
     }
 }

@@ -42,6 +42,7 @@ import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
@@ -297,6 +298,8 @@ class SoundChooser {
         }
     }
 }
+
+fun Context.dimenToPx(@DimenRes id: Int): Int = resources.getDimensionPixelSize(id)
 
 fun dpToPx(dp: Int): Float {
     return (dp * Resources.getSystem().displayMetrics.density)
