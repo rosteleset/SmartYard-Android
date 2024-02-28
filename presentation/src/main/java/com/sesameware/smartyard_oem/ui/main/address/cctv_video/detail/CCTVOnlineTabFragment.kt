@@ -3,6 +3,7 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.graphics.Color
@@ -37,6 +38,8 @@ import com.sesameware.smartyard_oem.ui.main.address.event_log.SnapOnScrollListen
 import com.sesameware.smartyard_oem.ui.main.address.event_log.attachSnapHelperWithListener
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import timber.log.Timber
+import kotlin.math.roundToInt
+
 
 class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCctvDetailOnlineBinding? = null
@@ -56,6 +59,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var cctvButtonsAdapter: CctvOnlineButtonsAdapter? = null
     private var cctvPlayersAdapter: CctvOnlineTabPlayerAdapter? = null
     private var cctvPlayersDecoration: CarouselDecoration? = null
+    private var cctvPlayersLayoutManager: LinearLayoutManagerWithInitialPosition? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,6 +77,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         cctvButtonsAdapter = null
         cctvPlayersAdapter = null
         cctvPlayersDecoration = null
+        cctvPlayersLayoutManager = null
 
         super.onDestroyView()
     }
@@ -88,10 +93,20 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private fun setupCctvPlayers() {
         binding.cctvPlayers.apply {
+
             setHasFixedSize(true)
+
             val spacing = resources.getDimensionPixelSize(R.dimen.event_log_detail_spacing)
             cctvPlayersDecoration = CarouselDecoration(spacing)
             addItemDecoration(cctvPlayersDecoration!!)
+
+            val initialCameraIndex = requireArguments().getInt(INITIAL_CAMERA_INDEX)
+            cctvPlayersLayoutManager = LinearLayoutManagerWithInitialPosition(
+                this@CCTVOnlineTabFragment.requireContext(),
+                initialCameraIndex,
+                spacing
+            )
+            layoutManager = cctvPlayersLayoutManager
             val previewUrls = mCCTVViewModel.cameraList.value?.map { it.preview } ?: listOf()
             cctvPlayersAdapter = CctvOnlineTabPlayerAdapter(::onAction, previewUrls)
             adapter = cctvPlayersAdapter
@@ -147,20 +162,9 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 mCCTVViewModel.cameraList.value!!.size,
                 mCCTVViewModel.chosenIndex.value!!
             ) {
-                scrollToPosition(it)
+                cctvPlayersLayoutManager?.scrollToPositionWithOffset(it, cctvPlayersLayoutManager!!.posOffset)
             }
             binding.cctvButtons.adapter = cctvButtonsAdapter
-        }
-    }
-
-    private fun scrollToPosition(position: Int) {
-        val lm = binding.cctvPlayers.layoutManager as LinearLayoutManager
-        (currentViewHolder?.preview?.parent as? View)?.let {
-            it.post {
-                val halfSpacing = resources.getDimensionPixelSize(R.dimen.event_log_detail_spacing) / 2
-                val offset = (binding.cctvPlayers.width - it.width) / 2
-                lm.scrollToPositionWithOffset(position, offset - halfSpacing)
-            }
         }
     }
 
@@ -276,7 +280,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         cctvPlayersAdapter?.setFullscreen(false, currentPosition)
         currentViewHolder?.setFullscreen(false)
 
-        scrollToPosition(currentPosition)
+        cctvPlayersLayoutManager?.scrollToPositionWithOffset(currentPosition, cctvPlayersLayoutManager!!.posOffset)
     }
 
     private fun unMute() {
@@ -444,7 +448,11 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     companion object {
         private const val BUTTONS_PER_ROW = 5
-        fun newInstance() = CCTVOnlineTabFragment().apply {
+        private const val INITIAL_CAMERA_INDEX = "InitialCameraIndex"
+        fun newInstance(initialCameraIndex: Int) = CCTVOnlineTabFragment().apply {
+            arguments = Bundle().apply {
+                putInt(INITIAL_CAMERA_INDEX, initialCameraIndex)
+            }
             Timber.d("debug_dmm __new instance $this")
         }
     }
@@ -464,5 +472,26 @@ class CarouselDecoration(@Px private val innerSpacing: Int) : ItemDecoration() {
         val outerSpacing = (parent.measuredWidth - view.layoutParams.width) / 2
         outRect.left = if (itemPosition > 0) halfInnerSpacing else outerSpacing
         outRect.right = if (itemPosition < state.itemCount - 1) halfInnerSpacing else outerSpacing
+    }
+}
+
+class LinearLayoutManagerWithInitialPosition(
+    context: Context,
+    private var initialPos: Int,
+    private val itemDecorationSpacing: Int
+) : LinearLayoutManager(context,RecyclerView.HORIZONTAL, false) {
+    var posOffset: Int = -1
+        private set
+
+    override fun onLayoutChildren(recycler: RecyclerView.Recycler, state: RecyclerView.State) {
+        val parentWidth = width
+        if (initialPos > -1 && state.itemCount > 0) {
+            posOffset =
+                (((1 - CctvOnlineTabPlayerAdapter.ITEM_TO_PARENT_WIDTH_RATIO) * parentWidth - itemDecorationSpacing) / 2)
+                    .roundToInt()
+            scrollToPositionWithOffset(initialPos, posOffset)
+            initialPos = -1
+        }
+        super.onLayoutChildren(recycler, state)
     }
 }

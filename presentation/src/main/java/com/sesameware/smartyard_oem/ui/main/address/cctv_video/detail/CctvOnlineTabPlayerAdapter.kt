@@ -34,6 +34,6 @@ class CctvOnlineTabPlayerAdapter(
     }
 
     companion object {
-        private const val ITEM_TO_PARENT_WIDTH_RATIO = 0.9
+        const val ITEM_TO_PARENT_WIDTH_RATIO = 0.9
     }
 }

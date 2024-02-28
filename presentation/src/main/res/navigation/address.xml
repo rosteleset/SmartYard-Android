@@ -103,6 +103,9 @@
         <action
             android:id="@+id/action_CCTVDetailFragment_to_CCTVArchivePlayerFragment"
             app:destination="@id/CCTVArchivePlayerFragment" />
+        <argument
+            android:name="initialCameraIndex"
+            app:argType="integer" />
     </fragment>
 
 
