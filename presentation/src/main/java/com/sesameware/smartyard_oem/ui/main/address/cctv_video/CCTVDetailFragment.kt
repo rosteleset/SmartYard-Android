@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayoutMediator
 import com.sesameware.smartyard_oem.R
@@ -20,6 +21,8 @@ import timber.log.Timber
 class CCTVDetailFragment : Fragment() {
     private var _binding: FragmentCctvDetailBinding? = null
     private val binding get() = _binding!!
+
+    private val args: CCTVDetailFragmentArgs by navArgs()
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
 
@@ -50,7 +53,7 @@ class CCTVDetailFragment : Fragment() {
         val adapter = TabAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
         Timber.d("debug_dmm __new adapter CCTVDetailFragment")
         adapter.addFragment(
-            { CCTVOnlineTabFragment.newInstance() },
+            { CCTVOnlineTabFragment.newInstance(args.initialCameraIndex) },
             resources.getString(R.string.cctv_detail_tab_online)
         )
         adapter.addFragment(
