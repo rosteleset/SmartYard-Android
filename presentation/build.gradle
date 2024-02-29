@@ -24,8 +24,8 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdk rootProject.minSdkVersion
         targetSdk rootProject.targetSdkVersion
-        versionCode 53
-        versionName '1.0.53'
+        versionCode 54
+        versionName '1.0.54'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
     }
