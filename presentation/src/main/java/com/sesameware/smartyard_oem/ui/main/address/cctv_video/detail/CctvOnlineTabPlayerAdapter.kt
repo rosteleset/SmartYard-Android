@@ -9,20 +9,20 @@ import kotlin.math.roundToInt
 class CctvOnlineTabPlayerAdapter(
     private val onAction: (CctvOnlineTabPlayerAction) -> Unit,
     private val previewUrls: List<String>
-) : RecyclerView.Adapter<CctvOnlineTabPlayerVH>() {
+) : RecyclerView.Adapter<CctvOnlineTabPlayerViewHolder>() {
 
     private lateinit var binding: ItemCctvDetailOnlinePlayerBinding
     private var isFullscreen = false
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CctvOnlineTabPlayerVH {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CctvOnlineTabPlayerViewHolder {
         binding = ItemCctvDetailOnlinePlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         val windowedWidth = (parent.measuredWidth * ITEM_TO_PARENT_WIDTH_RATIO).roundToInt()
-        return CctvOnlineTabPlayerVH(binding, windowedWidth, onAction)
+        return CctvOnlineTabPlayerViewHolder(binding, windowedWidth, onAction)
     }
 
     override fun getItemCount(): Int = previewUrls.size
 
-    override fun onBindViewHolder(holder: CctvOnlineTabPlayerVH, position: Int) {
+    override fun onBindViewHolder(holder: CctvOnlineTabPlayerViewHolder, position: Int) {
         holder.bind(isFullscreen, previewUrls[position])
     }
 

@@ -19,6 +19,7 @@ import androidx.annotation.Px
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.marginTop
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -54,7 +55,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private var canRenewToken = true
 
-    private var currentViewHolder: CctvOnlineTabPlayerVH? = null
+    private var currentViewHolder: CctvOnlineTabPlayerViewHolder? = null
     private var currentPosition: Int = RecyclerView.NO_POSITION
     private var cctvButtonsAdapter: CctvOnlineButtonsAdapter? = null
     private var cctvPlayersAdapter: CctvOnlineTabPlayerAdapter? = null
@@ -126,7 +127,8 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                         it.player = null
                     }
                 }
-                currentViewHolder = binding.cctvPlayers.findViewHolderForAdapterPosition(newPosition) as? CctvOnlineTabPlayerVH
+                currentViewHolder =
+                    binding.cctvPlayers.findViewHolderForAdapterPosition(newPosition) as? CctvOnlineTabPlayerViewHolder
                 currentPosition = newPosition
                 val page = cctvButtonsAdapter?.selectButton(newPosition)
                 if (page != null) {
@@ -153,11 +155,20 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             val decoration = CarouselDecoration(spacing)
             binding.cctvButtons.addItemDecoration(decoration)
 
-            val rowHeight = requireContext().dimenToPx(R.dimen.cctv_buttons_ver) +
-                    requireContext().dimenToPx(R.dimen.cctv_detail_button_size)
-            val rows = (binding.root.height - binding.cctvPlayers.height - binding.root.paddingBottom) / rowHeight
+            val firstRowHeight = requireContext().dimenToPx(R.dimen.cctv_detail_button_size)
+            val otherRowHeight = requireContext().dimenToPx(R.dimen.cctv_buttons_ver) + firstRowHeight
+            val availableHeight = (binding.root.height -
+                    binding.root.paddingBottom -
+                    binding.cctvPlayers.height -
+                    binding.cctvPlayers.marginTop -
+                    binding.cctvButtons.marginTop)
+            val rows = if (availableHeight > firstRowHeight) {
+                (availableHeight - firstRowHeight) / otherRowHeight + 1
+            } else {
+                1
+            }
             cctvButtonsAdapter = CctvOnlineButtonsAdapter(
-                if (rows == 0) 1 else rows,
+                rows,
                 BUTTONS_PER_ROW,
                 mCCTVViewModel.cameraList.value!!.size,
                 mCCTVViewModel.chosenIndex.value!!
@@ -301,7 +312,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private fun createPlayer(
         serverType: MediaServerType?,
-        viewHolder: CctvOnlineTabPlayerVH
+        viewHolder: CctvOnlineTabPlayerViewHolder
     ): BaseCCTVPlayer {
         Timber.d("debug_dmm createPlayer()")
 

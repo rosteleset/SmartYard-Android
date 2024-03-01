@@ -25,7 +25,8 @@ class MorphEdgeTreatment : EdgeTreatment() {
   override fun getEdgePath(length: Float,
     center: Float,
     interpolation: Float,
-    shapePath: ShapePath) {
+    shapePath: ShapePath
+  ) {
     shapePath.lineTo(0f, -10f)
     shapePath.lineTo(length, -10f)
   }

@@ -23,7 +23,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 
-class CctvOnlineTabPlayerVH(
+class CctvOnlineTabPlayerViewHolder(
     private val binding: ItemCctvDetailOnlinePlayerBinding,
     private val windowedWidth: Int,
     private val onAction: (CctvOnlineTabPlayerAction) -> Unit
