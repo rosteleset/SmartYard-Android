@@ -61,6 +61,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var cctvPlayersAdapter: CctvOnlineTabPlayerAdapter? = null
     private var cctvPlayersDecoration: CarouselDecoration? = null
     private var cctvPlayersLayoutManager: LinearLayoutManagerWithInitialPosition? = null
+    private var initialCameraIndex: Int = -1
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -85,8 +86,10 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         Timber.d("debug_dmm __onViewCreated")
+
+        initialCameraIndex = requireArguments().getInt(INITIAL_CAMERA_INDEX)
+
         setupCctvButtons()
         setupCctvPlayers()
         setupObservers()
@@ -101,11 +104,11 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             cctvPlayersDecoration = CarouselDecoration(spacing)
             addItemDecoration(cctvPlayersDecoration!!)
 
-            val initialCameraIndex = requireArguments().getInt(INITIAL_CAMERA_INDEX)
             cctvPlayersLayoutManager = LinearLayoutManagerWithInitialPosition(
                 this@CCTVOnlineTabFragment.requireContext(),
                 initialCameraIndex,
-                spacing
+                spacing,
+                CctvOnlineTabPlayerAdapter.ITEM_TO_PARENT_WIDTH_RATIO
             )
             layoutManager = cctvPlayersLayoutManager
             val previewUrls = mCCTVViewModel.cameraList.value?.map { it.preview } ?: listOf()
@@ -176,6 +179,14 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 cctvPlayersLayoutManager?.scrollToPositionWithOffset(it, cctvPlayersLayoutManager!!.posOffset)
             }
             binding.cctvButtons.adapter = cctvButtonsAdapter
+
+            val page = cctvButtonsAdapter!!.selectButton(initialCameraIndex)
+            binding.cctvButtons.layoutManager = LinearLayoutManagerWithInitialPosition(
+                this@CCTVOnlineTabFragment.requireContext(),
+                page,
+                spacing,
+                CctvOnlineButtonsAdapter.ITEM_TO_PARENT_WIDTH_RATIO
+            )
         }
     }
 
@@ -489,7 +500,8 @@ class CarouselDecoration(@Px private val innerSpacing: Int) : ItemDecoration() {
 class LinearLayoutManagerWithInitialPosition(
     context: Context,
     private var initialPos: Int,
-    private val itemDecorationSpacing: Int
+    private val itemDecorationSpacing: Int,
+    private val itemToParentRatio: Double
 ) : LinearLayoutManager(context,RecyclerView.HORIZONTAL, false) {
     var posOffset: Int = -1
         private set
@@ -498,7 +510,7 @@ class LinearLayoutManagerWithInitialPosition(
         val parentWidth = width
         if (initialPos > -1 && state.itemCount > 0) {
             posOffset =
-                (((1 - CctvOnlineTabPlayerAdapter.ITEM_TO_PARENT_WIDTH_RATIO) * parentWidth - itemDecorationSpacing) / 2)
+                (((1 - itemToParentRatio) * parentWidth - itemDecorationSpacing) / 2)
                     .roundToInt()
             scrollToPositionWithOffset(initialPos, posOffset)
             initialPos = -1
