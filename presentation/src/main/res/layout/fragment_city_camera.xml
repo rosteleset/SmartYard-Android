@@ -35,9 +35,11 @@
 
         <TextView
             android:id="@+id/tvCityCameraTitle"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginHorizontal="32dp"
+            android:ellipsize="end"
+            android:maxLines="2"
             android:text="@string/title_city_camera_sample"
             android:textAlignment="textStart"
             android:textColor="@color/white"
@@ -50,13 +52,15 @@
 
         <TextView
             android:id="@+id/tvCityCameraTitleSub"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginHorizontal="32dp"
             android:layout_marginTop="5dp"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvCityCameraTitle"
             tools:text="@string/address_sample" />

@@ -38,7 +38,7 @@
 
         <TextView
             android:id="@+id/tvChooseProvider"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
@@ -48,6 +48,9 @@
             android:textColor="@color/black_200"
             android:textSize="30sp"
             android:textStyle="bold"
+            app:autoSizeMinTextSize="15sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"

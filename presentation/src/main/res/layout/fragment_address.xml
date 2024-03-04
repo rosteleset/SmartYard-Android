@@ -39,16 +39,19 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
+            android:layout_marginHorizontal="32dp"
             android:layout_marginBottom="36dp"
             android:text="@string/title_my_addresses"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintBottom_toTopOf="@+id/contentWrap"
+            app:layout_constraintEnd_toStartOf="@+id/imageView5"
             app:layout_constraintStart_toStartOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout

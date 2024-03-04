@@ -31,6 +31,8 @@
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
+            android:maxLines="2"
+            android:ellipsize="end"
             app:layout_constraintBottom_toBottomOf="@+id/ivFaceSettingsBackground"
             app:layout_constraintEnd_toEndOf="@+id/ivFaceSettingsBackground"
             app:layout_constraintStart_toStartOf="parent"
