@@ -1,9 +1,12 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail
 
+import android.content.res.Configuration
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.databinding.ItemCctvDetailOnlinePlayerBinding
+import com.sesameware.smartyard_oem.ui.main.MainActivity
 import kotlin.math.roundToInt
 
 class CctvOnlineTabPlayerAdapter(
@@ -16,7 +19,10 @@ class CctvOnlineTabPlayerAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CctvOnlineTabPlayerViewHolder {
         binding = ItemCctvDetailOnlinePlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val windowedWidth = (parent.measuredWidth * ITEM_TO_PARENT_WIDTH_RATIO).roundToInt()
+        val isLandscape =
+            (parent.context as AppCompatActivity).resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
+        val parentWindowedWidth = if (isLandscape) parent.measuredHeight else parent.measuredWidth
+        val windowedWidth = (parentWindowedWidth * ITEM_TO_PARENT_WIDTH_RATIO).roundToInt()
         return CctvOnlineTabPlayerViewHolder(binding, windowedWidth, onAction)
     }
 
