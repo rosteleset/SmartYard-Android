@@ -33,14 +33,16 @@ import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailOnlineBinding
 import com.sesameware.smartyard_oem.ui.dimenToPx
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
+import com.sesameware.smartyard_oem.ui.main.Orientation
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.*
 import com.sesameware.smartyard_oem.ui.main.address.event_log.OnSnapPositionChangeListener
 import com.sesameware.smartyard_oem.ui.main.address.event_log.SnapOnScrollListener
 import com.sesameware.smartyard_oem.ui.main.address.event_log.attachSnapHelperWithListener
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import timber.log.Timber
 import kotlin.math.roundToInt
-
 
 class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCctvDetailOnlineBinding? = null
@@ -56,12 +58,14 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private var canRenewToken = true
 
     private var currentViewHolder: CctvOnlineTabPlayerViewHolder? = null
-    private var currentPosition: Int = RecyclerView.NO_POSITION
     private var cctvButtonsAdapter: CctvOnlineButtonsAdapter? = null
     private var cctvPlayersAdapter: CctvOnlineTabPlayerAdapter? = null
     private var cctvPlayersDecoration: CarouselDecoration? = null
     private var cctvPlayersLayoutManager: LinearLayoutManagerWithInitialPosition? = null
+
     private var initialCameraIndex: Int = -1
+    @Orientation
+    private var orientation: Int = Configuration.ORIENTATION_PORTRAIT
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,6 +82,8 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         (activity as? MainActivity)?.setExitFullscreenListener(null)
         cctvButtonsAdapter = null
         cctvPlayersAdapter = null
+        binding.cctvButtons.adapter = null
+        binding.cctvPlayers.adapter = null
         cctvPlayersDecoration = null
         cctvPlayersLayoutManager = null
 
@@ -111,7 +117,9 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 CctvOnlineTabPlayerAdapter.ITEM_TO_PARENT_WIDTH_RATIO
             )
             layoutManager = cctvPlayersLayoutManager
-            val previewUrls = mCCTVViewModel.cameraList.value?.map { it.preview } ?: listOf()
+            val previewUrls = mCCTVViewModel.cameraList.value?.map {
+                it.getPreviewAt(LocalDateTime.now(), ZoneId.systemDefault().toString())
+            } ?: listOf()
             cctvPlayersAdapter = CctvOnlineTabPlayerAdapter(::onAction, previewUrls)
             adapter = cctvPlayersAdapter
         }
@@ -132,7 +140,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 }
                 currentViewHolder =
                     binding.cctvPlayers.findViewHolderForAdapterPosition(newPosition) as? CctvOnlineTabPlayerViewHolder
-                currentPosition = newPosition
+                cctvPlayersAdapter?.currentPos = newPosition
                 val page = cctvButtonsAdapter?.selectButton(newPosition)
                 if (page != null) {
                     binding.cctvButtons.smoothScrollToPosition(page)
@@ -237,6 +245,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                     mCCTVViewModel.setFullscreen(!it)
                 }
             }
+
             CctvOnlineTabPlayerAction.OnMuteClick -> {
                 mCCTVViewModel.isMuted.value?.let {
                     mCCTVViewModel.mute(!it)
@@ -269,10 +278,10 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         binding.cctvButtons.isVisible = false
 
-        cctvPlayersAdapter?.setFullscreen(true, currentPosition)
-        currentViewHolder?.setFullscreen(true)
+        cctvPlayersAdapter?.isFullscreen = true
+        currentViewHolder?.setScreenMode(true)
         currentViewHolder?.playerView?.post {
-            binding.cctvPlayers.scrollToPosition(currentPosition)
+            binding.cctvPlayers.scrollToPosition(cctvPlayersAdapter!!.currentPos)
         }
     }
 
@@ -299,10 +308,13 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         binding.cctvButtons.isVisible = true
 
-        cctvPlayersAdapter?.setFullscreen(false, currentPosition)
-        currentViewHolder?.setFullscreen(false)
+        cctvPlayersAdapter?.isFullscreen = false
+        currentViewHolder?.setScreenMode(false)
 
-        cctvPlayersLayoutManager?.scrollToPositionWithOffset(currentPosition, cctvPlayersLayoutManager!!.posOffset)
+        cctvPlayersLayoutManager?.scrollToPositionWithOffset(
+            cctvPlayersAdapter!!.currentPos,
+            cctvPlayersLayoutManager!!.posOffset
+        )
     }
 
     private fun unMute() {
@@ -403,7 +415,6 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
         }
         viewHolder.playerView.player = player.getPlayer()
-        viewHolder.playerView.useController = false
         player.playWhenReady = true
         return player
     }
@@ -466,6 +477,17 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         super.onConfigurationChanged(newConfig)
 
         (currentViewHolder?.playerView?.parent as? ZoomLayout)?.resetZoom()
+
+        if (orientation == newConfig.orientation) return
+
+        orientation = newConfig.orientation
+
+        val isLandscape = orientation == Configuration.ORIENTATION_LANDSCAPE
+
+        cctvPlayersAdapter?.let {
+            it.isLandscape = isLandscape
+            currentViewHolder?.setScaleModes(it.isFullscreen, it.isLandscape)
+        }
     }
 
     companion object {

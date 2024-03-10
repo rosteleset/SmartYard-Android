@@ -15,12 +15,28 @@ class CctvOnlineTabPlayerAdapter(
 ) : RecyclerView.Adapter<CctvOnlineTabPlayerViewHolder>() {
 
     private lateinit var binding: ItemCctvDetailOnlinePlayerBinding
-    private var isFullscreen = false
+    var isFullscreen: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            notifyAdjacentItems()
+        }
+    var isLandscape: Boolean = false
+        set(value) {
+            if (field == value) return
+            field = value
+            notifyAdjacentItems()
+        }
+    var currentPos: Int = -1
+        set(value) {
+            if (field == value) return
+            val previousPos = field
+            field = value
+            notifyItemChanged(previousPos)
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CctvOnlineTabPlayerViewHolder {
         binding = ItemCctvDetailOnlinePlayerBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        val isLandscape =
-            (parent.context as AppCompatActivity).resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE
         val parentWindowedWidth = if (isLandscape) parent.measuredHeight else parent.measuredWidth
         val windowedWidth = (parentWindowedWidth * ITEM_TO_PARENT_WIDTH_RATIO).roundToInt()
         return CctvOnlineTabPlayerViewHolder(binding, windowedWidth, onAction)
@@ -29,12 +45,11 @@ class CctvOnlineTabPlayerAdapter(
     override fun getItemCount(): Int = previewUrls.size
 
     override fun onBindViewHolder(holder: CctvOnlineTabPlayerViewHolder, position: Int) {
-        holder.bind(isFullscreen, previewUrls[position])
+        holder.bind(isFullscreen, isLandscape, previewUrls[position])
     }
 
-    fun setFullscreen(isFullscreen: Boolean, currentPos: Int) {
-        this.isFullscreen = isFullscreen
-        // notify all items except current
+    // notify all items except current
+    private fun notifyAdjacentItems() {
         notifyItemRangeChanged(0, currentPos)
         notifyItemRangeChanged(currentPos + 1, previewUrls.size - currentPos - 1)
     }

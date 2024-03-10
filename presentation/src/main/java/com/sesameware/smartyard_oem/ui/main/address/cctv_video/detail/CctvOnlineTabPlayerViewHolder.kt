@@ -1,7 +1,5 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail
 
-import android.graphics.Bitmap
-import android.graphics.drawable.Drawable
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -10,17 +8,16 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemCctvDetailOnlinePlayerBinding
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.cancel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 
 class CctvOnlineTabPlayerViewHolder(
@@ -29,34 +26,28 @@ class CctvOnlineTabPlayerViewHolder(
     private val onAction: (CctvOnlineTabPlayerAction) -> Unit
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    private var previewScaleType: ImageView.ScaleType = ImageView.ScaleType.CENTER_INSIDE
-    private var playerResizeMode: Int = 0
-    private var isFullscreen: Boolean = false
-
     val playerView get() = binding.mVideoView
     val progress get() = binding.mProgress
-    val preview get() = binding.ivPreview
     val mute get() = binding.mMute
 
-    private val glideTarget = object : CustomTarget<Bitmap>() {
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            binding.ivPreview.let {
-                it.setImageBitmap(resource)
-                it.setFixedHeight(resource)
-            }
+    private val detachListener = object : View.OnAttachStateChangeListener {
+        val jobs: MutableList<Job> = mutableListOf()
+
+        override fun onViewAttachedToWindow(v: View) {}
+
+        override fun onViewDetachedFromWindow(v: View) {
+            jobs.forEach { it.cancel() }
         }
-        override fun onLoadCleared(placeholder: Drawable?) {}
     }
 
     init {
+        Timber.d("ViewHolder created at pos $bindingAdapterPosition")
         onCreateViewHolderBind()
     }
 
     private fun onCreateViewHolderBind() {
-        binding.root.clipToOutline = true
-        playerResizeMode = binding.mVideoView.resizeMode
         with (binding) {
-            root.clipToOutline = true
+            ivPreview.addOnAttachStateChangeListener(detachListener)
             mFullScreen.setOnClickListener {
                 onAction(CctvOnlineTabPlayerAction.OnFullScreenClick)
             }
@@ -66,28 +57,13 @@ class CctvOnlineTabPlayerViewHolder(
         }
     }
 
-    fun bind(isFullscreen: Boolean, url: String) {
-        this.isFullscreen = isFullscreen
-        resetViews()
-        setFullscreen(isFullscreen)
+    fun bind(isFullscreen: Boolean, isLandscape: Boolean, url: String) {
+
+//        resetViews()
+        setScreenMode(isFullscreen)
+        setScaleModes(isFullscreen, isLandscape)
         setPreview(url)
     }
-
-
-    private fun ImageView.setFixedHeight(preview: Bitmap?) {
-        if (preview == null) return
-        this.post {
-            val viewAspectRatio = this.width.toFloat() / this.height.toFloat()
-            val bitmapAspectRatio = preview.width.toFloat() / preview.height.toFloat()
-            previewScaleType = if (bitmapAspectRatio > viewAspectRatio && !isFullscreen) {
-                ImageView.ScaleType.CENTER_CROP
-            } else {
-                ImageView.ScaleType.CENTER_INSIDE
-            }
-            this.scaleType = previewScaleType
-        }
-    }
-
 
     private fun setPreview(url: String) {
         if (url.contains(".mp4")) {
@@ -99,34 +75,24 @@ class CctvOnlineTabPlayerViewHolder(
     }
 
     private fun loadPreviewAsForpost(url: String) {
-        val job = CoroutineScope(Dispatchers.IO)
-        val detachListener = object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {}
-
-            override fun onViewDetachedFromWindow(v: View) {
-                job.cancel()
-            }
-        }
-        binding.ivPreview.addOnAttachStateChangeListener(detachListener)
-        job.launch {
+        val job = CoroutineScope(Dispatchers.IO).launch {
             CCTVViewModel.requestForpostPreview(url)?.let { imageUrl ->
                 withContext(Dispatchers.Main) {
                     Glide.with(binding.ivPreview)
-                        .asBitmap()
                         .load(imageUrl)
-                        .into(glideTarget)
+                        .into(binding.ivPreview)
                 }
             }
         }
+        detachListener.jobs.add(job)
     }
 
     private fun loadPreviewAsMp4(url: String) {
         val options = RequestOptions().frame(0L)
         Glide.with(binding.ivPreview)
-            .asBitmap()
             .load(url)
             .apply(options)
-            .into(glideTarget)
+            .into(binding.ivPreview)
     }
 
     private fun resetViews() {
@@ -134,31 +100,30 @@ class CctvOnlineTabPlayerViewHolder(
         binding.ivPreview.setImageBitmap(null)
     }
 
-    fun setFullscreen(isFullscreen: Boolean) {
+    fun setScreenMode(isFullscreen: Boolean) {
         if (isFullscreen) {
-            setFullscreenMode()
+            (binding.root.layoutParams as RecyclerView.LayoutParams).width = ViewGroup.LayoutParams.MATCH_PARENT
+            binding.root.clipToOutline = false
+            val drawable = ContextCompat.getDrawable(binding.root.context, R.drawable.ic_cctv_exit_fullscreen)
+            binding.mFullScreen.setImageDrawable(drawable)
         } else {
-            setWindowedMode()
+            binding.root.layoutParams.width = windowedWidth
+            binding.root.clipToOutline = true
+            val drawable = ContextCompat.getDrawable(binding.root.context, R.drawable.ic_cctv_enter_fullscreen)
+            binding.mFullScreen.setImageDrawable(drawable)
         }
-    }
-
-    private fun setFullscreenMode() {
-        (binding.root.layoutParams as RecyclerView.LayoutParams).width = ViewGroup.LayoutParams.MATCH_PARENT
-        binding.root.clipToOutline = false
-        binding.ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
-        binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        val drawable = ContextCompat.getDrawable(binding.root.context, R.drawable.ic_cctv_exit_fullscreen)
-        binding.mFullScreen.setImageDrawable(drawable)
         binding.zlOnline.resetZoom()
     }
 
-    private fun setWindowedMode() {
-        binding.root.layoutParams.width = windowedWidth
-        binding.root.clipToOutline = true
-        binding.ivPreview.scaleType = previewScaleType
-        binding.mVideoView.resizeMode = playerResizeMode
-        val drawable = ContextCompat.getDrawable(binding.root.context, R.drawable.ic_cctv_enter_fullscreen)
-        binding.mFullScreen.setImageDrawable(drawable)
-        binding.zlOnline.resetZoom()
+    fun setScaleModes(isFullscreen: Boolean, isLandscape: Boolean) {
+        if (isFullscreen && !isLandscape) {
+            Timber.d("Fullscreen portrait at pos $bindingAdapterPosition\n--------------------------")
+            binding.ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
+            binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
+        } else {
+            Timber.d("Fullscreen Landscape or Window at pos $bindingAdapterPosition\n--------------------------")
+            binding.ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
+            binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        }
     }
 }

@@ -3,7 +3,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/videoWrap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_radius_video_clip">
@@ -12,7 +11,6 @@
         android:id="@+id/ivPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
         tools:ignore="ContentDescription" />
 
     <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
@@ -27,7 +25,8 @@
             android:layout_gravity="center"
             android:alpha="0.0"
             android:focusable="true"
-            app:resize_mode="fixed_height" />
+            app:use_controller="false"
+            app:resize_mode="zoom" />
 
     </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
 
