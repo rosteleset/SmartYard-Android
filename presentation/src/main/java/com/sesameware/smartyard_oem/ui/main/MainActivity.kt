@@ -12,11 +12,13 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
 import androidx.annotation.IdRes
+import androidx.annotation.IntDef
 import androidx.appcompat.app.AlertDialog
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -53,6 +55,10 @@ interface UserInteractionListener {
 interface ExitFullscreenListener {
     fun onExitFullscreen()
 }
+
+@IntDef(Configuration.ORIENTATION_PORTRAIT, Configuration.ORIENTATION_LANDSCAPE)
+@Retention(AnnotationRetention.SOURCE)
+annotation class Orientation
 
 class MainActivity : CommonActivity() {
     lateinit var binding: ActivityMainBinding
