@@ -3,12 +3,14 @@ package com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.ImageView.ScaleType
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemCctvDetailOnlinePlayerBinding
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
@@ -58,10 +60,9 @@ class CctvOnlineTabPlayerViewHolder(
     }
 
     fun bind(isFullscreen: Boolean, isLandscape: Boolean, url: String) {
-
-//        resetViews()
-        setScreenMode(isFullscreen)
-        setScaleModes(isFullscreen, isLandscape)
+        Timber.d("ViewHolder binded at pos $bindingAdapterPosition")
+        resetViews()
+        setScreenMode(isFullscreen, isLandscape)
         setPreview(url)
     }
 
@@ -96,11 +97,11 @@ class CctvOnlineTabPlayerViewHolder(
     }
 
     private fun resetViews() {
-        binding.mMute.isVisible = false
+//        binding.mMute.isVisible = false
         binding.ivPreview.setImageBitmap(null)
     }
 
-    fun setScreenMode(isFullscreen: Boolean) {
+    fun setScreenMode(isFullscreen: Boolean, isLandscape: Boolean) {
         if (isFullscreen) {
             (binding.root.layoutParams as RecyclerView.LayoutParams).width = ViewGroup.LayoutParams.MATCH_PARENT
             binding.root.clipToOutline = false
@@ -112,18 +113,40 @@ class CctvOnlineTabPlayerViewHolder(
             val drawable = ContextCompat.getDrawable(binding.root.context, R.drawable.ic_cctv_enter_fullscreen)
             binding.mFullScreen.setImageDrawable(drawable)
         }
+        setScaleModes(isFullscreen, isLandscape)
         binding.zlOnline.resetZoom()
     }
 
     fun setScaleModes(isFullscreen: Boolean, isLandscape: Boolean) {
         if (isFullscreen && !isLandscape) {
-            Timber.d("Fullscreen portrait at pos $bindingAdapterPosition\n--------------------------")
             binding.ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
             binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH
         } else {
-            Timber.d("Fullscreen Landscape or Window at pos $bindingAdapterPosition\n--------------------------")
             binding.ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
             binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_ZOOM
+        }
+        if (BuildConfig.DEBUG) {
+            val previewScaleType = when (binding.ivPreview.scaleType) {
+                ScaleType.MATRIX -> "MATRIX"
+                ScaleType.FIT_XY -> "FIT_XY"
+                ScaleType.FIT_START -> "FIT_START"
+                ScaleType.FIT_CENTER -> "FIT_CENTER"
+                ScaleType.FIT_END -> "FIT_END"
+                ScaleType.CENTER -> "CENTER"
+                ScaleType.CENTER_CROP -> "CENTER_CROP"
+                ScaleType.CENTER_INSIDE -> "CENTER_INSIDE"
+                else -> "UNKNOWN"
+            }
+            val playerViewResizeMode = when (binding.mVideoView.resizeMode) {
+                0 -> "RESIZE_MODE_FIT"
+                1 -> "RESIZE_MODE_FIXED_WIDTH"
+                2 -> "RESIZE_MODE_FIXED_HEIGHT"
+                3 -> "RESIZE_MODE_FILL"
+                4 -> "RESIZE_MODE_ZOOM"
+                else -> "UNKNOWN"
+            }
+            Timber.d("ViewHolder isFullscreen=%b isLandscape=%b\npreview scale=%s player resize=%s\nat pos %d\n--------------------------",
+                isFullscreen, isLandscape, previewScaleType, playerViewResizeMode, bindingAdapterPosition)
         }
     }
 }
