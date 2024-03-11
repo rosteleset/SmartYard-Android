@@ -278,8 +278,10 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         binding.cctvButtons.isVisible = false
 
-        cctvPlayersAdapter?.isFullscreen = true
-        currentViewHolder?.setScreenMode(true)
+        cctvPlayersAdapter?.let {
+            it.isFullscreen = true
+            currentViewHolder?.setScreenMode(true, it.isLandscape)
+        }
         currentViewHolder?.playerView?.post {
             binding.cctvPlayers.scrollToPosition(cctvPlayersAdapter!!.currentPos)
         }
@@ -308,8 +310,10 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         binding.cctvButtons.isVisible = true
 
-        cctvPlayersAdapter?.isFullscreen = false
-        currentViewHolder?.setScreenMode(false)
+        cctvPlayersAdapter?.let {
+            it.isFullscreen = false
+            currentViewHolder?.setScreenMode(false, it.isLandscape)
+        }
 
         cctvPlayersLayoutManager?.scrollToPositionWithOffset(
             cctvPlayersAdapter!!.currentPos,
