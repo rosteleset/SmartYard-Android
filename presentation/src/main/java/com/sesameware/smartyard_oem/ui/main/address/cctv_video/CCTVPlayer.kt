@@ -50,7 +50,6 @@ abstract class BaseCCTVPlayer {
     abstract fun mute()
     abstract fun unMute()
     abstract fun prepareMedia(mediaUrl: String?, from: Long = INVALID_POSITION, mediaDuration: Long = INVALID_DURATION, seekMediaTo: Long = 0L, doPlay: Boolean = false)
-    abstract fun getPlayer(): ExoPlayer?
     abstract fun releasePlayer()
     open var playWhenReady: Boolean = false
 
@@ -145,7 +144,6 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
 
     override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
         Timber.d("debug_dmm  mediaUrl = $mediaUrl")
-        mute()
         mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(mediaUrl)))
         mPlayer?.prepare()
         mPlayer?.playWhenReady = doPlay
@@ -160,7 +158,7 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         mPlayer = null
     }
 
-    override fun getPlayer() : ExoPlayer? {
+    fun getPlayer() : ExoPlayer? {
         return mPlayer
     }
 
