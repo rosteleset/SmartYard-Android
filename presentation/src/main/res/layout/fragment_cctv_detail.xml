@@ -12,11 +12,12 @@
 
         <ImageView
             android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_background_address_map"
-            android:adjustViewBounds="true"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/ic_background_address_map"
             android:scaleType="centerCrop"
+            android:background="@drawable/ic_background_address_map"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
@@ -33,62 +34,63 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
-            android:gravity="bottom"
-            android:minLines="2"
-            android:textAlignment="gravity"
+            android:layout_marginStart="32dp"
+            android:layout_marginBottom="56dp"
+            tools:text="cameraName"
             android:textColor="@color/white"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
-            android:maxLines="2"
-            android:ellipsize="end"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivBack"
-            tools:text="cameraName" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textAlignment="textStart"
+        />
 
         <TextView
             android:id="@+id/tvTitleSub"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="32dp"
+            android:layout_marginStart="32dp"
             android:layout_marginTop="5dp"
-            android:ellipsize="end"
-            android:maxLines="2"
+            tools:text="addressSub"
             android:textColor="@color/white"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            tools:text="addressSub" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <LinearLayout
             android:id="@+id/contentWrap"
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/background_radius_upper_clip"
             android:layout_marginTop="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitleSub">
-
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                app:tabIndicatorColor="@color/blue"
-                app:tabSelectedTextColor="@color/black"
-                app:tabTextAppearance="@style/MyCustomTextAppearance"
-                app:tabTextColor="@color/grey_100" />
-
-            <androidx.viewpager2.widget.ViewPager2
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleSub"
+            >
+            <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+            >
+
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top"
+                    app:tabIndicatorColor="@color/blue"
+                    app:tabSelectedTextColor="@color/black"
+                    app:tabTextAppearance="@style/MyCustomTextAppearance"
+                    app:tabTextColor="@color/grey_100" />
+
+            </androidx.viewpager.widget.ViewPager>
 
         </LinearLayout>
 

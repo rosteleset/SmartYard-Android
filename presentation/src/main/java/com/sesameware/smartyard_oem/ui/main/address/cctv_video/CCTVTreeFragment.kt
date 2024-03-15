@@ -226,8 +226,9 @@ class CCTVTreeFragment : Fragment() {
                     .height(IntrinsicSize.Min)
                     .clickable {
                         mCCTVViewModel.getCameraList(parent.cameras ?: listOf(), parent.type) {
+                            mCCTVViewModel.chooseCamera(index)
                             val action =
-                                CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVDetailFragment(index)
+                                CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVDetailFragment()
                             findNavController().navigate(action)
                         }
                     }

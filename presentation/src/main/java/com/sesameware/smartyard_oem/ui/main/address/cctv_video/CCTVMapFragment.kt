@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.smartyard_oem.MapFragment
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvMapBinding
 import com.sesameware.smartyard_oem.toLatLng
 import com.sesameware.smartyard_oem.ui.map.MapProvider
@@ -58,8 +59,8 @@ class CCTVMapFragment : MapFragment() {
         this.mapProvider = mapProvider
         val settings = MapSettings(context) { marker ->
             marker.index?.let {
-                val action = CCTVMapFragmentDirections.actionCCTVMapFragmentToCCTVDetailFragment(it)
-                this.findNavController().navigate(action)
+                mCCTVViewModel.chooseCamera(it)
+                this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
             }
             true
         }

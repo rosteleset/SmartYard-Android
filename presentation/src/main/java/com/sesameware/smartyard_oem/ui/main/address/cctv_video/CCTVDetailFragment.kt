@@ -6,23 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import androidx.viewpager2.widget.ViewPager2
-import com.google.android.material.tabs.TabLayoutMediator
+import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailBinding
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.TabAdapter
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CCTVOnlineTabFragment
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import timber.log.Timber
 
 class CCTVDetailFragment : Fragment() {
     private var _binding: FragmentCctvDetailBinding? = null
     private val binding get() = _binding!!
-
-    private val args: CCTVDetailFragmentArgs by navArgs()
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
 
@@ -40,37 +37,50 @@ class CCTVDetailFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         Timber.d("debug_dmm onViewCreated")
-        setupUi()
+        setupUi(childFragmentManager)
         setupObserve()
     }
 
-    private fun setupUi() {
+    private fun setupUi(fm: FragmentManager
+    ) {
         binding.contentWrap.clipToOutline = true
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
 
-        val adapter = TabAdapter(childFragmentManager, viewLifecycleOwner.lifecycle)
+        val adapter = TabAdapter(fm)
         Timber.d("debug_dmm __new adapter CCTVDetailFragment")
         adapter.addFragment(
-            { CCTVOnlineTabFragment.newInstance(args.initialCameraIndex) },
+            CCTVOnlineTabFragment.newInstance(),
             resources.getString(R.string.cctv_detail_tab_online)
         )
         adapter.addFragment(
-            { CCTVArchiveTabCalendarFragment.newInstance() },
+            CCTVArchiveTabCalendarFragment.newInstance(),
             resources.getString(R.string.cctv_detail_tab_archive)
         )
         binding.viewPager.adapter = adapter
-        binding.viewPager.isUserInputEnabled = false
-        TabLayoutMediator(binding.tabLayout, binding.viewPager) { tab, position ->
-            tab.text = adapter.getPageTitle(position)
-        }.attach()
-        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
+        binding.viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 mCCTVViewModel.setCurrentTabPosition(position)
+                setupTabs(adapter, position)
             }
         })
         binding.viewPager.setCurrentItem(mCCTVViewModel.currentTabId, false)
+    }
+
+    private fun setupTabs(adapter: TabAdapter, position: Int) {
+        val onlineTabFragment =
+            adapter.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as CCTVOnlineTabFragment
+        when (position) {
+            CCTVViewModel.ARCHIVE_TAB_POSITION -> {
+                Timber.d("__Q__   call onlineTabFragment.releasePlayer from setupTabs")
+                onlineTabFragment.releasePlayer()
+            }
+//            CCTVViewModel.ONLINE_TAB_POSITION -> {
+//                mCCTVViewModel.chosenCamera.postValue(mCCTVViewModel.chosenCamera.value)
+//            }
+        }
     }
 
     private fun setupObserve() {

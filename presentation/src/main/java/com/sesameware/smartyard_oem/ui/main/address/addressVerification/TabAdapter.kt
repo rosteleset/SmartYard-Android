@@ -2,30 +2,30 @@ package com.sesameware.smartyard_oem.ui.main.address.addressVerification
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.fragment.app.FragmentStatePagerAdapter
 
-class TabAdapter(
-    private val fragmentManager: FragmentManager,
-    lifecycle: Lifecycle
-) : FragmentStateAdapter(fragmentManager, lifecycle) {
-    private val mCreateFragmentCallbackList: MutableList<() -> Fragment> = ArrayList()
+/**
+ * @author Nail Shakurov
+ * Created on 2020-02-17.
+ */
+class TabAdapter internal constructor(fm: FragmentManager) : FragmentStatePagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    private val mFragmentList: MutableList<Fragment> = ArrayList()
     private val mFragmentTitleList: MutableList<String> = ArrayList()
 
-    override fun createFragment(position: Int): Fragment {
-        return mCreateFragmentCallbackList[position]()
+    override fun getItem(position: Int): Fragment {
+        return mFragmentList[position]
     }
 
-    fun addFragment(createFragmentCallback: () -> Fragment, title: String) {
-        mCreateFragmentCallbackList.add(createFragmentCallback)
+    fun addFragment(fragment: Fragment, title: String) {
+        mFragmentList.add(fragment)
         mFragmentTitleList.add(title)
     }
 
-    fun getPageTitle(position: Int): CharSequence {
+    override fun getPageTitle(position: Int): CharSequence {
         return mFragmentTitleList[position]
     }
 
-    fun getItem(position: Int) = fragmentManager.findFragmentByTag("f$position")
-
-    override fun getItemCount(): Int = mCreateFragmentCallbackList.size
+    override fun getCount(): Int {
+        return mFragmentList.size
+    }
 }
