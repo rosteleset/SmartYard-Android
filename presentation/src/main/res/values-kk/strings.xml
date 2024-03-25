@@ -100,7 +100,7 @@
     <string name="auth_dialog_title">Шарт бойынша деректерді қалпына келтіруге өтінім жасау</string>
     <string name="auth_dialog_yes">Жасау</string>
     <string name="auth_dialog_no">Бас тарту</string>
-    <string name="auth_contract_hint">Шарт нөмірі</string>
+    <string name="auth_contract_hint">Пайдаланушы аты</string>
 
 
     <!-- Ввод адреса -->

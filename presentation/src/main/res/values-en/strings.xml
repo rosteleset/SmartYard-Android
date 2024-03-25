@@ -98,7 +98,7 @@
     <string name="auth_dialog_title">Create a request for data recovery for the contract?</string>
     <string name="auth_dialog_yes">Create</string>
     <string name="auth_dialog_no">Cancel</string>
-    <string name="auth_contract_hint">Contract number</string>
+    <string name="auth_contract_hint">Login</string>
 
 
     <!-- Ввод адреса -->
