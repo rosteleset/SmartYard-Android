@@ -96,7 +96,7 @@
     <string name="auth_dialog_title">Ստեղծել դիմում պայմանագրի տվյալների վերականգման համար։</string>
     <string name="auth_dialog_yes">Ստեղծել</string>
     <string name="auth_dialog_no">Չեղարկել</string>
-    <string name="auth_contract_hint">Պայմանագրի համարը</string>
+    <string name="auth_contract_hint">Մուտք գործել</string>
 
     <!-- Ввод адреса -->
     <string name="input_address_title">Մուտքագրեք հասցեն</string>

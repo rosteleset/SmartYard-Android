@@ -95,7 +95,7 @@
     <string name="auth_dialog_title">Shartnoma ma‘lumotlarini tiklash uchun so‘rov yaratish?</string>
     <string name="auth_dialog_yes">Yaratish</string>
     <string name="auth_dialog_no">Bekor qilish</string>
-    <string name="auth_contract_hint">Shartnoma raqami</string>
+    <string name="auth_contract_hint">Foydalanuvchi nomi</string>
 
     <!-- Ввод адреса -->
     <string name="input_address_title">Manzilni kiriting</string>
