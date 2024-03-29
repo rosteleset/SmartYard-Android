@@ -1,5 +1,6 @@
 package com.sesameware.smartyard_oem.ui.custom_web_view
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Build
@@ -25,88 +26,106 @@ class CustomWebViewClient(
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-        request?.url?.toString()?.let { url ->
-            if (!(url.startsWith("http:") || url.startsWith("https:"))
-                || url.contains(ANCHOR_EXTERNAL)) {
-                Intent(Intent.ACTION_VIEW, request.url).apply {
-                    fragment?.requireActivity()?.startActivity(this)
-                }
+        try {
+            request?.url?.toString()?.let { url ->
+                if (!(url.startsWith("http:") || url.startsWith("https:"))
+                    || url.contains(ANCHOR_EXTERNAL)) {
+                    Intent(Intent.ACTION_VIEW, request.url).apply {
+                        if (bottomFragment != null) {
+                            bottomFragment.requireActivity().startActivity(this)
+                        }
+                        else {
+                            fragment?.requireActivity()?.startActivity(this)
+                        }
+                    }
 
-                return true
-            } else {
-                if (url.contains(ANCHOR_PUSH)) {
-                    if (bottomFragment != null) {
-                        bottomFragment.dismiss()
-                        val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
-                        f?.findNavController()?.navigate(fragmentId,
+                    return true
+                } else {
+                    if (url.contains(ANCHOR_PUSH)) {
+                        if (bottomFragment != null) {
+                            bottomFragment.dismiss()
+                            val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
+                            f?.findNavController()?.navigate(fragmentId,
+                                Bundle().apply {
+                                    putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                                    putInt(CustomWebViewFragment.POPUP_ID, popupId)
+                                    putString(CustomWebViewFragment.BASE_PATH, url)
+                                    putString(CustomWebViewFragment.CODE, "")
+                                    putString(CustomWebViewFragment.TITLE, (f.binding.wvExt.webViewClient as CustomWebViewClient).pageTitle)
+                                    putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                                })
+
+                            return true
+                        }
+
+                        fragment?.findNavController()?.navigate(
+                            fragmentId,
                             Bundle().apply {
                                 putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
                                 putInt(CustomWebViewFragment.POPUP_ID, popupId)
                                 putString(CustomWebViewFragment.BASE_PATH, url)
                                 putString(CustomWebViewFragment.CODE, "")
-                                putString(CustomWebViewFragment.TITLE, (f.binding.wvExt.webViewClient as CustomWebViewClient).pageTitle)
+                                putString(CustomWebViewFragment.TITLE, pageTitle)
                                 putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
                             })
 
                         return true
                     }
 
-                    fragment?.findNavController()?.navigate(
-                        fragmentId,
-                        Bundle().apply {
-                            putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
-                            putInt(CustomWebViewFragment.POPUP_ID, popupId)
-                            putString(CustomWebViewFragment.BASE_PATH, url)
-                            putString(CustomWebViewFragment.CODE, "")
-                            putString(CustomWebViewFragment.TITLE, pageTitle)
-                            putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
-                        })
+                    if (url.contains(ANCHOR_REPLACE)) {
+                        if (bottomFragment != null) {
+                            bottomFragment.dismiss()
+                            val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
+                            if (f != null) {
+                                val option = NavOptions.Builder()
+                                    .setPopUpTo(fragmentId, true)
+                                    .build()
+                                f.findNavController().navigate(fragmentId,
+                                    Bundle().apply {
+                                        putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                                        putInt(CustomWebViewFragment.POPUP_ID, popupId)
+                                        putString(CustomWebViewFragment.BASE_PATH, url)
+                                        putString(CustomWebViewFragment.CODE, "")
+                                        putString(CustomWebViewFragment.TITLE, f.binding.tvEWVTitle.text.toString())
+                                        putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, f.hasBackButton)
+                                    }, option)
+                            }
 
-                    return true
-                }
-
-                if (url.contains(ANCHOR_REPLACE)) {
-                    if (bottomFragment != null) {
-                        bottomFragment.dismiss()
-                        val f = bottomFragment.requireActivity().supportFragmentManager.primaryNavigationFragment?.childFragmentManager?.fragments?.first() as? CustomWebViewFragment
-                        if (f != null) {
-                            val option = NavOptions.Builder()
-                                .setPopUpTo(fragmentId, true)
-                                .build()
-                            f.findNavController().navigate(fragmentId,
-                                Bundle().apply {
-                                    putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
-                                    putInt(CustomWebViewFragment.POPUP_ID, popupId)
-                                    putString(CustomWebViewFragment.BASE_PATH, url)
-                                    putString(CustomWebViewFragment.CODE, "")
-                                    putString(CustomWebViewFragment.TITLE, f.binding.tvEWVTitle.text.toString())
-                                    putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, f.hasBackButton)
-                                }, option)
+                            return true
                         }
+
+                        val option = NavOptions.Builder()
+                            .setPopUpTo(fragmentId, true)
+                            .build()
+                        fragment?.findNavController()?.navigate(fragmentId,
+                            Bundle().apply {
+                                putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
+                                putInt(CustomWebViewFragment.POPUP_ID, popupId)
+                                putString(CustomWebViewFragment.BASE_PATH, url)
+                                putString(CustomWebViewFragment.CODE, "")
+                                putString(CustomWebViewFragment.TITLE, fragment.binding.tvEWVTitle.text.toString())
+                                putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                            }, option)
 
                         return true
                     }
 
-                    val option = NavOptions.Builder()
-                        .setPopUpTo(fragmentId, true)
-                        .build()
-                    fragment?.findNavController()?.navigate(fragmentId,
-                        Bundle().apply {
-                            putInt(CustomWebViewFragment.FRAGMENT_ID, fragmentId)
-                            putInt(CustomWebViewFragment.POPUP_ID, popupId)
-                            putString(CustomWebViewFragment.BASE_PATH, url)
-                            putString(CustomWebViewFragment.CODE, "")
-                            putString(CustomWebViewFragment.TITLE, fragment.binding.tvEWVTitle.text.toString())
-                            putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
-                        }, option)
+                    if (url.contains(ANCHOR_POPUP)) {
+                        if (bottomFragment != null) {
+                            val option = NavOptions.Builder()
+                                .setPopUpTo(popupId, true)
+                                .build()
+                            bottomFragment.findNavController().navigate(popupId,
+                                Bundle().apply {
+                                    putInt(CustomWebBottomFragment.FRAGMENT_ID, fragmentId)
+                                    putInt(CustomWebBottomFragment.POPUP_ID, popupId)
+                                    putString(CustomWebBottomFragment.URL, url)
+                                }, option)
 
-                    return true
-                }
+                            return true
+                        }
 
-                if (url.contains(ANCHOR_POPUP)) {
-                    if (bottomFragment != null) {
-                        bottomFragment.dismiss()
-                        bottomFragment.findNavController().navigate(popupId,
+                        fragment?.findNavController()?.navigate(popupId,
                             Bundle().apply {
                                 putInt(CustomWebBottomFragment.FRAGMENT_ID, fragmentId)
                                 putInt(CustomWebBottomFragment.POPUP_ID, popupId)
@@ -116,27 +135,24 @@ class CustomWebViewClient(
                         return true
                     }
 
-                    fragment?.findNavController()?.navigate(popupId,
-                        Bundle().apply {
-                            putInt(CustomWebBottomFragment.FRAGMENT_ID, fragmentId)
-                            putInt(CustomWebBottomFragment.POPUP_ID, popupId)
-                            putString(CustomWebBottomFragment.URL, url)
-                        })
+                    if (url.contains(ANCHOR_CLOSE)) {
+                        bottomFragment?.dismiss()
+                        Intent(Intent.ACTION_VIEW, request.url).apply {
+                            bottomFragment?.requireActivity()?.startActivity(this)
+                        }
 
-                    return true
-                }
-
-                if (url.contains(ANCHOR_CLOSE)) {
-                    bottomFragment?.dismiss()
-                    Intent(Intent.ACTION_VIEW, request.url).apply {
-                        bottomFragment?.requireActivity()?.startActivity(this)
+                        return true
                     }
 
-                    return true
+                    return false
                 }
-
-                return false
             }
+        } catch (e: ActivityNotFoundException) {
+            Timber.d("debug_web ActivityNotFoundException")
+            return true
+        } catch (e: Throwable) {
+            Timber.d("debug_web Throwable")
+            return true
         }
 
         return false
