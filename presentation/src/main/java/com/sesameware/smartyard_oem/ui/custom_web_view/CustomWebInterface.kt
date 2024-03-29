@@ -14,6 +14,11 @@ class CustomWebInterface(private val callback: Callback? = null) : KoinComponent
     }
 
     @JavascriptInterface
+    fun isAppInstalled(url: String) : Boolean {
+        return callback?.isAppInstalled(url) ?: false
+    }
+
+    @JavascriptInterface
     fun postLoadingStarted() {
         callback?.onPostLoadingStarted()
     }
@@ -37,6 +42,7 @@ class CustomWebInterface(private val callback: Callback? = null) : KoinComponent
         fun onPostLoadingStarted()
         fun onPostLoadingFinished()
         fun onPostRefreshParent(timeout: Int)
+        fun isAppInstalled(url: String): Boolean
     }
 
     companion object {

@@ -1,6 +1,8 @@
 package com.sesameware.smartyard_oem.ui.custom_web_view
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -79,6 +81,11 @@ class CustomWebViewFragment : Fragment() {
 
             override fun onPostRefreshParent(timeout: Int) {
                 refreshPage(timeout)
+            }
+
+            override fun isAppInstalled(url: String): Boolean {
+                val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                return appIntent.resolveActivity(requireActivity().packageManager) != null
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
         binding.wvExt.clearCache(true)
