@@ -86,7 +86,8 @@ class AuthViewModel(
 
     private fun createIssueV2() {
         val issue = CreateIssuesRequestV2(
-            type = IssueTypeV2.REQUEST_CREDENTIALS
+            type = IssueTypeV2.REQUEST_CREDENTIALS,
+            userName = preferenceStorage.sentName.toString()
         )
         super.createIssueV2(issue)
     }

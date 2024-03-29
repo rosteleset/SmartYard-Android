@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.DataModule
+import com.sesameware.data.prefs.PreferenceStorage
 import org.osmdroid.util.BoundingBox
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
@@ -24,7 +25,8 @@ class CityCamerasViewModel(
     private val state: SavedStateHandle,
     private val cctvInteractor: CCTVInteractor,
     geoInteractor: GeoInteractor,
-    issueInteractor: IssueInteractor
+    issueInteractor: IssueInteractor,
+    private val preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
     var cityCameraList = listOf<CCTVCityCameraData>()
     val chosenCamera = state.getLiveData<CCTVCityCameraData?>(chosenCityCamera_Key, null)
@@ -100,6 +102,7 @@ class CityCamerasViewModel(
     private fun createIssueV2(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.REQUEST_FRAGMENT,
+            userName = preferenceStorage.sentName.toString(),
             cameraName = chosenCamera.value?.name,
             cameraId = chosenCamera.value?.id.toString(),
             fragmentDate = recordDate.format(DateTimeFormatter.ofPattern("d.MM.yyyy")),

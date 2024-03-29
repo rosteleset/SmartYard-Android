@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.DataModule
+import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.ExtInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.IssueInteractor
@@ -20,7 +21,8 @@ class BurgerViewModel(
     private val sipInteractor: SipInteractor,
     geoInteractor: GeoInteractor,
     issueInteractor: IssueInteractor,
-    private val extInteractor: ExtInteractor
+    private val extInteractor: ExtInteractor,
+    private val preferenceStorage: PreferenceStorage
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
 
     private val _dialNumber = MutableLiveData<String>()
@@ -74,7 +76,8 @@ class BurgerViewModel(
 
     private fun createIssueV2() {
         val issue = CreateIssuesRequestV2(
-            type = IssueTypeV2.REQUEST_CALLBACK
+            type = IssueTypeV2.REQUEST_CALLBACK,
+            userName = preferenceStorage.sentName.toString()
         )
         super.createIssueV2(issue)
     }
