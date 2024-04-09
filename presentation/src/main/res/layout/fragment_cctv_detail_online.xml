@@ -52,9 +52,8 @@
                 android:id="@+id/mFullScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:layout_marginTop="12dp"
-                android:layout_marginEnd="12dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="12dp"
                 android:background="@drawable/ic_cctv_enter_fullscreen"
                 android:visibility="visible"
                 tools:ignore="ContentDescription" />
@@ -63,9 +62,8 @@
                 android:id="@+id/mMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="top|start"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="12dp"
+                android:layout_gravity="bottom|start"
+                android:layout_margin="12dp"
                 android:background="@drawable/ic_cctv_volume_on_24px"
                 android:visibility="gone"
                 tools:ignore="ContentDescription" />
