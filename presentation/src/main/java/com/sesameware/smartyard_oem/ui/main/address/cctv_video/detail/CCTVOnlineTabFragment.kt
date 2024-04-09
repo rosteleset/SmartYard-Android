@@ -163,7 +163,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     private fun setupObserve() {
         Timber.d("debug_dmm call setupObserve")
 
-        mCCTVViewModel.chosenCameraDistinct.observe(
+        mCCTVViewModel.chosenCamera.observe(
             viewLifecycleOwner
         ) {
             it?.run {
