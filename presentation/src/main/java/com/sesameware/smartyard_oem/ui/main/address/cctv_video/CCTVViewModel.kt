@@ -63,7 +63,6 @@ class CCTVViewModel(
     val chosenGroup = state.getLiveData<Int?>(chosenGroup_Key, null)
     var chosenGroupName: String? = null
     val chosenCamera = state.getLiveData<CCTVData?>(chosenCamera_Key, null)
-    val chosenCameraDistinct = chosenCamera.distinctUntilChanged()
     var initialThumb: Bitmap? = null
     private val _isFullScreen = MutableLiveData<Boolean>(false)
     val isFullscreen: LiveData<Boolean> get() = _isFullScreen

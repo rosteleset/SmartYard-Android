@@ -77,9 +77,9 @@ class CCTVDetailFragment : Fragment() {
                 Timber.d("__Q__   call onlineTabFragment.releasePlayer from setupTabs")
                 onlineTabFragment.releasePlayer()
             }
-//            CCTVViewModel.ONLINE_TAB_POSITION -> {
-//                mCCTVViewModel.chosenCamera.postValue(mCCTVViewModel.chosenCamera.value)
-//            }
+            CCTVViewModel.ONLINE_TAB_POSITION -> {
+                mCCTVViewModel.chosenCamera.postValue(mCCTVViewModel.chosenCamera.value)
+            }
         }
     }
 
