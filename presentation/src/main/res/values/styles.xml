@@ -10,10 +10,9 @@
         <item name="windowNoTitle">true</item>
         <item name="fontFamily">@font/source_sans_family</item>
     </style>
-    <style name="AppThemeMainSplash" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/AppTheme</item>
-        <item name="windowSplashScreenBackground">@color/splashColor</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_splash</item>
+
+    <style name="AppThemeMainSplash" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
 
     <!-- No action bar -->
@@ -26,11 +25,7 @@
     <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
-    <style name="AppThemeSplash" parent="Theme.SplashScreen">
-        <item name="postSplashScreenTheme">@style/AppTheme.Launcher</item>
-        <item name="windowSplashScreenBackground">@color/splashColor</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_splash</item>
-    </style>
+    <style name="AppThemeSplash" parent="AppTheme.Launcher" />
 
     <!-- Dialog style -->
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">

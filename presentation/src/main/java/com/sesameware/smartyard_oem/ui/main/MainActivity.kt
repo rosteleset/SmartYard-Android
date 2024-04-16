@@ -14,6 +14,7 @@ import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.*
 import android.widget.TextView
@@ -73,7 +74,10 @@ class MainActivity : CommonActivity() {
     private val mRegModel by viewModel<RegistrationViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            installSplashScreen()
+        }
 
         super.onCreate(savedInstanceState)
 

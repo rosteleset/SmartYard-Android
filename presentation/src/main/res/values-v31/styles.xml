@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppThemeMainSplash" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/AppTheme</item>
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_splash</item>
+    </style>
+
+    <style name="AppThemeSplash" parent="Theme.SplashScreen">
+        <item name="postSplashScreenTheme">@style/AppTheme.Launcher</item>
+        <item name="windowSplashScreenBackground">@color/splashColor</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_logo_splash</item>
+    </style>
+
+</resources>

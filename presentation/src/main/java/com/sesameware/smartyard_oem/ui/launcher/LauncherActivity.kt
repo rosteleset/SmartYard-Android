@@ -7,20 +7,23 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.FirebaseMessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.onboarding.OnboardingActivity
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class LauncherActivity : CommonActivity() {
     override val mViewModel by viewModel<LauncherViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        installSplashScreen()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            installSplashScreen()
+        }
 
         super.onCreate(savedInstanceState)
 
