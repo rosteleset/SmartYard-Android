@@ -6,7 +6,7 @@ import android.os.Handler
 import android.os.IBinder
 import org.linphone.core.Core
 import org.linphone.core.Factory
-import org.linphone.core.LogCollectionState
+import org.linphone.core.LogLevel
 import org.linphone.core.tools.Log
 import timber.log.Timber
 import java.io.File
@@ -33,9 +33,12 @@ class LinphoneService : Service() {
             Log.e(ioe)
         }
 
-        //Factory.instance().setDebugMode(true, "__L__")
+        /*Factory.instance().setLoggerDomain("__L__")
+        Factory.instance().enableLogcatLogs(true)
+        Factory.instance().loggingService.setLogLevel(LogLevel.Message)*/
 
         val core = Factory.instance().createCore("$basePath/$FILE", "$basePath/$FOLDER", this)
+        core.setUserAgent("Teledom", BuildConfig.VERSION_NAME)
         mCore = core
         provider = LinphoneProvider(core, this)
         core.transportsUsed.run {
@@ -134,10 +137,6 @@ class LinphoneService : Service() {
         }
         mCore?.let { core ->
             core.start()
-            Factory.instance().enableLogCollection(LogCollectionState.EnabledWithoutPreviousLogHandler)
-            Factory.instance().loggingService.addListener { _, _, _, message ->
-                Timber.i("debug_dmm message: $message")
-            }
             core.clearAllAuthInfo()
             core.clearProxyConfig()
         }
