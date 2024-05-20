@@ -271,7 +271,13 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
             }
 
-            binding.mOpenButton.setOnClickListener { openDoor() }
+            if (fcmData.dtmf.isNotEmpty()) {
+                binding.mOpenButton.setOnClickListener { openDoor() }
+            } else {
+                binding.mOpenButton.setOnClickListener(null)
+                binding.mOpenButton.show(on = false, invisible = true)
+            }
+
             binding.mAnswerButton.setOnClickListener { answerCall() }
             if (mFcmCallData.image.isEmpty() && mFcmCallData.videoStream.isNotEmpty()) {
                 mViewModel.eyeState.value = true
@@ -482,7 +488,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }
         binding.mOpenedButton.show(opened, true)
         binding.mHangUpButton.show(!opened)
-        binding.mOpenButton.show(!opened)
+        if (binding.mOpenButton.hasOnClickListeners()) {
+            binding.mOpenButton.show(!opened)
+        }
     }
 
     private fun answerCall() {
