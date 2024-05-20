@@ -102,15 +102,7 @@ class CCTVViewModel(
             chosenCamera.value?.let {
                 availableRanges.clear()
                 val loadPeriods = try {
-                    when (it.serverType) {
-                        MediaServerType.FORPOST,
-                        MediaServerType.MACROSCOP,
-                        MediaServerType.NIMBLE -> cctvInteractor.ranges(it.id)?.first()?.ranges ?: emptyList()
-                        else -> {
-                            val url = it.url + "/recording_status.json?from=1525186456&token=" + it.token
-                            cctvInteractor.loadPeriods(url)?.first()?.ranges ?: emptyList()
-                        }
-                    }
+                    cctvInteractor.ranges(it.id)?.first()?.ranges ?: emptyList()
                 } catch (e: Throwable) {
                     emptyList()
                 }
