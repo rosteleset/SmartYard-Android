@@ -10,7 +10,7 @@ data class FcmCallData(
     val transport: FcmTransport,
     val extension: String,
     var pass: String = "",
-    val dtmf: String,
+    val dtmf: String = "",
     var image: String = "",
     var live: String = "",
     val timestamp: String,
