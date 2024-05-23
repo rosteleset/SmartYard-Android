@@ -1,1 +1,7 @@
-/build
+**
+!build.gradle
+!flavors.gradle
+!.gitignore
+!proguard-rules.pro
+!signing.gradle
+!src/**
