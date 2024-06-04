@@ -16,8 +16,8 @@
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            app:srcCompat="@drawable/ic_background_reg_number"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_background_reg_number" />
 
         <ImageView
             android:id="@+id/imageView2"
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
-            android:text="Provider"
+            tools:text="Provider"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -59,15 +59,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:paddingRight="14dp"
-            android:text="+7"
             android:textColor="@color/grey_100"
             android:textSize="30sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintEnd_toStartOf="@id/llPhone"
+            app:layout_constraintHorizontal_chainStyle="packed"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView2" />
+            app:layout_constraintTop_toTopOf="@+id/imageView2"
+            tools:text="+7" />
 
 
         <androidx.constraintlayout.widget.Guideline
@@ -117,12 +117,29 @@
             android:id="@+id/llPhone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="@+id/textView"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView"
-            app:layout_constraintTop_toTopOf="@+id/textView" >
+            app:layout_constraintTop_toTopOf="@+id/textView">
 
         </LinearLayout>
+
+        <EditText
+            android:id="@+id/etHiddenPhoneNumber"
+            android:layout_width="12px"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:inputType="number"
+            android:textAlignment="center"
+            android:textSize="1px"
+            android:textColor="@android:color/transparent"
+            android:cursorVisible="false"
+            app:layout_constraintBottom_toTopOf="@+id/textView"
+            app:layout_constraintTop_toBottomOf="@+id/tvBackToProviders"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

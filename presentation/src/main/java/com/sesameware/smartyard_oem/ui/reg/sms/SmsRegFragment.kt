@@ -103,6 +103,10 @@ class SmsRegFragment : Fragment() {
             this.findNavController().navigate(R.id.action_smsRegFragment_to_numberRegFragment)
         }
 
+        binding.ivBack.setOnClickListener {
+            this.findNavController().navigate(R.id.action_smsRegFragment_to_numberRegFragment)
+        }
+
         binding.pin.focus()
 
         binding.pin.addTextChangedListener {
