@@ -61,6 +61,11 @@ class OutgoingCallFragment : Fragment() {
             findNavController().navigate(R.id.action_outgoingCallFragment_to_numberRegFragment)
         }
 
+        binding.ivBack.setOnClickListener {
+            jobCheckPhone?.cancel()
+            findNavController().navigate(R.id.action_outgoingCallFragment_to_numberRegFragment)
+        }
+
         binding.btnMakeCall.setOnClickListener {
             val intent = Intent(Intent.ACTION_DIAL).apply {
                 data = Uri.parse("tel:$callNumber")
