@@ -1,7 +1,2 @@
-**
-!build.gradle
-!flavors.gradle
-!.gitignore
-!proguard-rules.pro
-!signing.gradle
-!src/**
+/build
+*/release
