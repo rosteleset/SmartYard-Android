@@ -236,7 +236,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 this,
                 0,
                 intent,
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_CANCEL_CURRENT
+                PendingIntent.FLAG_CANCEL_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_INBOX_ID)
             .setSmallIcon(R.drawable.ic_notification)

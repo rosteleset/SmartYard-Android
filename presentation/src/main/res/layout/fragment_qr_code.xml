@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextureView
+    <androidx.camera.view.PreviewView
         android:id="@+id/cameraTextureView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
@@ -58,6 +58,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <View
+            android:id="@+id/croppedView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
