@@ -120,7 +120,10 @@ dependencies {
     implementation "com.google.firebase:firebase-analytics:$rootProject.firebaseAnalyticsVersion"
     implementation "com.google.firebase:firebase-crashlytics:$rootProject.firebaseCrashlyticsVersion"
     implementation "com.google.firebase:firebase-messaging:$rootProject.firebaseMessagingVersion"
-    implementation "com.google.firebase:firebase-ml-vision:24.0.3"
+    implementation 'com.google.firebase:firebase-iid:21.1.0'
+
+    // Qr code scanner
+    implementation 'com.google.mlkit:barcode-scanning:17.2.0'
 
     // Utils
     implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
@@ -205,7 +208,9 @@ dependencies {
 
     // CameraX
     implementation "androidx.camera:camera-core:${cameraxVersion}"
+    implementation "androidx.camera:camera-lifecycle:${cameraxVersion}"
     implementation "androidx.camera:camera-camera2:${cameraxVersion}"
+    implementation "androidx.camera:camera-view:${cameraxVersion}"
 
     // OSM
     implementation "org.osmdroid:osmdroid-android:${osmdroidAndroid}"

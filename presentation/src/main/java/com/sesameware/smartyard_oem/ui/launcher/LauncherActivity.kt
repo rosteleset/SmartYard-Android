@@ -74,7 +74,9 @@ class LauncherActivity : CommonActivity() {
                 FirebaseMessagingService.CHANNEL_CALLS_ID,
                 this.getString(R.string.channel_calls_title),
                 NotificationManager.IMPORTANCE_HIGH
-            )
+            ).apply {
+                setShowBadge(false)
+            }
 
             //включаем вибрацию
             channelCalls.enableVibration(true)
