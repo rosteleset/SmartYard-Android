@@ -15,8 +15,8 @@ import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
  * Created on 2020-02-05.
  */
 class AppealFormViewModel(
-    private val mInteractor: AuthInteractor,
-    private val mPreferenceStorage: PreferenceStorage
+    override val mAuthInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
     val sentName = MutableLiveData<SentName>()
 
@@ -26,7 +26,7 @@ class AppealFormViewModel(
         listenerEmpty: listenerEmpty
     ) {
         viewModelScope.withProgress({ false }) {
-            mInteractor.sendName(name, patronimic)
+            mAuthInteractor.sendName(name, patronimic)
             mPreferenceStorage.sentName = SentName(name, patronimic)
             listenerEmpty()
         }

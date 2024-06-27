@@ -3,18 +3,18 @@ package com.sesameware.smartyard_oem.ui.reg.outgoing_call
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import kotlinx.coroutines.*
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentOutgoingCallBinding
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
+import kotlinx.coroutines.Job
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class OutgoingCallFragment : Fragment() {
     private var _binding: FragmentOutgoingCallBinding? = null
@@ -75,7 +75,7 @@ class OutgoingCallFragment : Fragment() {
             }
         }
 
-        jobCheckPhone = mViewModel.startRepeatingCheckPhone(phoneNumber)
+        jobCheckPhone = mViewModel.startRepeatingCheckPhone(phoneNumber, requireContext())
 
         mViewModel.phoneConfirmed.observe(viewLifecycleOwner) {
             if (it.first) {

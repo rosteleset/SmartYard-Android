@@ -10,7 +10,6 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.model.CommonErrorThrowable
-import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
@@ -19,9 +18,9 @@ import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class RegistrationViewModel(
-    private val mPreferenceStorage: PreferenceStorage,
+    override val mPreferenceStorage: PreferenceStorage,
     private val inboxInteractor: InboxInteractor,
-    val authInteractor: AuthInteractor
+    override val mAuthInteractor: AuthInteractor
 ) : GenericViewModel() {
     fun onStart(
         fragment: Fragment,
@@ -35,7 +34,7 @@ class RegistrationViewModel(
                 Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
                 try {
                     runBlocking {
-                        authInteractor.phonePattern()?.let { result ->
+                        mAuthInteractor.phonePattern()?.let { result ->
                             DataModule.phonePattern = result.data
                         }
                     }
@@ -52,13 +51,13 @@ class RegistrationViewModel(
             runBlocking {
                 try {
                     getProviderConfig()
-                    authInteractor.phonePattern()?.let { result ->
+                    mAuthInteractor.phonePattern()?.let { result ->
                         DataModule.phonePattern = result.data
                     }
                 } catch (e: CommonErrorThrowable) {
                     Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
                     if (e.data.httpCode == 401) {
-                        logout()
+                        logout(activity)
                     } else {
 
                     }
@@ -83,7 +82,7 @@ class RegistrationViewModel(
         if (DataModule.BASE_URL.isNotEmpty()) {
             mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
             Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
-            authInteractor.getOptions()?.let { result ->
+            mAuthInteractor.getOptions()?.let { result ->
                 DataModule.providerConfig = result.data
             }
 
@@ -92,13 +91,13 @@ class RegistrationViewModel(
             val pId = mPreferenceStorage.providerId
             Timber.d("debug_dmm providerId = $pId")
             if (pId?.isNotEmpty() == true) {
-                authInteractor.providers()?.data?.forEach {
+                mAuthInteractor.providers()?.data?.forEach {
                     if (it.id == pId) {
                         DataModule.BASE_URL = it.baseUrl + if (!it.baseUrl.endsWith("/")) "/" else ""
                         mPreferenceStorage.providerBaseUrl = DataModule.BASE_URL
                         Timber.d("debug_dmm    BASE_URL: ${DataModule.BASE_URL}")
                         DataModule.providerName = it.name
-                        authInteractor.getOptions()?.let { result ->
+                        mAuthInteractor.getOptions()?.let { result ->
                             DataModule.providerConfig = result.data
                         }
 

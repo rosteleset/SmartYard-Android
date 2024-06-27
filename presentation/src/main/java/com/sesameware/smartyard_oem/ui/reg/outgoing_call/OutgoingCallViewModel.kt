@@ -1,26 +1,33 @@
 package com.sesameware.smartyard_oem.ui.reg.outgoing_call
 
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.sesameware.data.DataModule
-import kotlinx.coroutines.*
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.response.Name
 import com.sesameware.smartyard_oem.GenericViewModel
+import com.sesameware.smartyard_oem.checkAndRegisterPushToken
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 class OutgoingCallViewModel(
-    private val authInteractor: AuthInteractor,
-    private val mPreferenceStorage: PreferenceStorage
+    override val mAuthInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
     val phoneConfirmed = MutableLiveData(Pair(false, Name("", "")))
 
-    fun startRepeatingCheckPhone(userPhone: String): Job {
+    fun startRepeatingCheckPhone(userPhone: String, context: Context): Job {
         return CoroutineScope(Dispatchers.IO).launch {
             var isDone = false
             while (isActive && !isDone) {
                 try {
-                    val res = authInteractor.checkPhone(userPhone)
+                    val res = mAuthInteractor.checkPhone(userPhone)
                     isDone = true
                     mPreferenceStorage.authToken = res.data.accessToken
                     val name: Name = if (res.data.names is Boolean)
@@ -29,7 +36,7 @@ class OutgoingCallViewModel(
                         Gson().fromJson(Gson().toJson(res.data.names), Name::class.java)
 
                     //получение настроек
-                    authInteractor.getOptions()?.let { result ->
+                    mAuthInteractor.getOptions()?.let { result ->
                         DataModule.providerConfig = result.data
                     }
 
@@ -43,7 +50,7 @@ class OutgoingCallViewModel(
             }
 
             if (isDone) {
-                checkAndRegisterFcmToken()
+                checkAndRegisterPushToken(context.applicationContext)
             }
         }
     }

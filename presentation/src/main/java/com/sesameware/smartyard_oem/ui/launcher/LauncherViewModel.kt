@@ -12,16 +12,16 @@ import com.sesameware.smartyard_oem.GenericViewModel
  * Created on 12/05/2020.
  */
 class LauncherViewModel(
-    preferenceStorage: PreferenceStorage
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     private val _launchDestination = MutableLiveData<Event<LaunchDestination>>()
     val launchDestination: LiveData<Event<LaunchDestination>> = _launchDestination
 
     init {
-        if (preferenceStorage.appVersion != BuildConfig.VERSION_CODE || !preferenceStorage.onboardingCompleted) {
-            preferenceStorage.appVersion = BuildConfig.VERSION_CODE
-            preferenceStorage.onboardingCompleted = false
+        if (mPreferenceStorage.appVersion != BuildConfig.VERSION_CODE || !mPreferenceStorage.onboardingCompleted) {
+            mPreferenceStorage.appVersion = BuildConfig.VERSION_CODE
+            mPreferenceStorage.onboardingCompleted = false
             _launchDestination.value = Event(LaunchDestination.ONBOARDING_ACTIVITY)
         } else {
             _launchDestination.value = Event(LaunchDestination.REGISTRATION_ACTIVITY)

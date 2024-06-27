@@ -9,15 +9,14 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.domain.model.response.Provider
-import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
 class ProvidersViewModel(
-    private val mPreferenceStorage: PreferenceStorage,
-    private val authInteractor: AuthInteractor
+    override val mPreferenceStorage: PreferenceStorage,
+    override val mAuthInteractor: AuthInteractor
 ) : GenericViewModel() {
     val providersList = MutableLiveData<List<Provider>?>(null)
 
@@ -36,7 +35,7 @@ class ProvidersViewModel(
         DataModule.phonePattern = DataModule.defaultPhonePattern
         try {
             runBlocking {
-                authInteractor.phonePattern()?.let { result ->
+                mAuthInteractor.phonePattern()?.let { result ->
                     DataModule.phonePattern = result.data
                 }
             }
@@ -48,7 +47,7 @@ class ProvidersViewModel(
 
     private fun getProviders() {
         viewModelScope.withProgress {
-            val res = authInteractor.providers()
+            val res = mAuthInteractor.providers()
             providersList.postValue(res?.data)
         }
     }

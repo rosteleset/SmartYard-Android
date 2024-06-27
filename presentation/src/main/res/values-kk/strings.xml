@@ -53,8 +53,8 @@
     <string name="restore_access_edit_hint">Шарт нөмірі</string>
     <string name="restore_access_edit_btn_get_recovery">Қол жетімді қалпына келтіру әдістерін алу</string>
     <string name="restore_access_edit_btn_get_code">Растау кодын алыңызі</string>
-    <string name="restore_access_input_code_phone">Растау коды телефонға жіберілді</string>
-    <string name="restore_access_input_code_email">Растау коды поштаға жіберілді</string>
+    <string name="restore_access_input_code_phone">Растау коды телефонға жіберілді %1$s</string>
+    <string name="restore_access_input_code_email">Растау коды поштаға жіберілді %1$s</string>
 
     <string name="restore_access_btn_text_confirm">Растау</string>
     <string name="restore_access_btn_resent_text">Кодты қайта жіберіңіз</string>

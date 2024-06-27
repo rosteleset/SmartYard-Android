@@ -10,7 +10,8 @@ import com.sesameware.domain.model.response.Settings.Roommate
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 /**
  * @author Nail Shakurov
@@ -18,7 +19,7 @@ import java.util.*
  */
 class AccessAddressViewModel(
     private val addressInteractor: AddressInteractor,
-    val preferenceStorage: PreferenceStorage
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
     var intercom = MutableLiveData<Intercom?>()
 
@@ -70,7 +71,7 @@ class AccessAddressViewModel(
             val roommateResponse = roommate.data.first { it.flatId == flatId }
             this@AccessAddressViewModel.roommate.postValue(roommateResponse.roommates)
 
-            preferenceStorage.xDmApiRefresh = true
+            mPreferenceStorage.xDmApiRefresh = true
             val dataIntercom = addressInteractor.getIntercom(flatId)
             intercom.postValue(dataIntercom.data)
         }

@@ -19,14 +19,14 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.navigation.NavController
+import com.sesameware.domain.model.PushTransport
+import com.sesameware.domain.model.response.CCTVCityCameraData
+import com.sesameware.domain.model.response.CCTVData
+import com.sesameware.smartyard_oem.ui.map.LatLng
 import org.linphone.core.TransportType
 import org.osmdroid.util.GeoPoint
 import org.threeten.bp.DayOfWeek
 import org.threeten.bp.temporal.WeekFields
-import com.sesameware.domain.model.FcmTransport
-import com.sesameware.domain.model.response.CCTVCityCameraData
-import com.sesameware.domain.model.response.CCTVData
-import com.sesameware.smartyard_oem.ui.map.LatLng
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.security.MessageDigest
@@ -45,11 +45,11 @@ fun NavController.setStartDestination(id: Int) {
     this.graph = graph
 }
 
-fun FcmTransport.convert(): TransportType {
+fun PushTransport.convert(): TransportType {
     return when (this) {
-        FcmTransport.Udp -> TransportType.Udp
-        FcmTransport.Tcp -> TransportType.Tcp
-        FcmTransport.Tls -> TransportType.Tls
+        PushTransport.Udp -> TransportType.Udp
+        PushTransport.Tcp -> TransportType.Tcp
+        PushTransport.Tls -> TransportType.Tls
     }
 }
 

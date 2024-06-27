@@ -10,12 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.sesameware.data.DataModule
-import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.drawable
 import com.sesameware.smartyard_oem.databinding.FragmentBasicSettingsBinding
@@ -24,6 +19,7 @@ import com.sesameware.smartyard_oem.ui.firstCharacter
 import com.sesameware.smartyard_oem.ui.main.settings.dialog.DialogChangeName
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
 import com.sesameware.smartyard_oem.ui.updateAllWidget
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class BasicSettingsFragment : Fragment() {
@@ -60,7 +56,7 @@ class BasicSettingsFragment : Fragment() {
                 this,
                 RingtoneManager.TYPE_NOTIFICATION,
                 null,
-                mViewModel.preferenceStorage
+                mViewModel.mPreferenceStorage
             )
         }
         context?.let {
@@ -68,7 +64,7 @@ class BasicSettingsFragment : Fragment() {
                 it,
                 RingtoneManager.TYPE_NOTIFICATION,
                 null,
-                mViewModel.preferenceStorage
+                mViewModel.mPreferenceStorage
             )
             binding.tvSoundChoose.text = tone.getToneTitle(it)
         }
@@ -151,7 +147,7 @@ class BasicSettingsFragment : Fragment() {
             .setTitle(R.string.setting_dialog_exit_caption)
             .setMessage(R.string.setting_dialog_exit_caption_msg)
             .setPositiveButton(resources.getString(R.string.setting_dialog_exit_yes)) { _, _ ->
-                mViewModel.logout()
+                mViewModel.logout(requireContext())
             }
             .setNegativeButton(resources.getString(R.string.setting_dialog_exit_no)) { _, _ ->
                 return@setNegativeButton

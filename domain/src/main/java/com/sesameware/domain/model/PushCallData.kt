@@ -4,10 +4,10 @@ import com.sesameware.domain.model.response.MediaServerType
 import com.squareup.moshi.Json
 import java.io.Serializable
 
-data class FcmCallData(
+data class PushCallData(
     val server: String,
     val port: String,
-    val transport: FcmTransport,
+    val transport: PushTransport,
     val extension: String,
     var pass: String = "",
     val dtmf: String = "",
@@ -42,7 +42,7 @@ data class FcmCallData(
         }
 }
 
-enum class FcmTransport {
+enum class PushTransport {
     @Json(name = "udp") Udp,
     @Json(name = "tcp") Tcp,
     @Json(name = "tls") Tls

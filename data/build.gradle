@@ -42,8 +42,18 @@ android {
         }
     }
 
-    flavorDimensions = ["site"]
+    // Обязательно в таком порядке, иначе google-services.json не подтянется
+    flavorDimensions = ["site", "market"]
+
     productFlavors {
+        google {
+            dimension "market"
+        }
+
+        huawei {
+            dimension "market"
+        }
+
         teledom {
             dimension "site"
             buildConfigField "String", "USER_AGENT", "\"\""
@@ -87,7 +97,7 @@ dependencies {
     // Testing
     testImplementation "junit:junit:$rootProject.junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$rootProject.extJunitVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoCoreVersion"
+//    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoCoreVersion"
 
     // OkHttp & Retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"

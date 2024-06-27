@@ -15,7 +15,9 @@ import com.sesameware.smartyard_oem.GenericViewModel
  * @author Nail Shakurov
  * Created on 11/03/2020.
  */
-class InputAddressViewModel(private val geoInteractor: GeoInteractor) : GenericViewModel() {
+class InputAddressViewModel(
+    private val geoInteractor: GeoInteractor
+) : GenericViewModel() {
 
     val cityList = MutableLiveData<List<LocationData>>()
     val progressCity = MutableLiveData<Boolean>()

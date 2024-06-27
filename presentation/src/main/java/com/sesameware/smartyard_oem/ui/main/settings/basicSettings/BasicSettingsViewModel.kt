@@ -15,9 +15,9 @@ import com.sesameware.smartyard_oem.ui.SoundChooser
  * Created on 16/03/2020.
  */
 class BasicSettingsViewModel(
-    val preferenceStorage: PreferenceStorage,
-    val databaseInteractor: DatabaseInteractor,
-    val authInteractor: AuthInteractor
+    override val mPreferenceStorage: PreferenceStorage,
+    override val mDatabaseInteractor: DatabaseInteractor,
+    override val mAuthInteractor: AuthInteractor
 ) : GenericViewModel() {
 
     val sentName = MutableLiveData<SentName>()
@@ -28,7 +28,7 @@ class BasicSettingsViewModel(
     init {
         refreshSendName()
         viewModelScope.withProgress {
-            val res = authInteractor.userNotification(
+            val res = mAuthInteractor.userNotification(
                 null, null
             )
             isPushSetting.value = TF.getString(res.data.enable)
@@ -38,7 +38,7 @@ class BasicSettingsViewModel(
 
     fun setPushMoneySetting(flag: Boolean) {
         viewModelScope.withProgress {
-            val res = authInteractor.userNotification(
+            val res = mAuthInteractor.userNotification(
                 TF.getBoolean(flag),
                 null
             )
@@ -48,8 +48,8 @@ class BasicSettingsViewModel(
 
     fun setPushSetting(flag: Boolean) {
         viewModelScope.withProgress {
-            preferenceStorage.xDmApiRefresh = true
-            val res = authInteractor.userNotification(
+            mPreferenceStorage.xDmApiRefresh = true
+            val res = mAuthInteractor.userNotification(
                 null,
                 TF.getBoolean(flag)
             )
@@ -58,10 +58,10 @@ class BasicSettingsViewModel(
     }
 
     fun refreshSendName() {
-        sentName.postValue(preferenceStorage.sentName ?: SentName("", ""))
+        sentName.postValue(mPreferenceStorage.sentName ?: SentName("", ""))
     }
 
     fun saveSoundToPref(tone: SoundChooser.RingtoneU) {
-        preferenceStorage.notifySoundUri = tone.uri.toString()
+        mPreferenceStorage.notifySoundUri = tone.uri.toString()
     }
 }

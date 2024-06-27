@@ -10,8 +10,14 @@ import android.os.Looper
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.google.firebase.messaging.FirebaseMessagingService
-import com.google.firebase.messaging.RemoteMessage
+import com.huawei.hms.push.HmsMessageService
+import com.huawei.hms.push.RemoteMessage
+import com.squareup.moshi.Moshi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
@@ -22,15 +28,9 @@ import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIF
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
-import com.squareup.moshi.Moshi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import org.json.JSONObject
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import timber.log.Timber
 
-class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
+class MessagingService : HmsMessageService(), KoinComponent {
     private var mHandler = Handler(Looper.getMainLooper())
     private val preferenceStorage: PreferenceStorage by inject()
     private val mInteractor: AuthInteractor by inject()
@@ -48,13 +48,13 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             Timber.tag(TAG).d( "debug_dmm Message Notification Body: ${it.body}")
         }
 
-        if (remoteMessage.data.isNotEmpty()) {
+        if (remoteMessage.dataOfMap.isNotEmpty()) {
             handleNow(remoteMessage)
         }
     }
 
     private fun handleNow(remoteMessage: RemoteMessage) {
-        remoteMessage.data.let { data: MutableMap<String, String> ->
+        remoteMessage.dataOfMap.let { data: MutableMap<String, String> ->
             Timber.tag(TAG).d("debug_dmm push: $data")
             with(data) {
                 val dataTitle = get("title")
@@ -100,7 +100,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                                 /*msg.live = ""
                                 msg.image = ""*/
                             }*/
-
                             waitForLinServiceAndRun(msg) {
                                 Timber.d("debug_dmm linphone service is running")
                                 it.listenAndGetNotifications(msg)
@@ -165,13 +164,14 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         }
     }
 
+    //для заданного пользователя нужно закомментировать всю функцию
     override fun onNewToken(token: String) {
-        Timber.d("debug_dmm new fcm token: $token")
+        Timber.d("debug_dmm new hms token: $token")
         preferenceStorage.pushToken = token
 
         if (preferenceStorage.authToken != null) {
             GlobalScope.launch {
-                Timber.d("debug_dmm register fcm token: $token")
+                Timber.d("debug_dmm register hms token: $token")
                 mInteractor.registerPushToken(token)
                 preferenceStorage.pushTokenRegistered = token
             }
@@ -192,6 +192,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         val tone = SoundChooser.getChosenTone(this, RingtoneManager.TYPE_NOTIFICATION, null, preferenceStorage)
         val soundUri = tone.uri
+
         Timber.d("debug_dmm soundUri: $soundUri")
 
         val intent = Intent(this, MainActivity::class.java)

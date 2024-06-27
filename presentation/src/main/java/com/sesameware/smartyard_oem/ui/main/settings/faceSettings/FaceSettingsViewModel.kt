@@ -2,8 +2,6 @@ package com.sesameware.smartyard_oem.ui.main.settings.faceSettings
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.FRSInteractor
 import com.sesameware.domain.model.response.FaceData
@@ -11,7 +9,7 @@ import com.sesameware.smartyard_oem.GenericViewModel
 
 class FaceSettingsViewModel(
     private val frsInteractor: FRSInteractor,
-    private val preferenceStorage: PreferenceStorage
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     var faces = MutableLiveData<List<FaceData>?>()
@@ -19,7 +17,7 @@ class FaceSettingsViewModel(
     fun listFaces(flatId: Int, noCache: Boolean = false) {
         viewModelScope.withProgress {
             if (noCache) {
-                preferenceStorage.xDmApiRefresh = true
+                mPreferenceStorage.xDmApiRefresh = true
             }
             val res = frsInteractor.listFaces(flatId)
             faces.postValue(res?.data)

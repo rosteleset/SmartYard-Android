@@ -16,7 +16,9 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef
@@ -29,16 +31,21 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.domain.model.response.ProviderConfig
-import com.sesameware.smartyard_oem.*
+import com.sesameware.smartyard_oem.App
+import com.sesameware.smartyard_oem.CommonActivity
+import com.sesameware.smartyard_oem.Event
+import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
 import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_MESSAGE_TYPE
 import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
+import com.sesameware.smartyard_oem.LinphoneService
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityMainBinding
+import com.sesameware.smartyard_oem.reduceToZero
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.dpToPx
 import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
@@ -47,6 +54,7 @@ import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment
 import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
 import com.sesameware.smartyard_oem.ui.setupWithNavController
 import kotlinx.coroutines.runBlocking
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 interface UserInteractionListener {
@@ -84,13 +92,13 @@ class MainActivity : CommonActivity() {
         runBlocking {
             try {
                 mRegModel.getProviderConfig()
-                mRegModel.authInteractor.phonePattern()?.let { result ->
+                mRegModel.mAuthInteractor.phonePattern()?.let { result ->
                     DataModule.phonePattern = result.data
                 }
             } catch (e: CommonErrorThrowable) {
                 Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
                 if (e.data.httpCode == 401) {
-                    mViewModel.logout()
+                    mViewModel.logout(this@MainActivity)
                 } else {
 
                 }
@@ -124,7 +132,7 @@ class MainActivity : CommonActivity() {
 
         binding.bottomNav.itemIconTintList = null
         showBadge(this, binding.bottomNav, R.id.notification, "")
-        mViewModel.onCreate()
+        mViewModel.onCreate(this)
 
         mViewModel.badge.observe(
             this
@@ -239,7 +247,7 @@ class MainActivity : CommonActivity() {
         if (LinphoneService.instance?.mCore?.inCall() == true) {
             val intent = Intent(this, IncomingCallActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                putExtra(IncomingCallActivity.FCM_DATA, LinphoneService.instance?.provider?.fcmData)
+                putExtra(IncomingCallActivity.PUSH_DATA, LinphoneService.instance?.provider?.pushCallData)
             }
             startActivity(intent)
         }

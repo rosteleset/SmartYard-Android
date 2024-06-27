@@ -5,7 +5,7 @@ import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.md5
 
 class ChatViewModel(
-    private val mPreferenceStorage: PreferenceStorage
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     init {

@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Observer
 import com.sesameware.domain.model.ErrorStatus
 import com.sesameware.smartyard_oem.ui.ProgressDialog
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
@@ -31,7 +30,7 @@ abstract class CommonActivity : AppCompatActivity() {
                             getString(R.string.common_do_authorization_on_another),
                             false
                         ) {
-                            mViewModel.logout()
+                            mViewModel.logout(this@CommonActivity)
                         }
                     }
                     else -> {

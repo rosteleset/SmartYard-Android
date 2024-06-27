@@ -25,6 +25,10 @@ android {
         consumerProguardFiles 'consumer-rules.pro'
     }
 
+    buildFeatures {
+        buildConfig true
+    }
+
     buildTypes {
         disableLint {
         }
@@ -37,6 +41,34 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    // Обязательно в таком порядке, иначе google-services.json не подтянется
+    flavorDimensions = ["site", "market"]
+
+    productFlavors {
+        google {
+            dimension "market"
+            buildConfigField "int", "PUSH_TYPE", "0"
+        }
+
+        huawei {
+            dimension "market"
+            buildConfigField "int", "PUSH_TYPE", "4"
+        }
+
+        teledom {
+            dimension "site"
+        }
+
+        teledomTest {
+            dimension "site"
+        }
+
+        client {
+            dimension "site"
+        }
+    }
+    
     namespace 'com.sesameware.domain'
 }
 

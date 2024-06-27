@@ -7,14 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.LifecycleOwner
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
+import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
-import androidx.core.widget.addTextChangedListener
-import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.databinding.FormAppealBinding
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 
 class AppealForm @JvmOverloads constructor(
     context: Context,
@@ -82,7 +82,7 @@ class AppealForm @JvmOverloads constructor(
             binding.tvError.visibility = View.VISIBLE
             binding.tvError.setText(mesId)
             if (mesId == com.sesameware.domain.R.string.common_do_authorization_on_another) {
-                mViewModel.logout()
+                mViewModel.logout(context)
             }
         } else {
             binding.tvError.visibility = View.GONE

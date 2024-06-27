@@ -25,10 +25,10 @@ import timber.log.Timber
 
 class AddressViewModel(
     private val addressInteractor: AddressInteractor,
-    private val preferenceStorage: PreferenceStorage,
-    private val authInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage,
+    override val mAuthInteractor: AuthInteractor,
     private val issueInteractor: IssueInteractor,
-    private val databaseInteractor: DatabaseInteractor
+    override val mDatabaseInteractor: DatabaseInteractor
 ) : GenericViewModel() {
 
     private val _dataList = MutableLiveData<List<DisplayableItem>>()
@@ -46,7 +46,7 @@ class AddressViewModel(
 
     fun openDoor(domophoneId: Int, doorId: Int?) {
         viewModelScope.withProgress {
-            authInteractor.openDoor(domophoneId, doorId)
+            mAuthInteractor.openDoor(domophoneId, doorId)
         }
     }
 
@@ -94,20 +94,20 @@ class AddressViewModel(
             progress = _progress
         ) {
             if (noCache) {
-                preferenceStorage.xDmApiRefresh = true
+                mPreferenceStorage.xDmApiRefresh = true
             }
             val houseIdFlats = getHouseIdFlats()
             if (noCache) {
-                preferenceStorage.xDmApiRefresh = true
+                mPreferenceStorage.xDmApiRefresh = true
             }
             val res = addressInteractor.getAddressList()
             if (res?.data == null) {
-                if (!preferenceStorage.whereIsContractWarningSeen) {
+                if (!mPreferenceStorage.whereIsContractWarningSeen) {
                     _navigationToAuth.value = (Event(Unit))
                 }
             } else {
                 Timber.d(this.javaClass.simpleName, res.data.size)
-                //databaseInteractor.deleteAll()
+                //mDatabaseInteractor.deleteAll()
                 var hasExpanded = false
                 val list: MutableList<DisplayableItem> = (
                     res.data.map { addressItem ->
@@ -119,7 +119,7 @@ class AddressViewModel(
                                 "Door address: ${addressItem.address}"
                             )
 
-                            databaseInteractor
+                            mDatabaseInteractor
                                 .createItem(
                                     AddressItem(
                                         name = it.name,

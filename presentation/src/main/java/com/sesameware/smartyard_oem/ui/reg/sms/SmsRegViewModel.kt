@@ -15,14 +15,15 @@ import com.sesameware.domain.model.response.Name
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.checkAndRegisterPushToken
 
 /**
  * @author Nail Shakurov
  * Created on 2020-02-05.
  */
 class SmsRegViewModel(
-    private val mInteractor: AuthInteractor,
-    private val mPreferenceStorage: PreferenceStorage
+    override val mAuthInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     val time = MutableLiveData<String>()
@@ -51,11 +52,11 @@ class SmsRegViewModel(
             confirmError.value = Event(it)
             false
         }) {
-            val res = mInteractor.confirmCode(phone, code)
+            val res = mAuthInteractor.confirmCode(phone, code)
             mPreferenceStorage.authToken = res.data.accessToken
 
             //получение настроек
-            mInteractor.getOptions()?.let { result ->
+            mAuthInteractor.getOptions()?.let { result ->
                 DataModule.providerConfig = result.data
             }
 
@@ -70,7 +71,7 @@ class SmsRegViewModel(
                     SmsRegFragment.KEY_PATRONYMIC to name.patronymic
                 )
             )
-            checkAndRegisterFcmToken()
+            checkAndRegisterPushToken(fragment.requireContext().applicationContext)
         }
     }
 
@@ -79,7 +80,7 @@ class SmsRegViewModel(
             sendPhoneError.value = Event(it)
             true
         }) {
-            mInteractor.requestCode(phone)
+            mAuthInteractor.requestCode(phone)
             startResendTimer()
         }
     }

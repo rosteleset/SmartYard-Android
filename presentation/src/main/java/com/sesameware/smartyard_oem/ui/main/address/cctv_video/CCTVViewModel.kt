@@ -7,33 +7,31 @@ import android.os.Parcelable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.DataModule
-import kotlinx.parcelize.Parcelize
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import org.threeten.bp.Instant
-import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneId
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
-import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.RangeObject
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 import okhttp3.FormBody
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
 import timber.log.Timber
 import java.util.*
 
@@ -53,7 +51,7 @@ fun isDateInAvailableRanges(date: LocalDate, ranges: List<AvailableRange>): Bool
 
 class CCTVViewModel(
     private val state: SavedStateHandle,
-    private val mPreferenceStorage: PreferenceStorage,
+    override val mPreferenceStorage: PreferenceStorage,
     private val cctvInteractor: CCTVInteractor
 ) : GenericViewModel() {
     val cctvModel = state.getLiveData<VideoCameraModelP?>(cctvModel_Key, null)
