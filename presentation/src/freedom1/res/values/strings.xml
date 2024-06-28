@@ -1,9 +1,0 @@
-<resources>
-    <!-- Main -->
-    <string name="app_name">Фридом</string>
-
-    <!-- Авторизация по номеру договора -->
-    <string name="auth_contract_hint">Логин или номер договора</string>
-
-    <string name="text_put_an_application">Оставить заявку</string>
-</resources>

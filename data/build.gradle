@@ -42,9 +42,10 @@ android {
         }
     }
 
-    flavorDimensions "default"
+    flavorDimensions = ["site"]
     productFlavors {
         teledom {
+            dimension "site"
             buildConfigField "String", "USER_AGENT", "\"\""
             buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
@@ -54,6 +55,7 @@ android {
         }
 
         teledomTest {
+            dimension "site"
             buildConfigField "String", "USER_AGENT", "\"\""
             buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""

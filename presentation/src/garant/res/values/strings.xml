@@ -1,7 +1,0 @@
-<resources>
-    <!-- Main -->
-    <string name="app_name">Гарант Глазов</string>
-
-    <!-- Bottom Menu -->
-    <string name="title_address">Дом</string>
-</resources>
