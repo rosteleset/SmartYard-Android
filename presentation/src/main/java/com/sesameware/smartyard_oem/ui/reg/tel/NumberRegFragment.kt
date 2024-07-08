@@ -136,11 +136,13 @@ class NumberRegFragment : Fragment() {
 
                     val text = StringBuilder(s)
 
-
-                    val etPrefix = text.substring(0, mPhonePrefix.length)
-                    if (etPrefix.isNotEmpty() && etPrefix == mPhonePrefix) {
-                        text.delete(0, mPhonePrefix.length)
-                        Timber.d("___pre onTextChanged prefix removed text = $text")
+                    // Remove prefix if it was accidentally entered
+                    if (text.length == mPhonePrefix.length) {
+                        val etPrefix = text.substring(0, mPhonePrefix.length)
+                        if (etPrefix == mPhonePrefix) {
+                            text.delete(0, mPhonePrefix.length)
+                            Timber.d("___pre onTextChanged prefix removed text = $text")
+                        }
                     }
 
                     if (text.length > pinCount) {
