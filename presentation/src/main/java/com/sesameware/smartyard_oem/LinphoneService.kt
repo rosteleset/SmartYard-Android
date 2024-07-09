@@ -6,7 +6,6 @@ import android.os.Handler
 import android.os.IBinder
 import org.linphone.core.Core
 import org.linphone.core.Factory
-import org.linphone.core.LogLevel
 import org.linphone.core.tools.Log
 import timber.log.Timber
 import java.io.File
@@ -73,10 +72,10 @@ class LinphoneService : Service() {
                 nat = core.createNatPolicy()
             }
             
-            var stun = intent?.getStringExtra(FirebaseMessagingService.CALL_STUN) ?: ""
-            val turnTransport = intent?.getStringExtra(FirebaseMessagingService.CALL_STUN_TRANSPORT) ?: "udp"
-            val turnUsername = intent?.getStringExtra(FirebaseMessagingService.CALL_TURN_USERNAME) ?: ""
-            val turnPassword = intent?.getStringExtra(FirebaseMessagingService.CALL_TURN_PASSWORD) ?: ""
+            var stun = intent?.getStringExtra(MessagingService.CALL_STUN) ?: ""
+            val turnTransport = intent?.getStringExtra(MessagingService.CALL_STUN_TRANSPORT) ?: "udp"
+            val turnUsername = intent?.getStringExtra(MessagingService.CALL_TURN_USERNAME) ?: ""
+            val turnPassword = intent?.getStringExtra(MessagingService.CALL_TURN_PASSWORD) ?: ""
 
             if (stun.startsWith("turn:")) {
                 stun = stun.substring(5)

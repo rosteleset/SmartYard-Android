@@ -30,7 +30,7 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import timber.log.Timber
 
-class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
+class MessagingService : FirebaseMessagingService(), KoinComponent {
     private var mHandler = Handler(Looper.getMainLooper())
     private val preferenceStorage: PreferenceStorage by inject()
     private val mInteractor: AuthInteractor by inject()

@@ -116,7 +116,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 val notification =
-                    notificationManager.getNotificationChannel(FirebaseMessagingService.CHANNEL_CALLS_ID)
+                    notificationManager.getNotificationChannel(MessagingService.CHANNEL_CALLS_ID)
                 shouldVibrate = notification?.shouldVibrate() ?: false
             }
             val intent =
@@ -170,7 +170,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         currentRingtone?.play()
         if (shouldVibrate) {
             @Suppress("DEPRECATION")
-            mAudioManager.vibrator?.vibrate(FirebaseMessagingService.CALL_VIBRATION_PATTERN, 0)
+            mAudioManager.vibrator?.vibrate(MessagingService.CALL_VIBRATION_PATTERN, 0)
         }
     }
 
