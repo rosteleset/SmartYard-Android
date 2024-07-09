@@ -10,8 +10,8 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.model.CommonErrorThrowable
-import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
 import com.sesameware.smartyard_oem.GenericViewModel
+import com.sesameware.smartyard_oem.MessagingService.TypeMessage
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragmentDirections
 import kotlinx.coroutines.runBlocking

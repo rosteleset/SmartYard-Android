@@ -38,11 +38,11 @@ import com.sesameware.smartyard_oem.App
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.EventObserver
-import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_BADGE
-import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_CHAT
-import com.sesameware.smartyard_oem.FirebaseMessagingService.Companion.NOTIFICATION_MESSAGE_TYPE
-import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
 import com.sesameware.smartyard_oem.LinphoneService
+import com.sesameware.smartyard_oem.MessagingService.Companion.NOTIFICATION_BADGE
+import com.sesameware.smartyard_oem.MessagingService.Companion.NOTIFICATION_CHAT
+import com.sesameware.smartyard_oem.MessagingService.Companion.NOTIFICATION_MESSAGE_TYPE
+import com.sesameware.smartyard_oem.MessagingService.TypeMessage
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityMainBinding
 import com.sesameware.smartyard_oem.reduceToZero

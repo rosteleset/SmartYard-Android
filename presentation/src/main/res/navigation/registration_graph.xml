@@ -43,7 +43,7 @@
         <argument
             android:name="messageType"
             android:defaultValue="NO_DEFINE"
-            app:argType="com.sesameware.smartyard_oem.FirebaseMessagingService$TypeMessage" />
+            app:argType="com.sesameware.smartyard_oem.MessagingService$TypeMessage" />
         <argument
             android:name="messageId"
             app:argType="string"

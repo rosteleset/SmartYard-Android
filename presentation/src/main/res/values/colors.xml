@@ -46,6 +46,4 @@
     <color name="calendar_blue_light">#D2E3FC</color>
     <color name="calendar_toolbar_color">#607D8B</color>
     <color name="calendar_statusbar_color">#455A64</color>
-
-    <color name="global_progress_bar_color">@color/brandColor</color>
 </resources>

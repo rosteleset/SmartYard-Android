@@ -4,16 +4,16 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Bundle
 import androidx.core.view.ViewCompat
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.CommonActivity
-import com.sesameware.smartyard_oem.FirebaseMessagingService
-import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage
-import com.sesameware.smartyard_oem.FirebaseMessagingService.TypeMessage.Companion.getTypeMessage
+import com.sesameware.smartyard_oem.MessagingService
+import com.sesameware.smartyard_oem.MessagingService.TypeMessage
+import com.sesameware.smartyard_oem.MessagingService.TypeMessage.Companion.getTypeMessage
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityRegistrationBinding
 import com.sesameware.smartyard_oem.reduceToZero
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class RegistrationActivity : CommonActivity() {
@@ -54,11 +54,11 @@ class RegistrationActivity : CommonActivity() {
 
     private fun intentParse(bundle: Bundle) {
         Timber.d("debug_dmm   intentParse")
-        messageId = bundle.getString(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID, "")
+        messageId = bundle.getString(MessagingService.NOTIFICATION_MESSAGE_ID, "")
         messageType =
             getTypeMessage(
                 bundle.getString(
-                    FirebaseMessagingService.NOTIFICATION_MESSAGE_TYPE,
+                    MessagingService.NOTIFICATION_MESSAGE_TYPE,
                     ""
                 )
             )

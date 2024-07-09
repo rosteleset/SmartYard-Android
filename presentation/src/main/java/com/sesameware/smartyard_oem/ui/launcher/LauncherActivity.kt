@@ -9,7 +9,7 @@ import android.os.Bundle
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.EventObserver
-import com.sesameware.smartyard_oem.FirebaseMessagingService
+import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.onboarding.OnboardingActivity
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
@@ -50,10 +50,10 @@ class LauncherActivity : CommonActivity() {
         Timber.d("debug_dmm   openRegistrationActivity   ${intent?.extras?.keySet()?.joinToString(", ")}")
         val regIntent = Intent(this, RegistrationActivity::class.java)
         if (intent.extras?.containsKey("action") == true) {
-            regIntent.putExtra(FirebaseMessagingService.NOTIFICATION_MESSAGE_TYPE, intent.extras?.getString("action"))
+            regIntent.putExtra(MessagingService.NOTIFICATION_MESSAGE_TYPE, intent.extras?.getString("action"))
         }
-        if (intent.extras?.containsKey(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID) == true) {
-            regIntent.putExtra(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID, intent.extras?.getString(FirebaseMessagingService.NOTIFICATION_MESSAGE_ID))
+        if (intent.extras?.containsKey(MessagingService.NOTIFICATION_MESSAGE_ID) == true) {
+            regIntent.putExtra(MessagingService.NOTIFICATION_MESSAGE_ID, intent.extras?.getString(MessagingService.NOTIFICATION_MESSAGE_ID))
         }
         startActivity(regIntent)
         finish()
@@ -64,14 +64,14 @@ class LauncherActivity : CommonActivity() {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
             val channelMessages = NotificationChannel(
-                FirebaseMessagingService.CHANNEL_INBOX_ID,
+                MessagingService.CHANNEL_INBOX_ID,
                 this.getString(R.string.channel_inbox_title),
                 NotificationManager.IMPORTANCE_HIGH
             )
             notificationManager.createNotificationChannel(channelMessages)
 
             val channelCalls = NotificationChannel(
-                FirebaseMessagingService.CHANNEL_CALLS_ID,
+                MessagingService.CHANNEL_CALLS_ID,
                 this.getString(R.string.channel_calls_title),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
@@ -80,7 +80,7 @@ class LauncherActivity : CommonActivity() {
 
             //включаем вибрацию
             channelCalls.enableVibration(true)
-            channelCalls.vibrationPattern = FirebaseMessagingService.CALL_VIBRATION_PATTERN
+            channelCalls.vibrationPattern = MessagingService.CALL_VIBRATION_PATTERN
 
             //отключаем звук уведомления, так как он запускается при успешном sip соединении
             channelCalls.setSound(null, null)
