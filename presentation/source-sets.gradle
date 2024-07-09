@@ -1,0 +1,10 @@
+android {
+    sourceSets {
+        client {
+            manifest.srcFile '../../smartyard-flavors/client/AndroidManifest.xml'
+            java.srcDirs = ['../../smartyard-flavors/client/java']
+            res.srcDirs = ['../../smartyard-flavors/client/res']
+            assets.srcDirs = ['../../smartyard-flavors/client/assets']
+        }
+    }
+}

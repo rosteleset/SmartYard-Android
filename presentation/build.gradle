@@ -77,6 +77,7 @@ if (project.file('signing.gradle').exists()) {
 
 if (project.file('flavors.gradle').exists()) {
     apply from: 'flavors.gradle'
+    apply from: 'source-sets.gradle'
 }
 
 project.afterEvaluate {
