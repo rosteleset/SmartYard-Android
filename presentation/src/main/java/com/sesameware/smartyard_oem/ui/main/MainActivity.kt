@@ -130,7 +130,7 @@ class MainActivity : CommonActivity() {
             setupBottomNavigationBar(false)
         } // Else, need to wait for onRestoreInstanceState
 
-        binding.bottomNav.itemIconTintList = null
+//        binding.bottomNav.itemIconTintList = null
         showBadge(this, binding.bottomNav, R.id.notification, "")
         mViewModel.onCreate(this)
 
