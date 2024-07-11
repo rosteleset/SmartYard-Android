@@ -35,7 +35,7 @@ buildscript {
         constraintLayoutVersion = '2.1.4'
         safeArgsVersion = '2.7.6'
         junitVersion = '4.13.2'
-        extJunitVersion = '1.1.0'
+        extJunitVersion = '1.2.1'
         espressoCoreVersion = '3.2.0'
         playServicesVersion = '4.4.0'
         firebaseAnalyticsVersion = '20.0.2'
