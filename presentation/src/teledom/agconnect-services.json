@@ -26,21 +26,21 @@
 		"SG_back":"connect-ws-dra.hispace.dbankcloud.com"
 	},
 	"client":{
-		"cp_id":"20007000034287354",
-		"product_id":"388421841222256781",
-		"client_id":"1451610872744016192",
-		"client_secret":"24BC4D00C9B341B935DA88EDCE35E04C37B826B7FB637C598402B9C0D17C8525",
-		"project_id":"388421841222256781",
-		"app_id":"111347845",
-		"api_key":"DQEDAMwkBK8SuLGGbxbp+LOuIOulm4nCTsC7gayh71+D1K/p76uc1IaRTShHJumPFW2LCnFEqKC87XEj9PYnRwx2pjcT2uM0cyQyAA==",
+		"cp_id":"30971000023063435",
+		"product_id":"388421841222304161",
+		"client_id":"1463793739334957696",
+		"client_secret":"CAA1DD9F481991D1250755F7332CBF8FCE4F2B5E173D1A401976BF0C49F23605",
+		"project_id":"388421841222304161",
+		"app_id":"111486999",
+		"api_key":"DQEDAPbifE4YQ7WZHz2pq6Trreff0hAACmOADboeqyitHG51DG1sQC1+UaklGRB2XybcMFg/XDX5ZdDs6z0N95al7WDgMCBrRVIB0g==",
 		"package_name":"com.sesameware.smartyard_oem"
 	},
 	"oauth_client":{
-		"client_id":"111347845",
+		"client_id":"111486999",
 		"client_type":1
 	},
 	"app_info":{
-		"app_id":"111347845",
+		"app_id":"111486999",
 		"package_name":"com.sesameware.smartyard_oem"
 	},
 	"service":{
@@ -81,15 +81,15 @@
 		{
 			"package_name":"com.sesameware.smartyard_oem",
 			"client":{
-				"app_id":"111347845"
+				"app_id":"111486999"
 			},
 			"app_info":{
 				"package_name":"com.sesameware.smartyard_oem",
-				"app_id":"111347845"
+				"app_id":"111486999"
 			},
 			"oauth_client":{
 				"client_type":1,
-				"client_id":"111347845"
+				"client_id":"111486999"
 			}
 		}
 	]
