@@ -7,8 +7,8 @@ def getMarketFlavorOrSync() {
         println 'getMarketFlavor: Gradle sync.'
         return 'sync'
     }
-    if (taskNames.contains('clean')) {
-        println 'getMarketFlavor: Clean project.'
+    if (taskNames.size() == 1) {
+        println 'getMarketFlavor: Non Build Task.'
         return 'sync'
     }
     // To keep only specified flavor libs
