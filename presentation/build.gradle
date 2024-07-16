@@ -7,16 +7,34 @@ plugins {
 }
 
 def flavorOrSync = getMarketFlavorOrSync()
+
 if (flavorOrSync == "sync" || flavorOrSync == "google") {
     apply plugin: 'com.google.gms.google-services'
     apply plugin: 'com.google.firebase.crashlytics'
 }
+
 if (flavorOrSync == "sync" || flavorOrSync == "huawei") {
     apply plugin: 'com.huawei.agconnect'
 }
 
+if (flavorOrSync == "sync" || flavorOrSync == "rustore") {
+    apply plugin: 'ru.ok.tracer'
+    tracer {
+        defaultConfig {
+            // See the "Settings" section
+            pluginToken = "AZ2adhatS8Jbqzud284dlmJ9mSzeKVkfI3nAvuTfPed1"
+            appToken = "MUdXdKSfjnboooRCNpeWcUcD45SzxWiN2rfRrEsOMrd"
+
+            // Enables mapping files uploading during a build. The default value is true, i.e. the uploading is enabled.
+            uploadMapping = true
+            // Enables output of debugging information about the plugin operation. The default value is false.
+            // printBuildUUID = true
+        }
+    }
+}
+
 android {
-    compileSdk rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdk
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -29,8 +47,8 @@ android {
 
     defaultConfig {
         applicationId "com.sesameware.smartyard_oem"
-        minSdk rootProject.minSdkVersion
-        targetSdk rootProject.targetSdkVersion
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
         versionCode 55
         versionName '1.0.55'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -62,6 +80,10 @@ android {
         }
 
         huawei {
+            dimension "market"
+        }
+
+        rustore {
             dimension "market"
         }
 
@@ -120,26 +142,21 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // Ui
-    implementation "androidx.appcompat:appcompat:$rootProject.appCompatVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$rootProject.constraintLayoutVersion"
-    implementation "androidx.transition:transition:$rootProject.androidxTransition"
-    implementation "com.google.android.material:material:$rootProject.materialMaterial"
-    implementation "androidx.viewpager2:viewpager2:$rootProject.viewpagerVersion"
-    implementation "com.github.romandanylyk:PageIndicatorView:$rootProject.pageIndicatorVersion"
-    implementation "androidx.core:core-splashscreen:$rootProject.splashscreen_version"
-
-    // Testing
-    testImplementation "junit:junit:$rootProject.junitVersion"
-    androidTestImplementation "androidx.test.ext:junit:$rootProject.extJunitVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.espressoCoreVersion"
+    implementation "androidx.appcompat:appcompat:$appCompat"
+    implementation "androidx.constraintlayout:constraintlayout:$constraintLayout"
+    implementation "androidx.transition:transition:$androidxTransition"
+    implementation "com.google.android.material:material:$material"
+    implementation "androidx.viewpager2:viewpager2:$viewpager"
+    implementation "com.github.romandanylyk:PageIndicatorView:$pageIndicator"
+    implementation "androidx.core:core-splashscreen:$splashscreen"
 
     // Google
     if (flavorOrSync == "sync" || flavorOrSync == "google") {
-        implementation "com.google.firebase:firebase-analytics:$rootProject.firebaseAnalyticsVersion"
-        implementation "com.google.firebase:firebase-crashlytics-ktx:$rootProject.firebaseCrashlyticsVersion"
-        implementation "com.google.firebase:firebase-messaging:$rootProject.firebaseMessagingVersion"
-        implementation "com.google.firebase:firebase-iid:$rootProject.firebaseMessagingVersion"
-        implementation "com.google.android.gms:play-services-location:$rootProject.playServicesLocation"
+        implementation "com.google.firebase:firebase-analytics:$firebaseAnalytics"
+        implementation "com.google.firebase:firebase-crashlytics-ktx:$firebaseCrashlytics"
+        implementation "com.google.firebase:firebase-messaging:$firebaseMessaging"
+        implementation "com.google.firebase:firebase-iid:$firebaseMessaging"
+        implementation "com.google.android.gms:play-services-location:$playServicesLocation"
     }
 
     // Huawei
@@ -149,123 +166,128 @@ dependencies {
         implementation 'com.huawei.hms:push:6.11.0.300'
     }
 
+    //Rustore
+    if (flavorOrSync == "sync" || flavorOrSync == "rustore") {
+        implementation 'ru.ok.tracer:tracer-crash-report:0.3.1'
+        implementation 'ru.ok.tracer:tracer-crash-report-native:0.3.1'
+        implementation 'ru.rustore.sdk:pushclient:2.3.0'
+    }
+
     // Qr code scanner
     implementation 'com.google.mlkit:barcode-scanning:17.2.0'
 
     // Utils
-    implementation "androidx.core:core-ktx:$rootProject.coreKtxVersion"
+    implementation "androidx.core:core-ktx:$coreKtx"
 
     // Log
-    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+    implementation "com.jakewharton.timber:timber:$timber"
 
     // Navigation
-    implementation "androidx.navigation:navigation-fragment-ktx:$rootProject.navigationVersion"
-    implementation "androidx.navigation:navigation-runtime-ktx:$rootProject.navigationVersion"
-    implementation "androidx.navigation:navigation-ui-ktx:$rootProject.navigationVersion"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+    implementation "androidx.navigation:navigation-runtime-ktx:$navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
 
     // Room
-    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
-    implementation "androidx.room:room-ktx:$rootProject.roomVersion"
-    ksp "androidx.room:room-compiler:$rootProject.roomVersion"
+    implementation "androidx.room:room-runtime:$room"
+    implementation "androidx.room:room-ktx:$room"
+    ksp "androidx.room:room-compiler:$room"
 
     // Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
 
     // OkHttp & Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofitVersion"
-    implementation "com.squareup.okhttp3:okhttp:$rootProject.okHttpVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpVersion"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
+    implementation "com.squareup.okhttp3:okhttp:$okHttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttp"
 
-    ksp "com.squareup.moshi:moshi-kotlin-codegen:$rootProject.kotlinCodegen"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$kotlinCodegen"
 
     // Architecture Components
-    implementation "androidx.arch.core:core-runtime:$rootProject.archCoreVersion"
-    implementation "android.arch.paging:runtime:$rootProject.pagingVersion"
-    implementation "androidx.lifecycle:lifecycle-extensions:$rootProject.lifecycleVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$rootProject.lifecycleViewModelVersion"
-    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$rootProject.lifecycleViewModelVersion"
-    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$rootProject.lifecycleViewModelVersion"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$rootProject.lifecycleViewModelVersion"
+    implementation "androidx.arch.core:core-runtime:$archCore"
+    implementation "android.arch.paging:runtime:$paging"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleViewModel"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-savedstate:$lifecycleViewModel"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleViewModel"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleViewModel"
 
     // Koin Core features
-    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-core:$koin"
     // Koin Test features
-    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin"
     // Koin main features for Android
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin"
 
     // Images
-    implementation "com.github.bumptech.glide:glide:$rootProject.glide_version"
-    implementation "com.github.bumptech.glide:okhttp3-integration:$rootProject.glide_version"
+    implementation "com.github.bumptech.glide:glide:$glide"
+    implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    ksp "com.github.bumptech.glide:compiler:$rootProject.glide_version"
+    ksp "com.github.bumptech.glide:compiler:$glide"
 
     // Serialization
-    implementation "com.squareup.moshi:moshi-kotlin:$rootProject.moshi_version"
-    implementation "com.squareup.moshi:moshi-adapters:$rootProject.moshi_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi"
+    implementation "com.squareup.moshi:moshi-adapters:$moshi"
 
     // Pin Edit Text
-    implementation("com.alimuzaffar.lib:pinentryedittext:$rootProject.pinEntryEditText") {
+    implementation("com.alimuzaffar.lib:pinentryedittext:$pinEntryEditText") {
         // Exclude is only needed if you already have
         // androidx.appcompat as a dependency in your app.
         exclude group: 'androidx.appcompat', module: 'appcompat'
     }
 
     // LinPhone SDK
-    implementation "org.linphone:linphone-sdk-android:$rootProject.linphoneVersion"
+    implementation "org.linphone:linphone-sdk-android:$linphone"
 
     // Expandable Layout
-    implementation "com.github.cachapa:ExpandableLayout:${expandablelayoutVersion}"
+    implementation "com.github.cachapa:ExpandableLayout:$expandableLayout"
 
     // AdapterDelegates
-    implementation "com.hannesdorfmann:adapterdelegates4:${adapterdelegates}"
+    implementation "com.hannesdorfmann:adapterdelegates4:$adapterdelegates"
 
     // Open Street Map
-    implementation "org.osmdroid:osmdroid-android:${openStreetMapVersion}"
+    implementation "org.osmdroid:osmdroid-android:$openStreetMap"
 
     // Swipe
     implementation 'com.github.rambler-digital-solutions:swipe-layout-android:1.0.17'
 
     // Mask
-    implementation "com.github.RedMadRobot:input-mask-android:${inputMask}"
+    implementation "com.github.RedMadRobot:input-mask-android:$inputMask"
 
     // CameraX
-    implementation "androidx.camera:camera-core:${cameraxVersion}"
-    implementation "androidx.camera:camera-lifecycle:${cameraxVersion}"
-    implementation "androidx.camera:camera-camera2:${cameraxVersion}"
-    implementation "androidx.camera:camera-view:${cameraxVersion}"
+    implementation "androidx.camera:camera-core:$camerax"
+    implementation "androidx.camera:camera-lifecycle:$camerax"
+    implementation "androidx.camera:camera-camera2:$camerax"
+    implementation "androidx.camera:camera-view:$camerax"
 
-    // OSM
-    implementation "org.osmdroid:osmdroid-android:${osmdroidAndroid}"
-
-    implementation "com.karumi:dexter:${dexter}"
+    //Permissions
+    implementation "com.karumi:dexter:$dexter"
 
     // Calendar
-    implementation "com.github.kizitonwose:CalendarView:${calendarView}"
-    implementation "com.jakewharton.threetenabp:threetenabp:${threetenabp}"
+    implementation "com.github.kizitonwose:CalendarView:$calendarView"
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp"
 
     //exoplayer
-    implementation "com.google.android.exoplayer:exoplayer-core:${exoPlayer}"
-    implementation "com.google.android.exoplayer:exoplayer-hls:${exoPlayer}"
-    implementation "com.google.android.exoplayer:exoplayer-ui:${exoPlayer}"
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoPlayer"
+    implementation "com.google.android.exoplayer:exoplayer-hls:$exoPlayer"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoPlayer"
 
     // Play Install Referrer library.
-    implementation "com.android.installreferrer:installreferrer:${installreferrer}"
+    implementation "com.android.installreferrer:installreferrer:$installReferrer"
 
-    implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerView"
+    implementation "androidx.recyclerview:recyclerview:$recyclerView"
 
     // Kotlin
-    implementation "androidx.preference:preference-ktx:$preference_version"
+    implementation "androidx.preference:preference-ktx:$preference"
 
     //Chat
     implementation 'com.github.bekannax:OnlineChatSdk:0.1.3'
 
     // Compose
-    def composeBom = platform('androidx.compose:compose-bom:2022.10.00')
+    def composeBom = platform("androidx.compose:compose-bom:$composeBom")
     implementation(composeBom)
     androidTestImplementation(composeBom)
     implementation "androidx.compose.runtime:runtime"
@@ -277,11 +299,13 @@ dependencies {
     implementation "androidx.compose.ui:ui-tooling"
 
     // WebRTC
-    implementation "com.dafruits:webrtc:${rootProject.webrtc_version}"
+    implementation "com.dafruits:webrtc:$webrtc"
 
-    // Test
-    androidTestImplementation 'androidx.test.ext:junit:1.2.0'
-    androidTestImplementation 'androidx.test:runner:1.6.0'
-    androidTestImplementation 'androidx.test:rules:1.6.0'
-    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.5.3'
+    // Testing
+    testImplementation "junit:junit:$junit"
+    androidTestImplementation "androidx.test.ext:junit:$junitExt"
+    androidTestImplementation "androidx.test:runner:$junitRunnerRules"
+    androidTestImplementation "androidx.test:rules:$junitRunnerRules"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCore"
+//    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.5.3'
 }

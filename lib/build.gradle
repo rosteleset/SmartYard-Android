@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdk
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -16,8 +16,8 @@ android {
     }
 
     defaultConfig {
-        minSdk rootProject.minSdkVersion
-        targetSdk rootProject.targetSdkVersion
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -48,7 +48,7 @@ project.afterEvaluate {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerView"
-    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
-    implementation "com.jakewharton.threetenabp:threetenabp:${threetenabp}"
+    implementation "androidx.recyclerview:recyclerview:$recyclerView"
+    implementation "com.jakewharton.timber:timber:$timber"
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp"
 }
