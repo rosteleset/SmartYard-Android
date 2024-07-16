@@ -73,7 +73,7 @@ open class GenericViewModel : ViewModel(), KoinComponent {
     }
 
     fun logout(context: Context) {
-        viewModelScope.withProgress {
+        viewModelScope.withProgress({ false }) {
             mPreferenceStorage.providerId = null
             mPreferenceStorage.providerBaseUrl = null
             mPreferenceStorage.authToken = null

@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.compileSdkVersion
+    compileSdk rootProject.compileSdk
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17
@@ -18,8 +18,8 @@ android {
     }
 
     defaultConfig {
-        minSdk rootProject.minSdkVersion
-        targetSdk rootProject.targetSdkVersion
+        minSdk rootProject.minSdk
+        targetSdk rootProject.targetSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
@@ -56,6 +56,11 @@ android {
             buildConfigField "int", "PUSH_TYPE", "4"
         }
 
+        rustore {
+            dimension "market"
+            buildConfigField "int", "PUSH_TYPE", "5"
+        }
+
         teledom {
             dimension "site"
         }
@@ -82,35 +87,35 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     // OkHttp & Retrofit
-    implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
-    implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"
-    implementation "com.squareup.retrofit2:converter-gson:$rootProject.retrofitVersion"
-    implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.okHttpVersion"
-    implementation "com.squareup.retrofit2:converter-moshi:$rootProject.retrofitVersion"
-    ksp "com.squareup.moshi:moshi-kotlin-codegen:$rootProject.kotlinCodegen"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okHttp"
+    implementation "com.squareup.retrofit2:converter-moshi:$retrofit"
+    ksp "com.squareup.moshi:moshi-kotlin-codegen:$kotlinCodegen"
 
     // Coroutines
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$rootProject.coroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$rootProject.coroutinesVersion"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines"
 
     //serialization
-    implementation "com.squareup.moshi:moshi-kotlin:$rootProject.moshi_version"
-    implementation "com.squareup.moshi:moshi-adapters:$rootProject.moshi_version"
+    implementation "com.squareup.moshi:moshi-kotlin:$moshi"
+    implementation "com.squareup.moshi:moshi-adapters:$moshi"
 
     // Room
-    implementation "androidx.room:room-runtime:$rootProject.roomVersion"
-    implementation "androidx.room:room-rxjava2:$rootProject.roomVersion"
-    ksp "androidx.room:room-compiler:$rootProject.roomVersion"
+    implementation "androidx.room:room-runtime:$room"
+    implementation "androidx.room:room-rxjava2:$room"
+    ksp "androidx.room:room-compiler:$room"
 
     // Koin Core features
-    implementation "io.insert-koin:koin-core:$koin_version"
+    implementation "io.insert-koin:koin-core:$koin"
     // Koin Test features
-    testImplementation "io.insert-koin:koin-test:$koin_version"
+    testImplementation "io.insert-koin:koin-test:$koin"
     // Koin main features for Android
-    implementation "io.insert-koin:koin-android:$koin_version"
+    implementation "io.insert-koin:koin-android:$koin"
 
     // Log
-    implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
+    implementation "com.jakewharton.timber:timber:$timber"
 
-    implementation "com.jakewharton.threetenabp:threetenabp:${threetenabp}"
+    implementation "com.jakewharton.threetenabp:threetenabp:$threetenabp"
 }
