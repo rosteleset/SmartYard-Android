@@ -29,6 +29,7 @@ buildscript {
         compileSdk = 34
         adapterdelegates = '4.2.0'
         androidGraglePlugin = '8.2.2'
+        androidxLegacy = '1.0.0'
         androidxTransition = '1.4.1'
         appCompat = '1.6.1'
         archCore = '2.0.1'
@@ -49,7 +50,7 @@ buildscript {
         glide = '4.12.0'
         huaweiAgconnect = "1.9.1.301"
         huaweiAnalytics = "6.12.0.301"
-        huaweiMessaging = "6.11.0.300"
+        huaweiPush = "6.11.0.300"
         inputMask = '5.0.0'
         installReferrer = '2.2'
         junit = '4.13.2'
@@ -57,17 +58,19 @@ buildscript {
         junitRunnerRules = '1.6.0'
         koin = '3.1.5'
         kotlinGraglePlugin = '1.9.0'
-        kotlinCodegen = '1.11.0'
         ktlint = '0.37.2'
         ksp = '1.9.0-1.0.13'
         lifecycle = '2.2.0'
         lifecycleViewModel = '2.7.0'
         linphone = '5.3.19'
         material = '1.11.0'
+        mlkitBarcode = '17.2.0'
         morphBottomNavigation = '1.0.1'
         moshi = '1.11.0'
+        moshiCodegen = '1.11.0'
         navigation = '2.7.6'
         okHttp = '4.9.2'
+        onlineChatSdk = "0.1.3"
         openStreetMap = '6.1.10'
         pageIndicator = "v.1.0.3"
         paging = '1.0.1'
@@ -78,10 +81,12 @@ buildscript {
         recyclerView = '1.3.2'
         retrofit = '2.6.0'
         room = '2.6.1'
-        ruOkTracer = '0.3.1'
+        rustorePush = '2.3.0'
+        rustoreTracer = '0.3.1'
         safeArgs = '2.7.6'
         splashscreen = '1.0.1'
         swipeLayout = '1.1.0'
+        swipeLayoutRambler = '1.0.17'
         threetenabp = '1.2.3'
         timber = '4.7.1'
         viewpager = '1.0.0'
@@ -101,7 +106,7 @@ buildscript {
         classpath "com.google.gms:google-services:$playServices"
         classpath "com.google.firebase:firebase-crashlytics-gradle:$firebaseCrashlyticsPlugin"
         classpath "com.huawei.agconnect:agcp:$huaweiAgconnect"
-        classpath "ru.ok.tracer:tracer-plugin:$ruOkTracer"
+        classpath "ru.ok.tracer:tracer-plugin:$rustoreTracer"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$safeArgs"
         classpath "io.insert-koin:koin-gradle-plugin:$koin"
         classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$ksp"
