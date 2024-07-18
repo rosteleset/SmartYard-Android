@@ -3,7 +3,6 @@ package com.sesameware.smartyard_oem.ui.reg.tel
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,7 +21,6 @@ import com.sesameware.smartyard_oem.databinding.FragmentNumberRegBinding
 import com.sesameware.smartyard_oem.databinding.PinEntryBinding
 import com.sesameware.smartyard_oem.ui.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import timber.log.Timber
 
 
 class NumberRegFragment : Fragment() {
@@ -117,51 +115,24 @@ class NumberRegFragment : Fragment() {
             et.requestFocus()
             showSoftKeyboard(et)
 
-            et.addTextChangedListener(object : TextWatcher {
-                private var selfModified: Boolean = false
+            et.doAfterTextChanged { s ->
+                if (s == null) return@doAfterTextChanged
 
-                override fun beforeTextChanged(
-                    s: CharSequence?, start: Int, count: Int, after: Int
-                ) {}
-
-                override fun onTextChanged(
-                    s: CharSequence?, start: Int, before: Int, count: Int
-                ) {
-                    Timber.d("___pre onTextChanged initial s = $s")
-                    if (s.isNullOrEmpty()) return
-                    if (selfModified) {
-                        selfModified = false
-                        return
-                    }
-
-                    val text = StringBuilder(s)
-
-                    // Remove prefix if it was accidentally entered
-                    if (text.length == mPhonePrefix.length) {
-                        val etPrefix = text.substring(0, mPhonePrefix.length)
-                        if (etPrefix == mPhonePrefix) {
-                            text.delete(0, mPhonePrefix.length)
-                            Timber.d("___pre onTextChanged prefix removed text = $text")
-                        }
-                    }
-
-                    if (text.length > pinCount) {
-                        text.delete(pinCount, text.length)
-                        Timber.d("___pre onTextChanged length cut text = $text")
-                    }
-
-                    val text0 = text.toString()
-                    if (s.toString() != text0) {
-                        selfModified = true
-                        et.setText(text0)
+                // Remove prefix if it was accidentally entered
+                if (s.length == mPhonePrefix.length) {
+                    val etPrefix = s.substring(0, mPhonePrefix.length)
+                    if (etPrefix == mPhonePrefix) {
+                        s.delete(0, mPhonePrefix.length)
                     }
                 }
 
-                override fun afterTextChanged(s: Editable?) {
-                    Timber.d("___pre afterTextChanged")
-                    updatePins(et.text.toString())
+                // Cut ET text to pins count
+                if (s.length > pinCount) {
+                    s.delete(pinCount, s.length)
                 }
-            })
+
+                updatePins(s.toString())
+            }
 
             pinSlots[pinSlots.size - 1].peeSlot.doAfterTextChanged {
                 checkToSmsReg()
