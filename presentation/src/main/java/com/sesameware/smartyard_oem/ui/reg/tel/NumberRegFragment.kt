@@ -110,46 +110,33 @@ class NumberRegFragment : Fragment() {
             }
         }
 
-        if (pinSlots.isNotEmpty()) {
-            val et = binding.etHiddenPhoneNumber
-            et.requestFocus()
-            showSoftKeyboard(et)
+        if (pinSlots.isEmpty()) return
 
-            et.doAfterTextChanged { s ->
-                if (s == null) return@doAfterTextChanged
+        val et = binding.etHiddenPhoneNumber
+        et.requestFocus()
+        showSoftKeyboard(et)
+        et.doAfterTextChanged(::modifyEtText)
 
-                // Remove prefix if it was accidentally entered
-                if (s.length == mPhonePrefix.length) {
-                    val etPrefix = s.substring(0, mPhonePrefix.length)
-                    if (etPrefix == mPhonePrefix) {
-                        s.delete(0, mPhonePrefix.length)
-                    }
-                }
+        pinSlots[pinSlots.size - 1].peeSlot.doAfterTextChanged(::checkToSmsReg)
+    }
 
-                // Cut ET text to pins count
-                if (s.length > pinCount) {
-                    s.delete(pinCount, s.length)
-                }
+    private fun modifyEtText(s: Editable?) {
+        if (s == null) return
 
-                updatePins(s.toString())
-            }
-
-            pinSlots[pinSlots.size - 1].peeSlot.doAfterTextChanged {
-                checkToSmsReg()
-            }
-
-            pinSlots.forEach { pinSlot ->
-                pinSlot.peeSlot.setOnClickListener {
-                    showSoftKeyboard(et)
-                    if (et.text.isNotEmpty()) et.setSelection(et.text.length)
-                }
-                pinSlot.peeSlot.setOnLongClickListener {
-                    showSoftKeyboard(et)
-                    if (et.text.isNotEmpty()) et.selectAll()
-                    true
-                }
+        // Remove prefix if it was accidentally entered
+        if (s.length == mPhonePrefix.length) {
+            val etPrefix = s.substring(0, mPhonePrefix.length)
+            if (etPrefix == mPhonePrefix) {
+                s.delete(0, mPhonePrefix.length)
             }
         }
+
+        // Cut ET text to pins count
+        if (s.length > pinCount) {
+            s.delete(pinCount, s.length)
+        }
+
+        updatePins(s.toString())
     }
 
     private fun showSoftKeyboard(et: EditText) {
@@ -159,35 +146,35 @@ class NumberRegFragment : Fragment() {
     }
 
     private fun updatePins(text: String) {
-        val remainingNumbers = StringBuilder(text)
+        val etRemainingDigits = StringBuilder(text)
         for (i in 0 until pinSlots.size) {
-            val peeNumbers: Editable = pinSlots[i].peeSlot.text ?: break
+            val peeDigits: Editable = pinSlots[i].peeSlot.text ?: break
 
-            val lenToMove = minOf(remainingNumbers.length, pinSlotSizes[i])
-            if (lenToMove == 0) {
-                peeNumbers.clear()
+            val bufferLen = minOf(etRemainingDigits.length, pinSlotSizes[i])
+            if (bufferLen == 0) {
+                peeDigits.clear()
             }
 
-            val etNumbers: String = remainingNumbers.substring(0, lenToMove)
-            remainingNumbers.delete(0, lenToMove)
+            val bufferDigits: String = etRemainingDigits.substring(0, bufferLen)
+            etRemainingDigits.delete(0, bufferLen)
 
-            val lenToReplace = minOf(etNumbers.length, peeNumbers.length)
+            val lenToReplace = minOf(bufferDigits.length, peeDigits.length)
             for (j in 0 until lenToReplace) {
-                if (etNumbers[j] != peeNumbers[j]) {
-                    peeNumbers.replace(j, j + 1, etNumbers[j].toString())
+                if (bufferDigits[j] != peeDigits[j]) {
+                    peeDigits.replace(j, j + 1, bufferDigits[j].toString())
                 }
             }
 
-            val lenDiff = etNumbers.length - peeNumbers.length
-            if (lenDiff > 0) {
-                peeNumbers.append(etNumbers.substring(peeNumbers.length, etNumbers.length))
-            } else if (lenDiff < 0) {
-                peeNumbers.delete(etNumbers.length, peeNumbers.length)
+            val lenToAppendOrDelete = bufferDigits.length - peeDigits.length
+            if (lenToAppendOrDelete > 0) {
+                peeDigits.append(bufferDigits.substring(peeDigits.length, bufferDigits.length))
+            } else if (lenToAppendOrDelete < 0) {
+                peeDigits.delete(bufferDigits.length, peeDigits.length)
             }
         }
     }
 
-    private fun checkToSmsReg() {
+    private fun checkToSmsReg(s: Editable?) {
         toggleError(false)
         val numbers = binding.etHiddenPhoneNumber.text
         if (numbers.length == pinCount) {
