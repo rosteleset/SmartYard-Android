@@ -118,6 +118,12 @@ class NumberRegFragment : Fragment() {
         et.doAfterTextChanged(::modifyEtText)
 
         pinSlots[pinSlots.size - 1].peeSlot.doAfterTextChanged(::checkToSmsReg)
+        pinSlots.forEach {
+            it.peeSlot.setOnClickListener {
+                et.requestFocus()
+                showSoftKeyboard(et)
+            }
+        }
     }
 
     private fun modifyEtText(s: Editable?) {
