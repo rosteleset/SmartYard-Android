@@ -496,7 +496,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }
         binding.mOpenedButton.show(opened, true)
         binding.mHangUpButton.show(!opened)
-        if (binding.mOpenButton.hasOnClickListeners()) {
+        if (this::mPushCallData.isInitialized && mPushCallData.dtmf.isNotEmpty()) {
             binding.mOpenButton.show(!opened)
         }
     }
