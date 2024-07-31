@@ -48,17 +48,17 @@ android {
     productFlavors {
         google {
             dimension "market"
-            buildConfigField "int", "PUSH_TYPE", "0"
+            buildConfigField "String", "PUSH_SERVICE", "\"fcm\""
         }
 
         huawei {
             dimension "market"
-            buildConfigField "int", "PUSH_TYPE", "4"
+            buildConfigField "String", "PUSH_SERVICE", "\"hms\""
         }
 
         rustore {
             dimension "market"
-            buildConfigField "int", "PUSH_TYPE", "5"
+            buildConfigField "String", "PUSH_SERVICE", "\"rustore\""
         }
 
         teledom {
