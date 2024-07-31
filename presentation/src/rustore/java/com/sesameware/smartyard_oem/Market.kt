@@ -1,4 +1,4 @@
-package ru.madbrains.smartyard
+package com.sesameware.smartyard_oem
 
 import android.content.Context
 import android.os.Build
@@ -14,12 +14,12 @@ fun GenericViewModel.checkAndRegisterPushToken(context: Context) {
         .addOnSuccessListener {token ->
             if (token.isNotEmpty()) {
                 Timber.d("debug_dmm RuStore token: $token")
-                Timber.d("debug_dmm saved registered RuStore token: ${mPreferenceStorage.fcmTokenRegistered}")
-                mPreferenceStorage.fcmToken = token
-                if (token != mPreferenceStorage.fcmTokenRegistered) {
+                Timber.d("debug_dmm saved registered RuStore token: ${mPreferenceStorage.pushTokenRegistered}")
+                mPreferenceStorage.pushToken = token
+                if (token != mPreferenceStorage.pushTokenRegistered) {
                     viewModelScope.launchSimple({false}) {
-                        mInteractor.registerPushToken(token)
-                        mPreferenceStorage.fcmTokenRegistered = token
+                        mAuthInteractor.registerPushToken(token)
+                        mPreferenceStorage.pushTokenRegistered = token
                     }
                 }
             }
@@ -39,5 +39,5 @@ fun GenericViewModel.checkAndRegisterPushToken(context: Context) {
         }
 }
 
-fun GenericViewModel.refreshFcmToken(context: Context) {
+fun GenericViewModel.refreshPushToken(context: Context) {
 }

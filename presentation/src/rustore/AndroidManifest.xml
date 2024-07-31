@@ -14,7 +14,7 @@
 
         <meta-data
             android:name="ru.rustore.sdk.pushclient.project_id"
-            android:value="6cL9QkhpNTe8IkLpqWoWtBsvBeTDXdEo" />
+            android:value="FuG1fcUnkW2hiK-UYygxAcOwvpZVd5t8" />
 
         <meta-data
             android:name="ru.rustore.sdk.pushclient.default_notification_icon"

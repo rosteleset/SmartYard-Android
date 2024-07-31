@@ -1,4 +1,4 @@
-package ru.madbrains.smartyard
+package com.sesameware.smartyard_oem
 
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -14,17 +14,16 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import ru.madbrains.data.DataModule
-import ru.madbrains.data.prefs.PreferenceStorage
-import ru.madbrains.domain.interactors.AuthInteractor
-import ru.madbrains.domain.interactors.InboxInteractor
-import ru.madbrains.domain.model.FcmCallData
-import ru.madbrains.domain.utils.listenerGeneric
-import ru.madbrains.smartyard.ui.SoundChooser
-import ru.madbrains.smartyard.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
-import ru.madbrains.smartyard.ui.main.MainActivity
-import ru.madbrains.smartyard.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
-import ru.madbrains.smartyard.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
+import com.sesameware.data.prefs.PreferenceStorage
+import com.sesameware.domain.interactors.AuthInteractor
+import com.sesameware.domain.interactors.InboxInteractor
+import com.sesameware.domain.model.PushCallData
+import com.sesameware.domain.utils.listenerGeneric
+import com.sesameware.smartyard_oem.ui.SoundChooser
+import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
+import com.sesameware.smartyard_oem.ui.main.MainActivity
+import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
+import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
 import ru.rustore.sdk.pushclient.messaging.model.RemoteMessage
 import ru.rustore.sdk.pushclient.messaging.service.RuStoreMessagingService
 import timber.log.Timber
@@ -68,18 +67,12 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
                         val badge = get("badge")?.toInt()
                         val title = dataTitle ?: remoteMessage.notification?.title
                         val message = dataBody ?: remoteMessage.notification?.body
-                        GlobalScope.launch {
-                            Timber.tag(TAG).d("delivered run: %s", messageId)
-                            messageId?.let {
-                                inboxInteractor.delivered(it)
-                            }
-                        }
 
                         sendNotificationInbox(
                             messageId ?: "",
                             title ?: "",
                             message ?: "",
-                            messageType ?: "",
+                            messageType,
                             badge ?: 0
                         )
                     }
@@ -87,14 +80,15 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
                     containsKey("server") -> {
                         val json = JSONObject(data as Map<*, *>).toString()
                         Timber.tag(TAG).d("debug_dmm incoming call json: $json")
-                        moshi.adapter(FcmCallData::class.java).fromJson(json)?.let { msg ->
-
-                            msg.baseUrl?.let { baseUrl ->
-                                if (baseUrl.isNotEmpty()) {
-                                    preferenceStorage.baseUrl = baseUrl
-                                    DataModule.URL = baseUrl
-                                }
+                        moshi.adapter(PushCallData::class.java).fromJson(json)?.let { msg ->
+                            //если пришло значение в поле hash, то параметры pass, live, image игнорируются
+                            //и вычисляются из hash
+                            msg.hash?.let { hash ->
+                                msg.pass = hash
+                                msg.live = "${preferenceStorage.providerBaseUrl}call/live/${hash}"
+                                msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
                             }
+
                             waitForLinServiceAndRun(msg) {
                                 Timber.d("debug_dmm linphone service is running")
                                 it.listenAndGetNotifications(msg)
@@ -108,18 +102,12 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
                         val badge = get("badge")?.toInt()
                         val title = dataTitle ?: remoteMessage.notification?.title
                         val message = dataBody ?: remoteMessage.notification?.body
-                        GlobalScope.launch {
-                            Timber.tag(TAG).d("delivered run: %s", messageId)
-                            messageId?.let {
-                                inboxInteractor.delivered(it)
-                            }
-                        }
 
                         sendNotificationInbox(
                             messageId ?: "",
                             title ?: "",
                             message ?: "",
-                            messageType ?: "",
+                            messageType,
                             badge ?: 0
                         )
                     }
@@ -133,12 +121,6 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
                         val badge = get("badge")?.toInt()
                         val title = dataTitle ?: remoteMessage.notification?.title
                         val message = dataBody ?: remoteMessage.notification?.body
-                        GlobalScope.launch {
-                            Timber.tag(TAG).d("delivered run: %s", messageId)
-                            messageId?.let {
-                                inboxInteractor.delivered(it)
-                            }
-                        }
 
                         sendNotificationInbox(
                             messageId ?: "",
@@ -174,13 +156,13 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
     //для заданного пользователя нужно закомментировать всю функцию
     override fun onNewToken(token: String) {
         Timber.d("debug_dmm new hms token: $token")
-        preferenceStorage.fcmToken = token
+        preferenceStorage.pushToken = token
 
         if (preferenceStorage.authToken != null) {
             GlobalScope.launch {
                 Timber.d("debug_dmm register hms token: $token")
                 mInteractor.registerPushToken(token)
-                preferenceStorage.fcmTokenRegistered = token
+                preferenceStorage.pushTokenRegistered = token
             }
         }
     }
@@ -273,7 +255,7 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
         }
     }
 
-    private fun waitForLinServiceAndRun(fcmCallData: FcmCallData, listener: listenerGeneric<LinphoneProvider>) {
+    private fun waitForLinServiceAndRun(fcmCallData: PushCallData, listener: listenerGeneric<LinphoneProvider>) {
         Thread {
             if (!LinphoneService.isReady()) {
                 startService(
