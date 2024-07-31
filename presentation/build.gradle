@@ -45,14 +45,16 @@ android {
         }
     }
 
-    flavorDimensions "default"
+    flavorDimensions = ["site"]
 
     productFlavors {
         teledom {
+            dimension "site"
             applicationId "com.sesameware.smartyard_oem"
         }
 
         teledomTest {
+            dimension "site"
             applicationId "com.sesameware.smartyard_oem"
         }
     }
