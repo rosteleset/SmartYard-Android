@@ -1,4 +1,4 @@
-package ru.madbrains.data
+package com.sesameware.smartyard_oem
 
 import ru.ok.tracer.crash.report.TracerCrashReport
 

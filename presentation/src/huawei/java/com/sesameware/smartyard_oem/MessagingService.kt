@@ -91,15 +91,6 @@ class MessagingService : HmsMessageService(), KoinComponent {
                                 msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
                             }
 
-                            //for test
-                            /*if (msg.callerId == "Support") {
-                                msg.videoToken = ""
-                                msg.videoStream = "https://fl4.lanta.me:8443/95594"
-                                msg.videoServer = "flussonic"
-                                msg.videoType = "webrtc"
-                                /*msg.live = ""
-                                msg.image = ""*/
-                            }*/
                             waitForLinServiceAndRun(msg) {
                                 Timber.d("debug_dmm linphone service is running")
                                 it.listenAndGetNotifications(msg)
