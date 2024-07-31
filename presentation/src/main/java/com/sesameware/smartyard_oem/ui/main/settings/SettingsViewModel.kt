@@ -19,9 +19,8 @@ import timber.log.Timber
  */
 class SettingsViewModel(
     private val addressInteractor: AddressInteractor,
-    private val authInteractor: AuthInteractor,
-    private val preferenceStorage: PreferenceStorage
-
+    override val mAuthInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     val dataList = MutableLiveData<List<SettingsAddressModel>>()
@@ -93,9 +92,9 @@ class SettingsViewModel(
 
     fun refreshSentName() {
         sentName.postValue(
-            preferenceStorage.sentName ?: SentName("", "")
+            mPreferenceStorage.sentName ?: SentName("", "")
         )
-        phone.postValue(preferenceStorage.phone ?: "")
+        phone.postValue(mPreferenceStorage.phone ?: "")
     }
 
     fun getDataList(forceRefresh: Boolean = false) {
@@ -104,7 +103,7 @@ class SettingsViewModel(
         nextListNoCache = false
         viewModelScope.withProgress(progress = progress) {
             if (noCache) {
-                preferenceStorage.xDmApiRefresh = true
+                mPreferenceStorage.xDmApiRefresh = true
             }
             val res = addressInteractor.getSettingsList()
             dataList.postValue(
@@ -132,7 +131,7 @@ class SettingsViewModel(
         isConnected: Boolean
     ) {
         viewModelScope.withProgress {
-            val resSer = authInteractor.getServices(model.houseId)
+            val resSer = mAuthInteractor.getServices(model.houseId)
             val isAvailable = resSer?.data?.firstOrNull { it.icon == service.value } != null
             val type = if (isConnected) {
                 when (service) {

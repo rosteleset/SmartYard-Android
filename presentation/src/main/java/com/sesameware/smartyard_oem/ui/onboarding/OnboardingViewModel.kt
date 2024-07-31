@@ -11,7 +11,7 @@ import com.sesameware.smartyard_oem.GenericViewModel
  * Created on 08/05/2020.
  */
 class OnboardingViewModel(
-    private val preferenceStorage: PreferenceStorage
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
 
     private val _navigateToNextPage = MutableLiveData<Event<Unit>>()
@@ -25,12 +25,12 @@ class OnboardingViewModel(
     }
 
     fun onCompleteClick() {
-        preferenceStorage.onboardingCompleted = true
+        mPreferenceStorage.onboardingCompleted = true
         _navigateToRegistration.value = Event(Unit)
     }
 
     fun onSkipClick() {
-        preferenceStorage.onboardingCompleted = true
+        mPreferenceStorage.onboardingCompleted = true
         _navigateToRegistration.value = Event(Unit)
     }
 }

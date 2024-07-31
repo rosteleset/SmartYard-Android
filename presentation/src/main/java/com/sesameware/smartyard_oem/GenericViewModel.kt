@@ -1,28 +1,23 @@
 package com.sesameware.smartyard_oem
 
-import android.os.Build
+import android.content.Context
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.messaging.FirebaseMessaging
 import com.sesameware.data.BuildConfig
 import com.sesameware.data.DataModule
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.data.repository.BaseRepository.Companion.getStatus
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.DatabaseInteractor
 import com.sesameware.domain.model.CommonError
 import com.sesameware.domain.model.CommonErrorThrowable
-import timber.log.Timber
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 
@@ -30,9 +25,9 @@ typealias ExceptionHandler = suspend (CommonError) -> Boolean
 
 open class GenericViewModel : ViewModel(), KoinComponent {
     val globalData: GlobalDataSource by inject()
-    private val mPreferenceStorage: PreferenceStorage by inject()
-    private val mInteractor: AuthInteractor by inject()
-    private val databaseInteractor: DatabaseInteractor by inject()
+    open val mPreferenceStorage: PreferenceStorage by inject()
+    open val mAuthInteractor: AuthInteractor by inject()
+    open val mDatabaseInteractor: DatabaseInteractor by inject()
 
     val localErrorsSink = MutableLiveData<Event<CommonError>>()
     var logout = MutableLiveData<Event<Boolean>>()
@@ -69,7 +64,7 @@ open class GenericViewModel : ViewModel(), KoinComponent {
         )
     }
 
-    protected fun CoroutineScope.launchSimple(
+    fun CoroutineScope.launchSimple(
         handleError: ExceptionHandler = { true },
         context: CoroutineContext = EmptyCoroutineContext,
         query: suspend CoroutineScope.() -> Unit
@@ -77,64 +72,17 @@ open class GenericViewModel : ViewModel(), KoinComponent {
         return this.withProgress(handleError, progress = null, query = query, context = context)
     }
 
-    protected fun checkAndRegisterFcmToken() {
-        Timber.d("debug_dmm call checkAndRegisterFcmToken()")
-        val crashlytics = FirebaseCrashlytics.getInstance()
-        crashlytics.setUserId("_user_${mPreferenceStorage.phone.orEmpty()}")
-        val deviceInfo = "Manufacturer: ${Build.MANUFACTURER}, model: ${Build.MODEL}, device: ${Build.DEVICE}, release: ${Build.VERSION.RELEASE}, SDK: ${Build.VERSION.SDK_INT}"
-        crashlytics.setCustomKey("_device_info", deviceInfo)
-
-        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Timber.w("debug_dmm fetching fcm token failed")
-
-                val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
-                val phone = mPreferenceStorage.phone
-                val exceptionMessage = task.exception?.message
-                Timber.w("debug_dmm exception message: $exceptionMessage")
-                Timber.w("debug_dmm Device info: $deviceInfo")
-                FirebaseCrashlytics.getInstance().log("Date: $date; Phone: $phone; Device info: $deviceInfo; Message: $exceptionMessage\n")
-                task.exception?.let { exception->
-                    FirebaseCrashlytics.getInstance().recordException(exception)
-                }
-                return@addOnCompleteListener
-            }
-            mPreferenceStorage.fcmToken = task.result
-
-            //Timber.d("debug_dmm fcm token now: ${task.result?.token}")
-
-            mPreferenceStorage.fcmToken?.let { token ->
-                Timber.d("debug_dmm token: $token")
-                Timber.d("debug_dmm saved registered token: ${mPreferenceStorage.fcmTokenRegistered}")
-                if (token != mPreferenceStorage.fcmTokenRegistered) {
-                    viewModelScope.launchSimple {
-                        mInteractor.registerPushToken(token)
-                        mPreferenceStorage.fcmTokenRegistered = token
-                    }
-                }
-            }
-        }
-    }
-
-    fun logout() {
+    fun logout(context: Context) {
         viewModelScope.withProgress {
             mPreferenceStorage.providerId = null
             mPreferenceStorage.providerBaseUrl = null
             mPreferenceStorage.authToken = null
             mPreferenceStorage.sentName = null
-            mPreferenceStorage.fcmTokenRegistered = null
-            databaseInteractor.deleteAll()
+            mPreferenceStorage.pushTokenRegistered = null
+            mDatabaseInteractor.deleteAll()
             DataModule.BASE_URL = BuildConfig.PROVIDER_URL
-            refreshFcmToken()
+            refreshPushToken(context.applicationContext)
             logout.postValue(Event(true))
         }
-    }
-
-    private fun refreshFcmToken() {
-        Thread {
-            Timber.d("debug_dmm refreshing fcm token..")
-            FirebaseMessaging.getInstance().deleteToken()
-            mPreferenceStorage.fcmToken = ""
-        }.start()
     }
 }

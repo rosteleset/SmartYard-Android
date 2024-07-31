@@ -20,15 +20,15 @@ import kotlin.random.Random
  * Created on 2020-02-05.
  */
 class NumberRegViewModel(
-    private val mInteractor: AuthInteractor,
-    private val mPreferenceStorage: PreferenceStorage
+    override val mAuthInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
     private var authMethod = AuthMethod.SMS_CODE
     private var callNumber = ""
 
     fun requestSmsCode(phone: String, fragment: Fragment) {
         viewModelScope.withProgress({ true }) {
-            val res = mInteractor.requestCode(phone)
+            val res = mAuthInteractor.requestCode(phone)
             authMethod = res?.data?.method ?: AuthMethod.SMS_CODE
             res?.data?.confirmationNumbers?.let {
                 callNumber = it[Random.nextInt(0, it.size)]

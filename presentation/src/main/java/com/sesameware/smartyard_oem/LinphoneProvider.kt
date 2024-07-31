@@ -10,30 +10,30 @@ import android.view.View
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
+import com.sesameware.data.DataModule
+import com.sesameware.data.prefs.PreferenceStorage
+import com.sesameware.domain.model.PushCallData
+import com.sesameware.domain.utils.doDelayed
+import com.sesameware.smartyard_oem.ui.SoundChooser
+import com.sesameware.smartyard_oem.ui.call.AndroidAudioManager
+import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
+import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.PUSH_DATA
+import com.sesameware.smartyard_oem.ui.sendCallNotification
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.linphone.core.AccountCreator
+import org.linphone.core.AudioDevice
 import org.linphone.core.Call
 import org.linphone.core.Core
 import org.linphone.core.CoreListenerStub
 import org.linphone.core.ProxyConfig
 import org.linphone.core.RegistrationState
 import org.linphone.core.TransportType
-import com.sesameware.data.DataModule
-import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.domain.model.FcmCallData
-import com.sesameware.domain.utils.doDelayed
-import com.sesameware.smartyard_oem.ui.SoundChooser
-import com.sesameware.smartyard_oem.ui.call.AndroidAudioManager
-import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
-import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
-import com.sesameware.smartyard_oem.ui.sendCallNotification
-import org.linphone.core.AudioDevice
 import timber.log.Timber
 
 class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinComponent {
     private var currentRingtone: Ringtone? = null
-    var fcmData: FcmCallData? = null
+    var pushCallData: PushCallData? = null
     private val preferenceStorage: PreferenceStorage by inject()
 
     val registrationState = MutableLiveData(
@@ -108,7 +108,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     }
 
     private fun notifyIncomingCall() {
-        val data = fcmData ?: return
+        val data = pushCallData ?: return
 
         if (!isAppVisible()) {
             sendCallNotification(data, service, preferenceStorage)
@@ -122,7 +122,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             val intent =
                 Intent(service, IncomingCallActivity::class.java).apply {
                     addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                    putExtra(FCM_DATA, data)
+                    putExtra(PUSH_DATA, data)
                 }
             service.startActivity(intent)
         }
@@ -151,7 +151,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         false
     }
 
-    fun listenAndGetNotifications(pendingData: FcmCallData) {
+    fun listenAndGetNotifications(pendingData: PushCallData) {
         val ring = SoundChooser.getChosenTone(
             service,
             RingtoneManager.TYPE_RINGTONE,
@@ -162,7 +162,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         Timber.d("debug_dmm ring.uri: ${ring.uri}")
 
         currentRingtone = RingtoneManager.getRingtone(service, ring.uri)
-        fcmData = pendingData
+        pushCallData = pendingData
         connect(pendingData)
     }
 
@@ -214,7 +214,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         finishCallActivity.value = Event(Unit)
     }
 
-    private fun connect(data: FcmCallData) {
+    private fun connect(data: PushCallData) {
         val config = SipConfig(
             server = data.server,
             username = data.extension,
@@ -271,7 +271,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         core.currentCall?.run {
             doDelayed(
                 {
-                    val dtmfs = "${fcmData?.dtmf}${fcmData?.dtmf}${fcmData?.dtmf}"
+                    val dtmfs = "${pushCallData?.dtmf}${pushCallData?.dtmf}${pushCallData?.dtmf}"
                     sendDtmfs(dtmfs)
                     doDelayed(
                         {

@@ -51,7 +51,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -59,13 +58,14 @@ import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.domain.model.FcmCallData
+import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.domain.utils.listenerGeneric
-import com.sesameware.smartyard_oem.FirebaseMessagingService
+import com.sesameware.smartyard_oem.Crashlytics
+import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
-import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.FCM_DATA
+import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.PUSH_DATA
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -149,7 +149,7 @@ class ProgressDialog {
         progressBar.layoutParams = lp
 
         setColorFilter(
-            progressBar.indeterminateDrawable, ContextCompat.getColor(context, R.color.global_progress_bar_color)
+            progressBar.indeterminateDrawable, ContextCompat.getColor(context, R.color.colorAccent)
         )
 
         frameLayout.addView(progressBar)
@@ -233,7 +233,7 @@ class SoundChooser {
                 }
                 return RingtoneU(uri)
             } catch (e: Throwable) {
-                val crashlytics = FirebaseCrashlytics.getInstance()
+                val crashlytics = Crashlytics.getInstance()
                 crashlytics.setCustomKey("_melody_data", "flat_id = $flatId, path = ${path.orEmpty()}")
                 crashlytics.recordException(e)
                 crashlytics.setCustomKey("_melody_data", "")
@@ -317,7 +317,7 @@ fun getBottomNavigationHeight(context: Context?): Int {
 
 @SuppressLint("ObsoleteSdkInt")
 fun sendCallNotification(
-    data: FcmCallData,
+    data: PushCallData,
     context: Context,
     prefs: PreferenceStorage
 ) {
@@ -325,13 +325,13 @@ fun sendCallNotification(
         val notId = prefs.notificationData.currentCallId
         val intent = Intent(this, IncomingCallActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-            putExtra(FCM_DATA, data)
+            putExtra(PUSH_DATA, data)
         }
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent,
                 if (VERSION.SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT)
 
-        val notificationBuilder = NotificationCompat.Builder(this, FirebaseMessagingService.CHANNEL_CALLS_ID)
+        val notificationBuilder = NotificationCompat.Builder(this, MessagingService.CHANNEL_CALLS_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))

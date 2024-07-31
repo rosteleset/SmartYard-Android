@@ -15,11 +15,12 @@ import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.checkAndRegisterPushToken
 import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
 
 class MainActivityViewModel(
-    private val authInteractor: AuthInteractor,
-    private val mPreferenceStorage: PreferenceStorage,
+    override val mAuthInteractor: AuthInteractor,
+    override val mPreferenceStorage: PreferenceStorage,
     private val inboxInteractor: InboxInteractor,
     private val payInteractor: PayInteractor
 ) : GenericViewModel() {
@@ -52,8 +53,8 @@ class MainActivityViewModel(
         _reloadToAddress.value = Event(Unit)
     }
 
-    fun onCreate() {
-        checkAndRegisterFcmToken()
+    fun onCreate(context: Context) {
+        checkAndRegisterPushToken(context.applicationContext)
     }
 
     fun onResume() {
@@ -106,7 +107,7 @@ class MainActivityViewModel(
 
     fun appVersion(version: String) {
         viewModelScope.withProgress(progress = null) {
-            val response = authInteractor.appVersion(version)
+            val response = mAuthInteractor.appVersion(version)
             _updateToAppNavigateDialog.value = Event(
                 when (response?.data) {
                     "upgrade" -> Update.UPGRADE

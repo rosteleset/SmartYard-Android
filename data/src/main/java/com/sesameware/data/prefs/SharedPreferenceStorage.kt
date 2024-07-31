@@ -11,8 +11,8 @@ import kotlin.reflect.KProperty
 
 interface PreferenceStorage {
     var authToken: String?
-    var fcmToken: String?
-    var fcmTokenRegistered: String?
+    var pushToken: String?
+    var pushTokenRegistered: String?
     var sentName: SentName?
     var phone: String?
     var notificationData: NotificationData
@@ -40,8 +40,8 @@ class SharedPreferenceStorage constructor(
         const val PREFS_APP_VERSION = "app_version"
         const val PREF_ONBOARDING = "pref_onboarding"
         const val PREF_AUTH_TOKEN = "PREF_AUTH_TOKEN"
-        const val PREF_FCM_TOKEN = "PREF_FCM_TOKEN"
-        const val PREF_FCM_TOKEN_REGISTERED = "PREF_FCM_TOKEN_REGISTERED"
+        const val PREF_PUSH_TOKEN = "PREF_PUSH_TOKEN"
+        const val PREF_PUSH_TOKEN_REGISTERED = "PREF_PUSH_TOKEN_REGISTERED"
         const val PREF_SENT_NAME = "PREF_SENT_NAME"
         const val PREF_PHONE = "PREF_PHONE"
         const val PREF_NOTIFICATION_DATA = "PREF_NOTIFICATION_DATA"
@@ -56,8 +56,8 @@ class SharedPreferenceStorage constructor(
     override var appVersion by IntPreference(prefs, PREFS_APP_VERSION, -1)
     override var onboardingCompleted by BooleanPreference(prefs, PREF_ONBOARDING, false)
     override var authToken by StringPreference(prefs, PREF_AUTH_TOKEN, null)
-    override var fcmToken by StringPreference(prefs, PREF_FCM_TOKEN, null)
-    override var fcmTokenRegistered by StringPreference(prefs, PREF_FCM_TOKEN_REGISTERED, null)
+    override var pushToken by StringPreference(prefs, PREF_PUSH_TOKEN, null)
+    override var pushTokenRegistered by StringPreference(prefs, PREF_PUSH_TOKEN_REGISTERED, null)
     override var sentName by SerializablePreferenceNullable(
         prefs,
         PREF_SENT_NAME,

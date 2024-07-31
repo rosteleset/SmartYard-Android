@@ -2,15 +2,17 @@ package com.sesameware.smartyard_oem.ui.call
 
 import androidx.lifecycle.MutableLiveData
 import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.domain.model.FcmCallData
+import com.sesameware.domain.model.PushCallData
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import timber.log.Timber
 import java.util.Timer
 import kotlin.concurrent.fixedRateTimer
 
-class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : GenericViewModel() {
-    private lateinit var mFcmCallData: FcmCallData
+class IncomingCallActivityViewModel(
+    override val mPreferenceStorage: PreferenceStorage
+) : GenericViewModel() {
+    private lateinit var mPushCallData: PushCallData
     private var slideShowTimer: Timer? = null
     val imageStringData = MutableLiveData<Event<String>>()
     val eyeState = MutableLiveData(false)
@@ -39,12 +41,12 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
 
     fun setSlideShowEnabled(isEnabled: Boolean) {
         if (isEnabled) {
-            if (mFcmCallData.videoStream.isEmpty()) {
-                playSlideShow(mFcmCallData.live)
+            if (mPushCallData.videoStream.isEmpty()) {
+                playSlideShow(mPushCallData.live)
             }
         } else {
             stopSlideShow()
-            imageStringData.postValue(Event(mFcmCallData.image))
+            imageStringData.postValue(Event(mPushCallData.image))
         }
     }
 
@@ -53,8 +55,8 @@ class IncomingCallActivityViewModel(val preferenceStorage: PreferenceStorage) : 
         super.onCleared()
     }
 
-    fun start(data: FcmCallData) {
-        mFcmCallData = data
+    fun start(data: PushCallData) {
+        mPushCallData = data
         setSlideShowEnabled(false)
     }
 

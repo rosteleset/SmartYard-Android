@@ -1,7 +1,7 @@
 package com.sesameware.smartyard_oem.ui.call
 
-import android.app.Application
 import android.Manifest
+import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -29,13 +29,18 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.component.KoinComponent
-import org.linphone.core.RegistrationState
-import com.sesameware.domain.model.FcmCallData
+import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.doDelayed
-import com.sesameware.smartyard_oem.*
+import com.sesameware.smartyard_oem.CCallState
+import com.sesameware.smartyard_oem.CRegistrationState
+import com.sesameware.smartyard_oem.CallStateSimple
+import com.sesameware.smartyard_oem.CommonActivity
+import com.sesameware.smartyard_oem.EventObserver
+import com.sesameware.smartyard_oem.LinphoneProvider
+import com.sesameware.smartyard_oem.LinphoneService
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityIncomingCallBinding
+import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +48,9 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.component.KoinComponent
+import org.linphone.core.RegistrationState
 import org.webrtc.DataChannel
 import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.DefaultVideoEncoderFactory
@@ -138,7 +146,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun buildPeerConnection(observer: PeerConnection.Observer) = peerConnectionFactory.createPeerConnection(
-        listOf(PeerConnection.IceServer.builder(mFcmCallData.stun).createIceServer()),
+        listOf(PeerConnection.IceServer.builder(mPushCallData.stun).createIceServer()),
         observer
     )
 
@@ -173,7 +181,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         val body = RequestBody.create("application/sdp".toMediaTypeOrNull(), desc?.description ?: "")
                         Timber.d("debug_webrtc    ${body.contentType()}    ${body.contentLength()}")
                         val request = Request.Builder()
-                            .url(mFcmCallData.webRtcVideoUrl)
+                            .url(mPushCallData.webRtcVideoUrl)
                             .method("POST", body)
                             .build()
                         val httpClient = OkHttpClient.Builder().build()
@@ -236,7 +244,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private lateinit var mLinphone: LinphoneProvider
     private var mTryingToOpenDoor: Boolean = false
     override val mViewModel by viewModel<IncomingCallActivityViewModel>()
-    private lateinit var mFcmCallData: FcmCallData
+    private lateinit var mPushCallData: PushCallData
     private var mSensorManager: SensorManager? = null
     private var mProximity: Sensor? = null
     private val SENSOR_SENSITIVITY = 4
@@ -251,17 +259,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mProximity = mSensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         setupUi()
 
-        @Suppress("DEPRECATION") val fcmData = intent.extras?.get(FCM_DATA) as FcmCallData?
+        @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
         val provider = LinphoneService.instance?.provider
         if (provider != null && fcmData != null) {
             mLinphone = provider
-            mFcmCallData = fcmData
-            resetView(mFcmCallData)
+            mPushCallData = fcmData
+            resetView(mPushCallData)
             observeChanges()
             checkAndRequestCallPermissions()
             mLinphone.setNativeVideoWindowId(binding.mVideoSip)
 
-            mViewModel.start(mFcmCallData)
+            mViewModel.start(mPushCallData)
             binding.mImageViewWrap.clipToOutline = true
             window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
@@ -279,12 +287,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             }
 
             binding.mAnswerButton.setOnClickListener { answerCall() }
-            if (mFcmCallData.image.isEmpty() && mFcmCallData.videoStream.isNotEmpty()) {
+            if (mPushCallData.image.isEmpty() && mPushCallData.videoStream.isNotEmpty()) {
                 mViewModel.eyeState.value = true
                 binding.mPeepholeButton.setOnClickListener(null)
                 binding.mPeekImageView.alpha = 0.0f
             } else {
-                mViewModel.eyeState.value = LinphoneService.instance?.provider?.fcmData?.eyeState == true
+                mViewModel.eyeState.value = LinphoneService.instance?.provider?.pushCallData?.eyeState == true
                 binding.mPeepholeButton.setOnClickListener {
                     mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
                     mLinphone.stopRinging()
@@ -302,7 +310,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         } else {
             //включение громкой связи, если выставлен флаг в настройках домофона
             if (fcmData != null) {
-                if (mViewModel.preferenceStorage.addressOptions.getOption(fcmData.flatId).isSpeaker == true) {
+                if (mViewModel.mPreferenceStorage.addressOptions.getOption(fcmData.flatId).isSpeaker == true) {
                     useSpeaker = true
                 }
             }
@@ -310,14 +318,14 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.routeAudioToValue(useSpeaker)
 
         //WebRTC
-        if (mFcmCallData.videoStream.isNotEmpty()) {
+        if (mPushCallData.videoStream.isNotEmpty()) {
             initPeerConnectionFactory(application)
             binding.mWebRTCView.run {
                 setEnableHardwareScaler(true)
                 init(rootEglBase.eglBaseContext, object : RendererEvents {
                     override fun onFirstFrameRendered() {
                         webRtcFirstFrameRendered = true
-                        if (mLinphone.isConnected() || mFcmCallData.image.isEmpty() || mViewModel.eyeState.value == true) {
+                        if (mLinphone.isConnected() || mPushCallData.image.isEmpty() || mViewModel.eyeState.value == true) {
                             alpha = 1.0f
                             binding.mPeekImageView.visibility = View.INVISIBLE
                         }
@@ -415,7 +423,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                             isFirstResource: Boolean
                         ): Boolean {
                             binding.mPeekImageView.alpha = 0.0f
-                            if (mFcmCallData.videoStream.isNotEmpty()) {
+                            if (mPushCallData.videoStream.isNotEmpty()) {
                                 binding.mWebRTCView.alpha = 1.0f
                             }
                             return false
@@ -467,10 +475,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.let { resetView(mFcmCallData) }
+        intent?.let { resetView(mPushCallData) }
     }
 
-    private fun resetView(data: FcmCallData) {
+    private fun resetView(data: PushCallData) {
         mLinphone.reset()
         setDoorState(false)
         binding.mStatusText.text = data.callerId
@@ -504,7 +512,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         if (connected) {
             enablePeepholeVideo(false)
             binding.mPeepholeButton.setOnClickListener(null)
-        } else if (mFcmCallData.image.isNotEmpty()) {
+        } else if (mPushCallData.image.isNotEmpty()) {
             binding.mPeepholeButton.setOnClickListener {
                 mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
                 mLinphone.stopRinging()
@@ -545,7 +553,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             } else {
                 binding.mPeekImageView.visibility = View.VISIBLE
             }
-        } else if (!mLinphone.isConnected() && mFcmCallData.image.isNotEmpty()) {
+        } else if (!mLinphone.isConnected() && mPushCallData.image.isNotEmpty()) {
             binding.mWebRTCView.alpha = 0.0f
             binding.mPeekImageView.visibility = View.VISIBLE
         }
@@ -618,7 +626,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
         mSensorManager?.unregisterListener(this)
         mLinphone.routeAudioToEarpiece()
-        LinphoneService.instance?.provider?.fcmData?.eyeState = binding.mPeepholeButton.isChecked
+        LinphoneService.instance?.provider?.pushCallData?.eyeState = binding.mPeepholeButton.isChecked
     }
 
     override fun onDestroy() {
@@ -628,7 +636,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun stopWebRtcConnection() {
-        if (!webRtcIsStopped && ::mFcmCallData.isInitialized && mFcmCallData.videoStream.isNotEmpty()) {
+        if (!webRtcIsStopped && ::mPushCallData.isInitialized && mPushCallData.videoStream.isNotEmpty()) {
             binding.mWebRTCView.alpha = 0.0f
             peerConnection?.close()
             peerConnection?.dispose()
@@ -664,6 +672,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     companion object {
         const val NOTIFICATION_ID = "NOTIFICATION_ID"
-        const val FCM_DATA = "FCM_DATA"
+        const val PUSH_DATA = "PUSH_DATA"
     }
 }

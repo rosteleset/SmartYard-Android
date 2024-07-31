@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem.ui.main.address.auth.restoreAccess.codeSmsR
 
 import android.app.AlertDialog
 import android.content.res.ColorStateList
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,14 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.R.string
 import com.sesameware.smartyard_oem.databinding.FragmentCodeSmsRestoreBinding
 import com.sesameware.smartyard_oem.eventHandler
 import com.sesameware.smartyard_oem.getColorCompat
 import com.sesameware.smartyard_oem.isEmailCharacter
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CodeSmsRestoreFragment : Fragment() {
     private var _binding: FragmentCodeSmsRestoreBinding? = null
@@ -58,13 +56,9 @@ class CodeSmsRestoreFragment : Fragment() {
 
         binding.tvTel.text =
             if (contactName.isEmailCharacter()) {
-                String.format(
-                    getString(string.restore_access_input_code_email), contactName
-                )
+                getString(R.string.restore_access_input_code_email, contactName)
             } else {
-                String.format(
-                    getString(string.restore_access_input_code_phone), contactName
-                )
+                getString(R.string.restore_access_input_code_phone, contactName)
             }
         mViewModel.confirmError.observe(
             viewLifecycleOwner,
@@ -86,9 +80,7 @@ class CodeSmsRestoreFragment : Fragment() {
         }
 
         binding.pin.setOnClickListener {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                eventHandler(binding.pin, requireContext())
-            }
+            eventHandler(binding.pin, requireContext())
         }
 
         binding.btnResendCode.setOnClickListener {
@@ -109,7 +101,7 @@ class CodeSmsRestoreFragment : Fragment() {
         mViewModel.time.observe(
             viewLifecycleOwner,
             Observer { time ->
-                binding.tvTimer.text = getString(string.reg_sms_send_code_repeat, time)
+                binding.tvTimer.text = getString(R.string.reg_sms_send_code_repeat, time)
             }
         )
 
