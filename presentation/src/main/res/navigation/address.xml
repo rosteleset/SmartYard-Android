@@ -197,8 +197,7 @@
     <fragment
         android:id="@+id/CCTVTreeFragment"
         android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVTreeFragment"
-        android:label="fragment_cctv_tree"
-        tools:layout="@layout/fragment_cctv_tree" >
+        android:label="fragment_cctv_tree" >
         <argument
             android:name="cameraGroup"
             app:argType="com.sesameware.domain.model.response.CCTVDataTree"
@@ -213,6 +212,8 @@
             android:id="@+id/action_CCTVTreeFragment_to_CCTVDetailFragment"
             app:destination="@id/CCTVDetailFragment" />
     </fragment>
+
+
     <fragment
         android:id="@+id/CCTVArchivePlayerFragment"
         android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVArchivePlayerFragment"

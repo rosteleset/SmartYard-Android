@@ -620,7 +620,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun stopWebRtcConnection() {
-        if (!webRtcIsStopped && mFcmCallData.videoStream.isNotEmpty()) {
+        if (!webRtcIsStopped && ::mFcmCallData.isInitialized && mFcmCallData.videoStream.isNotEmpty()) {
             binding.mWebRTCView.alpha = 0.0f
             peerConnection?.close()
             peerConnection?.dispose()
