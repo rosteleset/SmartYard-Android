@@ -2,6 +2,7 @@
 
     <!-- Main -->
     <string name="app_name">Tele-uy</string>
+    <string name="app_info">%s Android versiyasi %s (%d) %s\n[qurilma: %s] uchun</string>
     <string name="app_title">Versiya eskirgan</string>
     <string name="app_message">Dastur yangilansinmi?</string>
     <string name="default_notification_channel_id">channel_inbox</string>

@@ -2,6 +2,7 @@
 
     <!-- Main -->
     <string name="app_name">Teledom</string>
+    <string name="app_info">%s for Android version %s (%d) %s\n[device: %s]</string>
     <string name="app_title">An outdated version</string>
     <string name="app_message">Update app?</string>
     <string name="default_notification_channel_id">channel_inbox</string>

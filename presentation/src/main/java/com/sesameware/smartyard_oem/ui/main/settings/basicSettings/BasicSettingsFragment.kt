@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.drawable
 import com.sesameware.smartyard_oem.databinding.FragmentBasicSettingsBinding
@@ -127,6 +128,13 @@ class BasicSettingsFragment : Fragment() {
         ) {
             binding.sBalanse.isChecked = it
         }
+
+        binding.tvAppInfo.text = resources.getString(R.string.app_info,
+            resources.getString(R.string.app_name),
+            BuildConfig.VERSION_NAME,
+            BuildConfig.VERSION_CODE,
+            BuildConfig.FLAVOR_market,
+            "${Build.MANUFACTURER} ${Build.MODEL}")
     }
 
     @Deprecated("Deprecated in Java")

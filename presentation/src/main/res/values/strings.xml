@@ -2,6 +2,7 @@
 
     <!-- Main -->
     <string name="app_name">Теледом</string>
+    <string name="app_info">%s для Android версия %s (%d) %s\n[устройство: %s]</string>
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
