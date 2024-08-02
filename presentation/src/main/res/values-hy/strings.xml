@@ -3,6 +3,7 @@
     <!-- Main -->
     <string name="app_name">Տելետոմ</string>
     <string name="app_info">%s Android տարբերակի համար %s (%d) %s\n[սարք՝ %s]</string>
+    <string name="app_title">Տարբերակը հարթավորված է</string>
     <string name="app_message">Թարմացնել ծրագիրը։</string>
     <string name="default_notification_channel_id">channel_inbox</string>
     <string name="widget_title">Ծանր դարակ</string>
