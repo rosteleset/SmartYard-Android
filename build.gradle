@@ -12,7 +12,7 @@ def getMarketFlavorOrSync() {
         return 'sync'
     }
     // To keep only specified flavor libs
-    def matcher = taskNames =~ /(assemble|bundle)(Client|Teledom|TeledomTest)(\w+?)(Release|Debug)/
+    def matcher = taskNames =~ /(assemble|bundle)(Client|TeledomTest|Teledom)(\w+?)(Release|Debug)/
     if (matcher.find()) {
         def marketFlavor = matcher.group(3).toLowerCase()
         println 'getMarketFlavor: Flavor "' + marketFlavor + '" found.'
