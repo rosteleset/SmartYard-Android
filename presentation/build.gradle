@@ -309,5 +309,5 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$junitRunnerRules"
     androidTestImplementation "androidx.test:rules:$junitRunnerRules"
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCore"
-//    androidTestImplementation 'com.kaspersky.android-components:kaspresso:1.5.3'
+    androidTestImplementation "com.kaspersky.android-components:kaspresso:$kaspresso"
 }
