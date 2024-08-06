@@ -80,6 +80,7 @@
     <string name="dialog_turn_off">ԱՆՋԱՏԵԼ</string>
     <string name="guest_access_open">Բացել</string>
     <string name="guest_access_opened">Բացված է</string>
+    <string name="addresses_empty_list">Ցուցակը դատարկ է</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">Հասցեն ավելացվեց։</string>

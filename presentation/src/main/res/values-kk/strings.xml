@@ -83,6 +83,7 @@
     <string name="dialog_turn_off">Өшіру</string>
     <string name="guest_access_open">Ашу</string>
     <string name="guest_access_opened">Ашық</string>
+    <string name="addresses_empty_list">Тізім бос</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">Мекенжай қосылды.</string>
