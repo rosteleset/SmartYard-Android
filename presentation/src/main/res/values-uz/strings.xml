@@ -79,6 +79,7 @@
     <string name="dialog_turn_off">O‘CHIRISH</string>
     <string name="guest_access_open">Ochish</string>
     <string name="guest_access_opened">Ochiq</string>
+    <string name="addresses_empty_list">Ro‘yxat bo‘sh</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">Manzil qo‘shildi.</string>

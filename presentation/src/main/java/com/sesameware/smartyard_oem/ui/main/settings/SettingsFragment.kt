@@ -83,6 +83,7 @@ class SettingsFragment : Fragment() {
         mViewModel.dataList.observe(
             viewLifecycleOwner
         ) {
+            binding.tvEmptyList.isVisible = (it == null || it.isEmpty())
             adapter.items = it
             adapter.notifyDataSetChanged()
             binding.swipeContainer.isRefreshing = false

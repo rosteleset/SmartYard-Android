@@ -102,6 +102,7 @@ class AddressViewModel(
             }
             val res = addressInteractor.getAddressList()
             if (res?.data == null) {
+                _dataList.value = listOf()
                 if (!mPreferenceStorage.whereIsContractWarningSeen) {
                     _navigationToAuth.value = (Event(Unit))
                 }
