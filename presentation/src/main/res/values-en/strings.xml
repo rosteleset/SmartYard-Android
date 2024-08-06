@@ -81,6 +81,7 @@
     <string name="dialog_turn_off">TURN OFF</string>
     <string name="guest_access_open">Open</string>
     <string name="guest_access_opened">Opened</string>
+    <string name="addresses_empty_list">The list is empty</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">The address has been added.</string>

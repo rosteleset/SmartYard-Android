@@ -93,6 +93,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             viewLifecycleOwner
         ) {
             // val items = ParentDataFactory.getParents(5) + it
+            binding.tvEmptyList.isVisible = it.isEmpty()
             adapter?.items = it
             adapter?.notifyDataSetChanged()
             binding.swipeContainer.isRefreshing = false

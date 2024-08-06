@@ -81,6 +81,7 @@
     <string name="dialog_turn_off">ВЫКЛЮЧИТЬ</string>
     <string name="guest_access_open">Открыть</string>
     <string name="guest_access_opened">Открыто</string>
+    <string name="addresses_empty_list">Список пуст</string>
 
     <!-- Qr code -->
     <string name="qr_code_dialog_title">Адрес добавлен.</string>
