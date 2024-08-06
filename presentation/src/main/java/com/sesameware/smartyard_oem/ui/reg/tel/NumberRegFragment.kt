@@ -129,14 +129,6 @@ class NumberRegFragment : Fragment() {
     private fun modifyEtText(s: Editable?) {
         if (s == null) return
 
-        // Remove prefix if it was accidentally entered
-        if (s.length == mPhonePrefix.length) {
-            val etPrefix = s.substring(0, mPhonePrefix.length)
-            if (etPrefix == mPhonePrefix) {
-                s.delete(0, mPhonePrefix.length)
-            }
-        }
-
         // Cut ET text to pins count
         if (s.length > pinCount) {
             s.delete(pinCount, s.length)
