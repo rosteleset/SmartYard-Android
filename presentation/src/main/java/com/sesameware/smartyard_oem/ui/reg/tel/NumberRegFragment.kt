@@ -129,9 +129,9 @@ class NumberRegFragment : Fragment() {
     private fun modifyEtText(s: Editable?) {
         if (s == null) return
 
-        // Cut ET text to pins count
+        // Cut ET text to pins count (intended to remove prefix)
         if (s.length > pinCount) {
-            s.delete(pinCount, s.length)
+            s.delete(0, s.length - pinCount)
         }
 
         updatePins(s.toString())
