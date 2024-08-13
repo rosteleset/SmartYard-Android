@@ -80,7 +80,6 @@ class LauncherActivity : CommonActivity() {
 
             //включаем вибрацию
             channelCalls.enableVibration(true)
-            channelCalls.vibrationPattern = MessagingService.CALL_VIBRATION_PATTERN
 
             //отключаем звук уведомления, так как он запускается при успешном sip соединении
             channelCalls.setSound(null, null)
