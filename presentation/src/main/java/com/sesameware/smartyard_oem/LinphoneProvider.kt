@@ -45,6 +45,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
 
     private var shouldVibrate = false
+    private var vibrationPattern = longArrayOf(0, 1000, 1000)
 
     private var speakerDevice: AudioDevice? = null
     private var earpieceDevice: AudioDevice? = null
@@ -99,34 +100,26 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         }
     }
 
-    private fun isAppVisible(): Boolean {
-        return ProcessLifecycleOwner
-            .get()
-            .lifecycle
-            .currentState
-            .isAtLeast(Lifecycle.State.STARTED)
-    }
-
     private fun notifyIncomingCall() {
-        val data = pushCallData ?: return
-
-        if (!isAppVisible()) {
-            sendCallNotification(data, service, preferenceStorage)
-        } else {
+        pushCallData?.let { data ->
             val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val notification =
-                    notificationManager.getNotificationChannel(MessagingService.CHANNEL_CALLS_ID)
+                val notification = notificationManager.getNotificationChannel(MessagingService.CHANNEL_CALLS_ID)
                 shouldVibrate = notification?.shouldVibrate() ?: false
+                vibrationPattern = notification?.vibrationPattern ?: vibrationPattern
             }
-            val intent =
-                Intent(service, IncomingCallActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
-                    putExtra(PUSH_DATA, data)
-                }
-            service.startActivity(intent)
+            if (data.flagNotification) {
+                sendCallNotification(data, service, preferenceStorage)
+            } else {
+                val intent =
+                    Intent(service, IncomingCallActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
+                        putExtra(PUSH_DATA, data)
+                    }
+                service.startActivity(intent)
+            }
+            startRinging()
         }
-        startRinging()
     }
 
     fun setNativeVideoWindowId(videoWindow: View) {
@@ -169,8 +162,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     private fun startRinging() {
         currentRingtone?.play()
         if (shouldVibrate) {
-            @Suppress("DEPRECATION")
-            mAudioManager.vibrator?.vibrate(MessagingService.CALL_VIBRATION_PATTERN, 0)
+            mAudioManager.vibrator?.vibrate(vibrationPattern, 0)
         }
     }
 

@@ -5,7 +5,6 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.Dialog
-import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
@@ -15,6 +14,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
+import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BlendMode.SRC_ATOP
@@ -47,6 +47,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
@@ -62,6 +63,7 @@ import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.Crashlytics
+import com.sesameware.smartyard_oem.LinphoneService
 import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
@@ -341,18 +343,33 @@ fun sendCallNotification(
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setSound(null)  //отключаем звук уведомления, так как он запускается при успешном sip соединении
+            .setVibrate(null)  //отключаем вибрацию в уведомлении, так как она запускается при успешном sip соединении
             .setTimeoutAfter(30000)
             .setContentIntent(pendingIntent)
             .setWhen(System.currentTimeMillis())
             .setFullScreenIntent(pendingIntent, true)
-            .setShowWhen(true)
 
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         val notification = notificationBuilder.build()
-        notification.flags = notification.flags or Notification.FLAG_INSISTENT  //зацикленная вибрация и звук при уведомлении
-        notificationManager.notify(notId, notification)
+        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+            try {
+                LinphoneService.instance?.let { service ->
+                    ServiceCompat.startForeground(service, notId, notification,
+                        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+                            ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
+                        } else {
+                            0
+                        })
+                }
+            } catch (e: Exception) {
+                val crashlytics = Crashlytics.getInstance()
+                crashlytics.recordException(e)
+            }
+        } else {
+            notificationManager.notify(notId, notification)
+        }
     }
 }
 

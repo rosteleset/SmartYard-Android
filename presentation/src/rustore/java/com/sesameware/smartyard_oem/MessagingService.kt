@@ -5,8 +5,11 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
+import android.os.Build
 import android.os.Handler
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.GlobalScope
@@ -230,7 +233,6 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
         const val CHANNEL_INBOX_TITLE = "Сообщения"
         const val CHANNEL_CALLS_ID = "channel_calls"
         const val CHANNEL_CALLS_TITLE = "Входящие звонки"
-        val CALL_VIBRATION_PATTERN = longArrayOf(0, 1000, 1000)
         const val NOTIFICATION_MESSAGE_ID = "messageId"
         const val NOTIFICATION_MESSAGE_TYPE = "messageType"
         const val NOTIFICATION_BADGE = "badge"
@@ -255,23 +257,42 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
         }
     }
 
+    private fun isAppVisible(): Boolean {
+        return ProcessLifecycleOwner
+            .get()
+            .lifecycle
+            .currentState
+            .isAtLeast(Lifecycle.State.STARTED)
+    }
+
     private fun waitForLinServiceAndRun(fcmCallData: PushCallData, listener: listenerGeneric<LinphoneProvider>) {
+        val flagNotification = !isAppVisible()
+        fcmCallData.flagNotification = flagNotification
         Thread {
             if (!LinphoneService.isReady()) {
-                startService(
-                    Intent().setClass(context, LinphoneService::class.java).also { intent ->
-                        if (fcmCallData.stun?.isNotEmpty() == true) {
-                            intent.putExtra(CALL_STUN, fcmCallData.stun)
-                            intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
-                            intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-                            intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O || !flagNotification) {
+                    startService(
+                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
+                            if (fcmCallData.stun?.isNotEmpty() == true) {
+                                intent.putExtra(CALL_STUN, fcmCallData.stun)
+                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
+                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
+                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
+                            }
                         }
-
-                        //для теста
-                        /*intent.putExtra(CALL_STUN, "turn:37.235.209.140:3478")  // tls 5349  // udp/tcp 3478
-                        intent.putExtra(CALL_STUN_TRANSPORT, "udp")*/
-                    }
-                )
+                    )
+                } else {
+                    startForegroundService(
+                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
+                            if (fcmCallData.stun?.isNotEmpty() == true) {
+                                intent.putExtra(CALL_STUN, fcmCallData.stun)
+                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
+                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
+                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
+                            }
+                        }
+                    )
+                }
             }
             while (!LinphoneService.isReady()) {
                 try {

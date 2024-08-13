@@ -25,7 +25,8 @@ data class PushCallData(
     var videoType: String = "",
     var videoServer: String = "",
     var videoStream: String = "",
-    var videoToken: String = ""
+    var videoToken: String = "",
+    var flagNotification: Boolean = false
 ) : Serializable {
     private val mediaServerType: MediaServerType
         get() {
