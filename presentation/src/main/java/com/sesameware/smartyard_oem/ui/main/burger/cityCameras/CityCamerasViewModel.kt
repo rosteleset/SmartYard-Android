@@ -85,7 +85,7 @@ class CityCamerasViewModel(
     private fun createIssueV1(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
         val summary = "Авто: Запрос на получение видеофрагмента с архива"
         val description =
-            "Обработать запрос на добавление видеофрагмента из архива видовой видеокамеры ${chosenCamera.value?.name} (id = ${chosenCamera.value?.id}) по парамертам: дата: ${recordDate.format(
+            "Обработать запрос на добавление видеофрагмента из архива видовой видеокамеры ${chosenCamera.value?.name} (id = ${chosenCamera.value?.id}) по параметрам: дата: ${recordDate.format(
                 DateTimeFormatter.ofPattern("d.MM.yyyy"))}, время: ${recordTime.format(
                 DateTimeFormatter.ofPattern("HH-mm"))}, продолжительность фрагмента: $duration минут. Комментарий пользователя: $comments."
         val x10011 = "-5"
