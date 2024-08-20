@@ -118,7 +118,9 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                     }
                 service.startActivity(intent)
             }
-            startRinging()
+            if (notificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALL) {
+                startRinging()
+            }
         }
     }
 
