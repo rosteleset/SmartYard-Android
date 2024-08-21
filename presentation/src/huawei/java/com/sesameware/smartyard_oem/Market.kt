@@ -61,8 +61,24 @@ fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context) {
 fun GenericViewModel.refreshPushToken(applicationContext: Context) {
     Thread {
         Timber.d("debug_dmm refreshing push token..")
-        val appId = AGConnectOptionsBuilder().build(applicationContext).getString("client/app_id")
-        HmsInstanceId.getInstance(applicationContext).deleteToken(appId, HmsMessaging.DEFAULT_TOKEN_SCOPE)
+        try {
+            val appId = AGConnectOptionsBuilder().build(applicationContext).getString("client/app_id")
+            HmsInstanceId.getInstance(applicationContext).deleteToken(appId, HmsMessaging.DEFAULT_TOKEN_SCOPE)
+        } catch (e: Exception) {
+            Timber.w("debug_dmm    deleting token failed: $e")
+
+            val crashlytics = Crashlytics.getInstance()
+            crashlytics.setUserId("_user_${mPreferenceStorage.phone.orEmpty()}")
+            val deviceInfo = "Manufacturer: ${Build.MANUFACTURER}, model: ${Build.MODEL}, device: ${Build.DEVICE}, release: ${Build.VERSION.RELEASE}, SDK: ${Build.VERSION.SDK_INT}"
+            crashlytics.setCustomKey("_device_info", deviceInfo)
+            val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+            val phone = mPreferenceStorage.phone
+            val exceptionMessage = e.message
+            Timber.w("debug_dmm exception message: $exceptionMessage")
+            Timber.w("debug_dmm Device info: $deviceInfo")
+            Crashlytics.getInstance().log("Date: $date; Phone: $phone; Device info: $deviceInfo; Message: $exceptionMessage\n")
+            Crashlytics.getInstance().recordException(e)
+        }
         mPreferenceStorage.pushToken = ""
     }.start()
 }
