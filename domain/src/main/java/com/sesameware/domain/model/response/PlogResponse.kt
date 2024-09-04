@@ -20,6 +20,9 @@ data class Plog(
     @Json(name = "objectType") val objectType: Int, // тип объекта (0 - домофон)
     @Json(name = "objectMechanizma") val objectMechanizma: Int, // идентификатор нагрузки (двери)
     @Json(name = "mechanizmaDescription") val mechanizmaDescription: String, // описание нагрузки (двери)
+    @Json(name = "houseId") val houseId: Int? = null, // идентификатор дома
+    @Json(name = "entranceId") val entranceId: Int? = null, // идентификатор входа
+    @Json(name = "cameraId") val cameraId: Int? = null, // идентификатор камеры
     @Json(name = "event") val eventType: Int, // тип события
     @Json(name = "preview") val preview: String? = null, // url картинки
     @Json(name = "previewType") val previewType: Int, // тип картинки (0 - нет, 1 - flussonic, 2 - FRS, 3 - base64)

@@ -34,6 +34,7 @@ import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogAddPhoto
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogRemovePhoto.DialogRemovePhotoFragment
 import com.sesameware.smartyard_oem.ui.toast
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
+import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
@@ -137,24 +138,38 @@ class EventLogDetailFragment : Fragment() {
         mPlayer = null
     }
 
+    private fun setMedia(fromDate: LocalDateTime, data: DoorphoneData) {
+        initPlayer(data.serverType)
+        videoUrl = data.getHlsAt(
+            fromDate,
+            EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS,
+            DataModule.serverTz
+        )
+        Timber.d("__Q__    serverType = ${data.serverType}    playVideo media $videoUrl    mPlayer = $mPlayer")
+        mPlayer?.prepareMedia(
+            videoUrl,
+            ZonedDateTime.of(fromDate, ZoneId.of(DataModule.serverTz)).toEpochSecond(),
+            EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS,
+            EventLogViewModel.EVENT_VIDEO_BACK_SECONDS * 1000L,
+            true
+        )
+    }
+
     private fun playVideo(position: Int) {
         val adapter = rvAdapter ?: return
         val (day, index) = adapter.getPlog(position)
         if (day == null || index == null) return
 
         adapter.eventsByDays[day]?.get(index)?.let { eventItem ->
-            mViewModel.camMapData[eventItem.objectId]?.let { data ->
-                initPlayer(data.serverType)
-                val fromDate = eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)
-                videoUrl = data.getHlsAt(fromDate, EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS, DataModule.serverTz)
-                Timber.d("__Q__    serverType = ${data.serverType}    playVideo media $videoUrl    mPlayer = $mPlayer")
-                mPlayer?.prepareMedia(
-                    videoUrl,
-                    ZonedDateTime.of(fromDate, ZoneId.of(DataModule.serverTz)).toEpochSecond(),
-                    EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS,
-                    EventLogViewModel.EVENT_VIDEO_BACK_SECONDS * 1000L,
-                    true
-                )
+            val fromDate = eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)
+            if (eventItem.entranceId != null) {
+                mViewModel.camMapDataByEntrance[eventItem.entranceId]?.let { data ->
+                    setMedia(fromDate, data)
+                }
+            } else {
+                mViewModel.camMapData[eventItem.objectId]?.let { data ->
+                    setMedia(fromDate, data)
+                }
             }
         }
     }

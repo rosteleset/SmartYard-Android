@@ -86,6 +86,7 @@ class EventLogViewModel(
     var currentEventDayFilter: LocalDate? = null
 
     var camMapData = hashMapOf<Int, DoorphoneData>()
+    var camMapDataByEntrance = hashMapOf<Int, DoorphoneData>()
 
     var faceIdToUrl = hashMapOf<Int, String>()
 
@@ -96,14 +97,20 @@ class EventLogViewModel(
 
     private fun camMap() {
         camMapData.clear()
+        camMapDataByEntrance.clear()
         viewModelScope.withProgress(progress = null) {
             val data = hashMapOf<Int, DoorphoneData>()
+            val dataByEntrance = hashMapOf<Int, DoorphoneData>()
             val result = addressInteractor.camMap()
             result?.data?.forEach {
                 data[it.id] = DoorphoneData(it.url, it.token, it.serverType)
+                it.entranceId?.let { entranceId ->
+                    dataByEntrance[entranceId] = DoorphoneData(it.url, it.token, it.serverType)
+                }
             }
             withContext(Dispatchers.Main) {
                 camMapData = HashMap(data)
+                camMapDataByEntrance = HashMap(dataByEntrance)
             }
         }
     }
