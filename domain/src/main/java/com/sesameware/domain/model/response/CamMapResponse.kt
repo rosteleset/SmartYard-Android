@@ -6,6 +6,7 @@ typealias CamMapResponse = ApiResult<List<CamMap>>?
 
 data class CamMap(
     @Json(name = "id") val id: Int,
+    @Json(name = "entranceId") val entranceId: Int? = null,
     @Json(name = "url") val url: String,
     @Json(name = "token") val token: String,
     @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
