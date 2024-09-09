@@ -13,10 +13,6 @@
         </service>
 
         <meta-data
-            android:name="ru.rustore.sdk.pushclient.project_id"
-            android:value="FuG1fcUnkW2hiK-UYygxAcOwvpZVd5t8" />
-
-        <meta-data
             android:name="ru.rustore.sdk.pushclient.default_notification_icon"
             android:resource="@drawable/ic_notification" />
     </application>
