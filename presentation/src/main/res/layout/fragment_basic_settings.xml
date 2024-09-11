@@ -300,6 +300,108 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/cvCameras"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:orientation="vertical"
+                    app:cardBackgroundColor="@color/white_0"
+                    app:cardCornerRadius="13dp"
+                    app:cardElevation="0dp">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvTitleCameras"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="false"
+                            android:gravity="center_vertical"
+                            android:paddingStart="24dp"
+                            android:paddingTop="24dp"
+                            android:paddingBottom="24dp"
+                            android:text="@string/title_cameras"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/ivCameras"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="24dp"
+                            android:clickable="false"
+                            android:longClickable="false"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvTitleCameras"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toTopOf="@+id/tvTitleCameras"
+                            app:srcCompat="@drawable/ic_arrow_bottom" />
+
+                        <net.cachapa.expandablelayout.ExpandableLayout
+                            android:id="@+id/expandableLayoutCameras"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:el_duration="300"
+                            app:el_expanded="false"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvTitleCameras">
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
+
+                                <View
+                                    android:id="@+id/vLineShowOnMap"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    android:paddingEnd="18dp"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+                                <TextView
+                                    android:id="@+id/tvShowOnMap"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:padding="24dp"
+                                    android:text="@string/show_on_map"
+                                    android:textColor="@color/black"
+                                    app:layout_constraintEnd_toStartOf="@+id/swShowOnMap"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/vLineShowOnMap" />
+
+                                <androidx.appcompat.widget.SwitchCompat
+                                    android:id="@+id/swShowOnMap"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@null"
+                                    android:button="@drawable/switch_button_selector"
+                                    android:paddingStart="24dp"
+
+                                    android:thumb="@null"
+                                    app:layout_constraintBottom_toBottomOf="@+id/tvShowOnMap"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent"
+                                    app:track="@null" />
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                        </net.cachapa.expandablelayout.ExpandableLayout>
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginStart="24dp"

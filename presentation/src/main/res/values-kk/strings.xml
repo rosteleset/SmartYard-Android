@@ -472,6 +472,8 @@
     <string name="receive_notifications">Хабарламалар алу</string>
     <string name="lack_funds_notifications">Қаражаттың жетіспеушілігі туралы хабарлаңыз</string>
     <string name="balance_notify_near_zero">Баланс нөлге жақындаған кезде хабарлама жіберіңіз</string>
+    <string name="title_cameras">Камералар</string>
+    <string name="show_on_map">Картада көрсету</string>
     <string name="title_security">Қауіпсіздік</string>
     <string name="fingerprint_entrance">Саусақ ізі арқылы кіру</string>
     <string name="fingerprint_entrance_description">Саусақ ізі арқылы қолданбаға кіру</string>

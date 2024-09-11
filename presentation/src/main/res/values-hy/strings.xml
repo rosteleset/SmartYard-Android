@@ -470,6 +470,8 @@
     <string name="receive_notifications">Ստանալ ծանուցումներ</string>
     <string name="lack_funds_notifications">Տեղեկացնել մնացորդի սահմանը</string>
     <string name="balance_notify_near_zero">Ուղարկել ծանուցում, երբ մնացորդը մոռացում է կետավորը</string>
+    <string name="title_cameras">Տեսախցիկներ</string>
+    <string name="show_on_map">Ցույց տալ քարտեզի վրա</string>
     <string name="title_security">Անվտանգություն</string>
     <string name="fingerprint_entrance">Մուտք Fingerprint-ով</string>
     <string name="fingerprint_entrance_description">Մուտք մուտքագրել մատչելի մասնագիտությամբ</string>

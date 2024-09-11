@@ -475,6 +475,8 @@
     <string name="receive_notifications">Receive notifications</string>
     <string name="lack_funds_notifications">Notify about low balance</string>
     <string name="balance_notify_near_zero">Send notification when the balance approaches zero</string>
+    <string name="title_cameras">Cameras</string>
+    <string name="show_on_map">Show on map</string>
     <string name="title_security">Security</string>
     <string name="fingerprint_entrance">Fingerprint entry</string>
     <string name="fingerprint_entrance_description">Enter the app using fingerprint</string>

@@ -24,6 +24,7 @@ interface PreferenceStorage {
     var xDmApiRefresh: Boolean
     var providerId: String?
     var providerBaseUrl: String?
+    var showCamerasOnMap: Boolean
 }
 
 /**
@@ -50,6 +51,7 @@ class SharedPreferenceStorage constructor(
         const val PREF_WHERE_IS_CONTRACT_WARNING_SEEN = "PREF_WHERE_IS_CONTRACT_WARNING_SEEN"
         const val PREF_PROVIDER_ID = "PREF_PROVIDER_ID"
         const val PREF_PROVIDER_BASE_URL = "PREF_PROVIDER_BASE_URL"
+        const val PREF_SHOW_CAMERAS_ON_MAP = "PREF_SHOW_CAMERAS_ON_MAP"
     }
 
     private val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -84,6 +86,7 @@ class SharedPreferenceStorage constructor(
         set(value) { apiRefresh = value }
     override var providerId by StringPreference(prefs, PREF_PROVIDER_ID, null)
     override var providerBaseUrl by StringPreference(prefs, PREF_PROVIDER_BASE_URL, null)
+    override var showCamerasOnMap by BooleanPreference(prefs, PREF_SHOW_CAMERAS_ON_MAP, true)
 }
 
 class SerializablePreferenceNullable<T>(

@@ -167,23 +167,22 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                     this.findNavController().navigate(R.id.action_addressFragment_to_qrCodeFragment)
                 },
                 clickCamera = {
-                    when (DataModule.providerConfig.cctvView) {
-                        CCTVViewTypeType.TREE -> {
-                            mCCTVViewModel.getCamerasTree(it.toParcelable()) {
-                                val group = mCCTVViewModel.cameraGroups.value
-                                mCCTVViewModel.chosenIndex.value = null
-                                mCCTVViewModel.chosenCamera.value = null
-                                mCCTVViewModel.chooseGroup(group?.groupId ?: CCTVDataTree.DEFAULT_GROUP_ID)
-                                mCCTVViewModel.getCameraList(group?.cameras ?: listOf(), group?.type ?: CCTVRepresentationType.MAP) {
-                                    val action = if (group?.type == CCTVRepresentationType.LIST) AddressFragmentDirections.actionAddressFragmentToCCTVTreeFragment(group) else AddressFragmentDirections.actionAddressFragmentToMapCameraFragment()
-                                    this.findNavController().navigate(action)
-                                }
+                    if (DataModule.providerConfig.cctvView == CCTVViewTypeType.TREE
+                        || DataModule.providerConfig.cctvView == CCTVViewTypeType.USER_DEFINED && !mViewModel.mPreferenceStorage.showCamerasOnMap)
+                    {
+                        mCCTVViewModel.getCamerasTree(it.toParcelable()) {
+                            val group = mCCTVViewModel.cameraGroups.value
+                            mCCTVViewModel.chosenIndex.value = null
+                            mCCTVViewModel.chosenCamera.value = null
+                            mCCTVViewModel.chooseGroup(group?.groupId ?: CCTVDataTree.DEFAULT_GROUP_ID)
+                            mCCTVViewModel.getCameraList(group?.cameras ?: listOf(), group?.type ?: CCTVRepresentationType.MAP) {
+                                val action = if (group?.type == CCTVRepresentationType.LIST) AddressFragmentDirections.actionAddressFragmentToCCTVTreeFragment(group) else AddressFragmentDirections.actionAddressFragmentToMapCameraFragment()
+                                this.findNavController().navigate(action)
                             }
                         }
-                        else -> {
-                            mCCTVViewModel.getCameras(it.toParcelable()) {
-                                this.findNavController().navigate(R.id.action_addressFragment_to_mapCameraFragment)
-                            }
+                    } else {
+                        mCCTVViewModel.getCameras(it.toParcelable()) {
+                            this.findNavController().navigate(R.id.action_addressFragment_to_mapCameraFragment)
                         }
                     }
                 },

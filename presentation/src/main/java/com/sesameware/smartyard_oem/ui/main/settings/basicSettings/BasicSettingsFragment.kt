@@ -11,6 +11,9 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.data.DataModule
+import com.sesameware.domain.model.response.CCTVViewTypeType
+import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.drawable
@@ -79,6 +82,21 @@ class BasicSettingsFragment : Fragment() {
                 binding.ivNotif.setImageResource(drawable.ic_arrow_top)
             }
         }
+        binding.swShowOnMap.isChecked = mViewModel.mPreferenceStorage.showCamerasOnMap
+        binding.swShowOnMap.setOnCheckedChangeListener { _, isChecked ->
+            mViewModel.saveShowOnMapPref(isChecked)
+        }
+
+        binding.tvTitleCameras.setOnClickListener {
+            if (binding.expandableLayoutCameras.isExpanded) {
+                binding.expandableLayoutCameras.collapse()
+                binding.ivCameras.setImageResource(drawable.ic_arrow_bottom)
+            } else {
+                binding.expandableLayoutCameras.expand()
+                binding.ivCameras.setImageResource(drawable.ic_arrow_top)
+            }
+        }
+
         binding.tvTitleSecurity.setOnClickListener {
             if (binding.expandableLayoutSecurity.isExpanded) {
                 binding.expandableLayoutSecurity.collapse()
@@ -104,6 +122,7 @@ class BasicSettingsFragment : Fragment() {
         }
 
         binding.cvNotifications.isVisible = true
+        binding.cvCameras.isVisible = (DataModule.providerConfig.cctvView == CCTVViewTypeType.USER_DEFINED)
 
         // для Андроид версии 8.0 и выше отключаем настройку звука уведомлений,
         // так как для этого используются настройки категорий уведомлений
