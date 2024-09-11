@@ -476,6 +476,8 @@
     <string name="receive_notifications">Получать уведомления</string>
     <string name="lack_funds_notifications">Оповестить о недостатке средств</string>
     <string name="balance_notify_near_zero">Прислать уведомление, когда баланс приблизится к нулю</string>
+    <string name="title_cameras">Камеры</string>
+    <string name="show_on_map">Показывать на карте</string>
     <string name="title_security">Безопасность</string>
     <string name="fingerprint_entrance">Вход по Fingerprint</string>
     <string name="fingerprint_entrance_description">Входить в приложение с помощью отпечатка пальца</string>

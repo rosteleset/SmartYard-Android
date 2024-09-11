@@ -472,6 +472,8 @@
     <string name="receive_notifications">Bildirishnomalarni olish</string>
     <string name="lack_funds_notifications">Mablag‘ yetarlichasini ogohlantirish</string>
     <string name="balance_notify_near_zero">Balansni yaqinlashishi haqidagi ogohlantirish</string>
+    <string name="title_cameras">Kameralar</string>
+    <string name="show_on_map">Xaritada ko‘rsatish</string>
     <string name="title_security">Xavfsizlik</string>
     <string name="fingerprint_entrance">Qo‘llab-quvvat kiritish Fingerprint orqali</string>
     <string name="fingerprint_entrance_description">Ilova uchun qo‘llab-quvvatni ishlatishda barmoq izini foydalanish</string>

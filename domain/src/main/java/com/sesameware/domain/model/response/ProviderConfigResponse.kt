@@ -93,6 +93,7 @@ data class ProviderConfig(
         const val CCTV_VIEW = "cctvView"
         const val CCTV_VIEW_LIST = "list"
         const val CCTV_VIEW_TREE = "tree"
+        const val CCTV_USER_DEFINED = "userDefined"
 
         //вкладки
         const val ACTIVE_TAB = "activeTab"
@@ -123,12 +124,14 @@ enum class GuestAccessType {
 
 enum class CCTVViewTypeType {
     LIST,
-    TREE;
+    TREE,
+    USER_DEFINED;
 
     companion object {
         fun getType(type: String): CCTVViewTypeType {
             return when (type) {
                 ProviderConfig.CCTV_VIEW_TREE -> TREE
+                ProviderConfig.CCTV_USER_DEFINED -> USER_DEFINED
                 else -> LIST
             }
         }

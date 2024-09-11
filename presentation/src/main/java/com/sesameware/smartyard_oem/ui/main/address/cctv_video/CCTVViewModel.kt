@@ -195,29 +195,28 @@ class CCTVViewModel(
 
     fun refreshCameras(model: VideoCameraModelP, onComplete: listenerEmpty = {}) {
         Timber.d("__Q__   call refreshCameras")
-        when (DataModule.providerConfig.cctvView) {
-            CCTVViewTypeType.TREE -> {
-                getCamerasTree(model) {
-                    Timber.d("__Q__   call findGroupById    ${chosenGroup.value}")
-                    findGroupById(cameraGroups.value, chosenGroup.value ?: CCTVDataTree.DEFAULT_GROUP_ID)?.let { group ->
-                        Timber.d("__Q__   found group  ${group.groupName}")
-                        getCameraList(group.cameras ?: listOf(), group.type)
-                        chosenIndex.value?.let { it1 -> chooseCamera(it1) }
-                        onComplete()
-                    }
+        if (DataModule.providerConfig.cctvView == CCTVViewTypeType.TREE
+            || DataModule.providerConfig.cctvView == CCTVViewTypeType.USER_DEFINED && !mPreferenceStorage.showCamerasOnMap)
+        {
+            getCamerasTree(model) {
+                Timber.d("__Q__   call findGroupById    ${chosenGroup.value}")
+                findGroupById(cameraGroups.value, chosenGroup.value ?: CCTVDataTree.DEFAULT_GROUP_ID)?.let { group ->
+                    Timber.d("__Q__   found group  ${group.groupName}")
+                    getCameraList(group.cameras ?: listOf(), group.type)
+                    chosenIndex.value?.let { it1 -> chooseCamera(it1) }
+                    onComplete()
                 }
             }
-            else -> {
-                viewModelScope.withProgress {
-                    mPreferenceStorage.xDmApiRefresh = true
-                    cctvInteractor.getCCTV(model.houseId)?.let {
-                        state[cameraList_Key] = it.filter { camera ->
-                            camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
-                        }
-                        state[cctvModel_Key] = model
-                        chosenIndex.value?.let { it1 -> chooseCamera(it1) }
-                        onComplete()
+        } else {
+            viewModelScope.withProgress {
+                mPreferenceStorage.xDmApiRefresh = true
+                cctvInteractor.getCCTV(model.houseId)?.let {
+                    state[cameraList_Key] = it.filter { camera ->
+                        camera.latitude != null && camera.longitude != null  // игнорируем камеры с неуказанными координатами
                     }
+                    state[cctvModel_Key] = model
+                    chosenIndex.value?.let { it1 -> chooseCamera(it1) }
+                    onComplete()
                 }
             }
         }

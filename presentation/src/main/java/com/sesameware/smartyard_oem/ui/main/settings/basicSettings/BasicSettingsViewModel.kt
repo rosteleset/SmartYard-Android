@@ -64,4 +64,8 @@ class BasicSettingsViewModel(
     fun saveSoundToPref(tone: SoundChooser.RingtoneU) {
         mPreferenceStorage.notifySoundUri = tone.uri.toString()
     }
+
+    fun saveShowOnMapPref(value: Boolean) {
+        mPreferenceStorage.showCamerasOnMap = value
+    }
 }
