@@ -19,7 +19,6 @@ interface PreferenceStorage {
     var notifySoundUri: String?
     var addressOptions: AddressOptions
     var whereIsContractWarningSeen: Boolean
-    var appVersion: Int
     var onboardingCompleted: Boolean
     var xDmApiRefresh: Boolean
     var providerId: String?
@@ -38,7 +37,6 @@ class SharedPreferenceStorage constructor(
 
     companion object {
         const val PREFS_NAME = "smart_yard"
-        const val PREFS_APP_VERSION = "app_version"
         const val PREF_ONBOARDING = "pref_onboarding"
         const val PREF_AUTH_TOKEN = "PREF_AUTH_TOKEN"
         const val PREF_PUSH_TOKEN = "PREF_PUSH_TOKEN"
@@ -55,7 +53,6 @@ class SharedPreferenceStorage constructor(
     }
 
     private val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
-    override var appVersion by IntPreference(prefs, PREFS_APP_VERSION, -1)
     override var onboardingCompleted by BooleanPreference(prefs, PREF_ONBOARDING, false)
     override var authToken by StringPreference(prefs, PREF_AUTH_TOKEN, null)
     override var pushToken by StringPreference(prefs, PREF_PUSH_TOKEN, null)
