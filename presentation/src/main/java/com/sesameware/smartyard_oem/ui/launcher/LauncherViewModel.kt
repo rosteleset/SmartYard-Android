@@ -19,7 +19,6 @@ class LauncherViewModel(
 
     init {
         if (!mPreferenceStorage.onboardingCompleted) {
-            mPreferenceStorage.onboardingCompleted = false
             _launchDestination.value = Event(LaunchDestination.ONBOARDING_ACTIVITY)
         } else {
             _launchDestination.value = Event(LaunchDestination.REGISTRATION_ACTIVITY)
