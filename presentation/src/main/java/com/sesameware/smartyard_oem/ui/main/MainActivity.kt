@@ -19,6 +19,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
+import android.webkit.ValueCallback
+import android.webkit.WebChromeClient
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.IntDef
@@ -80,6 +82,8 @@ class MainActivity : CommonActivity() {
     private var exitFullscreenListener: ExitFullscreenListener? = null
 
     private val mRegModel by viewModel<RegistrationViewModel>()
+
+    var filePathCallback: ValueCallback<Array<Uri>>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -427,6 +431,12 @@ class MainActivity : CommonActivity() {
                     mViewModel.chatSendFileUri.postValue(Event(Uri.EMPTY))
                 }
             }
+            WEB_CHAT_CHOOSE_FILE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    filePathCallback?.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(resultCode, data))
+                    filePathCallback = null
+                }
+            }
         }
     }
 
@@ -497,5 +507,6 @@ class MainActivity : CommonActivity() {
     companion object {
         const val BROADCAST_LIST_UPDATE = "BROADCAST_LIST_UPDATE"
         const val CHAT_REQUEST_FILE = 0 // todo: переписать код сдк? (код скорее защит в sdk chat)
+        const val WEB_CHAT_CHOOSE_FILE = 1
     }
 }
