@@ -4,8 +4,12 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Message
 import android.webkit.ConsoleMessage
+import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import androidx.core.app.ActivityCompat.startActivityForResult
+import com.sesameware.smartyard_oem.ui.main.MainActivity
+import com.sesameware.smartyard_oem.ui.main.MainActivity.Companion.WEB_CHAT_CHOOSE_FILE
 import timber.log.Timber
 
 class CustomWebChromeClient(
@@ -38,5 +42,18 @@ class CustomWebChromeClient(
         }
 
         return false
+    }
+
+    override fun onShowFileChooser(
+        webView: WebView?,
+        filePathCallback: ValueCallback<Array<Uri>>?,
+        fileChooserParams: FileChooserParams?
+    ): Boolean {
+        fileChooserParams?.createIntent()?.let {
+            startActivityForResult(fragment?.requireActivity()!!,
+                it, WEB_CHAT_CHOOSE_FILE, null)
+        }
+        (fragment?.requireActivity() as? MainActivity)?.filePathCallback = filePathCallback
+        return true
     }
 }
