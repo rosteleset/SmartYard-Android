@@ -41,6 +41,4 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview:$rootProject.recyclerView"
     implementation "com.jakewharton.timber:timber:$rootProject.timberVersion"
     implementation "com.jakewharton.threetenabp:threetenabp:${threetenabp}"
-
-
 }

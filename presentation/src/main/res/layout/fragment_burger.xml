@@ -1,40 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_bureger_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white_200"
     tools:context=".ui.main.burger.BurgerFragment">
 
-    <TextView
-        android:id="@+id/textView5"
+    <ImageView
+        android:id="@+id/imageView16"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:text="@string/burger_title"
-        android:textColor="@color/black_200"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="0dp"
+        android:background="@color/white_200"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@+id/guideline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.15" />
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="@dimen/header_guide_line" />
+
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/header_layout_marginStart"
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:text="@string/burger_title"
+        android:textColor="@color/blue_200"
+        android:textSize="@dimen/header_text_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/guideline6"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvBurger"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:background="@drawable/background_radius_upper"
         app:layout_constraintBottom_toTopOf="@+id/llCallSupport"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView5"/>
+        app:layout_constraintTop_toTopOf="@+id/guideline6" />
 
     <LinearLayout
         android:id="@+id/llCallSupport"
@@ -42,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/rounded_corner"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -79,5 +94,27 @@
             android:layout_height="wrap_content"
             android:layout_weight="1" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvPolicy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:clickable="true"
+        android:text="Политика конфиденциальности"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llCallSupport" />
+
+    <TextView
+        android:id="@+id/tv_version_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:textSize="8sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/tvPolicy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/tvPolicy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

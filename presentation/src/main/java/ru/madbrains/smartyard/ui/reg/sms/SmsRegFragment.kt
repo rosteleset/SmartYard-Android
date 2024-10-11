@@ -20,6 +20,7 @@ import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentSmsRegBinding
 import ru.madbrains.smartyard.eventHandler
 import ru.madbrains.smartyard.getColorCompat
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -76,8 +77,10 @@ class SmsRegFragment : Fragment() {
                 }
             }
         )
+        Timber.d("confirmCodePush smsReg $arguments ")
 
         requireNotNull(arguments).run {
+            Timber.d("confirmCodePush  requireNotNull $arguments ")
             phoneNumber = requireNotNull(getString(KEY_PHONE_NUMBER))
         }
 

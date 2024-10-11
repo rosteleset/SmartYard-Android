@@ -10,6 +10,7 @@ import ru.madbrains.domain.model.response.ServicesData
 import ru.madbrains.domain.model.response.StreetsData
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.GenericViewModel
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -32,6 +33,8 @@ class InputAddressViewModel(private val geoInteractor: GeoInteractor) : GenericV
 
     val navigationToNoNetwork = MutableLiveData<Event<String>>()
 
+    val navigationToAddingAddress = MutableLiveData<Event<String>>()
+
     init {
         getAllLocation()
     }
@@ -43,7 +46,7 @@ class InputAddressViewModel(private val geoInteractor: GeoInteractor) : GenericV
             true
         }) {
             val res = geoInteractor.getAllLocations()
-            cityList.postValue(res.data)
+            cityList.postValue(res.data ?: emptyList())
             progressCity.postValue(false)
         }
     }
@@ -67,7 +70,7 @@ class InputAddressViewModel(private val geoInteractor: GeoInteractor) : GenericV
             true
         }) {
             val res = geoInteractor.getHouses(streetId)
-            houseList.postValue(res.data)
+            houseList.postValue(res.data ?: emptyList())
             progressHouse.postValue(false)
         }
     }
@@ -80,12 +83,16 @@ class InputAddressViewModel(private val geoInteractor: GeoInteractor) : GenericV
                 confirmError.value = Event(it)
                 true
             }) {
-                val res = geoInteractor.getServices(houseId)
-                if (res?.data?.isEmpty() != false)
+                val flat = address.split(",")[3].trim().toIntOrNull() ?: 0
+                val res = geoInteractor.getServices(houseId, flat)
+                if (res?.data?.isEmpty() == true)
                     navigationToNoNetwork.postValue(Event(address))
                 else {
-                    servicesList.postValue(Event(res.data ?: emptyList()))
-                    // navigationToNoNetwork.postValue(Event(address))
+                    if (res?.data?.get(0)?.title!!.isEmpty()){
+                        navigationToAddingAddress.postValue(Event(address))
+                    }else{
+                        servicesList.postValue(Event(res.data))
+                    }
                 }
             }
         }

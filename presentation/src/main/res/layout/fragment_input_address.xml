@@ -1,253 +1,267 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sv_fragment_input_address"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white_200"
     android:fillViewport="true"
     tools:context=".ui.reg.tel.NumberRegFragment">
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_input_address_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
+            android:scaleType="centerCrop"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <ImageView
-                android:id="@+id/imageView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop"
-                android:src="@drawable/background_auth"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle"
+            app:srcCompat="@drawable/ic_back_arrow" />
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:id="@+id/ivBack"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="28dp"
-                    android:padding="16dp"
-                    android:src="@drawable/ic_back_arrow" />
-
-                <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="32dp"
-                    android:text="@string/input_address_title"
-                    android:textColor="@color/white_0"
-                    android:textSize="32sp"
-                    android:textStyle="bold"
-                    app:autoSizeTextType="uniform" />
-            </LinearLayout>
-
-        </FrameLayout>
-
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/input_address_title"
+            android:textColor="@color/blue_200"
+            android:textSize="@dimen/header_text_size"
+            android:textStyle="bold"
+            app:autoSizeMinTextSize="15sp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintStart_toEndOf="@+id/ivBack" />
 
         <LinearLayout
-
-            android:id="@+id/imageView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="-100dp"
-            android:background="@drawable/background_radius"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline8"
-            app:layout_constraintVertical_bias="1.0">
+            app:layout_constraintTop_toTopOf="@+id/guideline8">
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/actvCity"
-                    android:textCursorDrawable="@drawable/color_cursor"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:background="@drawable/background_edit_text_radius"
-                    android:completionThreshold="1"
-                    android:ems="10"
-                    android:hint="Город"
-                    android:inputType="textPersonName"
-                    android:padding="16dp"
-                    android:textSize="18sp" />
-
-                <ProgressBar
-                    android:id="@+id/progressCity"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center|end"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:indeterminateTint="@color/blue_200"
-                    android:visibility="gone" />
-
-            </FrameLayout>
-
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-
-                <AutoCompleteTextView
-                    android:textCursorDrawable="@drawable/color_cursor"
-                    android:id="@+id/actvStreet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:background="@drawable/background_edit_text_radius"
-                    android:completionThreshold="1"
-                    android:ems="10"
-                    android:hint="Улица"
-                    android:inputType="textPersonName"
-                    android:padding="16dp"
-                    android:textSize="18sp" />
-
-                <ProgressBar
-                    android:id="@+id/progressStreet"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center|end"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="8dp"
-                    android:indeterminateTint="@color/blue_200"
-                    android:visibility="gone" />
-
-            </FrameLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
 
+                android:id="@+id/imageView2"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white_200"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline8"
+                app:layout_constraintVertical_bias="1.0">
 
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_weight="1">
-
+                    android:layout_marginTop="32dp">
 
                     <AutoCompleteTextView
-                        android:textCursorDrawable="@drawable/color_cursor"
-                        android:id="@+id/actvHouse"
+                        android:id="@+id/actvCity"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="32dp"
                         android:background="@drawable/background_edit_text_radius"
                         android:completionThreshold="1"
                         android:ems="10"
-                        android:hint="Дом"
-                        android:inputType="number"
+                        android:hint="Город"
+                        android:inputType="textPersonName"
                         android:padding="16dp"
+                        android:textCursorDrawable="@drawable/color_cursor"
                         android:textSize="18sp" />
 
                     <ProgressBar
-                        android:id="@+id/progressHouse"
+                        android:id="@+id/progressCity"
+                        style="@style/Widget.AppCompat.ProgressBar"
+                        android:layout_width="wrap_content"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center|end"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:indeterminateTint="@color/blue_200"
+                        android:visibility="gone" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp">
+
+
+                    <AutoCompleteTextView
+                        android:id="@+id/actvStreet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginEnd="32dp"
+                        android:background="@drawable/background_edit_text_radius"
+                        android:completionThreshold="1"
+                        android:ems="10"
+                        android:hint="Улица"
+                        android:inputType="textPersonName"
+                        android:padding="16dp"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        android:textSize="18sp" />
+
+                    <ProgressBar
+                        android:id="@+id/progressStreet"
                         style="@style/Widget.AppCompat.ProgressBar"
                         android:layout_width="wrap_content"
                         android:layout_height="20dp"
                         android:layout_gravity="center|end"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="32dp"
                         android:layout_marginBottom="8dp"
                         android:indeterminateTint="@color/blue_200"
                         android:visibility="gone" />
+
                 </FrameLayout>
 
-                <EditText
-                    android:textCursorDrawable="@drawable/color_cursor"
-                    android:id="@+id/etApartment"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
+                    android:orientation="horizontal">
+
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:layout_weight="1">
+
+
+                        <AutoCompleteTextView
+                            android:id="@+id/actvHouse"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="32dp"
+                            android:layout_marginEnd="8dp"
+                            android:background="@drawable/background_edit_text_radius"
+                            android:completionThreshold="1"
+                            android:ems="10"
+                            android:hint="Дом"
+                            android:inputType="number"
+                            android:padding="16dp"
+                            android:textCursorDrawable="@drawable/color_cursor"
+                            android:textSize="18sp" />
+
+                        <ProgressBar
+                            android:id="@+id/progressHouse"
+                            style="@style/Widget.AppCompat.ProgressBar"
+                            android:layout_width="wrap_content"
+                            android:layout_height="20dp"
+                            android:layout_gravity="center|end"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:indeterminateTint="@color/blue_200"
+                            android:visibility="gone" />
+                    </FrameLayout>
+
+                    <EditText
+                        android:id="@+id/etApartment"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="32dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/background_edit_text_radius"
+                        android:ems="10"
+                        android:hint="Квартира"
+                        android:inputType="number|textPersonName"
+                        android:padding="16dp"
+                        android:textCursorDrawable="@drawable/color_cursor"
+                        android:textSize="18sp" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnCheckAvailableServices"
+                    style="@style/buttonBlueFlooded"
+                    android:layout_width="match_parent"
+                    android:layout_height="61dp"
+                    android:layout_marginStart="32dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="32dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/background_edit_text_radius"
-                    android:ems="10"
-                    android:hint="Квартира"
-                    android:inputType="number|textPersonName"
-                    android:padding="16dp"
-                    android:textSize="18sp" />
-            </LinearLayout>
+                    android:enabled="false"
+                    android:text="@string/input_address_ok" />
 
-            <Button
-                android:id="@+id/btnCheckAvailableServices"
-                style="@style/buttonBlueFlooded"
-                android:layout_width="match_parent"
-                android:layout_height="61dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:enabled="false"
-                android:paddingTop="18dp"
-                android:paddingBottom="18dp"
-                android:text="@string/input_address_ok" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:gravity="center"
+                    android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/imageView4"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:paddingTop="10dp"
+                        android:src="@drawable/ic_qr_code"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
 
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_qr_code"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
+                    <TextView
+                        android:id="@+id/tvQrCode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/dashed"
+                        android:drawablePadding="8dp"
+                        android:paddingTop="10dp"
+                        android:text="@string/input_address_text_qr"
+                        android:textColor="@color/blue"
+                        android:visibility="gone"
+                        tools:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/tvQrCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/dashed"
-                    android:drawablePadding="8dp"
-                    android:paddingTop="10dp"
-                    android:text="@string/input_address_text_qr"
-                    android:textColor="@color/blue"
-                    android:visibility="gone"
-                    tools:visibility="gone" />
+                </LinearLayout>
 
             </LinearLayout>
+
 
         </LinearLayout>
 
 
-    </LinearLayout>
-</ScrollView>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

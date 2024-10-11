@@ -4,9 +4,10 @@ import android.appwidget.AppWidgetManager
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.util.Log
 import android.view.View
 import android.widget.RemoteViews
-import android.widget.RemoteViewsService.RemoteViewsFactory
+import android.widget.RemoteViewsService
 import kotlinx.coroutines.runBlocking
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -20,7 +21,7 @@ import timber.log.Timber
  * Created on 13.05.2020.
  */
 class WidgetFactory internal constructor(var context: Context, var intent: Intent) :
-    RemoteViewsFactory, KoinComponent {
+    RemoteViewsService.RemoteViewsFactory, KoinComponent {
     private val databaseInteractor: DatabaseInteractor by inject()
     private var data: ArrayList<AddressItem> = ArrayList()
     private var widgetID: Int = intent.getIntExtra(
@@ -50,10 +51,10 @@ class WidgetFactory internal constructor(var context: Context, var intent: Inten
             R.layout.item_widget
         )
         rView.setTextViewText(R.id.tvObjectName, data[position].name)
-        rView.setTextViewText(R.id.tvAddress, data[position].address)
+        rView.setTextViewText(R.id.tvAddressWidged, data[position].address)
 
         rView.setImageViewResource(
-            R.id.ivImage,
+            R.id.ivImageWidged,
             when (data[position].icon) {
                 "barrier" -> R.drawable.ic_barrier
                 "gate" -> R.drawable.ic_gates
@@ -64,9 +65,9 @@ class WidgetFactory internal constructor(var context: Context, var intent: Inten
         )
 
         if (data[position].state == StateButton.OPEN) {
-            rView.setImageViewResource(R.id.tbOpen, R.drawable.ic_open)
+            rView.setImageViewResource(R.id.tbOpenWidget, R.drawable.ic_open)
         } else {
-            rView.setImageViewResource(R.id.tbOpen, R.drawable.ic_round_lock)
+            rView.setImageViewResource(R.id.tbOpenWidget, R.drawable.ic_round_lock)
         }
 
         val clickIntent = Intent()
@@ -75,6 +76,7 @@ class WidgetFactory internal constructor(var context: Context, var intent: Inten
         clickIntent.putExtra(WidgetProvider.ITEM_DOMOPHONE_ID, data[position].domophoneId)
         clickIntent.putExtra(WidgetProvider.ITEM_DOOR_ID, data[position].doorId)
         rView.setOnClickFillInIntent(R.id.linearLayoutItem, clickIntent)
+
         return rView
     }
 
@@ -99,6 +101,8 @@ class WidgetFactory internal constructor(var context: Context, var intent: Inten
         // data?.clear()
         isEmptyList()
     }
+
+
 
     private fun isEmptyList() {
         val views = RemoteViews(

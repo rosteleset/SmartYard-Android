@@ -15,9 +15,10 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/ic_background_address_map"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
             android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -26,47 +27,50 @@
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:padding="16dp"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
             android:src="@drawable/ic_back_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginBottom="56dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             android:textAlignment="textStart"
-            android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textColor="@color/blue_200"
+            android:textSize="@dimen/header_text_size"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivBack"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintStart_toEndOf="@+id/ivBack"
             tools:text="cameraDate" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
 
         <LinearLayout
             android:id="@+id/contentWrap"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="28dp"
-            android:background="@drawable/background_radius_upper_clip"
+            android:background="@color/white_200"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle">
+            app:layout_constraintTop_toBottomOf="@+id/imageView">
 
             <ScrollView
                 android:id="@+id/svContentWrap"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="@color/white_200"
                 android:fillViewport="true"
                 tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTab">
 
@@ -74,7 +78,7 @@
                     android:id="@+id/llControls"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/white_200"
                     android:orientation="vertical"
                     android:paddingBottom="40dp">
 
@@ -92,7 +96,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent">
 
-                            <com.google.android.exoplayer2.ui.PlayerView
+                            <androidx.media3.ui.PlayerView
                                 android:id="@+id/mPlayerView"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -154,6 +158,16 @@
                             android:layout_marginTop="12dp"
                             android:layout_marginEnd="12dp"
                             android:background="@drawable/ic_cctv_enter_fullscreen" />
+
+                        <ImageButton
+                            android:id="@+id/mMutePlayer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start|end"
+                            android:layout_marginStart="12dp"
+                            android:layout_marginTop="12dp"
+                            android:background="@drawable/baseline_volume_off_24"
+                            android:visibility="visible" />
 
                         <ru.madbrains.lib.RangeSlider
                             android:id="@+id/rangeTrimmer"
@@ -323,8 +337,6 @@
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:layout_marginBottom="24dp"
                         android:enabled="true"
-                        android:paddingTop="18dp"
-                        android:paddingBottom="18dp"
                         tools:text="@string/cctv_choose_fragment" />
                 </LinearLayout>
             </ScrollView>

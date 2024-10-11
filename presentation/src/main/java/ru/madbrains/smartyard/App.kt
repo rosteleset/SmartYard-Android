@@ -17,7 +17,6 @@ class App : Application() {
         super.onCreate()
         initKoin()
         initLogger()
-//        initYandex()
         AndroidThreeTen.init(this)
     }
 
@@ -32,7 +31,6 @@ class App : Application() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         }
-        //Timber.plant(Timber.DebugTree())
     }
 
 //    private fun initYandex() {

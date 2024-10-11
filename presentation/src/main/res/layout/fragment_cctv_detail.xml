@@ -13,9 +13,10 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
             android:scaleType="centerCrop"
-            android:background="@drawable/ic_background_address_map"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -24,62 +25,61 @@
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:padding="16dp"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
             android:src="@drawable/ic_back_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
-            android:autoSizeTextType="uniform"
+            android:layout_marginStart="8dp"
+            android:clickable="true"
             android:maxLines="1"
             android:textAlignment="textStart"
-            android:textColor="@color/white"
-            android:textSize="35sp"
+            android:textColor="@color/blue_200"
+            android:textSize="23sp"
             android:textStyle="bold"
-            app:autoSizeMinTextSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivBack"
+            app:layout_constraintBottom_toTopOf="@+id/tvTitleSub"
+            app:layout_constraintStart_toEndOf="@+id/ivBack"
             tools:text="cameraName" />
 
         <TextView
             android:id="@+id/tvTitleSub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="5dp"
-            tools:text="addressSub"
-            android:textColor="@color/white"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black_200"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintStart_toStartOf="@+id/tvTitle"
+            tools:text="addressSub" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
 
         <LinearLayout
             android:id="@+id/contentWrap"
-            android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/background_radius_upper_clip"
-            android:layout_marginTop="28dp"
+            android:background="@color/white_200"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitleSub"
-            >
+            app:layout_constraintTop_toBottomOf="@+id/tvTitleSub">
+
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/viewPager"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-            >
+                android:layout_height="match_parent">
 
                 <com.google.android.material.tabs.TabLayout
                     android:id="@+id/tabLayout"
@@ -87,6 +87,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
                     app:tabIndicatorColor="@color/blue"
+                    android:background="@color/white_200"
                     app:tabSelectedTextColor="@color/black"
                     app:tabTextAppearance="@style/MyCustomTextAppearance"
                     app:tabTextColor="@color/grey_100" />

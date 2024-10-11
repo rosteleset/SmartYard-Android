@@ -26,12 +26,14 @@ class AddressVerificationFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            address = NoNetworkFragmentArgs.fromBundle(it).address
+//            address = NoNetworkFragmentArgs.fromBundle(it).address
+            address = it.getString("address").toString()
         }
         binding.imageView7.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
-        activity?.supportFragmentManager?.let { // todo: use getChildFragmentManager instead?
+        parentFragmentManager.let {
             val adapter = TabAdapter(it)
             adapter.addFragment(
                 CourierFragment.getInstance(address),
@@ -44,5 +46,18 @@ class AddressVerificationFragment : Fragment() {
             binding.vpAddressVerification.adapter = adapter
             binding.tlAddressVerification.setupWithViewPager(binding.vpAddressVerification)
         }
+//        activity?.supportFragmentManager?.let { // todo: use getChildFragmentManager instead?
+//            val adapter = TabAdapter(it)
+//            adapter.addFragment(
+//                CourierFragment.getInstance(address),
+//                resources.getString(R.string.address_verification_tab_title_1)
+//            )
+//            adapter.addFragment(
+//                OfficeFragment.getInstance(address),
+//                resources.getString(R.string.address_verification_tab_title_2)
+//            )
+//            binding.vpAddressVerification.adapter = adapter
+//            binding.tlAddressVerification.setupWithViewPager(binding.vpAddressVerification)
+//        }
     }
 }

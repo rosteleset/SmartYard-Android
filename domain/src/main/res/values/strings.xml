@@ -2,6 +2,7 @@
 <resources>
     <!-- Текст ошибок -->
     <string name="common_error_connection">Ошибка соединения.</string>
+    <string name="common_cancel_exception">cancel_exception</string>
     <string name="common_timeout">Тайм-аут</string>
     <string name="common_too_many">Слишком много попыток. Подождите.</string>
     <string name="common_unauthorized">UNAUTHORIZED</string>

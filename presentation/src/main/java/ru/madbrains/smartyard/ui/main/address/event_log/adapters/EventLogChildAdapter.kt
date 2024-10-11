@@ -50,6 +50,7 @@ class EventLogChildAdapter(
                 Plog.EVENT_OPEN_BY_FACE -> R.drawable.ic_el_face
                 Plog.EVENT_OPEN_BY_CODE -> R.drawable.ic_el_code
                 Plog.EVENT_OPEN_GATES_BY_CALL -> R.drawable.ic_el_gates
+                Plog.EVENT_OPEN_BY_LINK -> R.drawable.ic_el_app
                 else -> android.R.color.transparent
             }
         }
@@ -58,11 +59,12 @@ class EventLogChildAdapter(
             return when (eType) {
                 Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> "Звонок в домофон"
                 Plog.EVENT_DOOR_PHONE_CALL_ANSWERED -> "Звонок в домофон"
-                Plog.EVENT_OPEN_BY_KEY -> "Открывание ключом"
+                Plog.EVENT_OPEN_BY_KEY -> "Открытие ключом"
                 Plog.EVENT_OPEN_FROM_APP -> "Открытие из приложения"
-                Plog.EVENT_OPEN_BY_FACE -> "Открывание по лицу"
-                Plog.EVENT_OPEN_BY_CODE -> "Открывание по коду"
+                Plog.EVENT_OPEN_BY_FACE -> "Открытие по лицу"
+                Plog.EVENT_OPEN_BY_CODE -> "Открытие по коду"
                 Plog.EVENT_OPEN_GATES_BY_CALL -> "Открытие ворот звонком"
+                Plog.EVENT_OPEN_BY_LINK -> "Открытие по ссылке"
                 else -> "Неизвестное событие"
             }
         }

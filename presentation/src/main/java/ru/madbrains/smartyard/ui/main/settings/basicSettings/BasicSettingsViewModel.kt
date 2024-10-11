@@ -2,6 +2,7 @@ package ru.madbrains.smartyard.ui.main.settings.basicSettings
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.cancel
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.data.prefs.SentName
 import ru.madbrains.domain.interactors.AuthInteractor
@@ -9,6 +10,7 @@ import ru.madbrains.domain.interactors.DatabaseInteractor
 import ru.madbrains.domain.model.TF
 import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.ui.SoundChooser
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -35,6 +37,8 @@ class BasicSettingsViewModel(
             isPushMoneySetting.value = TF.getString(res.data.money)
         }
     }
+
+
 
     fun setPushMoneySetting(flag: Boolean) {
         viewModelScope.withProgress {

@@ -1,5 +1,6 @@
 package ru.madbrains.smartyard.ui
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.app.Activity.RESULT_OK
 import android.appwidget.AppWidgetManager
@@ -8,6 +9,8 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
+import android.content.pm.PackageManager
+import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BlendMode.SRC_ATOP
@@ -21,10 +24,10 @@ import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.media.RingtoneManager
 import android.net.Uri
-import android.os.Build
 import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
+import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.View
@@ -36,11 +39,17 @@ import android.widget.TimePicker
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.exifinterface.media.ExifInterface
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -54,12 +63,16 @@ import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.model.FcmCallData
 import ru.madbrains.domain.utils.listenerEmpty
 import ru.madbrains.domain.utils.listenerGeneric
-import ru.madbrains.smartyard.FirebaseMessagingService
+import ru.madbrains.smartyard.LinphoneService
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity.Companion.FCM_DATA
+import ru.madbrains.smartyard.ui.call.IncomingCallPushService
 import ru.madbrains.smartyard.ui.widget.WidgetProvider
 import timber.log.Timber
+import java.io.File
+import java.io.FileOutputStream
+import java.io.InputStream
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
     showStandardAlert(context, context.getString(msgResId), callback)
@@ -70,7 +83,7 @@ fun showStandardAlert(
     @StringRes titleResId: Int,
     @StringRes msgResId: Int,
     @StringRes buttonResId: Int,
-    callback: listenerEmpty? = null
+    callback: listenerEmpty? = null,
 ) {
     context.run {
         AlertDialog.Builder(context, R.style.AlertDialogStyle)
@@ -88,7 +101,7 @@ fun showStandardAlert(
     context: Context,
     title: String?,
     message: String,
-    callback: listenerEmpty? = null
+    callback: listenerEmpty? = null,
 ) {
     AlertDialog.Builder(context, R.style.AlertDialogStyle)
         .setTitle(title)
@@ -103,7 +116,7 @@ fun showStandardAlert(
     context: Context,
     message: String,
     callback: listenerEmpty? = null,
-    cancel: Boolean = true
+    cancel: Boolean = true,
 ) {
     AlertDialog.Builder(context, R.style.AlertDialogStyle)
         .setMessage(message)
@@ -203,7 +216,7 @@ class SoundChooser {
             context: Context,
             type: Int,
             flatId: Int?,
-            prefs: PreferenceStorage
+            prefs: PreferenceStorage,
         ): RingtoneU {
             val path = getPath(type, flatId, prefs)
             val uri =
@@ -218,7 +231,7 @@ class SoundChooser {
             fragment: Fragment,
             type: Int,
             flatId: Int?,
-            prefs: PreferenceStorage
+            prefs: PreferenceStorage,
         ) {
             fragment.context?.let { context ->
                 val currentTone = getChosenTone(context, type, flatId, prefs)
@@ -240,7 +253,7 @@ class SoundChooser {
             requestCode: Int,
             resultCode: Int,
             data: Intent?,
-            callback: listenerGeneric<RingtoneU>
+            callback: listenerGeneric<RingtoneU>,
         ) {
             if (requestCode == RESULT_SOUND && resultCode == RESULT_OK) {
                 data?.let {
@@ -270,8 +283,37 @@ class SoundChooser {
     }
 }
 
+fun requestSoundChouser(context: Context): Boolean {
+    if (!android.provider.Settings.System.canWrite(context)) {
+        val intent = Intent(android.provider.Settings.ACTION_MANAGE_WRITE_SETTINGS)
+        intent.data = Uri.parse("package:" + context.packageName)
+        context.startActivity(intent)
+    }
+    return Settings.System.canWrite(context)
+}
+
 fun dpToPx(dp: Int): Float {
     return (dp * Resources.getSystem().getDisplayMetrics().density)
+}
+
+fun pxToDp(px: Int): Int {
+    return (px / Resources.getSystem().getDisplayMetrics().density).toInt()
+}
+
+
+fun getStatusBarHeight(context: Context?, isNavBarHide: Boolean = false): Int {
+    val resources: Resources = context?.resources ?: context?.applicationContext!!.resources
+    val resourceId: Int = resources.getIdentifier("status_bar_height", "dimen", "android")
+    return if (resourceId > 0) {
+        val statusBarHeight = resources.getDimensionPixelSize(resourceId)
+        if (isNavBarHide) {
+            statusBarHeight - (getBottomNavigationHeight(context) + dpToPx(10).toInt())
+        } else {
+            statusBarHeight
+        }
+    } else {
+        0
+    }
 }
 
 fun getBottomNavigationHeight(context: Context?): Int {
@@ -283,55 +325,202 @@ fun getBottomNavigationHeight(context: Context?): Int {
     } ?: 0
 }
 
+
+fun readExifData(imageFile: File? = null, name: String? = null): String? {
+    return if (name != null) {
+        val exif = ExifInterface(name)
+        exif.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL)
+    } else if (imageFile != null) {
+        val exif = ExifInterface(imageFile.absolutePath)
+        exif.getAttribute(ExifInterface.TAG_DATETIME_ORIGINAL)
+    } else {
+        null
+    }
+}
+
+//@RequiresApi(VERSION_CODES.O)
+//fun sendMessageReportTelegram(message: String) {
+//    Timber.d("SENDSADASDAS $message")
+//    val client = OkHttpClient()
+//    val mediaType = "application/json; charset=utf-8".toMediaType()
+//    val currentDataTime = LocalDateTime.now()
+//    val formater = java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS")
+//    val time = currentDataTime.format(formater)
+//    val json = JSONObject().apply {
+//        put("chat_id", -672242342)
+//        put("text", "<a href=\"#\">$time</a> <b>CENTRA.DOM</b>\n<pre>$message</pre>")
+//        put("parse_mode", "HTML")
+//    }
+//    val body = json.toString().toRequestBody(mediaType)
+//    val request = Request.Builder()
+//        .url("https://api.telegram.org/bot5941499362:AAFeMAkL-7hAiIvHKuglo92_77ykiT4ENS8/sendMessage")
+//        .post(body)
+//        .build()
+//    try {
+//        client.newCall(request).execute().use { response ->
+//            if (!response.isSuccessful) {
+//                // Обработка ошибки
+//                println("Unexpected code ${response.code}")
+//            } else {
+//                // Обработка успешного ответа
+//                println("Message sent successfully")
+//            }
+//        }
+//
+//    } catch (_: Throwable) {
+//    }
+//}
+
+@SuppressLint("PrivateResource")
 fun sendCallNotification(
     data: FcmCallData,
     context: Context,
-    prefs: PreferenceStorage
+    prefs: PreferenceStorage,
 ) {
     context.run {
         val notId = prefs.notificationData.currentCallId
-        val channelId = CHANNEL_ID
+        val channelId = "CallNotificationUnlockScreen"
         val intent = Intent(this, IncomingCallActivity::class.java).apply {
-            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             putExtra(FCM_DATA, data)
         }
 
-        val pendingIntent = if (VERSION.SDK_INT > VERSION_CODES.O_MR1) {
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE)
-        } else {
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingIntent = PendingIntent.getActivity(
+            this, 0, intent,
+            if (VERSION.SDK_INT >= VERSION_CODES.O_MR1) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+
+        val intentOpenDoorCall = Intent(this, IncomingCallPushService::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            action = IncomingCallPushService.OPEN_DOOR
+            putExtra(FCM_DATA, data)
+        }
+        val intentIgnoreCall = Intent(this, IncomingCallPushService::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            action = IncomingCallPushService.IGNORE_CALL
+            putExtra(FCM_DATA, data)
         }
 
+        val pendingIntentOpenDoorCall = PendingIntent.getService(
+            this, 0, intentOpenDoorCall, if (VERSION.SDK_INT > VERSION_CODES.O_MR1) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+
+        val pendingIntentIgnoreCall = PendingIntent.getService(
+            this, 0, intentIgnoreCall,
+            if (VERSION.SDK_INT > VERSION_CODES.O_MR1) {
+                PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
+        )
+
+        val soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
         val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.mipmap.ic_launcher_round) //TODO ic_launcher_round
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setSmallIcon(R.mipmap.ic_launcher_round)
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+            .setSound(soundUri)
             .setContentTitle(getString(R.string.call))
             .setContentText(getString(R.string.from, data.callerId))
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setTimeoutAfter(30000)
             .setContentIntent(pendingIntent)
             .setWhen(System.currentTimeMillis())
             .setFullScreenIntent(pendingIntent, true)
-            // .setDeleteIntent()
+            .addAction(R.drawable.exo_notification_small_icon, "Открыть", pendingIntentOpenDoorCall)
+            .addAction(
+                R.drawable.exo_notification_small_icon, "Игнорировать", pendingIntentIgnoreCall
+            )
             .setShowWhen(true)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        Glide.with(this)
+            .asBitmap()
+            .load(data.image)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    Timber.d("sendCallNotification onResourceReady start")
+                    notificationBuilder.setStyle(
+                        NotificationCompat.BigPictureStyle().bigPicture(resource)
+                    )
+                    val notificationManager =
+                        getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+                    if (notificationManager != null) {
+                        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                            val channel = NotificationChannel(
+                                channelId,
+                                "NotificationUnlockScreen",
+                                NotificationManager.IMPORTANCE_HIGH
+                            )
+                            try {
+                                LinphoneService.instance?.let { service ->
+                                    ServiceCompat.startForeground(
+                                        service, notId, notificationBuilder.build(),
+                                        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+                                            ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
+                                        } else {
+                                            0
+                                        }
+                                    )
+                                }
+                            } catch (_: Exception) {
+                            }
+                            notificationManager.createNotificationChannel(channel)
+                        } else {
+                            notificationManager.notify(notId, notificationBuilder.build())
+                        }
+                    } else {
+                        Timber.e("NotificationManager is null")
+                    }
+                }
 
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId,
-                FirebaseMessagingService.TITLE,
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
+                override fun onLoadCleared(placeholder: Drawable?) {}
 
-        notificationManager.notify(notId, notificationBuilder.build())
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    super.onLoadFailed(errorDrawable)
+
+                    val notificationManager =
+                        getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+                    if (notificationManager != null) {
+                        if (VERSION.SDK_INT >= VERSION_CODES.O) {
+                            val channel = NotificationChannel(
+                                channelId,
+                                "NotificationUnlockScreen",
+                                NotificationManager.IMPORTANCE_HIGH
+                            )
+                            notificationManager.createNotificationChannel(channel)
+                            try {
+                                LinphoneService.instance?.let { service ->
+                                    ServiceCompat.startForeground(
+                                        service, notId, notificationBuilder.build(),
+                                        if (VERSION.SDK_INT >= VERSION_CODES.R) {
+                                            ServiceInfo.FOREGROUND_SERVICE_TYPE_PHONE_CALL
+                                        } else {
+                                            0
+                                        }
+                                    )
+                                }
+                            } catch (_: Exception) {
+                            }
+                        } else {
+                            notificationManager.notify(notId, notificationBuilder.build())
+                        }
+                    } else {
+                        Timber.e("NotificationManager is null")
+                    }
+                }
+            })
     }
 }
+
 
 fun getChannelId(string: String): String {
     return CHANNEL_ID + string.replace(" ", "_")
@@ -353,11 +542,24 @@ fun updateAllWidget(context: Context) {
     )
 }
 
+fun requestPermissions(permissions: Array<String>, context: Context, requestCode: Int) {
+    val permissionsToRequest = permissions.filter {
+        ContextCompat.checkSelfPermission(context, it) != PackageManager.PERMISSION_GRANTED
+    }
+    if (permissionsToRequest.isNotEmpty()) {
+        ActivityCompat.requestPermissions(
+            context as Activity,
+            permissionsToRequest.toTypedArray(),
+            requestCode
+        )
+    }
+}
+
 fun requestPermission(
     permissions: ArrayList<String>,
     context: Context,
     onGranted: listenerEmpty? = null,
-    onDenied: listenerEmpty? = null
+    onDenied: listenerEmpty? = null,
 ) {
     Dexter.withContext(context)
         .withPermissions(permissions)
@@ -372,7 +574,7 @@ fun requestPermission(
 
             override fun onPermissionRationaleShouldBeShown(
                 request: MutableList<PermissionRequest>?,
-                token: PermissionToken?
+                token: PermissionToken?,
             ) {
                 token?.continuePermissionRequest()
             }
@@ -400,7 +602,7 @@ fun createIconWithText(
     context: Context,
     @DrawableRes bgRes: Int,
     @DrawableRes iconRes: Int,
-    text: String?
+    text: String?,
 ): Drawable {
     val icon = ContextCompat.getDrawable(context, iconRes) as Drawable
     val bg = ContextCompat.getDrawable(context, bgRes) as Drawable
@@ -490,7 +692,7 @@ fun animationFadeInFadeOut(view: View?) {
 class DatePickerFragment(
     private val selectedDate: LocalDate,
     private val minDate: LocalDate? = null,
-    private val callback: listenerGeneric<LocalDate>
+    private val callback: listenerGeneric<LocalDate>,
 ) : DialogFragment(), DatePickerDialog.OnDateSetListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = DatePickerDialog(
@@ -513,7 +715,7 @@ class DatePickerFragment(
 
 class TimePickerFragment(
     private val selectedTime: LocalTime,
-    private val callback: listenerGeneric<LocalTime>
+    private val callback: listenerGeneric<LocalTime>,
 ) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return TimePickerDialog(

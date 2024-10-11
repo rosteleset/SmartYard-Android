@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_lines"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToOutline="false"
+    android:clipToPadding="false"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/cl_event_marker">
+
+
+    <TextView
+        android:id="@+id/tv_stamp_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/flexboxLayout"
+        app:layout_constraintStart_toEndOf="@+id/flexboxLayout"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout4"
+        android:layout_width="8dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="64dp"
+        android:background="#888888"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/flexboxLayout"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/textView33"
+            android:layout_width="4dp"
+            android:layout_height="4dp"
+            android:background="#29B6F6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/flexboxLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="110dp"
+        app:flexDirection="column"
+        app:justifyContent="space_between"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/tv_line_1"
+            android:layout_width="26dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_2"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_3"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_4"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_5"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_6"
+            android:layout_width="12dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_7"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_8"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_9"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_10"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_11"
+            android:layout_width="12dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_12"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_13"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_14"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_15"
+            android:layout_width="6dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC" />
+
+        <TextView
+            android:id="@+id/tv_line_16_invisible"
+            android:layout_width="6dp"
+            android:layout_height="0dp"
+            android:background="#DDDCDC"
+            android:visibility="invisible"
+            tools:layout_editor_absoluteY="218dp" />
+    </com.google.android.flexbox.FlexboxLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clBoxEvent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToOutline="false"
+        android:clipToPadding="false"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/constraintLayout4">
+
+        <TextView
+            android:id="@+id/tv_time_line_l6"
+            android:layout_width="0dp"
+            android:layout_height="2dp"
+            android:background="#DDDCDC"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_event_type"
+            app:layout_constraintEnd_toStartOf="@+id/iv_event_img_flex"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/iv_event_type" />
+
+        <ImageView
+            android:id="@+id/iv_event_type"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="#000000"
+            android:elevation="1dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/iv_event_img_flex"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/no_answer_call" />
+
+        <ImageView
+            android:id="@+id/iv_event_img_flex"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="32dp"
+            android:elevation="1dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_background_reg_number" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

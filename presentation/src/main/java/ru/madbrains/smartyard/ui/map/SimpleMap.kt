@@ -33,6 +33,7 @@ abstract class SimpleMap(val settings: MapSettings) {
     abstract fun onLowMemory()
     abstract fun onDestroy()
     abstract fun clearObjects()
+    abstract fun update(latLng: LatLng)
 }
 
 data class MarkerData(
@@ -43,5 +44,6 @@ data class MarkerData(
 )
 enum class MarkerType(val drawable: Int, val zIndex: Float, val anchor: Array<Float> = arrayOf(0.5f, 0.5f)) {
     Camera(R.drawable.ic_map_camera, 3F, arrayOf(0.5f, 0.5f)),
-    CityCamera(R.drawable.ic_map_city_camera, 3F, arrayOf(0.5f, 0.5f))
+    CityCamera(R.drawable.ic_map_city_camera, 3F, arrayOf(0.5f, 0.5f)),
+    UserPoint(R.drawable.address_settings_burger, 3F, arrayOf(0.5f,0.5f))
 }

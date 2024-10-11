@@ -142,7 +142,6 @@ class ContactAdapterDelegate(
                     if (inputStream != null) {
                         photo = BitmapFactory.decodeStream(inputStream)
                     }
-//                    assert(inputStream != null) //TODO Убрали проверку на нулл крашило приложение, при добавление румматеса
                     inputStream?.close()
                 } catch (e: IOException) {
                     e.printStackTrace()

@@ -46,9 +46,14 @@ class FragmentChatWootImage : Fragment() {
             .into(binding.fullscreenImageView)
 
         binding.ibBack.setOnClickListener {
-            (activity as? MainActivity)?.showSystemUI()
-            activity?.onBackPressed()
+            val callback = activity?.onBackPressedDispatcher
+            callback?.onBackPressed()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (activity as? MainActivity)?.showSystemUI()
     }
 
 

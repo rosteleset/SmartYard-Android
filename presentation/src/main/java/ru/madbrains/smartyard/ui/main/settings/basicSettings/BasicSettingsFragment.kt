@@ -11,15 +11,20 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.cancel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.drawable
 import ru.madbrains.smartyard.databinding.FragmentBasicSettingsBinding
 import ru.madbrains.smartyard.ui.SoundChooser
 import ru.madbrains.smartyard.ui.firstCharacter
+import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment
 import ru.madbrains.smartyard.ui.main.settings.dialog.DialogChangeName
+import ru.madbrains.smartyard.ui.reg.RegistrationActivity
+import ru.madbrains.smartyard.ui.requestSoundChouser
 import ru.madbrains.smartyard.ui.updateAllWidget
 import timber.log.Timber
+import kotlin.coroutines.coroutineContext
 
 class BasicSettingsFragment : Fragment() {
     private var _binding: FragmentBasicSettingsBinding? = null
@@ -39,7 +44,8 @@ class BasicSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.cvExit.setOnClickListener {
             showDialog()
@@ -51,21 +57,27 @@ class BasicSettingsFragment : Fragment() {
             mViewModel.setPushMoneySetting(isChecked)
         }
         binding.tvSoundChoose.setOnClickListener {
-            SoundChooser.showSoundChooseIntent(
-                this,
-                RingtoneManager.TYPE_NOTIFICATION,
-                null,
-                mViewModel.preferenceStorage
-            )
+            if (requestSoundChouser(requireContext())){
+                SoundChooser.showSoundChooseIntent(
+                    this,
+                    RingtoneManager.TYPE_NOTIFICATION,
+                    null,
+                    mViewModel.preferenceStorage
+                )
+            }
         }
         context?.let {
-            val tone = SoundChooser.getChosenTone(
-                it,
-                RingtoneManager.TYPE_NOTIFICATION,
-                null,
-                mViewModel.preferenceStorage
-            )
-            binding.tvSoundChoose.text = tone.getToneTitle(it)
+            try {
+                val tone = SoundChooser.getChosenTone(
+                    it,
+                    RingtoneManager.TYPE_NOTIFICATION,
+                    null,
+                    mViewModel.preferenceStorage
+                )
+                binding.tvSoundChoose.text = tone.getToneTitle(it)
+            }catch (_: Exception){
+                binding.tvSoundChoose.text = "По умолчанию"
+            }
         }
 
         binding.tvTitleNotif.setOnClickListener {
@@ -95,11 +107,13 @@ class BasicSettingsFragment : Fragment() {
         mViewModel.logout.observe(
             viewLifecycleOwner,
             Observer {
-                NavHostFragment.findNavController(this)
-                    .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
+                Timber.d("LOGOUTCOMOOM BassiSettingsFragment ACTIVITY FINISH $activity")
                 activity?.finish()
+//                NavHostFragment.findNavController(this)
+//                    .navigate(BasicSettingsFragmentDirections.actionBasicSettingsFragmentToRegistrationActivity())
+                val intent = Intent(activity, RegistrationActivity::class.java)
+                startActivity(intent)
                 updateAllWidget(requireContext())
-                Timber.d("BASIC_SETTINGS")//TODO TIMBER
             }
         )
         mViewModel.sentName.observe(
@@ -121,6 +135,9 @@ class BasicSettingsFragment : Fragment() {
         )
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Timber.d("debug_sound $resultCode")
@@ -138,7 +155,7 @@ class BasicSettingsFragment : Fragment() {
             .setTitle(R.string.setting_dialog_exit_caption)
             .setMessage(R.string.setting_dialog_exit_caption_msg)
             .setPositiveButton(resources.getString(R.string.setting_dialog_exit_yes)) { _, _ ->
-                mViewModel.logout()
+                mViewModel.clientLogout()
             }
             .setNegativeButton(resources.getString(R.string.setting_dialog_exit_no)) { _, _ ->
                 return@setNegativeButton

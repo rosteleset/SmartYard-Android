@@ -30,6 +30,7 @@ import ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCamerasViewModel
 import ru.madbrains.smartyard.ui.main.chat.ChatViewModel
 import ru.madbrains.smartyard.ui.main.notification.NotificationViewModel
 import ru.madbrains.smartyard.ui.main.pay.PayAddressViewModel
+import ru.madbrains.smartyard.ui.main.pay.WebViewPayViewModel
 import ru.madbrains.smartyard.ui.main.pay.contract.dialogPay.PayBottomSheetDialogViewModel
 import ru.madbrains.smartyard.ui.main.pay.contract.webview.PayWebViewViewModel
 import ru.madbrains.smartyard.ui.main.settings.SettingsViewModel
@@ -39,7 +40,9 @@ import ru.madbrains.smartyard.ui.main.settings.addressSettings.AddressSettingsVi
 import ru.madbrains.smartyard.ui.main.settings.basicSettings.BasicSettingsViewModel
 import ru.madbrains.smartyard.ui.main.settings.faceSettings.FaceSettingsViewModel
 import ru.madbrains.smartyard.ui.onboarding.OnboardingViewModel
+import ru.madbrains.smartyard.ui.player.ExoPlayerViewModel
 import ru.madbrains.smartyard.ui.reg.RegistrationViewModel
+import ru.madbrains.smartyard.ui.reg.sms.PushRegViewModel
 import ru.madbrains.smartyard.ui.reg.sms.SmsRegViewModel
 import ru.madbrains.smartyard.ui.reg.tel.NumberRegViewModel
 
@@ -49,6 +52,7 @@ object PresentationModule {
         viewModel { OnboardingViewModel(get()) }
         viewModel { RegistrationViewModel(get(), get()) }
         viewModel { SmsRegViewModel(get(), get()) }
+        viewModel { PushRegViewModel(get(), get()) }
         viewModel { NumberRegViewModel(get(), get()) }
         viewModel { AppealFormViewModel(get(), get()) }
         viewModel { IncomingCallActivityViewModel(get()) }
@@ -71,17 +75,19 @@ object PresentationModule {
         viewModel { MainActivityViewModel(get(), get(), get(), get()) }
         viewModel { ChatViewModel(get()) }
         viewModel { SettingsViewModel(get(), get(), get()) }
-        viewModel { AddressViewModel(get(), get(), get(), get(), get()) }
+        viewModel { AddressViewModel(get(), get(), get(), get(), get(), get(), get()) }
         viewModel { EventLogViewModel(get(), get()) }
         viewModel { FaceSettingsViewModel(get(), get()) }
-        viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get()) }
-        viewModel { (handle: SavedStateHandle) -> CityCamerasViewModel(handle, get(), get(), get()) }
+        viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get(), get()) }
+        viewModel { (handle: SavedStateHandle) -> ExoPlayerViewModel(handle, get(), get(), get()) }
+        viewModel { (handle: SavedStateHandle) -> CityCamerasViewModel(handle, get(), get(), get(), get()) }
         viewModel { BurgerViewModel( get(), get(), get(), get()) }
         viewModel { CCTVTrimmerViewModel(get()) }
         viewModel { PayAddressViewModel(get()) }
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }
         viewModel { ExtWebViewModel() }
+        viewModel { WebViewPayViewModel(get())}
         viewModel { ChatWootViewModel(get()) }
         single { GlobalDataSource() }
     }

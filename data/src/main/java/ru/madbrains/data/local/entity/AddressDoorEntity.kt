@@ -25,7 +25,7 @@ data class AddressDoorEntity(
     val icon: String,
 
     @ColumnInfo(name = "domophoneId")
-    val domophoneId: Int,
+    val domophoneId: Long,
 
     @ColumnInfo(name = "doorId")
     val doorId: Int?,

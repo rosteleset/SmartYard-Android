@@ -6,6 +6,7 @@ import ru.madbrains.domain.interactors.*
 object DomainModule {
 
     fun create() = module {
+        factory { CameraImageInteractor(get()) }
         factory { DatabaseInteractor(get()) }
         factory { AuthInteractor(get()) }
         factory { AddressInteractor(get()) }

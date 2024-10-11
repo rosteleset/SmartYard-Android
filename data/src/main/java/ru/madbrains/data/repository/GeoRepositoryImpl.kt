@@ -23,9 +23,9 @@ class GeoRepositoryImpl(
     private val lantaApi: LantaApi,
     override val moshi: Moshi
 ) : GeoRepository, BaseRepository(moshi) {
-    override suspend fun getServices(id: Int): GetServicesResponse {
+    override suspend fun getServices(id: Int, flat: Int): GetServicesResponse {
         return safeApiCall {
-            lantaApi.getServices(GetServicesRequest(id)).getResponseBody()
+            lantaApi.getServices(GetServicesRequest(id, flat)).getResponseBody()
         }
     }
 

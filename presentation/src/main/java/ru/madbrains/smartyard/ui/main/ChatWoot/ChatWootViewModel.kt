@@ -26,11 +26,10 @@ class ChatWootViewModel(
 
     init {
         _dataMessage.value = arrayListOf()
-        getMessage()
     }
 
 
-    private fun getMessage(before: Int? = null) {
+    fun getMessage(before: Int? = null) {
         viewModelScope.withProgress(progress = null) {
             val result = chatInteractor.getMessages(ChatMessageRequest("p", before))
             val arr = messageBuilder(result)

@@ -10,12 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
+import androidx.media3.ui.PlayerView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.exoplayer2.ui.PlayerView
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import ru.madbrains.domain.model.response.Plog

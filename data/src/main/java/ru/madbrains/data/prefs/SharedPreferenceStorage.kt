@@ -3,6 +3,7 @@ package ru.madbrains.data.prefs
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.graphics.drawable.Drawable
 import androidx.annotation.WorkerThread
 import androidx.core.content.edit
 import com.google.gson.Gson
@@ -93,6 +94,7 @@ class SerializablePreferenceNullable<T>(
     @WorkerThread
     override fun getValue(thisRef: Any, property: KProperty<*>): T? {
         val gson = Gson()
+
         val string = preferences.getString(name, gson.toJson(defaultValue))
         return gson.fromJson(string, tClass)
     }

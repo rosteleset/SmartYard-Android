@@ -23,6 +23,8 @@ import ru.madbrains.smartyard.databinding.FragmentCodeSmsRestoreBinding
 import ru.madbrains.smartyard.eventHandler
 import ru.madbrains.smartyard.getColorCompat
 import ru.madbrains.smartyard.isEmailCharacter
+import ru.madbrains.smartyard.ui.main.address.auth.AuthFragment
+import timber.log.Timber
 
 class CodeSmsRestoreFragment : Fragment() {
     private var _binding: FragmentCodeSmsRestoreBinding? = null
@@ -45,10 +47,16 @@ class CodeSmsRestoreFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+//        arguments?.let {
+//            contract = CodeSmsRestoreFragmentArgs.fromBundle(it).contract
+//            contactName = CodeSmsRestoreFragmentArgs.fromBundle(it).contactName
+//            contactId = CodeSmsRestoreFragmentArgs.fromBundle(it).contactId
+//        }
+
         arguments?.let {
-            contract = CodeSmsRestoreFragmentArgs.fromBundle(it).contract
-            contactName = CodeSmsRestoreFragmentArgs.fromBundle(it).contactName
-            contactId = CodeSmsRestoreFragmentArgs.fromBundle(it).contactId
+            contract = it.getString("contractNumber").toString()
+            contactName = it.getString("contactName").toString()
+            contactId = it.getString("contactId").toString()
         }
 
         binding.ivBack.setOnClickListener {
@@ -163,7 +171,17 @@ class CodeSmsRestoreFragment : Fragment() {
             .setMessage(getString(R.string.restore_access_dialog_ok_title))
             .setPositiveButton(getString(R.string.restore_access_dialog_ok_yes)) { _, _ ->
                 if (this.isAdded) {
-                    NavHostFragment.findNavController(this).navigate(R.id.action_codeSmsRestoreFragment_to_authFragment)
+                    Timber.d("CODERESTOREESS ARGUMENTS ${arguments}")
+
+
+                    binding.btnResendCode.visibility = View.INVISIBLE
+//                    NavHostFragment.findNavController(this).navigate(R.id.action_codeSmsRestoreFragment_to_authFragment)
+                    val transaction = fragmentManager?.beginTransaction()
+                    val newFragment = AuthFragment()
+                    transaction?.add(R.id.cl_restore_sms_code, newFragment)
+//                    transaction?.addToBackStack(null)
+                    transaction?.commit()
+
                 }
             }
             .show()

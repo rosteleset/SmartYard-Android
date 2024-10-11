@@ -6,6 +6,7 @@ import ru.madbrains.domain.model.response.CCTVRecDownloadResponse
 import ru.madbrains.domain.model.response.CCTVRecPrepareResponse
 import ru.madbrains.domain.model.response.CCTVYoutubeResponse
 import ru.madbrains.domain.model.response.CCTVCityCameraGetResponse
+import ru.madbrains.domain.model.response.CCTVSortResponse
 import ru.madbrains.domain.model.response.RangeObject
 
 /**
@@ -19,4 +20,5 @@ interface CCTVRepository {
     suspend fun loadPeriods(@Url url: String): List<RangeObject>?
     suspend fun getCCTVOverview(): CCTVCityCameraGetResponse?
     suspend fun getCCTVYoutube(id: Int?): CCTVYoutubeResponse?
+    suspend fun setCCTVSort(list: List<Int>): CCTVSortResponse
 }

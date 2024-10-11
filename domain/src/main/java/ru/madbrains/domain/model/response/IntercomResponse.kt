@@ -20,8 +20,10 @@ data class Intercom(
     val doorCode: String? = "", // 99764
     @Json(name = "VoIP")
     val _voIP: String = "", // t
+    @Deprecated("whiteRabbit not used")
     @Json(name = "whiteRabbit")
     val whiteRabbit: Int = 0, // 0
+    @Deprecated("paperBill not used")
     @Json(name = "paperBill")
     val _paperBill: String? = null,
     @Json(name = "disablePlog")

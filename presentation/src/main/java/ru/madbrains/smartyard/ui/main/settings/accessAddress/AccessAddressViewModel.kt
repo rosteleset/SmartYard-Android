@@ -61,7 +61,7 @@ class AccessAddressViewModel(
     }
 
     fun getRoommateAndIntercom(flatId: Int) {
-        viewModelScope.withProgress {
+        viewModelScope.launchSimple {
             val roommat = addressInteractor.getRoommate()
             val roommateResponse = roommat.data.first { it.flatId == flatId }
             roommate.postValue(roommateResponse.roommates)

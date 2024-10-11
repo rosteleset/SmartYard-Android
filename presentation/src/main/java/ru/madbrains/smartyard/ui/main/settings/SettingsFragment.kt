@@ -21,9 +21,13 @@ import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.EventObserver
+import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentSettingsBinding
 import ru.madbrains.smartyard.ui.main.MainActivity
 import ru.madbrains.smartyard.ui.main.MainActivityViewModel
+import ru.madbrains.smartyard.ui.main.address.auth.AuthFragment
+import ru.madbrains.smartyard.ui.main.settings.accessAddress.AccessAddressFragment
+import ru.madbrains.smartyard.ui.main.settings.addressSettings.AddressSettingsFragment
 import ru.madbrains.smartyard.ui.main.settings.dialog.DialogServiceFragment
 import timber.log.Timber
 
@@ -48,10 +52,18 @@ class SettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initRecycler()
         binding.ivBackAddressSettings.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.floatingActionButton.setOnClickListener() {
-            (activity as MainActivity?)?.navigateToAddressAuthFragment()
+//            (activity as MainActivity?)?.navigateToAddressAuthFragment()
+            binding.rvSettings.stopScroll()
+            binding.floatingActionButton.hide()
+            val transaction = parentFragmentManager.beginTransaction()
+            val newFragment = AuthFragment()
+            transaction.add(R.id.cl_fragment_setting, newFragment)
+            transaction.addToBackStack(null)
+            transaction.commit()
         }
     }
 
@@ -121,28 +133,59 @@ class SettingsFragment : Fragment() {
             SettingsAddressDelegate(
                 requireActivity(),
                 { address, flatId, isKey, contractOwner, clientId ->
-                    val action =
-                        SettingsFragmentDirections.actionSettingsFragmentToAddressSettingsFragment("")
-                    action.address = address
-                    action.flatId = flatId
-                    action.isKey = isKey
-                    action.contractOwner = contractOwner
-                    action.clientId = clientId
-                    this.findNavController().navigate(action)
+//                    val action =
+//                        SettingsFragmentDirections.actionSettingsFragmentToAddressSettingsFragment("")
+//                    action.address = address
+//                    action.flatId = flatId
+//                    action.isKey = isKey
+//                    action.contractOwner = contractOwner
+//                    action.clientId = clientId
+//                    this.findNavController().navigate(action)
+
+                    val bundleSettings = Bundle()
+                    bundleSettings.putString("address", address)
+                    bundleSettings.putString("clientId", clientId)
+                    bundleSettings.putInt("flatId", flatId)
+                    bundleSettings.putBoolean("isKey", isKey)
+                    bundleSettings.putBoolean("contractOwner", contractOwner)
+                    binding.floatingActionButton.hide()
+
+                    val transaction = parentFragmentManager.beginTransaction()
+                    val newFragment = AddressSettingsFragment()
+                    newFragment.arguments = bundleSettings
+
+                    transaction.add(R.id.cl_fragment_setting, newFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 },
                 mViewModel::getAccess,
                 { address, flatId, contractOwner, hasGates, clientId ->
-                    val action =
-                        SettingsFragmentDirections.actionSettingsFragmentToAccessAddressFragment(
-                            "",
-                            ""
-                        )
-                    action.address = address
-                    action.flatId = flatId
-                    action.contractOwner = contractOwner
-                    action.hasGates = hasGates
-                    action.clientId = clientId
-                    this.findNavController().navigate(action)
+//                    val action =
+//                        SettingsFragmentDirections.actionSettingsFragmentToAccessAddressFragment(
+//                            "",
+//                            ""
+//                        )
+//                    action.address = address
+//                    action.flatId = flatId
+//                    action.contractOwner = contractOwner
+//                    action.hasGates = hasGates
+//                    action.clientId = clientId
+//                    this.findNavController().navigate(action)
+
+                    val bundleSettings = Bundle()
+                    bundleSettings.putString("address", address)
+                    bundleSettings.putString("clientId", clientId)
+                    bundleSettings.putInt("flatId", flatId)
+                    bundleSettings.putBoolean("hasGates", hasGates)
+                    bundleSettings.putBoolean("contractOwner", contractOwner)
+                    binding.floatingActionButton.hide()
+
+                    val transaction = parentFragmentManager.beginTransaction()
+                    val newFragment = AccessAddressFragment()
+                    newFragment.arguments = bundleSettings
+                    transaction.add(R.id.cl_fragment_setting, newFragment)
+                    transaction.addToBackStack(null)
+                    transaction.commit()
                 },
                 { position ->
                     val layoutManager = binding.rvSettings
@@ -169,11 +212,17 @@ class SettingsFragment : Fragment() {
                 }
 
                 if (!binding.rvSettings.canScrollVertically(-1)
-                    && binding.floatingActionButton.visibility != View.VISIBLE) {
+                    && binding.floatingActionButton.visibility != View.VISIBLE
+                ) {
                     binding.floatingActionButton.show()
                 }
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mViewModel.getDataList(true)
     }
 
     private var receiver = object : BroadcastReceiver() {

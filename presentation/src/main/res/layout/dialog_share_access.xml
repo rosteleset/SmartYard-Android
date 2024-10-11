@@ -79,18 +79,14 @@
 
                 <Button
                     android:id="@+id/btnDone"
-                    android:enabled="false"
+                    style="@style/buttonBlueFlooded"
                     android:layout_width="match_parent"
                     android:layout_height="61dp"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="24dp"
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="24dp"
-                    style="@style/buttonBlueFlooded"
-                    android:paddingStart="50dp"
-                    android:paddingTop="18dp"
-                    android:paddingEnd="50dp"
-                    android:paddingBottom="18dp"
+                    android:enabled="false"
                     android:text="@string/dialog_share_access_btn_ok" />
             </LinearLayout>
         </ScrollView>

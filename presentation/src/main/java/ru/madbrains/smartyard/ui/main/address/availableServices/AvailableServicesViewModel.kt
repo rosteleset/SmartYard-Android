@@ -9,6 +9,7 @@ import ru.madbrains.domain.model.request.CreateIssuesRequest.CustomFields
 import ru.madbrains.domain.model.request.CreateIssuesRequest.TypeAction.ACTION1
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -47,17 +48,22 @@ class AvailableServicesViewModel(
          2) Если есть общедомовые услуги и выбран какой-либо другой сервис - делаем заявку "подойду в офис самостоятельно"
          3) Если НЕТ общедомовых услуг и выбран какой-либо сервис - делаем заявку "заявка только на услугу"
          Общедомовые это те, которые серым выделены*/
+
+        Timber.d("SERVISELISTDATA servicesList $servicesList")
         if (commonHouse > 0 && otherSelect == 0) {
             // 1)
+            Timber.d("SERVISELISTDATA 1")
             _navigateToAddressVerificationFragmentAction.value = Event(Unit)
         } else if (commonHouse > 0 && otherSelect > 0) {
             // 2)
+            Timber.d("SERVISELISTDATA 2")
             issueGoToTheOfficeMy(
                 address,
                 servicesList.filter { it.active && it.check }.joinToString { it -> "\'${it.title}\'" }
             )
         } else if (commonHouse <= 0 && otherSelect > 0) {
             // 3)
+            Timber.d("SERVISELISTDATA 3")
             issueOnlyService(
                 address,
                 servicesList.filter { it.active && it.check }.joinToString { it -> "\'${it.title}\'" }

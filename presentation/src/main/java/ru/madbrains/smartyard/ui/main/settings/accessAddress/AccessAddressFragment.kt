@@ -21,10 +21,13 @@ import ru.madbrains.smartyard.ui.Type
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.adapterdelegates.ContactAdapterDelegate
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.models.ContactModel
+import ru.madbrains.smartyard.ui.main.settings.faceSettings.FaceSettingsFragment
 import ru.madbrains.smartyard.ui.showStandardAlert
 import ru.madbrains.smartyard.ui.webview_dialog.WebViewDialogFragment
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
+
 
 class AccessAddressFragment : Fragment() {
     private var _binding: FragmentAccessAddressBinding? = null
@@ -168,11 +171,18 @@ class AccessAddressFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            flatId = AccessAddressFragmentArgs.fromBundle(it).flatId
-            address = AccessAddressFragmentArgs.fromBundle(it).address
-            contractOwner = AccessAddressFragmentArgs.fromBundle(it).contractOwner
-            hasGates = AccessAddressFragmentArgs.fromBundle(it).hasGates
-            clientId = AccessAddressFragmentArgs.fromBundle(it).clientId
+//            flatId = AccessAddressFragmentArgs.fromBundle(it).flatId
+//            address = AccessAddressFragmentArgs.fromBundle(it).address
+//            contractOwner = AccessAddressFragmentArgs.fromBundle(it).contractOwner
+//            hasGates = AccessAddressFragmentArgs.fromBundle(it).hasGates
+//            clientId = AccessAddressFragmentArgs.fromBundle(it).clientId
+            flatId = it.getInt("flatId")
+            address = it.getString("address") ?: ""
+            contractOwner = it.getBoolean("contractOwner")
+            Timber.d("ASDASZXC onViewCreated contractowner ${contractOwner}")
+
+            hasGates = it.getBoolean("hasGates")
+            clientId = it.getString("clientId") ?: ""
         }
 
         requestCameraPermission()
@@ -185,7 +195,10 @@ class AccessAddressFragment : Fragment() {
         mViewModel.getRoommateAndIntercom(flatId)
 
         binding.tvShareAccess.setOnClickListener {
-            WebViewDialogFragment(R.string.help_share_access).show(requireActivity().supportFragmentManager, "HelpShareAccess")
+            WebViewDialogFragment(R.string.help_share_access).show(
+                requireActivity().supportFragmentManager,
+                "HelpShareAccess"
+            )
         }
 
         binding.btnGuestAccessOpen.isChecked = false
@@ -194,20 +207,32 @@ class AccessAddressFragment : Fragment() {
         }
 
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
+
         }
         binding.tvAddressName.text = address
 
         binding.btnManageFaces.setOnClickListener {
-            val action = AccessAddressFragmentDirections.actionAccessAddressFragmentToFaceSettingsFragment(address)
-            action.flatId = flatId
-            this.findNavController().navigate(action)
+//            val action = AccessAddressFragmentDirections.actionAccessAddressFragmentToFaceSettingsFragment(address)
+//            action.flatId = flatId
+//            this.findNavController().navigate(action)
+            val bundle = Bundle()
+            bundle.putInt("flatId", flatId)
+            bundle.putString("address", address)
+            val transaction = fragmentManager?.beginTransaction()
+            val newFragment = FaceSettingsFragment()
+            newFragment.arguments = bundle
+            transaction?.add(R.id.cl_fragment_access_address, newFragment)
+            transaction?.addToBackStack(null)
+            transaction?.commit()
+
         }
     }
 
-    private fun hideIfPon(address: String){
+    private fun hideIfPon(address: String) {
         val pattern = "квартира".toRegex()
-        if (!pattern.containsMatchIn(address)){
+        if (!pattern.containsMatchIn(address)) {
             binding.cvCodeAndGuestAccess.isVisible = false
             binding.tvTitleIntecom.isVisible = false
             binding.llFrs.isVisible = false

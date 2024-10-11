@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -16,7 +17,9 @@ import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentNoNetworkBinding
 import ru.madbrains.smartyard.ui.DividerItemDecorator
+import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
 import ru.madbrains.smartyard.ui.main.MainActivity
+import timber.log.Timber
 
 class NoNetworkFragment : Fragment() {
     private var _binding: FragmentNoNetworkBinding? = null
@@ -44,7 +47,8 @@ class NoNetworkFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         arguments?.let {
-            address = NoNetworkFragmentArgs.fromBundle(it).address
+            address = it.getString("address").toString()
+//            address = NoNetworkFragmentArgs.fromBundle(it).address
         }
         initRecycler()
         setupUi()
@@ -55,6 +59,10 @@ class NoNetworkFragment : Fragment() {
         viewModel.navigateToIssueSuccessDialogAction.observe(
             viewLifecycleOwner,
             EventObserver {
+                val fragmentCount = parentFragmentManager.backStackEntryCount
+                for (i in 0 until  fragmentCount){
+                    parentFragmentManager.popBackStack()
+                }
                 (activity as MainActivity?)?.reloadToAddress()
             }
         )
@@ -62,10 +70,12 @@ class NoNetworkFragment : Fragment() {
 
     private fun setupUi() {
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.btnCreateIssue.setOnClickListener {
             viewModel.createIssue(address, servicesList.filter { it.check }.map { it.name })
+
         }
     }
 

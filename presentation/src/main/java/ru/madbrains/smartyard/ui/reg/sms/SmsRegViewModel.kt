@@ -52,7 +52,7 @@ class SmsRegViewModel(
             confirmError.value = Event(it)
             false
         }) {
-            val res = mInteractor.confirmCode(phone.p8, code)
+            val res = mInteractor.confirmCode(phone.p8, code, null, null)
             mPreferenceStorage.authToken = res.data.accessToken
             val name: Name = if (res.data.names is Boolean)
                 Name("", "")

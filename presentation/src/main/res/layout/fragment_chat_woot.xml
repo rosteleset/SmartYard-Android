@@ -15,9 +15,10 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
             android:scaleType="centerCrop"
-            android:src="@drawable/ic_background_address"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -27,29 +28,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.21" />
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
 
 
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginBottom="36dp"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
+            android:layout_marginBottom="8dp"
             android:clickable="true"
             android:text="Чат с техподдержкой"
-            android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textColor="@color/blue_200"
+            android:textSize="@dimen/header_text_size"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
             app:layout_constraintBottom_toTopOf="@+id/contentWrap"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <ProgressBar
+            android:id="@+id/progressBarWoot"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:elevation="2dp"
+            android:indeterminateTint="@color/blue_200"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/contentWrap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/contentWrap"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/background_radius_upper"
+            android:background="@drawable/chat_background"
             app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -84,9 +98,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="14dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -105,6 +117,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -112,7 +125,6 @@
             android:id="@+id/constraintLayout3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -134,12 +146,13 @@
                 android:id="@+id/edMessage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/edittext_bg"
                 android:ems="10"
                 android:hint="@string/inputChat"
-                android:inputType="textPersonName"
+                android:inputType="text|textPersonName|textCapSentences"
                 android:paddingStart="10dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintCircleRadius="25dp"

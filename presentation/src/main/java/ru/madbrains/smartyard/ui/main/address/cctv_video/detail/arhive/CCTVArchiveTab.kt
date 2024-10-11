@@ -12,6 +12,7 @@ import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
@@ -21,8 +22,10 @@ import ru.madbrains.smartyard.daysOfWeekFromLocale
 import ru.madbrains.smartyard.setTextColorRes
 import ru.madbrains.smartyard.ui.main.address.cctv_video.AvailableRange
 import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment
+import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVViewModel
 import ru.madbrains.smartyard.ui.main.address.cctv_video.detail.CalendarDayBinder
 import ru.madbrains.smartyard.ui.main.address.cctv_video.isDateInAvailableRanges
+import timber.log.Timber
 
 class CCTVArchiveTab : Fragment() {
     private var _binding: FragmentCctvDetailArchiveBinding? = null
@@ -57,6 +60,7 @@ class CCTVArchiveTab : Fragment() {
             }
         }
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,8 +103,16 @@ class CCTVArchiveTab : Fragment() {
         }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    fun updateInstance(startDate: LocalDate, endDate: LocalDate, availableRanges: List<AvailableRange>) {
+        arguments = Bundle().apply {
+            putSerializable(key_startDate, startDate)
+            putSerializable(key_endDate, endDate)
+            putParcelableArray(key_availableRanges, availableRanges.toTypedArray())
+        }
+        update()
+    }
+
+    fun update(){
         startDate = arguments?.getSerializable(key_startDate) as LocalDate
         endDate = arguments?.getSerializable(key_endDate) as LocalDate
         val ranges = arguments?.getSerializable(key_availableRanges) as Array<*>
@@ -166,6 +178,11 @@ class CCTVArchiveTab : Fragment() {
                 }
             }
         }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        update()
     }
 
     private fun selectDate(date: LocalDate) {

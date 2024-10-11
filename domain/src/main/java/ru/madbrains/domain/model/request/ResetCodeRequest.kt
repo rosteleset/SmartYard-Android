@@ -9,3 +9,8 @@ import com.squareup.moshi.Json
 data class ResetCodeRequest(
     @Json(name = "flatId") val houseId: Int
 )
+
+data class ResetDoorCodeRequest(
+    @Json(name = "flatId") val houseId: Int,
+    @Json(name = "domophoneId") val domophoneId: Long
+)

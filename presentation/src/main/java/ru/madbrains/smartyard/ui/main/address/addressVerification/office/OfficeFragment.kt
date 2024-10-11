@@ -6,10 +6,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
+import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import ru.madbrains.smartyard.EventObserver
@@ -50,6 +53,10 @@ class OfficeFragment : Fragment() {
         viewModel.navigateToIssueSuccessDialogAction.observe(
             viewLifecycleOwner,
             EventObserver {
+                val fragmentCount = parentFragmentManager.backStackEntryCount
+                for (i in 0 until  fragmentCount){
+                    parentFragmentManager.popBackStack()
+                }
                 (activity as MainActivity?)?.reloadToAddress()
             }
         )
@@ -84,7 +91,23 @@ class OfficeFragment : Fragment() {
     }
 
     private fun initMap() {
-        binding.map.setTileSource(TileSourceFactory.MAPNIK)
+//        binding.map.setTileSource(TileSourceFactory.MAPNIK)
+        binding.map.setTileSource(object : OnlineTileSourceBase(
+            "CUSTOM OSM",
+            4,
+            18,
+            256,
+            ".png",
+            arrayOf("https://osm.mycentra.ru/tile/")
+        ) {
+            override fun getTileURLString(pMapTileIndex: Long): String {
+                return "$baseUrl${MapTileIndex.getZoom(pMapTileIndex)}/${
+                    MapTileIndex.getX(
+                        pMapTileIndex
+                    )
+                }/${MapTileIndex.getY(pMapTileIndex)}.png"
+            }
+        })
         binding.map.setBuiltInZoomControls(true)
         binding.map.setMultiTouchControls(true)
     }

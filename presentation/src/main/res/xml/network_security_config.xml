@@ -1,11 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
-    <debug-overrides>
+    <base-config>
         <trust-anchors>
-            <!-- Trust user added CAs while debuggable only -->
-            <certificates src="user" />
+            <certificates src="@raw/root"/>
+            <certificates src="system"/>
         </trust-anchors>
-    </debug-overrides>
+    </base-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">http://10.1.19.192</domain>
+        <domain includeSubdomains="true">certs.yoomoney.ru</domain>
     </domain-config>
 </network-security-config>

@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    app:startDestination="@id/addressWebViewFragment1">
+
+    <fragment
+        android:id="@+id/addressWebViewFragment1"
+        android:name="ru.madbrains.smartyard.ui.main.address.AddressComposeFragment"
+        tools:layout="@layout/fragment_address_compose"
+        android:label="address_compose_fragment">
+
+    </fragment>
+
+<!--    <fragment-->
+<!--        android:id="@+id/addressWebViewFragment1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.address.AddressWebViewFragment"-->
+<!--        tools:layout="@layout/fragment_address_web_view"-->
+<!--        android:label="address_web_view_fragment">-->
+<!--        <action-->
+<!--            android:id="@+id/action_addressWebViewFragment_to_addressSettingsFragment"-->
+<!--            app:destination="@id/addressSettingsFragment1" />-->
+<!--        <action-->
+<!--            android:id="@+id/action_addressWebViewFragment_to_accessAddressFragment1"-->
+<!--            app:destination="@id/accessAddressFragment1" />-->
+<!--        <action-->
+<!--            android:id="@+id/action_addressWebViewFragment_to_notificationAddress"-->
+<!--            app:destination="@+id/notificationAddress1" />-->
+
+<!--        <action-->
+<!--            android:id="@+id/action_addressFragment_to_eventLogFragment1"-->
+<!--            app:destination="@id/eventLogFragment1" />-->
+<!--        <action-->
+<!--            android:id="@+id/action_addressFragment_to_cctv_map"-->
+<!--            app:destination="@+id/CCTVMapFragment1" />-->
+<!--        <action-->
+<!--            android:id="@+id/action_CCTVMapFragment_to_CCTVDetailFragment2"-->
+<!--            app:destination="@+id/CCTVDetailFragment1"-->
+<!--            />-->
+<!--    </fragment>-->
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/CCTVMapFragment1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVMapFragment"-->
+<!--        android:label="CCTVMapFragment1" >-->
+<!--        <action-->
+<!--            android:id="@+id/action_CCTVMapFragment_to_CCTVDetailFragment1"-->
+<!--            app:destination="@id/CCTVDetailFragment1" />-->
+<!--        <action-->
+<!--            android:id="@+id/action_CCTVDetailFragment1_to_CCTVMapFragment"-->
+<!--            app:destination="@id/addressWebViewFragment1" />-->
+
+<!--    </fragment>-->
+
+    <fragment
+        android:id="@+id/CCTVDetailFragment1"
+        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment"
+        android:label="CCTVDetailFragment1" >
+        <action
+            android:id="@+id/action_CCTVDetailFragment_to_CCTVTrimmerFragment1"
+            app:destination="@id/CCTVTrimmerFragment1" />
+    </fragment>
+    <fragment
+        android:id="@+id/CCTVTrimmerFragment1"
+        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVTrimmerFragment"
+        android:label="CCTVTrimmerFragment1" >
+        <argument
+            android:name="chosenDate"
+            app:argType="org.threeten.bp.LocalDate" />
+        <argument
+            android:name="startDate"
+            app:argType="org.threeten.bp.LocalDate" />
+    </fragment>
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/eventLogFragment1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.address.event_log.EventLogFragment"-->
+<!--        android:label="fragment_event_log"-->
+<!--        tools:layout="@layout/fragment_event_log" >-->
+<!--        <action-->
+<!--            android:id="@+id/action_eventLogFragment_to_eventLogDetailFragment1"-->
+<!--            app:destination="@id/eventLogDetailFragment1" />-->
+<!--        <argument-->
+<!--            android:name="eventLogModel"-->
+<!--            app:argType="ru.madbrains.smartyard.ui.main.address.models.interfaces.EventLogModel" />-->
+<!--    </fragment>-->
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/eventLogDetailFragment1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.address.event_log.EventLogDetailFragment"-->
+<!--        android:label="fragment_event_log_detail"-->
+<!--        tools:layout="@layout/fragment_event_log_detail" />-->
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/addressSettingsFragment1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.settings.addressSettings.AddressSettingsFragment"-->
+<!--        android:label="fragment_address_settings"-->
+<!--        tools:layout="@layout/fragment_address_settings">-->
+
+<!--        <action-->
+<!--            android:id="@+id/action_addressSettingsFragment1_to_addressWebViewFragment1"-->
+<!--            app:destination="@id/addressWebViewFragment1" />-->
+<!--        <argument-->
+<!--            android:name="address"-->
+<!--            android:defaultValue="-"-->
+<!--            app:argType="string" />-->
+<!--        <argument-->
+<!--            android:name="flatId"-->
+<!--            android:defaultValue="0"-->
+<!--            app:argType="integer" />-->
+<!--        <argument-->
+<!--            android:name="isKey"-->
+<!--            app:argType="boolean"-->
+<!--            android:defaultValue="false" />-->
+
+<!--        <argument-->
+<!--            android:name="contractOwner"-->
+<!--            app:argType="boolean"-->
+<!--            android:defaultValue="false" />-->
+<!--        <argument-->
+<!--            android:name="clientId"-->
+<!--            app:argType="string" />-->
+<!--    </fragment>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/notificationAddress1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.notification.NotificationFragment"-->
+<!--        android:label="fragment_notification1" />-->
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/accessAddressFragment1"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.settings.accessAddress.AccessAddressFragment"-->
+<!--        android:label="AccessAddressFragment1">-->
+<!--        <argument-->
+<!--            android:name="address"-->
+<!--            app:argType="string" />-->
+<!--        <argument-->
+<!--            android:name="flatId"-->
+<!--            android:defaultValue="-1"-->
+<!--            app:argType="integer" />-->
+<!--        <argument-->
+<!--            android:name="contractOwner"-->
+<!--            app:argType="boolean"-->
+<!--            android:defaultValue="false" />-->
+<!--        <argument-->
+<!--            android:name="hasGates"-->
+<!--            app:argType="boolean"-->
+<!--            android:defaultValue="false" />-->
+<!--        <argument-->
+<!--            android:name="clientId"-->
+<!--            app:argType="string"/>-->
+<!--        <action-->
+<!--            android:id="@+id/action_accessAddressFragment_to_faceSettingsFragment"-->
+<!--            app:destination="@id/faceSettingsFragment1" />-->
+<!--    </fragment>-->
+
+
+    <fragment
+        android:id="@+id/faceSettingsFragment1"
+        android:name="ru.madbrains.smartyard.ui.main.settings.faceSettings.FaceSettingsFragment"
+        android:label="fragment_face_settings"
+        tools:layout="@layout/fragment_face_settings" >
+        <argument
+            android:name="flatId"
+            app:argType="integer"
+            android:defaultValue="0" />
+        <argument
+            android:name="address"
+            app:argType="string" />
+    </fragment>
+
+</navigation>

@@ -21,6 +21,7 @@ import ru.madbrains.lib.dpToPx
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentEventLogBinding
 import ru.madbrains.smartyard.ui.DatePickerFragment
+import ru.madbrains.smartyard.ui.main.address.AddressWebViewFragment
 import ru.madbrains.smartyard.ui.main.address.event_log.adapters.EventLogParentAdapter
 import timber.log.Timber
 
@@ -36,6 +37,7 @@ class EventLogFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
+        mViewModel.getAllFaces()
         _binding = FragmentEventLogBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -74,6 +76,7 @@ class EventLogFragment : Fragment() {
                         s.add(Plog.EVENT_OPEN_BY_FACE)
                         s.add(Plog.EVENT_OPEN_BY_CODE)
                         s.add(Plog.EVENT_OPEN_GATES_BY_CALL)
+                        s.add(Plog.EVENT_OPEN_BY_LINK)
                     }
                     1 -> {
                         s.add(Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED)
@@ -93,6 +96,9 @@ class EventLogFragment : Fragment() {
                     }
                     6 -> {
                         s.add(Plog.EVENT_OPEN_BY_CODE)
+                    }
+                    7 -> {
+                        s.add(Plog.EVENT_OPEN_BY_LINK)
                     }
                 }
                 mViewModel.filterEventType = s
@@ -161,7 +167,9 @@ class EventLogFragment : Fragment() {
 
         initRecycler()
         binding.ivEventLogBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
+
         }
 
         binding.fabEventLogScrollUp.setOnClickListener {
@@ -186,7 +194,14 @@ class EventLogFragment : Fragment() {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = EventLogParentAdapter(listOf(), hashMapOf()) {
                 mViewModel.currentEventItem = it
-                this.findNavController().navigate(R.id.action_eventLogFragment_to_eventLogDetailFragment)
+
+                val transaction = fragmentManager?.beginTransaction()
+                transaction?.add(R.id.cl_event_log_fragment, EventLogDetailFragment())
+                transaction?.addToBackStack(null)
+                transaction?.commit()
+
+//                this.findNavController().navigate(R.id.action_eventLogFragment_to_eventLogDetailFragment)
+//                this.findNavController().navigate(R.id.action_eventLogFragment_to_eventLogDetailFragment1) //TODO
             }
         }
 

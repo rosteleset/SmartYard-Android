@@ -7,6 +7,6 @@ package ru.madbrains.smartyard.ui.main.address.models.interfaces
 
 class Yard : ObjectItem() {
     var open: Boolean = false
-    var domophoneId: Int = 0
+    var domophoneId: Long = 0L
     var doorId: Int = 0
 }

@@ -173,7 +173,7 @@
                     app:layout_constraintTop_toTopOf="@id/ivELDImage"
                     app:srcCompat="@drawable/ic_forward_10" />
 
-                <com.google.android.exoplayer2.ui.PlayerView
+                <androidx.media3.ui.PlayerView
                     android:id="@+id/pvELDVideo"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
@@ -187,6 +187,13 @@
                     app:use_artwork="false"
                     app:use_controller="false" />
 
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingBottom="32dp">
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/clELDFriend"
                     android:layout_width="match_parent"
@@ -195,12 +202,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivELDImage">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <Button
                         android:id="@+id/bELDFriend"
                         style="@style/buttonGreenFlooded"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="36dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -246,12 +253,12 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/ivELDImage">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <Button
                         android:id="@+id/bELDFoe"
                         style="@style/buttonRedFlooded"
-                        android:layout_width="match_parent"
+                        android:layout_width="0dp"
                         android:layout_height="36dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -288,8 +295,8 @@
                         app:layout_constraintTop_toBottomOf="@+id/bELDFoe" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-
             </androidx.constraintlayout.widget.ConstraintLayout>
+
         </LinearLayout>
     </ScrollView>
 

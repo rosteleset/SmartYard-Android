@@ -3,6 +3,7 @@ package ru.madbrains.domain.interactors
 import ru.madbrains.domain.interfaces.ExtRepository
 import ru.madbrains.domain.model.response.ExtListResponse
 import ru.madbrains.domain.model.request.ExtRequest
+import ru.madbrains.domain.model.response.ExtOptionsResponse
 import ru.madbrains.domain.model.response.ExtResponse
 
 class ExtInteractor(
@@ -14,5 +15,9 @@ class ExtInteractor(
 
     suspend fun ext(request: ExtRequest): ExtResponse {
         return repository.ext(request)
+    }
+
+    suspend fun extOptions(): ExtOptionsResponse{
+        return repository.extOptions()
     }
 }

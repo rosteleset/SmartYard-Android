@@ -24,7 +24,7 @@ class WidgetActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val domophoneId = intent.getIntExtra(WidgetProvider.ITEM_DOMOPHONE_ID, 0)
+        val domophoneId = intent.getLongExtra(WidgetProvider.ITEM_DOMOPHONE_ID, 0)
         val doorId = intent.getIntExtra(WidgetProvider.ITEM_DOOR_ID, 0)
         val idItemDataBase = intent.getLongExtra(WidgetProvider.ITEM_ID_DATA_BASE, -1)
         openDoor(domophoneId, doorId, idItemDataBase)
@@ -33,23 +33,21 @@ class WidgetActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
 
-        val domophoneId = intent?.getIntExtra(WidgetProvider.ITEM_DOMOPHONE_ID, 0) ?: 0
+        val domophoneId = intent?.getLongExtra(WidgetProvider.ITEM_DOMOPHONE_ID, 0) ?: 0L
         val doorId = intent?.getIntExtra(WidgetProvider.ITEM_DOOR_ID, 0) ?: 0
         val idItemDataBase = intent?.getLongExtra(WidgetProvider.ITEM_ID_DATA_BASE, -1) ?: -1
         openDoor(domophoneId, doorId, idItemDataBase)
     }
 
-    private fun openDoor(domophoneId: Int, doorId: Int?, idItemDataBase: Long) {
+    private fun openDoor(domophoneId: Long, doorId: Int?, idItemDataBase: Long) {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 authInteractor.openDoor(domophoneId, doorId)
                 databaseInteractor.updateState(StateButton.OPEN, idItemDataBase.toInt())
                 updateAllWidget(this@WidgetActivity)
-                Timber.d("OPENDOOR_1")
                 delay(3000)
                 databaseInteractor.updateState(StateButton.CLOSE, idItemDataBase.toInt())
                 updateAllWidget(this@WidgetActivity)
-                Timber.d("OPENDOOR_2")
             } catch (e: CommonErrorThrowable) {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(

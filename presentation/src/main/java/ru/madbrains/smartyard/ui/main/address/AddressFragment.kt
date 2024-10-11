@@ -87,11 +87,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             binding.swipeContainer.isRefreshing = false
             updateAllWidget(requireContext())
 
-//            if (test) {
-//                mViewModel.getDataList(true)
-//                test = false
-//            }//TODO метод для обновления адресов при добавлении нового адреса
-
             if (binding.floatingActionButton.visibility != View.VISIBLE) {
                 binding.floatingActionButton.show()
             }
@@ -215,6 +210,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             }
         }
     }
+
 
     override fun onStart() {
         super.onStart()

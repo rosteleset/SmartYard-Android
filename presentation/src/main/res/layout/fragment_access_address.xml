@@ -4,69 +4,74 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginBottom="16dp"
     tools:context=".ui.main.settings.addressSettings.AddressSettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_fragment_access_address"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white_200">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
             android:scaleType="centerCrop"
-            android:src="@drawable/background_1"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
+
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginEnd="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/source_sans_pro_bold"
             android:text="Доступ к адресу"
-            android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textColor="@color/blue_200"
+            android:textSize="@dimen/header_text_size"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView" />
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintStart_toEndOf="@+id/ivBack" />
 
 
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:padding="16dp"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
             android:src="@drawable/ic_back_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="71dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
+            android:clickable="true"
             android:orientation="vertical"
             app:cardBackgroundColor="@color/white_0"
             app:cardCornerRadius="13dp"
             app:cardElevation="0dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintTop_toBottomOf="@+id/imageView">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -254,13 +259,6 @@
                                 android:layout_marginEnd="4dp"
                                 android:text="Вход по лицу без ключа" />
 
-                            <ImageView
-                                android:id="@+id/ivByFaceBeta"
-                                android:layout_width="24dp"
-                                android:layout_height="12dp"
-                                android:layout_marginTop="16dp"
-                                android:src="@drawable/beta" />
-
                             <Space
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
@@ -322,7 +320,7 @@
                     android:layout_marginLeft="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="24dp"
-                    android:text="Временный доступ к шлагбауму/воротам" />
+                    android:text="Доступ к шлагбауму/воротам" />
 
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cvAccessGate"
@@ -371,7 +369,7 @@
                     android:layout_marginLeft="24dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginRight="24dp"
-                    android:text="Постоянный доступ к адресу" />
+                    android:text="Доступ к домофону" />
 
 
                 <androidx.cardview.widget.CardView

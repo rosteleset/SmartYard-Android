@@ -14,6 +14,9 @@
             android:id="@+id/action_numberRegFragment_to_smsRegFragment"
             app:destination="@id/smsRegFragment" />
         <action
+            android:id="@+id/action_numberRegFragment_to_pushRegFragment"
+            app:destination="@id/pushRegFragment" />
+        <action
             android:id="@+id/action_numberRegFragment_to_appealFragment"
             app:destination="@id/appealFragment" />
         <action
@@ -32,6 +35,24 @@
             app:destination="@id/numberRegFragment"
             app:popUpTo="@id/numberRegFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/pushRegFragment"
+        android:name="ru.madbrains.smartyard.ui.reg.sms.PushRegFragment"
+        android:label="PushRegFragment" >
+        <action
+            android:id="@+id/action_pushRegFragment_to_appealFragment"
+            app:destination="@id/appealFragment" />
+        <action
+            android:id="@+id/action_pushRegFragment_to_smsRegFragment"
+            app:destination="@id/smsRegFragment" />
+        <action
+            android:id="@+id/action_pushRegFragment_to_numberRegFragment"
+            app:destination="@id/numberRegFragment"
+            app:popUpTo="@id/numberRegFragment"
+            app:popUpToInclusive="true" />
+
+
     </fragment>
     <activity
         android:id="@+id/mainActivity"

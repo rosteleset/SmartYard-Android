@@ -8,5 +8,7 @@ import com.squareup.moshi.Json
  */
 data class AppVersionRequest(
     @Json(name = "version") val version: String,
-    @Json(name = "platform") val platform: String
+    @Json(name = "platform") val platform: String,
+    @Json(name = "system") val system: String,
+    @Json(name = "device") val device: String
 )

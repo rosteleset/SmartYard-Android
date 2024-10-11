@@ -24,5 +24,7 @@ enum class ErrorStatus(@StringRes val messageId: Int, http: Boolean = true) {
     NOT_FOUND(R.string.common_not_found),
     BAD_RESPONSE(R.string.common_error),
     TOO_MANY_REQUESTS(R.string.common_too_many),
-    HTTP_OTHER(R.string.common_error)
+    HTTP_OTHER(R.string.common_error),
+    SERVER_ERROR(R.string.common_error),
+    CANCEL_EXCEPTION(R.string.common_cancel_exception, false),
 }

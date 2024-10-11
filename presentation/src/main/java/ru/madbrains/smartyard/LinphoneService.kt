@@ -3,18 +3,20 @@ package ru.madbrains.smartyard
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Handler
 import android.os.IBinder
+import android.os.Looper
+import android.os.Vibrator
+import android.os.VibratorManager
 import androidx.core.app.NotificationCompat
-import androidx.core.util.rangeTo
 import org.koin.core.component.KoinComponent
 import org.linphone.core.Core
 import org.linphone.core.Factory
 import org.linphone.core.LogCollectionState
 import org.linphone.core.tools.Log
-import ru.madbrains.smartyard.ui.getChannelId
 import timber.log.Timber
 import java.io.File
 import java.io.IOException
@@ -24,37 +26,21 @@ import java.util.*
 class LinphoneService : Service(), KoinComponent {
     private var mCore: Core? = null
     var provider: LinphoneProvider? = null
-    private val mTaskHandler = Handler()
+    private val mTaskHandler = Handler(Looper.getMainLooper())
     private var mTimer = Timer()
+    private var intentVolume = Intent()
+
     override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
     override fun onCreate() {
         super.onCreate()
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            Timber.d("debug_dmm __Notification__"  )
-//            val CHANNEL_ID = "my_channel_01"
-            val id = (1..1000000).random()
-            val CHANNEL_ID = "my_channel_$id"
+        intentVolume = Intent(this, VolumeButtonService::class.java)
+        startService(intentVolume)
 
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                "Channel_$id",
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
+        createCallChannel()
 
-            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
-                channel
-            )
-
-            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Звонок")
-//                .setPriority(NotificationCompat.PRIORITY_HIGH) //TODO Пробный
-//                .setCategory(NotificationCompat.CATEGORY_ALARM)//TODO ^
-                .setContentText("Вам звонит домофон").build()
-            startForeground(1,notification)
-        }
         Timber.d("debug_dmm LinphoneService create")
         val basePath = filesDir.absolutePath
         try {
@@ -74,13 +60,47 @@ class LinphoneService : Service(), KoinComponent {
         }
     }
 
+    private fun createCallChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            Timber.d("debug_dmm __Notification__")
+            val id = (1000..1000000).random()
+            val CHANNEL_ID = "CallChannel"
+
+            val channel = NotificationChannel(
+                CHANNEL_ID,
+                "CallChannelNotification",
+                NotificationManager.IMPORTANCE_DEFAULT  //NotificationManager.IMPORTANCE_DEFAULT
+            )
+            (getSystemService(NOTIFICATION_SERVICE) as NotificationManager)
+                .createNotificationChannel(channel)
+
+            val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+                .setCategory(NotificationCompat.CATEGORY_CALL)
+                .setContentTitle("Звонок")
+                .setContentText("Вам звонит домофон")
+                .build()
+
+            startForeground(id, notification)
+        }
+    }
+
     override fun onDestroy() {
         Timber.d("debug_dmm Linphone stopping... >>>")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val vibrator = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+            vibrator.cancel()
+        } else {
+            val vibrator = getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+            vibrator.cancel()
+        }
+
+        VibratorSingleton.cancel()
         provider?.onDestroy()
         mTimer.cancel()
         mCore?.stop()
         mCore = null
         instance = null
+        stopService(intentVolume)
         super.onDestroy()
     }
 
@@ -92,7 +112,6 @@ class LinphoneService : Service(), KoinComponent {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         Timber.d("debug_dmm Linphone starting... >>>")
-
         mCore?.let { core ->
             //ICE/STUN/TURN
             var nat = core.natPolicy
@@ -101,33 +120,44 @@ class LinphoneService : Service(), KoinComponent {
             }
 
             var stun = intent?.getStringExtra(FirebaseMessagingService.CALL_STUN) ?: ""
-            val turnTransport = intent?.getStringExtra(FirebaseMessagingService.CALL_STUN_TRANSPORT) ?: "udp"
-            val turnUsername = intent?.getStringExtra(FirebaseMessagingService.CALL_TURN_USERNAME) ?: ""
-            val turnPassword = intent?.getStringExtra(FirebaseMessagingService.CALL_TURN_PASSWORD) ?: ""
-
+            val turnTransport =
+                intent?.getStringExtra(FirebaseMessagingService.CALL_STUN_TRANSPORT) ?: ""
+            val turnUsername =
+                intent?.getStringExtra(FirebaseMessagingService.CALL_TURN_USERNAME) ?: ""
+            val turnPassword =
+                intent?.getStringExtra(FirebaseMessagingService.CALL_TURN_PASSWORD) ?: ""
+            Timber.d("debug_dmm Linphone stun:$stun")
             if (stun.startsWith("turn:")) {
                 stun = stun.substring(5)
-                nat.enableStun(false)
-                nat.enableIce(true)
-                nat.enableTurn(true)
+                nat.apply {
+                    isStunEnabled = false
+                    isIceEnabled = true
+                    isTurnEnabled = true
+                }
                 nat.stunServer = stun
                 nat.stunServerUsername = turnUsername
 
                 when (turnTransport.toLowerCase(Locale.getDefault())) {
                     "tcp" -> {
-                        nat.enableUdpTurnTransport(false)
-                        nat.enableTcpTurnTransport(true)
-                        nat.enableTlsTurnTransport(false)
+                        nat.apply {
+                            isUdpTurnTransportEnabled = false
+                            isTcpTurnTransportEnabled = true
+                            isTlsTurnTransportEnabled = false
+                        }
                     }
                     "tls" -> {
-                        nat.enableUdpTurnTransport(false)
-                        nat.enableTcpTurnTransport(false)
-                        nat.enableTlsTurnTransport(true)
+                        nat.apply {
+                            isUdpTurnTransportEnabled = false
+                            isTcpTurnTransportEnabled = false
+                            isTlsTurnTransportEnabled = true
+                        }
                     }
                     else -> {
-                        nat.enableUdpTurnTransport(true)
-                        nat.enableTcpTurnTransport(false)
-                        nat.enableTlsTurnTransport(false)
+                        nat.apply {
+                            isUdpTurnTransportEnabled = true
+                            isTcpTurnTransportEnabled = false
+                            isTlsTurnTransportEnabled = false
+                        }
                     }
                 }
 
@@ -138,24 +168,25 @@ class LinphoneService : Service(), KoinComponent {
                     cloneAuthInfo.password = turnPassword
                     core.addAuthInfo(cloneAuthInfo)
                 } else {
-                    authInfo = Factory.instance().createAuthInfo(turnUsername, turnUsername, turnPassword, null, null, null)
+                    authInfo = Factory.instance()
+                        .createAuthInfo(turnUsername, turnUsername, turnPassword, null, null, null)
                     core.addAuthInfo(authInfo)
                 }
 
                 Timber.d("debug_dmm Linphone is using turn $stun")
             } else if (stun.startsWith("stun:")) {
                 stun = stun.substring(5)
-                nat.enableStun(true)
-                nat.enableIce(true)
-                nat.enableTurn(false)
+                nat.apply {
+                    isStunEnabled = true
+                    isIceEnabled = true
+                    isTurnEnabled = false
+                }
                 nat.stunServer = stun
-
                 Timber.d("debug_dmm Linphone is using stun $stun")
             }
             if (stun.isEmpty()) {
                 Timber.d("debug_dmm Linphone is not using stun")
             }
-
             core.natPolicy = nat
         }
 
@@ -164,10 +195,13 @@ class LinphoneService : Service(), KoinComponent {
         }
         mCore?.let { core ->
             core.start()
-            Factory.instance().enableLogCollection(LogCollectionState.EnabledWithoutPreviousLogHandler)
-            Factory.instance().loggingService.setListener { logService, domain, lev, message ->
+            Factory.instance()
+                .enableLogCollection(LogCollectionState.EnabledWithoutPreviousLogHandler)
+
+            Factory.instance().loggingService.addListener { logService, domain, level, message ->
                 Timber.i("debug_dmm message: $message")
             }
+
             core.clearAllAuthInfo()
             core.clearProxyConfig()
         }
@@ -213,6 +247,7 @@ class LinphoneService : Service(), KoinComponent {
         fun isReady(): Boolean {
             return instance != null
         }
+
         const val RANDOM_PORT = -1
     }
 }

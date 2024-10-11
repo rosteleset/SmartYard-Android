@@ -14,7 +14,7 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/ivImage"
+            android:id="@+id/ivImageWidged"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
@@ -41,7 +41,7 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:id="@+id/tvAddress"
+                android:id="@+id/tvAddressWidged"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="г.Тамбов, ул.Советская, 16, к.4"
@@ -50,7 +50,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/tbOpen"
+            android:id="@+id/tbOpenWidget"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"

@@ -16,6 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/background_radius_upper_blue"
+        android:backgroundTint="@color/blue_200"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
@@ -28,17 +29,17 @@
             android:layout_marginRight="12dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:src="@drawable/weather" />
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
             android:id="@+id/tvUpdate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Умный двор"
+            android:text="CENTRA.Дом"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="@color/white"
-            android:textSize="18sp"></TextView>
+            android:textSize="18sp" />
     </LinearLayout>
 
 

@@ -50,7 +50,8 @@ class EventLogViewModel(
         Plog.EVENT_OPEN_FROM_APP,
         Plog.EVENT_OPEN_BY_FACE,
         Plog.EVENT_OPEN_BY_CODE,
-        Plog.EVENT_OPEN_GATES_BY_CALL)  //по-умолчанию все типы событий
+        Plog.EVENT_OPEN_GATES_BY_CALL,
+        Plog.EVENT_OPEN_BY_LINK)  //по-умолчанию все типы событий
 
     private var cacheEvents = hashMapOf<String, MutableList<Plog>>()
 

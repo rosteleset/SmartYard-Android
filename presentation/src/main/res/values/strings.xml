@@ -1,9 +1,20 @@
 <resources>
 
+    <!-- NFC -->
+    <string name="nfc_description">NFC Description</string>
+    <string name="aiddescription">aiddescription</string>
+
     <!-- Main -->
     <string name="app_name">Centra.Дом</string>
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
+
+<!--    tab:intercoms-->
+    <string name="intercom_exif_time_d">Д</string>
+    <string name="intercom_exif_time_h">Ч</string>
+    <string name="intercom_exif_time_m">М</string>
+    <string name="intercom_exif_time_s">С</string>
+<!--    tab:intercoms-->
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Выход из приложения</string>
@@ -33,6 +44,7 @@
 
     <!-- Регистрация код из смс-->
     <string name="reg_sms_code_tel">Введите код из СМС,\nотправленный на номер +7%1$s</string>
+    <string name="reg_push_code_tel">На номер +7%1$s отправлено уведомление \nподтвердите доступ к приложению</string>
     <string name="reg_sms_correct_tel">Исправить номер телефона</string>
     <string name="reg_sms_send_code_repeat">Отправить код повторно можно через\n%1$s</string>
     <string name="reg_sms_error_code">Неверный код. Попробуйте ещё раз</string>
@@ -40,7 +52,7 @@
 
     <!-- Восстановление доступа -->
     <string name="restore_access_title">Восстановить доступ</string>
-    <string name="restore_access_caption">Пожалуйста, введите ваш номер договора и укажите email или телефон, которые вы использовали при регистрации договора</string>
+    <string name="restore_access_caption">Пожалуйста, введите ваш номер договора, которые вы использовали при регистрации договора</string>
     <string name="restore_access_edit_hint">Номер договора</string>
     <string name="restore_access_edit_btn_get_recovery">Получить доступные методы восстановления</string>
     <string name="restore_access_edit_btn_get_code">Получить код подтверждения</string>
@@ -55,10 +67,14 @@
 
     <!-- Bottom Menu -->
     <string name="title_address">Адреса</string>
+    <string name="title_mycentra">Centra</string>
+    <string name="title_intercom">Мой Двор</string>
     <string name="title_notification">Уведомления</string>
     <string name="title_chat">Чат</string>
     <string name="title_pay">Оплатить</string>
     <string name="title_burger">Меню</string>
+    <string name="title_cam">Улицы</string>
+
 
     <!-- Мои адреса-->
     <string name="dialog_title">Включить гостевой доступ на час?</string>
@@ -66,6 +82,7 @@
     <string name="dialog_yes">ВКЛЮЧИТЬ</string>
     <string name="dialog_no">ОТМЕНА</string>
     <string name="dialog_sms">Информация для гостя успешно отправлена!</string>
+    <string name="empty_contract_message">Для доступа к функционалу домофонии необходимо авторизоваться по номеру договора. Его вы можете уточнить в документах, полученных при подключении, по телефону контакт–центра +7(3843)756–000 или в чате этого приложения :)</string>
 
 
     <!-- Qr code -->
@@ -81,15 +98,16 @@
     <string name="auth_numer_pass0">Не помню пароль </string>
     <string name="auth_number_pass1">Ничего не помню</string>
     <string name="auth_number_btn_ok">Войти</string>
-    <string name="auth_number_btn_no">У меня нет договора с CENTRA </string>
+    <string name="auth_number_btn_no">Добавить по адресу </string>
     <string name="auth_dialog_title">Создать заявку на восстановление данных по договору?</string>
     <string name="auth_dialog_yes">Создать</string>
     <string name="auth_dialog_no">Отмена</string>
+    <string name="auth_offerta_accept">Подтвердить</string>
 
 
     <!-- Ввод адреса -->
     <string name="input_address_title">Введите адрес</string>
-    <string name="input_address_ok">Проверить доступные услуги</string>
+    <string name="input_address_ok">Ок</string>
     <string name="input_address_text_qr">У меня есть QR-код</string>
 
     <!-- Потверждение адреса -->
@@ -230,6 +248,12 @@
     <string name="cctv_dialog_video_prepare_message">Как только процесс закончится, вам придет сообщение в чат. В зависимости от длины видео процесс загрузки может занять от нескольких минут до нескольких часов.</string>
     <string name="cctv_dialog_video_prepare_button">Спасибо</string>
 
+    <!-- Оферта  -->
+    <string name="oferta_header">Оферта</string>
+    <string name="oferta_accept_text">Я принимаю условия\t</string>
+    <string name="oferta_choose_pdf">Выберите приложения для открытия PDF</string>
+
+
     <!-- Меню бургера  -->
     <string name="burger_title">Меню</string>
     <string name="burger_city_cameras_title">Городские камеры</string>
@@ -239,7 +263,7 @@
     <string name="burger_call_support_by_phone">Позвонить %s</string>
 
     <!-- Городские камеры  -->
-    <string name="city_cameras_title">Городские камеры</string>
+    <string name="city_cameras_title">Улицы</string>
     <string name="city_camera_events">Происшествия</string>
     <string name="city_camera_events_count">Происшествия (%d)</string>
     <string name="city_camera_request_record">Запросить запись</string>
@@ -263,6 +287,11 @@
         <item>50 мин</item>
         <item>60 мин</item>
     </string-array>
+
+    <!--Address-->
+    <string name="parent_control_title">Родительский контроль</string>
+    <string name="parent_control_text">Данная услуга позволяет временно отключить доступ в интернет на вашем договоре. Услуга не является  добровольной блокировкой договора, абонентская плата по тарифу продолжит начисляться в полном объеме.</string>
+    <!--Address-->
 
     <string name="request_record_comments">Комментарий:</string>
     <string name="request_record_description">Вы можете запросить фрагмент продолжительностью не более 1 часа. Наш сервис позволяет хранить видеозаписи не более 7 суток, после этого видео из архива безвозвратно удаляется.\n\nПродолжительность обработки запроса может составлять до 1 рабочего дня.</string>
@@ -332,6 +361,50 @@
     <string name="itemMessageDate">01.01.2023 10:00</string>
     <string name="inputChat">Введите сообщение</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="privacy_policy">https://mycentra.ru/#/policy/personal_data</string>
+    <string name="main_page_title">Centra</string>
+    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="previous">Previous</string>
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
+        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
+        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
+        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
+        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
+        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
+        est.\n\n
+        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
+        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
+        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
+        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
+        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
+        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
+        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
+        convallis.\n\n
+        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
+        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
+        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
+        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
+        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    </string>
 
 </resources>

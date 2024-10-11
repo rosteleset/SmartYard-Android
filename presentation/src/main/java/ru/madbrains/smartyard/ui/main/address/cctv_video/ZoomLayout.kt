@@ -2,10 +2,14 @@ package ru.madbrains.smartyard.ui.main.address.cctv_video
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.util.AttributeSet
 import android.view.*
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import android.widget.FrameLayout
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import ru.madbrains.smartyard.ui.main.intercom.ExoPlayerIntercomWebView
+import timber.log.Timber
 
 class MyGestureDetector(
     private var singleTapListener: () -> Unit = {},
@@ -32,6 +36,8 @@ class MyGestureDetector(
  * Layout для зумирования. Должен содержать только один дочерний элемент.
  */
 class ZoomLayout : FrameLayout, OnScaleGestureListener {
+    private val SWIPE_THRESHOLD = 450 // Минимальное расстояние для определения свайпа
+    private val TOUCH_EVENT_THRESHOLD = 5
     private enum class Mode {
         NONE, DRAG, ZOOM
     }
@@ -88,72 +94,96 @@ class ZoomLayout : FrameLayout, OnScaleGestureListener {
             }))
         setOnTouchListener { _, motionEvent ->
             q.onTouchEvent(motionEvent)
-            when (motionEvent.action and MotionEvent.ACTION_MASK) {
-                MotionEvent.ACTION_DOWN -> {
-                    //Log.i(TAG, "DOWN")
-                    if (scale > MIN_ZOOM) {
-                        mode = Mode.DRAG
-                        startX = motionEvent.x - prevDx
-                        startY = motionEvent.y - prevDy
+            val fingersCount = motionEvent.pointerCount
+            if (fingersCount == 1 && scale == MIN_ZOOM){
+                when (motionEvent.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        startY = motionEvent.y
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        val deltaY = motionEvent.y - startY
+                        if (Math.abs(deltaY) > TOUCH_EVENT_THRESHOLD) {
+                            if (deltaY > SWIPE_THRESHOLD) {
+                                val intentBroadcast = Intent(ExoPlayerIntercomWebView.SET_NORMAL_MODE_PLAYER)
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intentBroadcast)
+                            } else if (deltaY < -SWIPE_THRESHOLD) {
+                                val intentBroadcast = Intent(ExoPlayerIntercomWebView.SET_NORMAL_MODE_PLAYER)
+                                LocalBroadcastManager.getInstance(context).sendBroadcast(intentBroadcast)
+                            }
+                        }
                     }
                 }
-                MotionEvent.ACTION_MOVE -> if (mode == Mode.DRAG) {
-                    dx = motionEvent.x - startX
-                    dy = motionEvent.y - startY
+            }else{
+                when (motionEvent.action and MotionEvent.ACTION_MASK) {
+                    MotionEvent.ACTION_DOWN -> {
+                        //Log.i(TAG, "DOWN")
+                        if (scale > MIN_ZOOM) {
+                            mode = Mode.DRAG
+                            startX = motionEvent.x - prevDx
+                            startY = motionEvent.y - prevDy
+                        }
+                    }
+                    MotionEvent.ACTION_MOVE -> if (mode == Mode.DRAG) {
+                        dx = motionEvent.x - startX
+                        dy = motionEvent.y - startY
+                    }
+                    MotionEvent.ACTION_POINTER_DOWN -> mode = Mode.ZOOM
+                    MotionEvent.ACTION_POINTER_UP -> mode = Mode.NONE
+                    MotionEvent.ACTION_UP -> {
+                        //Log.i(TAG, "UP")
+                        mode = Mode.NONE
+                        prevDx = dx
+                        prevDy = dy
+                    }
                 }
-                MotionEvent.ACTION_POINTER_DOWN -> mode = Mode.ZOOM
-                MotionEvent.ACTION_POINTER_UP -> mode = Mode.NONE
-                MotionEvent.ACTION_UP -> {
-                    //Log.i(TAG, "UP")
-                    mode = Mode.NONE
-                    prevDx = dx
-                    prevDy = dy
-                }
-            }
-            scaleDetector.onTouchEvent(motionEvent)
-            if (mode == Mode.DRAG && scale >= MIN_ZOOM || mode == Mode.ZOOM) {
-                parent.requestDisallowInterceptTouchEvent(true)
+                scaleDetector.onTouchEvent(motionEvent)
+                if (mode == Mode.DRAG && scale >= MIN_ZOOM || mode == Mode.ZOOM) {
+                    parent.requestDisallowInterceptTouchEvent(true)
 
-                var childWidth = child().width
-                var childHeight = child().height
+                    var childWidth = child().width
+                    var childHeight = child().height
+//                    расчет размеров
+                    aspectRatio?.let {ratio ->
+                        if (width > 0 && height > 0) {
+                            val lp = child().layoutParams as LayoutParams
+                            val layoutRatio = width.toFloat() / height.toFloat()
+                            if (layoutRatio > ratio) {
+                                childWidth = (height.toFloat() * ratio).toInt()
+//                                childHeight = height
 
-                //расчет размеров
-                aspectRatio?.let {ratio ->
-                    if (width > 0 && height > 0) {
-                        val lp = child().layoutParams as LayoutParams
-                        val layoutRatio = width.toFloat() / height.toFloat()
-                        if (layoutRatio > ratio) {
-                            childWidth = (height.toFloat() * ratio).toInt()
-                            childHeight = height
-                        } else {
-                            childWidth = width
-                            childHeight = (width.toFloat() / ratio).toInt()
+                            } else {
+                                childWidth = width
+//                                childHeight = (width.toFloat() / ratio).toInt()
+                            }
+
+                            lp.width = childWidth
+                            lp.height = childHeight
+                            lp.gravity = Gravity.NO_GRAVITY
+                            child().layoutParams = lp
+                            child().requestLayout()
                         }
 
-                        lp.width = childWidth
-                        lp.height = childHeight
-                        lp.gravity = Gravity.NO_GRAVITY
-                        child().layoutParams = lp
-                        child().requestLayout()
                     }
-                }
 
-                val maxDx = childWidth * scale - width
-                val maxDy = childHeight * scale - height
-                dx = Math.min(Math.max(dx, -maxDx), 0f)
-                dy = Math.min(Math.max(dy, -maxDy), 0f)
+                    val maxDx = childWidth * scale - width
+                    val maxDy = childHeight * scale - height
+                    Timber.d("QWERTY  dx $dx  dy $dy")
+                    dx = Math.min(Math.max(dx, -maxDx), 0f)
+                    dy = Math.min(Math.max(dy, -maxDy), 0f)
 
-                //центрируем дочерний элемент, если его размеры меньше родительского
-                if (childWidth * scale < width) {
-                    dx = (width - childWidth * scale) / 2
+                    //центрируем дочерний элемент, если его размеры меньше родительского
+                    if (childWidth * scale < width) {
+                        dx = (width - childWidth * scale) / 2
+                    }
+                    if (childHeight * scale < height) {
+                        dy = (height - childHeight * scale) / 2
+                    }
+
+                    //Log.i(TAG,"Width: " + child().width + ", scale " + scale + ", dx " + dx + ", max " + maxDx)
+                    applyScaleAndTranslation()
                 }
-                if (childHeight * scale < height) {
-                    dy = (height - childHeight * scale) / 2
-                }
-                
-                //Log.i(TAG,"Width: " + child().width + ", scale " + scale + ", dx " + dx + ", max " + maxDx)
-                applyScaleAndTranslation()
             }
+
             true
         }
     }
@@ -192,6 +222,7 @@ class ZoomLayout : FrameLayout, OnScaleGestureListener {
     }
 
     private fun applyScaleAndTranslation() {
+        Timber.d("QWERTY applyScaleAndTranslation dx $dx  dy $dy")
         child().scaleX = scale
         child().scaleY = scale
         child().pivotX = 0.0f // по умолчанию опорная точка в левом верхнем углу
@@ -230,6 +261,8 @@ class ZoomLayout : FrameLayout, OnScaleGestureListener {
     fun setAspectRatio(ratio: Float?) {
         aspectRatio = ratio
     }
+
+    fun getAspectRatio(): Float = aspectRatio ?: -1f
 
     companion object {
         private const val TAG = "ZoomLayout"

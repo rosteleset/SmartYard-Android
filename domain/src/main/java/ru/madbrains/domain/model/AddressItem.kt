@@ -7,7 +7,7 @@ data class AddressItem(
     val name: String,
     val address: String,
     val icon: String,
-    val domophoneId: Int,
+    val domophoneId: Long,
     val doorId: Int?,
     var state: StateButton
 ) : Serializable

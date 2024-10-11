@@ -15,12 +15,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.video.VideoListener
+import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
+import androidx.media3.common.Player.Listener
+import androidx.media3.common.VideoSize
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.ui.PlayerView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.domain.model.response.Plog
 import ru.madbrains.smartyard.R
@@ -43,7 +44,7 @@ class EventLogDetailFragment : Fragment() {
     private var snapHelper: PagerSnapHelper? = null
 
     private var prevLoadedIndex = -1
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: ExoPlayer? = null
     private var mPlayerView: PlayerView? = null
     private var videoUrl = ""
     private var savedPosition = -1
@@ -51,27 +52,32 @@ class EventLogDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         _binding = FragmentEventLogDetailBinding.inflate(inflater, container, false)
+        mViewModel.getAllFaces()
+        initPlayer()
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initPlayer()
 
         initRecycler()
         binding.ivEventLogDetailBack.setOnClickListener {
             releasePlayer()
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
+        Timber.d("EVENTLOGASDASDAS ${mViewModel.eventsByDaysFilter}")
     }
 
     private fun initPlayer() {
         if (mPlayer == null) {
             val trackSelector = DefaultTrackSelector(requireContext())
-            mPlayer = SimpleExoPlayer.Builder(requireContext())
+            mPlayer = ExoPlayer.Builder(requireContext())
                 .setTrackSelector(trackSelector)
                 .build()
             mPlayer?.playWhenReady = true
-            mPlayer?.addListener(object : Player.EventListener{
+            mPlayer?.addListener(object : Player.Listener{
                 override fun onPlaybackStateChanged(state: Int) {
                     if (state == Player.STATE_READY) {
                         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -86,29 +92,19 @@ class EventLogDetailFragment : Fragment() {
                     }
                 }
             })
-            mPlayer?.addVideoListener(object : VideoListener {
+            mPlayer?.addListener(object : Listener {
                 override fun onRenderedFirstFrame() {
                     super.onRenderedFirstFrame()
                     mPlayerView?.alpha = 1.0f
                 }
 
                 //этот метод нужен для установки нужной высоты вьюшки с видео
-                override fun onVideoSizeChanged(
-                    width: Int,
-                    height: Int,
-                    unappliedRotationDegrees: Int,
-                    pixelWidthHeightRatio: Float
-                ) {
-                    super.onVideoSizeChanged(
-                        width,
-                        height,
-                        unappliedRotationDegrees,
-                        pixelWidthHeightRatio
-                    )
+                override fun onVideoSizeChanged(videoSize: VideoSize) {
+                    super.onVideoSizeChanged(videoSize)
                     mPlayerView?.let {
-                        if (width > 0 && height > 0) {
-                            val k = it.measuredWidth.toFloat() / width.toFloat()
-                            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (height.toFloat() * k).toInt())
+                        if (videoSize.width > 0 && videoSize.height > 0) {
+                            val k = it.measuredWidth.toFloat() / videoSize.width.toFloat()
+                            it.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, (videoSize.height.toFloat() * k).toInt())
                         }
                     }
                 }

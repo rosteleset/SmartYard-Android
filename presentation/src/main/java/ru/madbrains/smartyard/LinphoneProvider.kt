@@ -1,20 +1,38 @@
 package ru.madbrains.smartyard
 
+import android.app.KeyguardManager
+import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.Ringtone
 import android.media.RingtoneManager
+import android.net.sip.SipAudioCall
+import android.net.sip.SipSession
+import android.os.Build
+import android.os.PowerManager
 import android.view.TextureView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ProcessLifecycleOwner
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.linphone.core.Account
 import org.linphone.core.AccountCreator
 import org.linphone.core.Call
+import org.linphone.core.CallStats
+import org.linphone.core.ConfiguringState
 import org.linphone.core.Core
 import org.linphone.core.CoreListenerStub
+import org.linphone.core.GlobalState
 import org.linphone.core.ProxyConfig
 import org.linphone.core.RegistrationState
 import org.linphone.core.TransportType
@@ -43,22 +61,53 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
 
     private var mCoreListener = object : CoreListenerStub() {
-        override fun onRegistrationStateChanged(
-            core: Core?,
-            cfg: ProxyConfig?,
-            state: RegistrationState,
+//        override fun onRegistrationStateChanged(
+//            core: Core,
+//            proxyConfig: ProxyConfig,
+//            state: RegistrationState?,
+//            message: String
+//        ) {
+//            Timber.d("debug_dmm reg_state: $state message: $message")
+//            Timber.d("debsssug_dmm reg_state: $state message: $message")
+//            state?.let {
+//                registrationState.value = CRegistrationState(state, message)
+//            }
+//            when (state) {
+//                RegistrationState.Failed -> {
+//                    Timber.d("debsssug_dmm reg_state ERROR state:${state}")
+//                    service.stopSelf()
+//                }
+//
+//                else -> {
+//                }
+//            }
+//            super.onRegistrationStateChanged(core, proxyConfig, state, message)
+//        }
+
+        override fun onGlobalStateChanged(core: Core, state: GlobalState?, message: String) {
+            super.onGlobalStateChanged(core, state, message)
+            Timber.d("debug_dmm ONGLOADLBLSTATBG state:$state message:$message")
+        }
+
+
+        override fun onAccountRegistrationStateChanged(
+            core: Core,
+            account: Account,
+            state: RegistrationState?,
             message: String
         ) {
             Timber.d("debug_dmm reg_state: $state message: $message")
-            registrationState.value = CRegistrationState(state, message)
+
+            state?.let {
+                registrationState.value = CRegistrationState(state, message)
+            }
             when (state) {
                 RegistrationState.Failed -> {
                     service.stopSelf()
                 }
-                else -> {
-                }
+                else -> {}
             }
-            super.onRegistrationStateChanged(core, cfg, state, message)
+            super.onAccountRegistrationStateChanged(core, account, state, message)
         }
 
         private fun isAppVisible(): Boolean {
@@ -69,53 +118,130 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                 .isAtLeast(Lifecycle.State.STARTED)
         }
 
+        private fun isAppInScreenLock(): Boolean =
+            (service.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager).isKeyguardLocked
+
+
         override fun onCallStateChanged(
-            core: Core?,
-            call: Call?,
-            state: Call.State,
+            core: Core,
+            call: Call,
+            state: Call.State?,
             message: String
         ) {
             Timber.d("debug_dmm call_state: $state message: $message")
-            val cState = CCallState(state, message, call, core)
+            val cState = state?.let { CCallState(it, message, call, core) }
             callState.value = cState
+            if (cState != null) {
+                when (cState.state) {
+                    CallStateSimple.INCOMING -> {
+                        wakeLock()
+                        try {
+                            call.let { _call ->
+                                fcmData?.let { data ->
+                                    if (!isAppVisible()) {
+                                        if (isAppInScreenLock()) {
+                                            val nm = NotificationManagerCompat.from(service)
+                                            val id = (100..999).random()
+                                            val channelId = "LockScreenNotificationChannel"
 
-            when (cState.state) {
-                CallStateSimple.INCOMING -> {
-                    call?.let { _call ->
-                        fcmData?.let { data ->
-                            if (!isAppVisible()) {
-                                sendCallNotification(data, service, preferenceStorage)
-                            } else {
-                                val intent =
-                                    Intent(service, IncomingCallActivity::class.java).apply {
-                                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                                        putExtra(FCM_DATA, data)
+                                            val notificationBuilder =
+                                                NotificationCompat.Builder(service, channelId)
+
+                                            val fullScreenIntent =
+                                                Intent(service, IncomingCallActivity::class.java)
+                                            fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                            fullScreenIntent.putExtra(FCM_DATA, data)
+
+                                            val fullScreenPendingIntent =
+                                                PendingIntent.getActivity(
+                                                    service,
+                                                    0,
+                                                    fullScreenIntent,
+                                                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.O_MR1) {
+                                                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                                                    } else {
+                                                        PendingIntent.FLAG_UPDATE_CURRENT
+                                                    }
+                                                )
+
+                                            val notification = notificationBuilder
+                                                .setSmallIcon(R.mipmap.ic_launcher)
+                                                .setTimeoutAfter(1000L)
+                                                .setContentTitle("Звонок с Домофона")
+                                                .setFullScreenIntent(fullScreenPendingIntent, true)
+                                                .setContentIntent(fullScreenPendingIntent)
+                                                .setPriority(NotificationCompat.PRIORITY_MAX)
+                                                .setCategory(NotificationCompat.CATEGORY_ALARM)
+                                                .build()
+
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                                val channel = NotificationChannel(
+                                                    channelId,
+                                                    "LockScreenNotification",
+                                                    NotificationManager.IMPORTANCE_HIGH
+                                                ).apply {
+                                                    lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                                                }
+                                                nm.createNotificationChannel(channel)
+                                            }
+                                            nm.notify(id, notification)
+                                        } else {
+                                            sendCallNotification(data, service, preferenceStorage)
+                                        }
+                                    } else {
+                                        val fullScreenIntent =
+                                            Intent(service, IncomingCallActivity::class.java)
+                                        fullScreenIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                        fullScreenIntent.putExtra(FCM_DATA, data)
+                                        service.startActivity(fullScreenIntent)
                                     }
-                                service.startActivity(intent)
+                                    startRinging()
+                                }
                             }
-                            startRinging()
+
+                        }catch (e: Throwable){
+                            Timber.e("EXCEPTION LINPHONE_PROVIDER")
+                            Timber.e(e)
                         }
                     }
-                }
-                CallStateSimple.END,
-                CallStateSimple.ERROR -> {
-                    service.stopSelf()
-                }
-                CallStateSimple.CONNECTED -> {
-                    deleteCallNotifications(service)
-                    stopRinging()
-                }
-                CallStateSimple.OTHER_CONNECTED,
-                CallStateSimple.IDLE,
-                CallStateSimple.CONNECTING -> {
+
+                    CallStateSimple.END,
+                    CallStateSimple.ERROR -> {
+                        service.stopSelf()
+                    }
+
+                    CallStateSimple.CONNECTED -> {
+                        deleteCallNotifications(service)
+                        stopRinging()
+                    }
+
+                    CallStateSimple.OTHER_CONNECTED,
+                    CallStateSimple.IDLE,
+                    CallStateSimple.CONNECTING -> {
+                    }
                 }
             }
             super.onCallStateChanged(core, call, state, message)
         }
     }
 
+
+    private fun wakeLock() {
+        val powerManager =
+            service.getSystemService(Context.POWER_SERVICE) as PowerManager
+        val wakeLock = powerManager.newWakeLock(
+            PowerManager.SCREEN_BRIGHT_WAKE_LOCK or PowerManager.ACQUIRE_CAUSES_WAKEUP,
+            "onCallStateChanged:centra.dom"
+        )
+        CoroutineScope(Dispatchers.Default).launch {
+            wakeLock.acquire(1 * 60 * 1000L /*1 minutes*/)
+            delay(3000)
+            wakeLock.release()
+        }
+    }
+
     fun setNativeVideoWindowId(videoWindow: TextureView) {
-        core.setNativeVideoWindowId(videoWindow)
+        core.nativeVideoWindowId = videoWindow
     }
 
     private fun deleteCallNotifications(context: Context) {
@@ -126,7 +252,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     fun isConnected(): Boolean {
         return callState.value?.state == CallStateSimple.CONNECTED ||
-            callState.value?.state == CallStateSimple.OTHER_CONNECTED
+                callState.value?.state == CallStateSimple.OTHER_CONNECTED
     }
 
     fun listenAndGetNotifications(pendingData: FcmCallData) {
@@ -146,17 +272,24 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     private fun startRinging() {
         currentRingtone?.play()
+        VibratorSingleton.apply {
+            getVibrator(service)
+            vibrateWithMode()
+        }
     }
 
     fun stopRinging() {
         currentRingtone?.stop()
+        VibratorSingleton.cancel()
     }
 
     fun acceptCall(videoWindow: TextureView) {
         core.currentCall?.let { call ->
             val params = core.createCallParams(call)
-            params?.enableVideo(true)
-            params?.enableAudio(true)
+            params?.let {
+                it.isVideoEnabled = true
+                it.isAudioEnabled = true
+            }
             call.acceptWithParams(params)
         }
     }
@@ -164,8 +297,10 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     fun acceptCallForDoor() {
         core.currentCall?.let { call ->
             val params = core.createCallParams(call)
-            params?.enableVideo(false)
-            params?.enableAudio(true)
+            params?.let {
+                it.isVideoEnabled = false
+                it.isAudioEnabled = true
+            }
             call.acceptWithParams(params)
         }
     }
@@ -199,13 +334,15 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             core.let { core ->
                 core.removeListener(mCoreListener)
                 val mAccountCreator = core.createAccountCreator(null)
-                val cfg = config.setAccount(mAccountCreator).createProxyConfig()
-                core.addProxyConfig(cfg)
+                val cfg = config.setAccount(mAccountCreator).createAccountInCore()
+                val proxyConfig = cfg?.core?.createProxyConfig()
+                proxyConfig?.let {
+                     core.addProxyConfig(it)
+                 }
                 core.ringback = null
                 core.ring = null
-
-                core.enableVideoDisplay(true)
-                core.enableVideoCapture(true)
+                core.isVideoDisplayEnabled = true
+                core.isVideoCaptureEnabled = true
                 core.useInfoForDtmf = false
                 core.useRfc2833ForDtmf = true
                 for (pt in core.audioPayloadTypes) {
@@ -244,7 +381,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         core.currentCall?.run {
             doDelayed(
                 {
-                    sendDtmfs(fcmData?.dtmf)
+                    fcmData?.dtmf?.let { sendDtmfs(it) }
                     doDelayed(
                         {
                             Timber.d("debug_dmm dtmf sent")
@@ -312,9 +449,11 @@ private fun convertCallState(state: Call.State): CallStateSimple {
         Call.State.IncomingReceived -> {
             CallStateSimple.INCOMING
         }
+
         Call.State.Connected -> {
             CallStateSimple.CONNECTED
         }
+
         Call.State.OutgoingInit,
         Call.State.OutgoingProgress -> {
             CallStateSimple.CONNECTING
@@ -323,13 +462,16 @@ private fun convertCallState(state: Call.State): CallStateSimple {
         Call.State.Error -> {
             CallStateSimple.ERROR
         }
+
         Call.State.Idle -> {
             CallStateSimple.IDLE
         }
+
         Call.State.End,
         Call.State.Released -> {
             CallStateSimple.END
         }
+
         Call.State.StreamsRunning,
         Call.State.Updating,
         Call.State.PausedByRemote,
@@ -344,6 +486,10 @@ private fun convertCallState(state: Call.State): CallStateSimple {
         Call.State.OutgoingRinging,
         Call.State.OutgoingEarlyMedia -> {
             CallStateSimple.OTHER_CONNECTED
+        }
+
+        Call.State.PushIncomingReceived -> {
+            CallStateSimple.INCOMING
         }
     }
 }

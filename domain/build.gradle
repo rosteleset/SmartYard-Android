@@ -37,6 +37,10 @@ project.afterEvaluate {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    //Compose
+    implementation "androidx.compose.runtime:runtime:1.6.5"
+
+
     // OkHttp & Retrofit
     implementation "com.squareup.retrofit2:retrofit:$rootProject.retrofitVersion"
     implementation "com.squareup.retrofit2:adapter-rxjava2:$rootProject.retrofitVersion"

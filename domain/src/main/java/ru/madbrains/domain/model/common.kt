@@ -1,5 +1,5 @@
 package ru.madbrains.domain.model
-class example
+
 enum class TF(var value: String) {
     TRUE("t"),
     FALSE("f");

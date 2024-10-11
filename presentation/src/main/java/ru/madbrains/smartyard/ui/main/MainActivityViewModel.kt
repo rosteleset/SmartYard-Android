@@ -63,7 +63,6 @@ class MainActivityViewModel(
     fun onCreate() {
         Timber.d("debug_dmm baseUrl from storage: ${mPreferenceStorage.baseUrl}")
         DataModule.URL = mPreferenceStorage.baseUrl ?: DataModule.URL
-        checkAndRegisterFcmToken()
     }
 
     fun onResume() {
@@ -97,7 +96,20 @@ class MainActivityViewModel(
         callJsSendMessage(msg)
     }
 
-    private fun bottomNavigate(@IdRes id: Int) {
+    fun bottomNavigateToChat(){
+        bottomNavigate(R.id.chat)
+    }
+
+    fun bottomNavigateToMain(){
+        bottomNavigate(R.id.main)
+    }
+
+    fun bottomNavigateToIntercom(){
+        bottomNavigate(R.id.intercom)
+
+    }
+
+    fun bottomNavigate(@IdRes id: Int) {
         bottomNavigateTo.postValue(Event(id))
     }
 
@@ -105,9 +117,9 @@ class MainActivityViewModel(
         chatSendMsg.postValue(Event(string))
     }
 
-    fun appVersion(version: String) {
+    fun appVersion(version: String, platform: String, system: String, device: String) {
         viewModelScope.withProgress(progress = null) {
-            val response = authInteractor.appVersion(version)
+            val response = authInteractor.appVersion(version, platform, system, device)
             _updateToAppNavigateDialog.value = Event(
                 when (response?.data) {
                     "upgrade" -> Update.UPGRADE

@@ -13,6 +13,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import ru.madbrains.data.interceptors.CommonInterceptor
 import ru.madbrains.data.interceptors.SessionInterceptor
+import ru.madbrains.data.local.db.CameraImagesDatabase
 import ru.madbrains.data.local.db.ItemsDatabase
 import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.data.prefs.SharedPreferenceStorage
@@ -22,18 +23,20 @@ import ru.madbrains.domain.interfaces.*
 
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import kotlin.math.sin
 
 object DataModule {
 
-//    var URL = "http://192.168.15.15"
 //    var URL = "https://dm.lanta.me:543"
+//    var URL = if (BuildConfig.DEBUG) "https://santest.mycentra.ru" else "https://intercom-mobile-api.mycentra.ru"
     var URL = "https://intercom-mobile-api.mycentra.ru"
-//    var URL = "http://10.1.19.192:8800"
-    private var BASE_URL = "$URL/"
+
+    private var BASE_URL =  "$URL/"
 
     val sberApiUserName = "your-user-name"
     val sberApiPassword = "your-password"
     val orderNumberToId = hashMapOf<String, String>()
+
     fun extractOrderId(orderNumber: String): String {
         System.out.println("Your message");
         var r = ""
@@ -45,6 +48,7 @@ object DataModule {
         }
         return r
     }
+
     fun getOrderId(orderNumber: String): String {
         var r = ""
         synchronized(orderNumberToId) {
@@ -73,6 +77,16 @@ object DataModule {
         }
 
         single { get<ItemsDatabase>().itemDao() }
+
+        single {
+            Room.databaseBuilder(
+                get(), CameraImagesDatabase::class.java, CameraImagesDatabase.DATABASE_NAME)
+                .fallbackToDestructiveMigration()
+                .build()
+        }
+        single { get<CameraImagesDatabase>().imageDao() }
+
+        factory { CameraImageDatabaseRepositoryImpl(get()) as CameraItemDatabaseRepository }
 
         factory { DatabaseRepositoryImpl(get()) as DatabaseRepository }
 

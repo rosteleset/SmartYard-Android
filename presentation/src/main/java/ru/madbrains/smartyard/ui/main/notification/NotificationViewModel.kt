@@ -26,7 +26,7 @@ class NotificationViewModel(
     }
 
     fun loadInbox() {
-        viewModelScope.withProgress(progress = progress) {
+        viewModelScope.withProgress(progress = null) {
             val res = inboxInteractor.inbox()
             loaded.postValue(Event(res.data))
             progress.postValue(false)

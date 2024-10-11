@@ -37,6 +37,13 @@ class NotificationFragment : Fragment() {
     private val mViewModel by viewModel<NotificationViewModel>()
     private var mLoaded: Boolean = false
 
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        refresh()
+    }
+
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -65,6 +72,10 @@ class NotificationFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         mViewModel.onStart()
+        binding.ivBackToAddress.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         binding.webViewNotification.settings.javaScriptEnabled = true
         binding.webViewNotification.addJavascriptInterface(WebAppInterface(), "AndroidFunction")
         binding.webViewNotification.webViewClient = object : WebViewClient() {
@@ -121,7 +132,7 @@ class NotificationFragment : Fragment() {
                     it.code,
                     "text/html", "UTF-8", null
                 )
-                (activity as MainActivity).removeBadge()
+//                (activity as MainActivity).removeBadge() //TODO Notification badge
             }
         )
         mViewModel.progress.observe(
@@ -152,8 +163,8 @@ class NotificationFragment : Fragment() {
 
     private fun cancelNotificationAll() {
         val notificationManager =
-            context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancelAll()
+            context?.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager
+        notificationManager?.cancelAll()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

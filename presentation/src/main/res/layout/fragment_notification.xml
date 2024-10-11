@@ -1,36 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/refreshLayout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white_200">
 
-        <ScrollView
-            android:id="@+id/nested_scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="fill_vertical"
-            android:fillViewport="false"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <ImageView
+            android:id="@+id/imageView20"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toTopOf="@+id/guideline7"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@+id/frame_layout"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
+
+
+        <ImageView
+            android:id="@+id/ivBackToAddress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
+            android:clickable="true"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle6"
+            app:layout_constraintStart_toStartOf="@+id/imageView20"
+            app:layout_constraintTop_toTopOf="@+id/tvTitle6"
+            app:srcCompat="@drawable/ic_back_arrow" />
+
+        <TextView
+            android:id="@+id/tvTitle6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="Уведомления"
+            android:textColor="@color/blue_200"
+            android:textSize="@dimen/header_text_size"
+            android:textStyle="bold"
+            app:autoSizeMinTextSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView20"
+            app:layout_constraintStart_toEndOf="@+id/ivBackToAddress" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refreshLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/white_200"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView20">
+
+            <ScrollView
+                android:id="@+id/nested_scroll_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="fill_vertical"
+                android:fillViewport="false"
+                android:overScrollMode="never"
+                android:scrollbars="none"
                 app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-                <WebView
-                    android:id="@+id/webViewNotification"
+                <FrameLayout
+                    android:id="@+id/frame_layout"
+
                     android:layout_width="match_parent"
-                    android:layout_height="1000dp" />
-            </FrameLayout>
-        </ScrollView>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                    android:layout_height="match_parent"
+                    android:background="@color/white_200"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+                    <WebView
+                        android:id="@+id/webViewNotification"
+                        android:layout_width="match_parent"
+                        android:layout_height="1000dp"
+                        android:layout_marginTop="8dp"
+                        android:background="@color/white_200" />
+
+                </FrameLayout>
+            </ScrollView>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </FrameLayout>

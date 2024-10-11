@@ -27,8 +27,12 @@ class RegistrationViewModel(
     ) {
         if (mPreferenceStorage.authToken != null) {
             if (mPreferenceStorage.sentName == null) {
-                NavHostFragment.findNavController(fragment)
-                    .navigate(R.id.action_numberRegFragment_to_appealFragment)
+                try {
+                    NavHostFragment.findNavController(fragment)
+                        .navigate(R.id.action_numberRegFragment_to_appealFragment)
+                }catch (e: Exception){
+                    Timber.e(e, "RegistrationViewModel navigate Exception")
+                }
             } else {
                 val action =
                     NumberRegFragmentDirections.actionNumberRegFragmentToMainActivity(

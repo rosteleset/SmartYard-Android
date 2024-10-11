@@ -9,53 +9,60 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/white_200">
 
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:background="@color/white_200"
             android:scaleType="centerCrop"
-            android:src="@drawable/background_1"
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/source_sans_pro_bold"
             android:text="Настройки адреса"
-            android:textColor="@color/white"
-            android:textSize="32sp"
+            android:textColor="@color/blue_200"
+            android:textSize="@dimen/header_text_size"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
-            app:layout_constraintBottom_toTopOf="@+id/scrollView2"
-            app:layout_constraintEnd_toEndOf="@+id/imageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ivBack" />
+            app:layout_constraintBottom_toTopOf="@+id/guideline8"
+            app:layout_constraintStart_toEndOf="@+id/ivBack" />
 
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="@dimen/header_guide_line" />
 
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:padding="16dp"
+            android:layout_marginStart="@dimen/header_layout_marginStart"
             android:src="@drawable/ic_back_arrow"
+            app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@+id/tvTitle" />
 
         <ScrollView
             android:id="@+id/scrollView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="32dp"
             android:fillViewport="false"
             android:translationY="-20dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -351,6 +358,7 @@
                                     android:text="Скрыть журнал событий от других пользователей"
                                     android:textColor="@color/black"
                                     app:layout_constraintEnd_toStartOf="@+id/switchOwnerEventLog"
+                                    app:layout_constraintHorizontal_bias="0.0"
                                     app:layout_constraintStart_toStartOf="parent"
                                     app:layout_constraintTop_toBottomOf="@id/vUseEventLog" />
 

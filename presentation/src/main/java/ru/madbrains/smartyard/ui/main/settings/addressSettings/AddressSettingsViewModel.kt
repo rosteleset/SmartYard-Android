@@ -29,7 +29,7 @@ class AddressSettingsViewModel(
     val deleteRoommate = MutableLiveData<Unit>()
 
     fun getIntercom(flatId: Int) {
-        viewModelScope.withProgress {
+        viewModelScope.launchSimple {
             preferenceStorage.xDmApiRefresh = true
             val res = addressInteractor.getIntercom(flatId)
             intercom.postValue(res.data)

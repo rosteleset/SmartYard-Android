@@ -55,10 +55,6 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="42dp"
                 android:layout_marginEnd="24dp"
-                android:paddingStart="50dp"
-                android:paddingTop="18dp"
-                android:paddingEnd="50dp"
-                android:paddingBottom="18dp"
                 tools:text="@string/next" />
 
             <TextView

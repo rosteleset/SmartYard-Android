@@ -6,6 +6,7 @@ import org.osmdroid.util.BoundingBox
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalTime
 import org.threeten.bp.format.DateTimeFormatter
+import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.domain.interactors.CCTVInteractor
 import ru.madbrains.domain.interactors.GeoInteractor
 import ru.madbrains.domain.interactors.IssueInteractor
@@ -18,6 +19,7 @@ import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
 class CityCamerasViewModel(
     private val state: SavedStateHandle,
     private val cctvInteractor: CCTVInteractor,
+    private val authInteractor: AuthInteractor,
     geoInteractor: GeoInteractor,
     issueInteractor: IssueInteractor
 ) : BaseIssueViewModel(geoInteractor, issueInteractor) {
@@ -28,13 +30,26 @@ class CityCamerasViewModel(
     var camerasBoundingBox: BoundingBox? = null
 
     fun getCityCameras(onComplete: listenerEmpty) {
-        viewModelScope.withProgress {
+        viewModelScope.launchSimple{
             cctvInteractor.getCCTVOverview()?.let {
-                cityCameraList = it.toList().filter {cityCamera ->
+                cityCameraList = it.toList().filter { cityCamera ->
                     cityCamera.latitude != null && cityCamera.longitude != null
                 }
                 onComplete()
             }
+        }
+    }
+
+    fun openDoor(domophoneId: Long, doorId: Int?) {
+        viewModelScope.withProgress {
+            authInteractor.openDoor(domophoneId, doorId)
+        }
+    }
+
+    fun chooseCityCameraById(id: Int) {
+        val cityCamera = cityCameraList.find { id == it.id }
+        cityCamera?.let {
+            state.set(chosenCityCamera_Key, cityCamera)
         }
     }
 
@@ -59,9 +74,15 @@ class CityCamerasViewModel(
     fun createIssue(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
         val summary = "Авто: Запрос на получение видеофрагмента с архива"
         val description =
-            "Обработать запрос на добавление видеофрагмента из архива видовой видеокамеры ${chosenCamera.value?.name} (id = ${chosenCamera.value?.id}) по парамертам: дата: ${recordDate.format(
-                DateTimeFormatter.ofPattern("d.MM.yyyy"))}, время: ${recordTime.format(
-                DateTimeFormatter.ofPattern("HH-mm"))}, продолжительность фрагмента: $duration минут. Комментарий пользователя: $comments."
+            "Обработать запрос на добавление видеофрагмента из архива видовой видеокамеры ${chosenCamera.value?.name} (id = ${chosenCamera.value?.id}) по парамертам: дата: ${
+                recordDate.format(
+                    DateTimeFormatter.ofPattern("d.MM.yyyy")
+                )
+            }, время: ${
+                recordTime.format(
+                    DateTimeFormatter.ofPattern("HH-mm")
+                )
+            }, продолжительность фрагмента: $duration минут. Комментарий пользователя: $comments."
         val x10011 = "-5"
         val x12440 = "Приложение"
         super.createIssue(

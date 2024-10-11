@@ -5,7 +5,7 @@ import com.squareup.moshi.Json
 typealias ConfirmCodeResponse = ApiResult<ConfirmCodeData>
 
 data class ConfirmCodeData(
-    @Json(name = "accessToken") val accessToken: String,
+    @Json(name = "accessToken") val accessToken: String?,
     @Json(name = "names") val names: Any? = null
 )
 

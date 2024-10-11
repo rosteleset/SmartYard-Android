@@ -21,18 +21,22 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.PlaybackParameters
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.MimeTypes
+import androidx.media3.exoplayer.ExoPlaybackException
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.mediacodec.MediaCodecUtil
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.threeten.bp.LocalDate
@@ -57,7 +61,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
     private var _binding: FragmentCctvTrimmerBinding? = null
     private val binding get() = _binding!!
 
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: ExoPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private lateinit var chosenDate: LocalDate
 
@@ -384,8 +388,9 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         binding.videoWrap.clipToOutline = true
 
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack(R.id.CCTVDetailFragment, true)
-            this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
+//            this.findNavController().popBackStack(R.id.CCTVDetailFragment, true)
+//            this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
+            parentFragmentManager.popBackStack()
         }
         binding.mFullScreens.setOnClickListener {
             mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
@@ -610,7 +615,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
             }
         )
 
-        mCCTVViewModel.stateFullScreen.observe(
+        mCCTVViewModel.isFullScreenMod.observe(
             viewLifecycleOwner,
             Observer {
                 mExoPlayerFullscreen = it
@@ -642,16 +647,33 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
     }
 
+    private fun mutePlayer(){
+        binding.mMutePlayer.setOnClickListener {
+            val volume = if (mPlayer?.volume == 0F) {
+                mCCTVViewModel.mutePlayerSound(false)
+                binding.mMutePlayer.setBackgroundResource(R.drawable.baseline_volume_up_24)
+                1F
+            } else {
+                mCCTVViewModel.mutePlayerSound(true)
+                binding.mMutePlayer.setBackgroundResource(R.drawable.baseline_volume_off_24)
+                0F
+            }
+            mPlayer?.volume = volume
+        }
+    }
+
     private fun createPlayer(
         videoView: PlayerView
-    ): SimpleExoPlayer {
+    ): ExoPlayer {
         Timber.d("debug_dmm create")
 
         val trackSelector = DefaultTrackSelector(requireContext())
-        val player  = SimpleExoPlayer.Builder(requireContext())
+        val player = ExoPlayer.Builder(requireContext())
             .setTrackSelector(trackSelector)
             .build()
         //player.addAnalyticsListener(EventLogger(trackSelector))
+        player.volume = 0f
+        mutePlayer()
 
         videoView.player = player
         videoView.useController = false
@@ -696,7 +718,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
         
         player.playWhenReady = false
-        player.addListener(object : Player.EventListener {
+        player.addListener(object : Player.Listener {
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int
@@ -725,14 +747,16 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+
                 mViewModel.showVideoLoader(false)
 
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    mViewModel.showGlobalError(error.sourceException)
+                if (error.errorCode == ExoPlaybackException.TYPE_SOURCE) {
+                    mViewModel.showGlobalError(error)
                 }
 
-                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                if (error.errorCode == ExoPlaybackException.TYPE_RENDERER) {
                     if (forceVideoTrack) {
                         forceVideoTrack = false
 
@@ -752,9 +776,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                 }
             }
 
-            override fun onTracksChanged(trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray) {
-                super.onTracksChanged(trackGroups, trackSelections)
+            override fun onTracksChanged(tracks: Tracks) {
+                super.onTracksChanged(tracks)
 
                 if (!forceVideoTrack) {
                     return
@@ -774,8 +797,8 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                                     for (j in 0 until rendererTrackGroups[i].length) {
                                         if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
                                             mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                                (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
+                                            (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
+                                                    maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
                                             tracks.add(j)
                                         }
                                     }
@@ -790,7 +813,6 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
                     }
                 }
             }
-
         })
 
         return player
@@ -809,7 +831,7 @@ class CCTVTrimmerFragment : Fragment(), UserInteractionListener {
         }
     }
 
-    private fun SimpleExoPlayer.changeVideoSource(
+    private fun ExoPlayer.changeVideoSource(
         context: Context,
         data: CCTVTrimmerViewModel.PlayerIntervalChangeData
     ) {

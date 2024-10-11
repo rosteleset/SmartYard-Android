@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_time_line_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clipChildren="false"
+    android:clipToOutline="false"
+    android:clipToPadding="false">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cl_time"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:clipChildren="false"
+        android:clipToOutline="false"
+        android:clipToPadding="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_lines_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+
+            android:layout_marginEnd="8dp"
+            android:background="@null"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cl_event_marker"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_line_1"
+                android:layout_width="25dp"
+                android:layout_height="1dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_line_2"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_1" />
+
+            <TextView
+                android:id="@+id/tv_line_3"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_2" />
+
+            <TextView
+                android:id="@+id/tv_line_4"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_3" />
+
+            <TextView
+                android:id="@+id/tv_line_5"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_4" />
+
+            <TextView
+                android:id="@+id/tv_line_6"
+                android:layout_width="12dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_5" />
+
+            <TextView
+                android:id="@+id/tv_line_7"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_6" />
+
+            <TextView
+                android:id="@+id/tv_line_8"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_7" />
+
+            <TextView
+                android:id="@+id/tv_line_9"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_8" />
+
+            <TextView
+                android:id="@+id/tv_line_10"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_9" />
+
+            <TextView
+                android:id="@+id/tv_line_11"
+                android:layout_width="12dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_10" />
+
+            <TextView
+                android:id="@+id/tv_line_12"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_11" />
+
+            <TextView
+                android:id="@+id/tv_line_13"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_12" />
+
+            <TextView
+                android:id="@+id/tv_line_14"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_13" />
+
+            <TextView
+                android:id="@+id/tv_line_15"
+                android:layout_width="6dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="6dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_line_14" />
+
+            <TextView
+                android:id="@+id/tv_time_stamp_l"
+                android:layout_width="35dp"
+                android:layout_height="18dp"
+                android:layout_marginStart="8dp"
+                android:elevation="22dp"
+                android:text="12:00"
+
+                android:textColor="#DDDCDC"
+                android:textSize="14sp"
+                android:visibility="invisible"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_line_1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.62"
+                app:layout_constraintStart_toEndOf="@+id/tv_line_1"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_event_marker"
+            android:layout_width="10dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:background="#808080"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/cl_event_type"
+            app:layout_constraintEnd_toStartOf="@+id/cl_event_type"
+            app:layout_constraintStart_toEndOf="@+id/cl_lines_container"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/tv_event_dot"
+                android:layout_width="4dp"
+                android:layout_height="4dp"
+                android:background="#008DFF"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_event_type"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cl_event_img_container"
+            app:layout_constraintStart_toEndOf="@+id/cl_event_marker"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tv_time_line_l6"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:background="#DDDCDC"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:visibility="visible" />
+
+            <ImageView
+                android:id="@+id/iv_event_type"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="#000000"
+                android:elevation="1dp"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_time_line_l6"
+                app:layout_constraintEnd_toEndOf="@+id/tv_time_line_l6"
+                app:layout_constraintStart_toStartOf="@+id/tv_time_line_l6"
+                app:layout_constraintTop_toTopOf="@+id/tv_time_line_l6"
+                app:srcCompat="@drawable/no_answer_call"
+                tools:visibility="visible" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_event_img_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.73"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="parent"
+            tools:visibility="visible">
+
+            <ImageView
+                android:id="@+id/iv_event_img"
+                android:layout_width="100dp"
+                android:layout_height="50dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_background_reg_number"
+                tools:visibility="visible" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

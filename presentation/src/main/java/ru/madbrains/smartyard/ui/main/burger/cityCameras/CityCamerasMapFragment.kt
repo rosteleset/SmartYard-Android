@@ -13,32 +13,48 @@ import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.CityCamerasMapFragmentBinding
 import ru.madbrains.smartyard.toLatLng
 import ru.madbrains.smartyard.ui.map.*
+import timber.log.Timber
 
 class CityCamerasMapFragment : MapFragment() {
     private var _binding: CityCamerasMapFragmentBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: CityCamerasViewModel by sharedStateViewModel()
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View {
+//    private var geoPosition: GeoPosition? = null //TODO Текущая гео позиция
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         _binding = CityCamerasMapFragmentBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
         context?.let { context ->
             setupUi(context)
         }
     }
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+//        geoPosition = GeoPosition(this) //TODO Текущая гео позиция
+    }
+
+    override fun onStart() {
+        super.onStart()
+//        geoPosition?.location?.observe(viewLifecycleOwner) {
+//            for (location in it) {
+//                mapProvider?.map?.update(LatLng(location.latitude, location.longitude))
+//            }
+//        } //TODO Текущая гео позиция
+    }
+
     private fun setupUi(context: Context) {
         binding.llCityCamerasMap.clipToOutline = true
-        binding.ivCityCamerasBack.setOnClickListener {
-            this.findNavController().popBackStack()
-        }
+//        binding.ivCityCamerasBack.setOnClickListener {
+//            this.findNavController().popBackStack()
+//        } //TODO Текущая гео позиция
 
         viewModel.getCityCameras {
             createMapProvider(context, viewModel.cityCameraList)
@@ -54,7 +70,8 @@ class CityCamerasMapFragment : MapFragment() {
         val settings = MapSettings(context) { marker ->
             marker.index?.let {
                 viewModel.chooseCityCamera(it)
-                this.findNavController().navigate(R.id.action_cityCamerasMapFragment_to_cityCameraFragment)
+                this.findNavController()
+                    .navigate(R.id.action_cityCamerasMapFragment_to_cityCameraFragment1) //TODO cam_nav
             }
             true
         }
@@ -62,12 +79,18 @@ class CityCamerasMapFragment : MapFragment() {
             MarkerData(MarkerType.CityCamera, item.toLatLng(), "", index)
         }
         binding.llCityCamerasMap.removeAllViews()
+        mapProvider.map
         binding.llCityCamerasMap.addView(mapProvider)
         mapProvider.createMap(this, settings) {
             it.placeMarkers(
                 listMarker,
                 instant = true,
                 bBox = viewModel.camerasBoundingBox
+            )
+            it.placeMarker(
+                MarkerData(MarkerType.UserPoint, LatLng(0.5, 0.5), ""),
+                moveTo = true,
+                instant = true
             )
         }
     }

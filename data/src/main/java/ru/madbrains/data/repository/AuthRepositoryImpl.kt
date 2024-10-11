@@ -1,5 +1,6 @@
 package ru.madbrains.data.repository
 
+import android.os.Build
 import com.squareup.moshi.Moshi
 import ru.madbrains.data.remote.LantaApi
 import ru.madbrains.domain.interfaces.AuthRepository
@@ -9,14 +10,17 @@ import ru.madbrains.domain.model.request.ConfirmCodeRequest
 import ru.madbrains.domain.model.request.GetServicesRequest
 import ru.madbrains.domain.model.request.OpenDoorRequest
 import ru.madbrains.domain.model.request.RegisterPushTokenRequest
+import ru.madbrains.domain.model.request.RequestCodePushRequest
 import ru.madbrains.domain.model.request.RequestCodeRequest
 import ru.madbrains.domain.model.request.SendNameRequest
 import ru.madbrains.domain.model.request.UserNotificationRequest
 import ru.madbrains.domain.model.response.AppVersionResponse
 import ru.madbrains.domain.model.response.ConfirmCodeResponse
 import ru.madbrains.domain.model.response.GetServicesResponse
+import ru.madbrains.domain.model.response.LogOutResponse
 import ru.madbrains.domain.model.response.OpenDoorResponse
 import ru.madbrains.domain.model.response.RegisterPushTokenResponse
+import ru.madbrains.domain.model.response.RequestCodePushResponse
 import ru.madbrains.domain.model.response.RequestCodeResponse
 import ru.madbrains.domain.model.response.SendNameResponse
 import ru.madbrains.domain.model.response.UserNotificationResponse
@@ -45,12 +49,24 @@ class AuthRepositoryImpl(
 
     }
 
+    override suspend fun requestCodePush(
+        userPhone: String,
+        type: String,
+        pushToken: String
+    ): RequestCodePushResponse {
+        return safeApiCall {
+            lantaApi.requestCodePush(RequestCodePushRequest(userPhone, type, pushToken)).getResponseBody()!!
+        }
+    }
+
     override suspend fun confirmCode(
         userPhone: String,
-        smsCode: String
+        smsCode: String,
+        type: String?,
+        requestId: String?
     ): ConfirmCodeResponse {
         return safeApiCall {
-            lantaApi.confirmCode(ConfirmCodeRequest(userPhone, smsCode))
+            lantaApi.confirmCode(ConfirmCodeRequest(userPhone, smsCode, type, requestId))
         }
     }
 
@@ -73,7 +89,7 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun openDoor(
-        domophoneId: Int,
+        domophoneId: Long,
         doorId: Int?
     ): OpenDoorResponse {
         return safeApiCall {
@@ -87,14 +103,20 @@ class AuthRepositoryImpl(
         }
     }
 
-    override suspend fun appVersion(version: String): AppVersionResponse {
+    override suspend fun appVersion(version: String, platform: String, system: String, device: String): AppVersionResponse {
         return safeApiCall {
-            lantaApi.appVersion(AppVersionRequest(version, "android")).getResponseBody()
+            lantaApi.appVersion(AppVersionRequest(version, platform, system, device)).getResponseBody()
         }
     }
     override suspend fun userNotification(money: TF?, enable: TF?): UserNotificationResponse {
         return safeApiCall {
             lantaApi.userNotification(UserNotificationRequest(money?.value, enable?.value))
+        }
+    }
+
+    override suspend fun logout(): LogOutResponse {
+        return safeApiCall {
+            lantaApi.logout().getResponseBody()
         }
     }
 }

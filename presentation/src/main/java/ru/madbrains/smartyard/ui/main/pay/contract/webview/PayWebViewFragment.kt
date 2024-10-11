@@ -23,10 +23,11 @@ class PayWebViewFragment : Fragment() {
     private val payWebViewViewModel by viewModel<PayWebViewViewModel>()
 
     private val args: PayWebViewFragmentArgs by navArgs()
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Timber.d("PayWebViewFragment:onCreateView")
         _binding = FragmentPayWebViewBinding.inflate(inflater, container, false)
+
+
         return binding.root
     }
 
@@ -70,7 +71,7 @@ class PayWebViewFragment : Fragment() {
     }
 
     fun finishPay() {
-        this@PayWebViewFragment.findNavController().popBackStack()
+        this@PayWebViewFragment.findNavController().popBackStack() //TODO popBack
         this@PayWebViewFragment.findNavController()
             .navigate(R.id.successButtomSheetDialogFragment)
     }

@@ -2,6 +2,7 @@ package ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogDeleteReason
 
 import android.app.Dialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
@@ -12,11 +13,13 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.DialogDeleteReasonBinding
+import ru.madbrains.smartyard.ui.main.address.AddressWebViewFragment
 import timber.log.Timber
 
 /**

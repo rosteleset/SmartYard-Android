@@ -9,7 +9,7 @@ import android.os.Handler
 import android.webkit.MimeTypeMap
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.google.android.exoplayer2.Player
+import androidx.media3.common.Player
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async

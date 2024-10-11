@@ -13,7 +13,7 @@ import ru.madbrains.domain.model.response.GetStreetsResponse
  */
 interface GeoRepository {
 
-    suspend fun getServices(id: Int): GetServicesResponse
+    suspend fun getServices(id: Int, flat: Int): GetServicesResponse
 
     suspend fun getAllLocations(): GetAllLocationsResponse
 

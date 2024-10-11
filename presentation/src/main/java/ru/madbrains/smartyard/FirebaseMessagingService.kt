@@ -19,20 +19,26 @@
 
 package ru.madbrains.smartyard
 
+import android.Manifest
+import android.app.Activity
+import android.app.IntentService
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Handler
-import android.os.IBinder
-import android.util.Log
+import android.os.Looper
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
@@ -47,23 +53,52 @@ import ru.madbrains.data.prefs.PreferenceStorage
 import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.domain.interactors.InboxInteractor
 import ru.madbrains.domain.model.FcmCallData
-import ru.madbrains.domain.utils.listenerGeneric
 import ru.madbrains.smartyard.ui.SoundChooser
 import ru.madbrains.smartyard.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import ru.madbrains.smartyard.ui.getChannelId
 import ru.madbrains.smartyard.ui.main.ChatWoot.ChatWootFragment
 import ru.madbrains.smartyard.ui.main.MainActivity
+import ru.madbrains.smartyard.ui.main.MainActivity.Companion.REQUEST_PERMISSION
+import ru.madbrains.smartyard.ui.main.address.AddressComposeFragment.Companion.BROADCAST_CONFIRME_STATUS_PAY
+import ru.madbrains.smartyard.ui.main.intercom.IntercomWebViewFragment.Companion.SET_COUNT_EVENTS
 import ru.madbrains.smartyard.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
 import ru.madbrains.smartyard.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
+import ru.madbrains.smartyard.ui.reg.sms.PushRegFragment.Companion.BROADCAST_CONFIRM_CODE
+import ru.madbrains.smartyard.ui.reg.sms.PushRegFragment.Companion.BROADCAST_REJECT_CODE
+import ru.madbrains.smartyard.ui.reg.sms.PushRegFragment.Companion.INTENT_AUTHORIZATION_FAILED
 import timber.log.Timber
+import java.util.concurrent.Executors
 
 
 const val TAG = "notification"
 
+class NotificationWorker(context: Context, params: WorkerParameters) : Worker(context, params) {
 
+    private val _jsonData = MutableLiveData<String>()
+    val jsonData: LiveData<String>
+        get() = _jsonData
+
+
+    override fun doWork(): Result {
+        val json = inputData.getString("yard")
+        _jsonData.postValue(json.toString())
+        // Выполните передачу данных или обработку здесь
+        Timber.d("Notification Worker $json")
+        val intentBroadcast = Intent(SET_COUNT_EVENTS)
+        intentBroadcast.putExtra("yard", json)
+        LocalBroadcastManager.getInstance(applicationContext).sendBroadcast(intentBroadcast)
+
+        return Result.success()
+    }
+
+//    override fun getForegroundInfo(): ForegroundInfo {
+//        return super.getForegroundInfo()
+//    }
+
+}
 
 class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
-    private var mHandler = Handler()
+    private var mHandler = Handler(Looper.getMainLooper())
     private val preferenceStorage: PreferenceStorage by inject()
     private val mInteractor: AuthInteractor by inject()
     private val moshi: Moshi by inject()
@@ -76,6 +111,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
 
         FirebaseMessaging.getInstance().isAutoInitEnabled = false;
     }
+
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         Timber.tag(TAG)
             .d("debug_dmm remoteMessage: from ${remoteMessage.from}; ttl = ${remoteMessage.ttl}")
@@ -108,10 +144,10 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                             val message = remoteMessage.data.get("body")
 
                             sendNotificationInbox(
-                                messageId?: "",
+                                messageId ?: "",
                                 title ?: "",
                                 message ?: "",
-                                messageType?:"",
+                                messageType ?: "",
                                 badge ?: 0,
                                 true
                             )
@@ -156,6 +192,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                                     DataModule.URL = baseUrl
                                 }
                             }
+
                             waitForLinServiceAndRun(msg) {
                                 it.listenAndGetNotifications(msg)
                             }
@@ -163,18 +200,26 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                     }
 
                     get("action") == "inbox" || get("action") == "videoReady" -> {
+                        val title: String
+                        val message: String
                         val messageId = get("messageId")
                         val messageType = "inbox"
                         val badge = get("badge")?.toInt()
-                        val title = remoteMessage.notification?.title
-                        val message = remoteMessage.notification?.body
+
+                        if (get("action") == "videoReady") {
+                            title = remoteMessage.notification?.title.toString()
+                            message = remoteMessage.notification?.body.toString()
+                        } else {
+                            title = remoteMessage.data["title"].toString()
+                            message = remoteMessage.data["body"].toString()
+                        }
+
                         GlobalScope.launch {
                             Timber.tag(TAG).d("delivered run: %s", messageId)
                             messageId?.let {
                                 inboxInteractor.delivered(it)
                             }
                         }
-
                         sendNotificationInbox(
                             messageId ?: "",
                             title ?: "",
@@ -208,7 +253,66 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                         )
                     }
 
+                    get("action") == "updateStatusPay" -> {
+                        val status = remoteMessage.data["status"] ?: ""
+                        val contractTitle = remoteMessage.data["contractTitle"] ?: ""
+                        if (status.isNotEmpty()) {
+                            val intent = Intent(BROADCAST_CONFIRME_STATUS_PAY)
+                            intent.putExtra("status", status)
+                            intent.putExtra("contractTitle", contractTitle)
+                            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+                        } else {
+                        }
+                    }
 
+                    get("action") == "authorization" -> {
+                        Timber.d("PUSH action_authorization ${remoteMessage.data}")
+                        val accessToken = remoteMessage.data["accessToken"] ?: ""
+                        val name = remoteMessage.data["name"] ?: ""
+                        val patronymic = remoteMessage.data["patronymic"] ?: ""
+
+                        if (accessToken.isNotEmpty()) {
+                            preferenceStorage.authToken = accessToken
+                            val intentBroadcast = Intent(BROADCAST_CONFIRM_CODE)
+                            intentBroadcast.putExtra("name", name)
+                            intentBroadcast.putExtra("patronymic", patronymic)
+                            intentBroadcast.putExtra("accessToken", accessToken)
+                            LocalBroadcastManager.getInstance(context)
+                                .sendBroadcast(intentBroadcast)
+                        } else {
+                            //TODO redirect to sms code
+                            val intentBroadcast = Intent(BROADCAST_REJECT_CODE)
+                            LocalBroadcastManager.getInstance(context)
+                                .sendBroadcast(intentBroadcast)
+                        }
+                    }
+
+                    get("action") == "authorizationFail" -> {
+                        val intentBroadcast = Intent(INTENT_AUTHORIZATION_FAILED)
+                        intentBroadcast.putExtra("authorizationFail", true)
+                        LocalBroadcastManager.getInstance(context).sendBroadcast(intentBroadcast)
+                    }
+
+                    get("action") == "javascript" -> {
+                        val json = remoteMessage.data["yard"]
+                        if (!json.isNullOrEmpty()) {
+                            val intentBroadcast = Intent(SET_COUNT_EVENTS)
+                            intentBroadcast.putExtra("yard", json)
+                            LocalBroadcastManager.getInstance(context)
+                                .sendBroadcast(intentBroadcast)
+
+//                            val inputData = Data.Builder()
+//                                .putString("yard", json)
+//                                .build()
+//
+//                            val workRequest = OneTimeWorkRequest.Builder(NotificationWorker::class.java)
+//                                .setInputData(inputData)
+//                                .build()
+//                            WorkManager.getInstance(context).enqueue(workRequest)
+                        } else {
+
+                        }
+                    }
 
                     else -> {
                     }
@@ -236,7 +340,7 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         message: String,
         messageType: String,
         badge: Int,
-        isChat: Boolean = false
+        isChat: Boolean = false,
     ) {
         Timber.d("debug_dmm __Notification__")
         preferenceStorage.notificationData.addInboxNotification(preferenceStorage)
@@ -293,15 +397,13 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
             .setContentIntent(pendingIntent)
 
 
-
-
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 channelId,
-                TITLE,
+                "InboxMessagesChannel",
                 NotificationManager.IMPORTANCE_HIGH
             )
             val audioAttributes = AudioAttributes.Builder()
@@ -343,43 +445,32 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
         }
     }
 
+
     private fun waitForLinServiceAndRun(
         fcmCallData: FcmCallData,
-        listener: listenerGeneric<LinphoneProvider>
+        listener: (LinphoneProvider) -> Unit,
     ) {
-        Thread {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            val intent = Intent(REQUEST_PERMISSION)
+            LocalBroadcastManager.getInstance(context).sendBroadcast(intent)
+        }
+        val executor = Executors.newSingleThreadExecutor()
+        executor.execute {
             if (!LinphoneService.isReady()) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                startService(
-                    Intent().setClass(context, LinphoneService::class.java).also { intent ->
-                        if (fcmCallData.stun?.isNotEmpty() == true) {
-                            intent.putExtra(CALL_STUN, fcmCallData.stun)
-                            intent.putExtra(
-                                CALL_STUN_TRANSPORT,
-                                fcmCallData.stun_transport ?: "udp"
-                            )
-                            intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-                            intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
-                        }
-                        //для теста
-                        /*intent.putExtra(CALL_STUN, "turn:37.235.209.140:3478")  // tls 5349  // udp/tcp 3478
-                        intent.putExtra(CALL_STUN_TRANSPORT, "udp")*/
+                val intent = Intent().setClass(context, LinphoneService::class.java).apply {
+                    if (fcmCallData.stun?.isNotEmpty() == true) {
+                        putExtra(CALL_STUN, fcmCallData.stun)
+                        putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
+                        putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
+                        putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
                     }
-                )
-//                } else {
-//                    startForegroundService(
-//                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
-//                            if (fcmCallData.stun?.isNotEmpty() == true) {
-//                                intent.putExtra(CALL_STUN, fcmCallData.stun)
-//                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
-//                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-//                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
-//                            }
-//                        }
-//                    )
-//                }
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(intent)
+                } else {
+                    startService(intent)
+                }
             }
-
             while (!LinphoneService.isReady()) {
                 try {
                     Thread.sleep(30)
@@ -388,6 +479,6 @@ class FirebaseMessagingService : FirebaseMessagingService(), KoinComponent {
                 }
             }
             mHandler.post { LinphoneService.instance?.provider?.let { listener(it) } }
-        }.start()
+        }
     }
 }

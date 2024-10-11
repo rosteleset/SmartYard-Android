@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cl_avalible_services"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -9,10 +10,11 @@
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:background="@color/white_200"
         android:scaleType="centerCrop"
-        android:src="@drawable/background_auth"
         android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/guideline8"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -22,21 +24,19 @@
         android:id="@+id/imageView2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        android:background="@drawable/background_radius"
+        android:background="@color/white_200"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvAddress"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.22" />
+        app:layout_constraintGuide_percent="@dimen/header_guide_line" />
 
 
     <Button
@@ -56,55 +56,50 @@
 
     <TextView
         android:id="@+id/textView9"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginStart="8dp"
         android:text="Доступные услуги"
-        android:textColor="@color/white_0"
-        android:textSize="32sp"
+        android:textColor="@color/blue_200"
+        android:textSize="@dimen/header_text_size"
         android:textStyle="bold"
         app:autoSizeTextType="uniform"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+        app:layout_constraintBottom_toTopOf="@+id/tvAddress"
+        app:layout_constraintStart_toEndOf="@+id/imageView7" />
 
     <ImageView
         android:id="@+id/imageView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="@dimen/header_layout_marginStart"
         android:src="@drawable/ic_back_arrow"
+        app:layout_constraintBottom_toBottomOf="@+id/textView9"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/textView9" />
 
     <TextView
         android:id="@+id/tvAddress"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="8dp"
         android:text="г. Тамбов, ул. Астраханская, 24, кв.60"
-        android:textColor="@color/white_0"
+        android:textColor="@color/blue_200"
         app:layout_constraintBottom_toTopOf="@id/guideline8"
-        app:layout_constraintEnd_toEndOf="@+id/imageView"
+        app:layout_constraintEnd_toEndOf="@+id/textView9"
         app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="@+id/imageView"
-        app:layout_constraintTop_toBottomOf="@+id/textView9"
-        app:layout_constraintVertical_bias="0.00999999" />
+        app:layout_constraintStart_toStartOf="@+id/textView9" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvAvailable"
-        android:overScrollMode="never"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/background_radius_white"
+        android:overScrollMode="never"
+        android:paddingStart="8dp"
         app:layout_constraintBottom_toTopOf="@+id/btnNext"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

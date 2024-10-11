@@ -9,6 +9,7 @@ import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
 import com.agoda.kakao.screen.Screen.Companion.idle
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
+import junit.framework.TestCase
 import org.junit.Rule
 import org.junit.Test
 import ru.madbrains.data.prefs.SharedPreferenceStorage.Companion.PREFS_NAME
@@ -18,6 +19,7 @@ import ru.madbrains.smartyard.screen.BasicSettingsScreen
 import ru.madbrains.smartyard.screen.MainScreen
 import ru.madbrains.smartyard.screen.NumberRegScreen
 import ru.madbrains.smartyard.screen.SettingsScreen
+import ru.madbrains.smartyard.screen.SettingsScreen.ivSettings
 import ru.madbrains.smartyard.screen.SmsRegScreen
 import ru.madbrains.smartyard.ui.onboarding.OnboardingActivity
 
@@ -36,7 +38,7 @@ class AuthScreenTest : TestCase() {
         Manifest.permission.WRITE_CONTACTS,
         Manifest.permission.CAMERA,
         Manifest.permission.RECORD_AUDIO,
-        Manifest.permission.ACCESS_FINE_LOCATION
+//        Manifest.permission.ACCESS_FINE_LOCATION
     )
 
     @get:Rule

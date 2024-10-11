@@ -41,7 +41,7 @@ fun Resources.getColorCompat(resId: Int): Int {
 
 fun NavController.setStartDestination(id: Int) {
     val graph = this.graph
-    graph.startDestination = id
+    graph.setStartDestination(id)
     this.graph = graph
 }
 

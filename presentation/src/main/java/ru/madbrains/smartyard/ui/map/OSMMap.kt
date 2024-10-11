@@ -3,7 +3,10 @@ package ru.madbrains.smartyard.ui.map
 import android.view.View
 import android.widget.LinearLayout
 import org.osmdroid.api.IMapController
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase
 import org.osmdroid.util.BoundingBox
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.util.MapTileIndex
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
@@ -14,9 +17,11 @@ import ru.madbrains.smartyard.getCenter
 import ru.madbrains.smartyard.toGeoPoint
 import ru.madbrains.smartyard.ui.createIconWithText
 import ru.madbrains.smartyard.ui.createIconWithoutText
+import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVMapFragment
 import ru.madbrains.smartyard.ui.map.MapProvider.Companion.MAX_FOCUS_ZOOM
 import ru.madbrains.smartyard.ui.map.MapProvider.Companion.MAX_ZOOM
 import ru.madbrains.smartyard.ui.map.MapProvider.Companion.MIN_ZOOM
+import timber.log.Timber
 import java.lang.Exception
 
 class OSMMap(settings: MapSettings) : SimpleMap(settings) {
@@ -26,6 +31,16 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
 
     private var controller: IMapController? = null
     private var map: MapView? = null
+    private var marker: Marker? = null
+
+    override fun update(latLng: LatLng) {
+        marker?.apply {
+            position = latLng.toGeoPoint()
+            setAnchor(ANCHOR_CENTER, ANCHOR_CENTER)
+        }
+        map?.invalidate()
+    }
+
     override fun create(onInit: listenerEmpty, onLayout: listenerEmpty): View {
         val view = MapView(context)
         map = view
@@ -35,6 +50,7 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
+
         onInit()
         view.minZoomLevel = MIN_ZOOM.toDouble()
         view.maxZoomLevel = MAX_ZOOM.toDouble()
@@ -43,8 +59,25 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
         map?.addOnFirstLayoutListener { v, left, top, right, bottom ->
             onLayout()
         }
+        view.setTileSource(object : OnlineTileSourceBase(
+            "CUSTOM OSM",
+            4,
+            18,
+            256,
+            ".png",
+            arrayOf("https://osm.mycentra.ru/tile/")
+        ) {
+            override fun getTileURLString(pMapTileIndex: Long): String {
+                return "$baseUrl${MapTileIndex.getZoom(pMapTileIndex)}/${
+                    MapTileIndex.getX(
+                        pMapTileIndex
+                    )
+                }/${MapTileIndex.getY(pMapTileIndex)}.png"
+            }
+        })
         return view
     }
+
 
     override fun move(coord: LatLng, zoom: Float, instant: Boolean) {
         setZoom(zoom)
@@ -77,7 +110,8 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
     }
 
     override fun placeMarker(data: MarkerData, moveTo: Boolean, instant: Boolean) {
-        val marker = data.toMarkerWithIndex()
+//        val marker = data.toMarkerWithIndex()
+        marker = data.toMarkerWithIndex()
         map?.overlays?.add(marker)
         if (moveTo) move(data.position, MAX_FOCUS_ZOOM, instant)
     }
@@ -145,10 +179,19 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
         marker.position = position.toGeoPoint()
         if (this.type == MarkerType.CityCamera) {
             marker.icon =
-                createIconWithText(context, this.type.drawable, android.R.color.transparent, null)
+//                createIconWithText(context, this.type.drawable, android.R.color.transparent, null)
+                createIconWithoutText(context, R.drawable.bg_oval_active, R.drawable.ic_map_camera)
+
+        } else if (this.type == MarkerType.UserPoint) {
+            marker.icon = createIconWithoutText(
+                context,
+                R.drawable.bg_oval_active,
+                MarkerType.UserPoint.drawable
+            )
         } else {
 //            marker.icon = createIconWithText(context, R.drawable.ic_map_oval, R.drawable.ic_map_camera, index?.plus(1)?.toString())
-            marker.icon = createIconWithoutText(context, R.drawable.bg_oval_active, R.drawable.ic_map_camera)
+            marker.icon =
+                createIconWithoutText(context, R.drawable.bg_oval_active, R.drawable.ic_map_camera)
         }
 
         marker.setInfoWindow(null)

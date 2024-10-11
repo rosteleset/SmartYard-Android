@@ -11,6 +11,14 @@
         <action
             android:id="@+id/action_payFragment2_to_payContractFragment"
             app:destination="@id/payContractFragment" />
+        <action
+            android:id="@+id/action_payFragment3_to_webViewPayFragment"
+            app:destination="@id/payFragment3" />
+    </fragment>
+    <fragment
+        android:id="@+id/payFragment3"
+        android:name="ru.madbrains.smartyard.ui.main.pay.WebViewPayFragment"
+        android:label="PayFragmentWebView" >
     </fragment>
     <fragment
         android:id="@+id/payContractFragment"

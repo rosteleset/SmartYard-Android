@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -20,22 +21,36 @@ import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.R.string
 import ru.madbrains.smartyard.databinding.FragmentAddressSettingsBinding
 import ru.madbrains.smartyard.ui.SoundChooser
+import ru.madbrains.smartyard.ui.main.MainActivityViewModel
 import ru.madbrains.smartyard.ui.main.address.AddressViewModel
+import ru.madbrains.smartyard.ui.main.address.AddressWebViewFragment
 import ru.madbrains.smartyard.ui.main.settings.SettingsViewModel
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogDeleteReason.DialogDeleteReasonFragment
 import ru.madbrains.smartyard.ui.main.settings.accessAddress.dialogDeleteReason.DialogDeleteReasonFragment.OnGuestDeleteListener
+import ru.madbrains.smartyard.ui.requestSoundChouser
 import ru.madbrains.smartyard.ui.showStandardAlert
 import ru.madbrains.smartyard.ui.webview_dialog.WebViewDialogFragment
+import timber.log.Timber
+
+data class Settings(
+    val flatId: Int = 0,
+    val clientId: String = "",
+    val isKey: Boolean = false,
+    val contractOwner: Boolean = false,
+    val address: String = ""
+)
 
 class AddressSettingsFragment : Fragment() {
     private var _binding: FragmentAddressSettingsBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var mSetting: AddressSettingsFragmentArgs
+    //    private lateinit var mSetting: AddressSettingsFragmentArgs
+    private lateinit var mSetting: Settings
     private val viewModel by viewModel<AddressSettingsViewModel>()
 
     private var flatId: Int = 0
     private var clientId: String = ""
+    private var address: String = ""
     private var isKey: Boolean = false
     private var contractOwner: Boolean = false
 
@@ -54,8 +69,15 @@ class AddressSettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireNotNull(arguments).let {
-            mSetting = AddressSettingsFragmentArgs.fromBundle(it)
+//            mSetting = AddressSettingsFragmentArgs.fromBundle(it)
+            flatId = arguments?.getInt("flatId") ?: 0
+            clientId = arguments?.getString("clientId") ?: ""
+            address = arguments?.getString("address") ?: ""
+            isKey = arguments?.getBoolean("isKey") ?: false
+            contractOwner = arguments?.getBoolean("contractOwner") ?: false
+            mSetting = Settings(flatId, clientId, isKey, contractOwner, address)
         }
+
         binding.cvDeleteAddress.setOnClickListener {
             if (contractOwner) {
                 val dialog = DialogDeleteReasonFragment()
@@ -68,8 +90,13 @@ class AddressSettingsFragment : Fragment() {
                         }
 
                         override fun onShare(reasonText: String, reasonList: String) {
-                            viewModel.createIssue("${mSetting.address} contractId-$clientId-", reasonText, reasonList) //TODO Доавблен для удаления адреса
+                            viewModel.createIssue(
+                                "${mSetting.address} contractId-$clientId-",
+                                reasonText,
+                                reasonList
+                            )
                             dialog.dismiss()
+
                         }
                     }
                 dialog.show(parentFragmentManager, "")
@@ -78,22 +105,29 @@ class AddressSettingsFragment : Fragment() {
             }
         }
         binding.tvSoundChoose.setOnClickListener {
-            SoundChooser.showSoundChooseIntent(
-                this,
-                RingtoneManager.TYPE_RINGTONE,
-                mSetting.flatId,
-                viewModel.preferenceStorage
-            )
+            if (requestSoundChouser(requireContext())) {
+                SoundChooser.showSoundChooseIntent(
+                    this,
+                    RingtoneManager.TYPE_RINGTONE,
+                    mSetting.flatId,
+                    viewModel.preferenceStorage
+                )
+            }
         }
         context?.let {
-            val tone = SoundChooser.getChosenTone(
-                it,
-                RingtoneManager.TYPE_RINGTONE,
-                mSetting.flatId,
-                viewModel.preferenceStorage
-            )
-            binding.tvSoundChoose.text = tone.getToneTitle(it)
+            try {
+                val tone = SoundChooser.getChosenTone(
+                    it,
+                    RingtoneManager.TYPE_RINGTONE,
+                    mSetting.flatId,
+                    viewModel.preferenceStorage
+                )
+                binding.tvSoundChoose.text = tone.getToneTitle(it)
+            } catch (e: Exception) {
+                binding.tvSoundChoose.text = "По умолчанию"
+            }
         }
+
         binding.tvTitleNotif.setOnClickListener {
             if (binding.expandableLayoutNotif.isExpanded) {
                 binding.expandableLayoutNotif.collapse()
@@ -115,7 +149,10 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.tvWhiteRabbit.setOnClickListener {
-            WebViewDialogFragment(string.help_white_rabbit).show(requireActivity().supportFragmentManager, "HelpWhiteRabbit")
+            WebViewDialogFragment(string.help_white_rabbit).show(
+                requireActivity().supportFragmentManager,
+                "HelpWhiteRabbit"
+            )
         }
 
         binding.tvAddressName.text = mSetting.address
@@ -127,7 +164,8 @@ class AddressSettingsFragment : Fragment() {
         // Значение домофона
         binding.cvNotification.isVisible = isKey
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
         viewModel.getIntercom(flatId)
 
@@ -140,6 +178,8 @@ class AddressSettingsFragment : Fragment() {
                     null,
                     false
                 )
+                val intentBroadcast = Intent(AddressWebViewFragment.REFRESH_INTENT)
+                LocalBroadcastManager.getInstance(requireContext()).sendBroadcast(intentBroadcast)
             }
         )
 
@@ -210,7 +250,6 @@ class AddressSettingsFragment : Fragment() {
 
             binding.switchWhiteRabbit.isChecked = (it.whiteRabbit > 0)
         }
-
         viewModel.deleteRoommate.observe(
             viewLifecycleOwner,
             Observer {
@@ -333,7 +372,8 @@ class AddressSettingsFragment : Fragment() {
             viewModel.saveSpeakerFlag(flatId, isChecked)
         }
 
-        binding.switchUseSpeaker.isChecked = (viewModel.preferenceStorage.addressOptions.getOption(flatId).isSpeaker == true)
+        binding.switchUseSpeaker.isChecked =
+            (viewModel.preferenceStorage.addressOptions.getOption(flatId).isSpeaker == true)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

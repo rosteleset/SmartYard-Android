@@ -22,14 +22,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:enabled="true"
         android:text="Интернет и ТВ"
         android:textColor="@drawable/textview_colors"
         android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkBox"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/checkBox"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@+id/checkBox" />
 
     <TextView
         android:id="@+id/description"

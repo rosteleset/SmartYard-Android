@@ -16,8 +16,8 @@ class GeoInteractor(
     private val repository: GeoRepository
 ) {
 
-    suspend fun getServices(id: Int): GetServicesResponse {
-        return repository.getServices(id)
+    suspend fun getServices(id: Int, flat: Int = -1): GetServicesResponse {
+        return repository.getServices(id, flat)
     }
 
     suspend fun getAllLocations(): GetAllLocationsResponse {

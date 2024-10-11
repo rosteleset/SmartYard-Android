@@ -8,7 +8,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.*
@@ -17,19 +16,22 @@ import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.*
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.MimeTypes
+import androidx.media3.exoplayer.ExoPlaybackException
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.mediacodec.MediaCodecUtil
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -49,7 +51,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCityCameraBinding? = null
     private val binding get() = _binding!!
 
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: ExoPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private val viewModel: CityCamerasViewModel by sharedStateViewModel()
 
@@ -67,6 +69,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         super.onViewCreated(view, savedInstanceState)
 
         binding.ivCityCameraBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
             this.findNavController().popBackStack()
         }
 
@@ -102,10 +105,14 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
 
         binding.btnCityCameraRequestRecord.setOnClickListener {
-            this.findNavController().navigate(R.id.action_cityCameraFragment_to_requestRecordFragment)
+            val transaction = parentFragmentManager.beginTransaction()
+            transaction.add(R.id.cl_fragment_city_camera, RequestRecordFragment())
+            transaction.addToBackStack("RequestRecordFragment")
+            transaction.commit()
+//            this.findNavController().navigate(R.id.action_cityCameraFragment_to_requestRecordFragment1) //TODO cam_nav
         }
-
         setupObservers()
+        initPlayer() //TODO cam_nav
     }
 
     override fun onDestroyView() {
@@ -149,13 +156,14 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             viewLifecycleOwner
         ) {
             it?.run {
-                val slash = this.name.indexOf("/")
+                val slash = this.name.indexOf("-")
                 if (0 < slash && slash < this.name.length - 1) {
                     binding.tvCityCameraTitle.text = this.name.substring(0, slash).trim()
                     binding.tvCityCameraTitleSub.text = this.name.substring(slash + 1).trim()
                 } else {
-                    binding.tvCityCameraTitle.text = this.name;
-                    binding.tvCityCameraTitleSub.text = this.name;
+//                    binding.tvCityCameraTitle.text = this.name
+                    binding.tvCityCameraTitle.text = ""
+                    binding.tvCityCameraTitleSub.text = this.name
                 }
 
                 viewModel.getEvents(it.id) {
@@ -225,6 +233,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
     }
 
+
+
     private fun releasePlayer() {
         Timber.d("debug_dmm release")
         mPlayer?.stop()
@@ -253,7 +263,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private fun createPlayer(
         videoView: PlayerView,
         progressView: ProgressBar
-    ): SimpleExoPlayer {
+    ): ExoPlayer {
         Timber.d("debug_dmm create")
         
         val trackSelector = DefaultTrackSelector(requireContext())
@@ -262,7 +272,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             .setMaxVideoSize(4000, 3000)
             .build()
         trackSelector.parameters = params*/
-        val player  = SimpleExoPlayer.Builder(requireContext())
+        val player  = ExoPlayer.Builder(requireContext())
             .setTrackSelector(trackSelector)
             .build()
         //player.addAnalyticsListener(EventLogger(trackSelector))
@@ -277,15 +287,10 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         binding.ivCityCameraFullscreen.setOnClickListener {
             viewModel.isFullscreen = !viewModel.isFullscreen
-            if (viewModel.isFullscreen) {
-                setFullScreenMode()
-
-            } else {
-                setNormalMode()
-            }
+            if (viewModel.isFullscreen) setFullScreenMode() else setNormalMode()
         }
 
-        player.addListener(object : Player.EventListener {
+        player.addListener(object : Player.Listener {
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int
@@ -310,12 +315,13 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    viewModel.showGlobalError(error.sourceException)
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+                if (error.errorCode == ExoPlaybackException.TYPE_SOURCE) {
+                    viewModel.showGlobalError(error)
                 }
 
-                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                if (error.errorCode == ExoPlaybackException.TYPE_RENDERER) {
                     if (forceVideoTrack) {
                         forceVideoTrack = false
                         releasePlayer()
@@ -325,9 +331,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                 }
             }
 
-            override fun onTracksChanged(trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray) {
-                super.onTracksChanged(trackGroups, trackSelections)
+            override fun onTracksChanged(tracks: Tracks) {
+                super.onTracksChanged(tracks)
 
                 if (!forceVideoTrack) {
                     return
@@ -347,8 +352,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                                     for (j in 0 until rendererTrackGroups[i].length) {
                                         if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
                                             mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                                (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                                maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
+                                            (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
+                                                    maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)) {
                                             tracks.add(j)
                                         }
                                     }

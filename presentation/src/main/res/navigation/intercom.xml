@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/intercom"
+    app:startDestination="@id/intercomComposabelFragment">
+
+    <fragment
+        android:id="@+id/intercomComposabelFragment"
+        android:name="ru.madbrains.smartyard.ui.main.intercom.IntercomComposableFragment"
+        android:label="intercomComposabelFragment"
+        app:popUpToInclusive="false">
+    </fragment>
+
+
+
+
+<!--    <fragment-->
+<!--        android:id="@+id/intercomWebViewFragment"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.intercom.IntercomWebViewFragment"-->
+<!--        android:label="IntercomWebViewFragment"-->
+<!--        app:popUpToInclusive="false">-->
+<!--        <action-->
+<!--            android:id="@+id/action_intercomWebViewFragment_to_archiveFragment"-->
+<!--            app:destination="@id/archiveFragment" />-->
+<!--    </fragment>-->
+
+<!--    <fragment-->
+<!--        android:id="@+id/archiveFragment"-->
+<!--        android:name="ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVDetailFragment"-->
+<!--        android:label="archiveFragment" />-->
+</navigation>

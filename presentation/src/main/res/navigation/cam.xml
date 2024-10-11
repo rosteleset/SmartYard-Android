@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cam"
+    app:startDestination="@id/cityCamerasMap">
+
+    <fragment
+        android:id="@+id/cityCamerasMap"
+        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCamerasMapFragment"
+        android:label="city_cameras_map_fragment"
+        tools:layout="@layout/city_cameras_map_fragment">
+        <action
+            android:id="@+id/action_cityCamerasMapFragment_to_cityCameraFragment1"
+            app:destination="@id/cityCameraFragment1" />
+    </fragment>
+    <fragment
+        android:id="@+id/cityCameraFragment1"
+        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.CityCameraFragment"
+        android:label="fragment_city_camera"
+        tools:layout="@layout/fragment_city_camera" >
+        <action
+            android:id="@+id/action_cityCameraFragment_to_requestRecordFragment1"
+            app:destination="@id/requestRecordFragment1" />
+    </fragment>
+    <fragment
+        android:id="@+id/requestRecordFragment1"
+        android:name="ru.madbrains.smartyard.ui.main.burger.cityCameras.RequestRecordFragment"
+        android:label="fragment_request_record"
+        tools:layout="@layout/fragment_request_record" />
+</navigation>

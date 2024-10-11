@@ -6,11 +6,13 @@ import ru.madbrains.domain.interfaces.CCTVRepository
 import ru.madbrains.domain.model.request.CCTVAllRequest
 import ru.madbrains.domain.model.request.CCTVRecDownloadRequest
 import ru.madbrains.domain.model.request.CCTVRecPrepareRequest
+import ru.madbrains.domain.model.request.CCTVSortRequest
 import ru.madbrains.domain.model.request.CCTVYoutubeRequest
 import ru.madbrains.domain.model.response.CCTVGetResponse
 import ru.madbrains.domain.model.response.CCTVRecDownloadResponse
 import ru.madbrains.domain.model.response.CCTVRecPrepareResponse
 import ru.madbrains.domain.model.response.CCTVCityCameraGetResponse
+import ru.madbrains.domain.model.response.CCTVSortResponse
 import ru.madbrains.domain.model.response.RangeObject
 import ru.madbrains.domain.model.response.CCTVYoutubeResponse
 
@@ -52,6 +54,12 @@ class CCTVRepositoryImpl(
     override suspend fun getCCTVOverview(): CCTVCityCameraGetResponse? {
         return safeApiCall {
             lantaApi.getCCTVOverview().getResponseBody()
+        }
+    }
+
+    override suspend fun setCCTVSort(list: List<Int>): CCTVSortResponse {
+        return safeApiCall {
+            lantaApi.setCCTVSort(CCTVSortRequest(list)).getResponseBody()
         }
     }
 

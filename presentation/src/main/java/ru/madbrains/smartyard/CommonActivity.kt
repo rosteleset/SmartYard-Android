@@ -62,7 +62,6 @@ abstract class CommonActivity : AppCompatActivity() {
                 val intent = Intent(this, RegistrationActivity::class.java)
                 startActivity(intent)
                 updateAllWidget(this)
-                Timber.d("COMON_ACTIVITY") //TODO TIMBER
             }
         )
     }

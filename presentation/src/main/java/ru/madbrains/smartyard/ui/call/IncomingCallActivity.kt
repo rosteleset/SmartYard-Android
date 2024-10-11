@@ -14,10 +14,14 @@ import android.os.Build
 import android.os.Bundle
 import android.os.SystemClock
 import android.view.WindowManager
+import android.window.OnBackInvokedDispatcher
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import org.koin.androidx.scope.activityScope
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.linphone.core.RegistrationState
@@ -31,9 +35,11 @@ import ru.madbrains.smartyard.EventObserver
 import ru.madbrains.smartyard.LinphoneProvider
 import ru.madbrains.smartyard.LinphoneService
 import ru.madbrains.smartyard.R
+import ru.madbrains.smartyard.VibratorSingleton
 import ru.madbrains.smartyard.databinding.ActivityIncomingCallBinding
 import ru.madbrains.smartyard.show
 import ru.madbrains.smartyard.ui.showStandardAlert
+import timber.log.Timber
 
 class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListener {
     private lateinit var binding: ActivityIncomingCallBinding
@@ -46,7 +52,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private var mProximity: Sensor? = null
     private val SENSOR_SENSITIVITY = 4
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        showWhenLockedAndTurnScreenOn()
         super.onCreate(savedInstanceState)
         binding = ActivityIncomingCallBinding.inflate(layoutInflater)
         val view = binding.root
@@ -55,6 +63,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mProximity = mSensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         setupUi()
 
+        onBackPressedDispatcher.addCallback(object  : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                hangUp()
+            }
+        })
         val fcmData = intent.extras?.get(FCM_DATA) as FcmCallData?
         val provider = LinphoneService.instance?.provider
         if (provider != null && fcmData != null) {
@@ -95,7 +108,25 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
             }
         }
+
+
+        mViewModel.eyeState.value = !binding.mPeekButton.isChecked
+        mViewModel.eyeState.value = binding.mPeekButton.isChecked
+
         mViewModel.routeAudioToValue(useSpeaker)
+    }
+
+
+    private fun showWhenLockedAndTurnScreenOn() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) {
+            setShowWhenLocked(true)
+            setTurnScreenOn(true)
+        } else {
+            window.addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                        or WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+            )
+        }
     }
 
     private fun setupUi() {
@@ -114,6 +145,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun hangUp() {
+        VibratorSingleton.cancel()
         LinphoneService.instance?.stopSelf()
     }
 
@@ -216,6 +248,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun answerCall() {
+        VibratorSingleton.cancel()
         if (!binding.mAnswerButton.isSelected && mLinphone.dtmfIsSent.value != true) {
             binding.mAnswerButton.isSelected = true
             mLinphone.acceptCall(binding.mVideoSip)
@@ -322,6 +355,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mSensorManager?.unregisterListener(this)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        VibratorSingleton.cancel()
+    }
+
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     override fun onSensorChanged(event: SensorEvent) {
@@ -345,6 +383,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             ActivityCompat.requestPermissions(this, permissions, 0)
         }
     }
+
+
 
     companion object {
         const val NOTIFICATION_ID = "NOTIFICATION_ID"

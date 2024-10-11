@@ -26,18 +26,19 @@
         android:textColor="@color/black_200"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/tvEventLogChildTime"
+        app:layout_constraintEnd_toStartOf="@+id/imageView21"
         app:layout_constraintStart_toEndOf="@+id/ivEventLogChildType"
         app:layout_constraintTop_toTopOf="parent" />
 
 
     <ImageView
+        android:id="@+id/imageView21"
         android:layout_width="0dp"
         android:layout_height="9dp"
-        android:layout_marginEnd="64dp"
+        android:layout_marginEnd="8dp"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/tvEventLogChildTime"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.509"
         app:srcCompat="@drawable/ic_arrow_bottom"

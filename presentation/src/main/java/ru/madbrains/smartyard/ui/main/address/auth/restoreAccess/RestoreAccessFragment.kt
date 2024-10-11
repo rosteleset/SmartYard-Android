@@ -1,11 +1,14 @@
 package ru.madbrains.smartyard.ui.main.address.auth.restoreAccess
 
+import android.app.ActionBar.LayoutParams
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
+import androidx.core.view.setMargins
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -15,8 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.smartyard.EventObserver
+import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.afterTextChanged
 import ru.madbrains.smartyard.databinding.FragmentRestoreAccessBinding
+import ru.madbrains.smartyard.ui.getStatusBarHeight
+import ru.madbrains.smartyard.ui.main.address.auth.restoreAccess.codeSmsRestore.CodeSmsRestoreFragment
 
 class RestoreAccessFragment : Fragment() {
     private var _binding: FragmentRestoreAccessBinding? = null
@@ -35,7 +41,9 @@ class RestoreAccessFragment : Fragment() {
         )
         initRecycler()
         arguments?.let {
-            contractNumber = RestoreAccessFragmentArgs.fromBundle(it).contractNumber
+//            contractNumber = RestoreAccessFragmentArgs.fromBundle(it).contractNumber
+            contractNumber = it.getString("contractNumber").toString()
+
         }
         binding.etContractNumber.setText(contractNumber)
         binding.btnRecovery.isEnabled = binding.etContractNumber.text?.isNotEmpty() == true
@@ -46,22 +54,40 @@ class RestoreAccessFragment : Fragment() {
             mViewModel.recoveryOptions(binding.etContractNumber.text.toString())
         }
 
+        binding.clHeader.setPadding(0,getStatusBarHeight(context), 0, 0)
+
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
 
         binding.btnCodeConfirm.setOnClickListener {
             mViewModel.sentCodeRecovery(binding.etContractNumber.text.toString(), contactId)
         }
 
+        binding.ivBack.setOnClickListener {
+            parentFragmentManager.popBackStack()
+        }
+
         mViewModel.navigationToCodeSms.observe(
             viewLifecycleOwner,
             EventObserver {
-                val action =
-                    RestoreAccessFragmentDirections.actionRestoreAccessFragmentToCodeSmsRestoreFragment(
-                        binding.etContractNumber.text.toString(), contactId, contactName
-                    )
-                this.findNavController().navigate(action)
+//                val action =
+//                    RestoreAccessFragmentDirections.actionRestoreAccessFragmentToCodeSmsRestoreFragment(
+//                        binding.etContractNumber.text.toString(), contactId, contactName
+//                    )
+//                this.findNavController().navigate(action)
+                    binding.btnCodeConfirm.visibility = View.INVISIBLE
+                        val transaction = fragmentManager?.beginTransaction()
+                        val newFragment = CodeSmsRestoreFragment()
+                        val bundle = Bundle()
+                        bundle.putString("contractId", contactId)
+                        bundle.putString("contactName", contactName)
+                        bundle.putString("contractNumber", binding.etContractNumber.text.toString())
+                        newFragment.arguments = bundle
+                        transaction?.add(R.id.sv_fragment_restore_access, newFragment)
+                        transaction?.addToBackStack("RestoreAccessFragment")
+                        transaction?.commit()
             }
         )
 

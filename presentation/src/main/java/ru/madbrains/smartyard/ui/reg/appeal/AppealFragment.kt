@@ -8,8 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import ru.madbrains.smartyard.R
+import  ru.madbrains.smartyard.ui.requestPermissions
 import ru.madbrains.smartyard.databinding.FragmentAppealBinding
-import ru.madbrains.smartyard.ui.requestPermission
+import ru.madbrains.smartyard.ui.main.MainActivity.Companion.REQUEST_CODE_MULTIPLE_PERMISSIONS
 
 class AppealFragment : Fragment() {
     private var _binding: FragmentAppealBinding? = null
@@ -18,7 +19,7 @@ class AppealFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentAppealBinding.inflate(inflater, container, false)
         return binding.root
@@ -29,22 +30,37 @@ class AppealFragment : Fragment() {
 
         binding.mForm.initialize(viewLifecycleOwner, R.string.next, arguments) {
             this.findNavController().navigate(R.id.action_appealFragment_to_mainActivity)
-            requestPermission(
-                arrayListOf(
+
+            requestPermissions(
+                arrayOf(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE,
                     Manifest.permission.READ_CONTACTS,
                     Manifest.permission.WRITE_CONTACTS,
-                    Manifest.permission.CAMERA,
+
+//                    Manifest.permission.CAMERA,
                     Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.ACCESS_FINE_LOCATION
+//                    Manifest.permission.ACCESS_FINE_LOCATION
                 ),
                 requireContext(),
-                onGranted = {
-                },
-                onDenied = {
-                }
+                REQUEST_CODE_MULTIPLE_PERMISSIONS
             )
+//            requestPermission(
+//                arrayListOf(
+//                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+//                    Manifest.permission.READ_EXTERNAL_STORAGE,
+//                    Manifest.permission.READ_CONTACTS,
+//                    Manifest.permission.WRITE_CONTACTS,
+//                    Manifest.permission.CAMERA,
+//                    Manifest.permission.RECORD_AUDIO,
+////                    Manifest.permission.ACCESS_FINE_LOCATION
+//                ),
+//                requireContext(),
+//                onGranted = {
+//                },
+//                onDenied = {
+//                }
+//            )
             activity?.finish()
         }
     }

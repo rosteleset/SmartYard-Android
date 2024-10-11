@@ -6,6 +6,7 @@ import retrofit2.http.Url
 import ru.madbrains.domain.interfaces.CCTVRepository
 import ru.madbrains.domain.model.response.CCTVCityCameraData
 import ru.madbrains.domain.model.response.CCTVData
+import ru.madbrains.domain.model.response.CCTVSortResponse
 import ru.madbrains.domain.model.response.CCTVYoutubeData
 import ru.madbrains.domain.model.response.RangeObject
 
@@ -44,6 +45,10 @@ class CCTVInteractor(
 
     suspend fun getCCTVOverview(): List<CCTVCityCameraData>? {
         return repository.getCCTVOverview()?.data
+    }
+
+    suspend fun setCCTVSort(list: List<Int>): CCTVSortResponse {
+        return repository.setCCTVSort(list)
     }
 
     suspend fun getCCTVYoutube(id: Int?): List<CCTVYoutubeData>? {

@@ -1,46 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="ru.madbrains.smartyard">
 
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" />
+    <!-- GEO_POSITION -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" /> -->
+    <!-- <uses-permission android:name="android.permission.ACTION_APPLICATION_DETAILS_SETTINGS" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" /> -->
+    <!-- <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> -->
+    <!-- GEO_POSITION -->
+    <uses-permission
+        android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Needed for full screen intent in notifications -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:ignore="ScopedStorage" /> <!-- Needed for full screen intent in notifications -->
     <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-    <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.FLASHLIGHT" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
+    <!-- <uses-permission android:name="android.permission.FLASHLIGHT" /> -->
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_CONTACTS" /> <!-- Needed for autostart -->
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" tools:node="remove"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MICROPHONE" tools:node="remove"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" tools:node="remove"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_PHONE_CALL" />
+    <uses-permission android:name="android.permission.MANAGE_OWN_CALLS" />
 
 
+    <queries>
+        <!-- Browser -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+
+        <!-- Camera -->
+        <intent>
+            <action android:name="android.media.action.IMAGE_CAPTURE" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="https" />
+        </intent>
+
+        <!-- Gallery -->
+        <intent>
+            <action android:name="android.intent.action.GET_CONTENT" />
+        </intent>
+    </queries>
 
     <application
-        android:networkSecurityConfig="@xml/network_security_config"
         android:name=".App"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:screenOrientation="portrait"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher"
+        android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher">
-        <uses-library android:name="org.apache.http.legacy" android:required="false"/>
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
+
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
-            android:value="true" />
-
+            android:value="true" /> <!-- WORKER -->
+        <!-- <service -->
+        <!-- android:name=".NotificationWorker" -->
+        <!-- android:exported="false" -->
+        <!-- tools:ignore="Instantiatable" /> -->
+        <service android:name=".VolumeButtonService" />
         <service
             android:name=".ui.widget.WidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
 
-        <receiver android:name=".ui.widget.WidgetProvider"
+        <receiver
+            android:name=".ui.widget.WidgetProvider"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -48,13 +104,25 @@
 
             <meta-data
                 android:name="android.appwidget.provider"
-                android:resource="@xml/app_widget_info"></meta-data>
+                android:resource="@xml/app_widget_info" />
         </receiver>
+
+        <service
+            android:name=".ui.call.IncomingCallPushService"
+            android:foregroundServiceType="shortService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="OPEN_DOOR_NOTIFICATION" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="IGNORE_CALL_NOTIFICATION" />
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".ui.launcher.LauncherActivity"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
@@ -75,27 +143,30 @@
         <activity
             android:name=".ui.main.MainActivity"
             android:configChanges="orientation|screenSize"
+            android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme"
-            android:windowSoftInputMode="adjustResize"
-            android:exported="true">
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data
-                    android:scheme="centra"
-                    android:pathPrefix="/sber" />
+                    android:pathPrefix="/sber"
+                    android:scheme="centra" />
             </intent-filter>
         </activity>
         <activity
             android:name=".ui.call.IncomingCallActivity"
+            android:excludeFromRecents="true"
+            android:exported="true"
             android:launchMode="singleTop"
             android:noHistory="true"
+            android:permission="android.permission.CALL_PHONE"
+            android:showOnLockScreen="true"
             android:showWhenLocked="true"
-            android:turnScreenOn="true" />
+            android:turnScreenOn="true"/>
 
         <activity
             android:name=".ui.widget.WidgetActivity"
@@ -111,8 +182,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service
             android:name=".LinphoneService"
+            android:foregroundServiceType="phoneCall"
+            android:exported="false"
             android:enabled="true" />
 
         <meta-data

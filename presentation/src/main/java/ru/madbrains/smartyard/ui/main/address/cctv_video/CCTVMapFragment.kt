@@ -5,23 +5,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.navigation.fragment.findNavController
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import ru.madbrains.domain.model.response.CCTVData
 import ru.madbrains.smartyard.MapFragment
 import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentCctvMapBinding
 import ru.madbrains.smartyard.toLatLng
+import ru.madbrains.smartyard.ui.map.GeoPosition
+import ru.madbrains.smartyard.ui.map.LatLng
 import ru.madbrains.smartyard.ui.map.MapProvider
 import ru.madbrains.smartyard.ui.map.MapSettings
 import ru.madbrains.smartyard.ui.map.MarkerData
 import ru.madbrains.smartyard.ui.map.MarkerType
+import timber.log.Timber
 
 class CCTVMapFragment : MapFragment() {
     private var _binding: FragmentCctvMapBinding? = null
     private val binding get() = _binding!!
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
+//    private var geoPosition: GeoPosition? = null //TODO Текущая гео позиция
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,13 +39,33 @@ class CCTVMapFragment : MapFragment() {
         super.onActivityCreated(savedInstanceState)
         context?.let { context ->
             setupUi(context)
+
         }
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+//        geoPosition = GeoPosition(this) //TODO Текущая гео позиция
+    }
+
+
+
+    override fun onStart() {
+        super.onStart()
+//        geoPosition?.location?.observe(viewLifecycleOwner) {
+//            for (location in it) {
+//                mapProvider?.map?.update(LatLng(location.latitude, location.longitude))
+//                Timber.d("LOCATIONRESULT map ${mapProvider} locationResult.locations  ${location.longitude} ${location.latitude}")
+//            }
+//        } //TODO Текущая гео позиция
+
     }
 
     private fun setupUi(context: Context) {
         binding.contentWrap.clipToOutline = true
         binding.ivBack.setOnClickListener {
-            this.findNavController().popBackStack()
+//            this.findNavController().popBackStack()
+            parentFragmentManager.popBackStack()
         }
         binding.tvTitleSub.text = mCCTVViewModel.cctvModel.value?.address
         mCCTVViewModel.cameraList.value?.let { list ->
@@ -59,22 +82,34 @@ class CCTVMapFragment : MapFragment() {
         val settings = MapSettings(context) { marker ->
             marker.index?.let {
                 mCCTVViewModel.chooseCamera(it)
-                this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
+//                this.findNavController().navigate(R.id.action_CCTVMapFragment_to_CCTVDetailFragment)
+//                val action = CCTVMapFragmentDirections.actionCCTVMapFragmentToCCTVDetailFragment1()
+//                this.findNavController().navigate(action)
+                val transaction = parentFragmentManager.beginTransaction()
+                val newFragment = CCTVDetailFragment()
+                transaction.add(R.id.cl_cctv_map_fragment, newFragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
             }
             true
         }
         val listMarker = list.mapIndexed { index, item ->
             MarkerData(MarkerType.Camera, item.toLatLng(), "", index)
         }
+
+
         binding.contentWrap.removeAllViews()
         binding.contentWrap.addView(mapProvider)
+
         mapProvider.createMap(this, settings) {
             it.placeMarkers(
                 listMarker,
                 instant = true
             )
+            it.placeMarker(
+                MarkerData(MarkerType.UserPoint,  LatLng(1.5, 1.5), index = 5000),
+                instant = true
+            )
         }
     }
-
-    private fun setupObserve() {}
 }

@@ -4,10 +4,17 @@ import com.squareup.moshi.Moshi
 import ru.madbrains.data.remote.LantaApi
 import ru.madbrains.domain.interfaces.AddressRepository
 import ru.madbrains.domain.model.TF
+import ru.madbrains.domain.model.request.AcceptOffertaByAddressRequest
+import ru.madbrains.domain.model.request.AcceptOffertaRequest
 import ru.madbrains.domain.model.request.AccessRequest
+import ru.madbrains.domain.model.request.ActivateLimitRequest
 import ru.madbrains.domain.model.request.AddMyPhoneRequest
+import ru.madbrains.domain.model.request.CheckOffertaByAddressRequest
+import ru.madbrains.domain.model.request.CheckOffertaRequest
 import ru.madbrains.domain.model.request.ConfirmCodeRecoveryRequest
 import ru.madbrains.domain.model.request.GetIntercomRequest
+import ru.madbrains.domain.model.request.OpenUrlRequest
+import ru.madbrains.domain.model.request.ParentControlRequest
 import ru.madbrains.domain.model.request.PutIntercomRequest
 import ru.madbrains.domain.model.request.QRRequest
 import ru.madbrains.domain.model.request.RecoveryOptionsRequest
@@ -17,7 +24,10 @@ import ru.madbrains.domain.model.request.SentCodeRecoveryRequest
 import ru.madbrains.domain.model.request.Settings
 import ru.madbrains.domain.model.request.PlogDaysRequest
 import ru.madbrains.domain.model.request.PlogRequest
+import ru.madbrains.domain.model.request.ResetDoorCodeRequest
+import ru.madbrains.domain.model.response.AcceptOffertaResponse
 import ru.madbrains.domain.model.response.AccessResponse
+import ru.madbrains.domain.model.response.ActivateLimitResponse
 import ru.madbrains.domain.model.response.AddMyPhoneResponse
 import ru.madbrains.domain.model.response.ConfirmCodeRecoveryResponse
 import ru.madbrains.domain.model.response.GetAddressListResponse
@@ -33,6 +43,14 @@ import ru.madbrains.domain.model.response.SentCodeRecoveryResponse
 import ru.madbrains.domain.model.response.PlogDaysResponse
 import ru.madbrains.domain.model.response.PlogResponse
 import ru.madbrains.domain.model.response.CamMapResponse
+import ru.madbrains.domain.model.response.CameraCctvResponse
+import ru.madbrains.domain.model.response.CheckOffertaResponse
+import ru.madbrains.domain.model.response.ContractsResponse
+import ru.madbrains.domain.model.response.LogOutResponse
+import ru.madbrains.domain.model.response.OpenUrlResponse
+import ru.madbrains.domain.model.response.ParentControlResponse
+import ru.madbrains.domain.model.response.PlacesCctvResponse
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -43,6 +61,19 @@ class AddressRepositoryImpl(
 
     override val moshi: Moshi
 ) : AddressRepository, BaseRepository(moshi) {
+    override suspend fun generateOpenUrl(
+        houseId: Int,
+        flat: Int,
+        domophoneId: Long,
+        timeExpire: Int,
+        count: Int
+    ): OpenUrlResponse {
+        return safeApiCall {
+            lantaApi.generateOpenUrl(OpenUrlRequest(houseId, flat, domophoneId, timeExpire, count))
+                .getResponseBody()
+        }
+    }
+
     override suspend fun getAddressList(): GetAddressListResponse {
         return safeApiCall {
             lantaApi.getAddressList().getResponseBody()
@@ -96,6 +127,12 @@ class AddressRepositoryImpl(
     override suspend fun resetCode(flatId: Int): ResetCodeResponse {
         return safeApiCall {
             lantaApi.resetCode(ResetCodeRequest(flatId))
+        }
+    }
+
+    override suspend fun resetCode(flatId: Int, domophoneId: Long): ResetCodeResponse {
+        return safeApiCall {
+            lantaApi.resetCode(ResetDoorCodeRequest(flatId, domophoneId))
         }
     }
 
@@ -154,7 +191,7 @@ class AddressRepositoryImpl(
         clientId: String?
     ): AccessResponse {
         return safeApiCall {
-            lantaApi.access(AccessRequest(flatId, guestPhone, type, expire, clientId))
+           lantaApi.access(AccessRequest(flatId, guestPhone, type, expire, clientId))
                 .getResponseBody()
         }
     }
@@ -165,9 +202,10 @@ class AddressRepositoryImpl(
         }
     }
 
-    override suspend fun plogDays(flatId: Int, events: Set<Int>): PlogDaysResponse {
+    override suspend fun plogDays(flatId: Int, events: Set<Int>?): PlogDaysResponse {
         return safeApiCall {
-            lantaApi.plogDays(PlogDaysRequest(flatId, events.joinToString())).getResponseBody()
+            lantaApi.plogDays(PlogDaysRequest(flatId, events?.joinToString() ?: ""))
+                .getResponseBody()
         }
     }
 
@@ -189,9 +227,65 @@ class AddressRepositoryImpl(
         }
     }
 
+    override suspend fun checkOfferta(login: String, password: String): CheckOffertaResponse {
+        return safeApiCall {
+            lantaApi.checkOfferta(CheckOffertaRequest(login, password)).getResponseBody()
+        }
+    }
+
+    override suspend fun checkOffertaByAddress(houseId: Int, flat: Int): CheckOffertaResponse {
+        return safeApiCall {
+            lantaApi.checkOffertaByAddress(CheckOffertaByAddressRequest(houseId, flat))
+                .getResponseBody()
+        }
+    }
+
+    override suspend fun acceptOfferta(login: String, password: String): AcceptOffertaResponse {
+        return safeApiCall {
+            lantaApi.acceptOfferta(AcceptOffertaRequest(login, password)).getResponseBody()
+        }
+    }
+
+    override suspend fun acceptOffertaByAddress(houseId: Int, flat: Int): AcceptOffertaResponse {
+        return safeApiCall {
+            lantaApi.acceptOffertaByAddress(AcceptOffertaByAddressRequest(houseId, flat))
+                .getResponseBody()
+        }
+    }
+
     override suspend fun camMap(): CamMapResponse {
         return safeApiCall {
             lantaApi.camMap().getResponseBody()
+        }
+    }
+
+    override suspend fun getPlaces(): PlacesCctvResponse {
+        return safeApiCall {
+            lantaApi.getPlaces().getResponseBody()
+        }
+    }
+
+    override suspend fun getCameras(): CameraCctvResponse {
+        return safeApiCall {
+            lantaApi.getCameras().getResponseBody()
+        }
+    }
+
+    override suspend fun getContracts(): ContractsResponse {
+        return safeApiCall {
+            lantaApi.getContracts().getResponseBody()
+        }
+    }
+
+    override suspend fun setParentControl(clientId: Int): ParentControlResponse {
+        return safeApiCall {
+            lantaApi.setParentControl(ParentControlRequest(clientId)).getResponseBody()
+        }
+    }
+
+    override suspend fun activateLimit(contractId: Int): ActivateLimitResponse {
+        return safeApiCall {
+            lantaApi.activateLimit(ActivateLimitRequest(contractId)).getResponseBody()
         }
     }
 }

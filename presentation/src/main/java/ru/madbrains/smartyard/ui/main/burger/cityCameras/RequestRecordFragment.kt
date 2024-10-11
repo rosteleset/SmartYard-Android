@@ -86,6 +86,9 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
             viewLifecycleOwner,
             EventObserver {
                 showStandardAlert(requireContext(), R.string.issue_dialog_caption_0) {
+                   for (i in 0 until  parentFragmentManager.backStackEntryCount){
+                       parentFragmentManager.popBackStack()
+                   }
                     this.findNavController().popBackStack()
                 }
             }

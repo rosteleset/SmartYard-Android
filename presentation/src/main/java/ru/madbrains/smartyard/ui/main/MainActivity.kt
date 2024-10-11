@@ -1,8 +1,12 @@
 package ru.madbrains.smartyard.ui.main
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.Notification
+import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -12,15 +16,24 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
-import android.view.*
+import android.provider.Settings
+import android.view.LayoutInflater
+import android.view.View
+import android.view.WindowManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.IdRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
-import androidx.core.view.*
-import androidx.fragment.app.FragmentTransaction
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -28,6 +41,7 @@ import androidx.navigation.NavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import ru.madbrains.domain.model.response.ItemOption
 import ru.madbrains.smartyard.CommonActivity
 import ru.madbrains.smartyard.Event
 import ru.madbrains.smartyard.EventObserver
@@ -42,11 +56,16 @@ import ru.madbrains.smartyard.ui.call.IncomingCallActivity
 import ru.madbrains.smartyard.ui.dpToPx
 import ru.madbrains.smartyard.ui.getBottomNavigationHeight
 import ru.madbrains.smartyard.ui.main.ChatWoot.ChatWootFragment
+import ru.madbrains.smartyard.ui.main.address.AddressViewModel
+import ru.madbrains.smartyard.ui.main.address.cctv_video.CCTVViewModel
 import ru.madbrains.smartyard.ui.main.address.event_log.EventLogDetailFragment
+import ru.madbrains.smartyard.ui.main.address.models.interfaces.VideoCameraModelP
 import ru.madbrains.smartyard.ui.main.burger.ExtWebViewFragment
 import ru.madbrains.smartyard.ui.main.notification.NotificationFragment
+import ru.madbrains.smartyard.ui.main.pay.WebViewPayViewModel
 import ru.madbrains.smartyard.ui.setupWithNavController
 import timber.log.Timber
+
 
 interface UserInteractionListener {
     fun onUserInteraction()
@@ -62,22 +81,68 @@ class MainActivity : CommonActivity() {
     override val mViewModel by viewModel<MainActivityViewModel>()
 
     private var currentNavController: LiveData<NavController>? = null
-
+    private val mWebViewPayViewModel by viewModel<WebViewPayViewModel>()
+    private val mCCTVViewModel by viewModel<CCTVViewModel>()
+    private val mAddresViewModel by viewModel<AddressViewModel>()
     private var userInteractionListener: UserInteractionListener? = null
     private var exitFullscreenListener: ExitFullscreenListener? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     @SuppressLint("CommitTransaction")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.decorView.systemUiVisibility =
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        //TODO StatusBar hide with system navigation this is KOSTILY
+
+        // Устанавливаем светлую тему для всего приложения
+//        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
+
+        setLightStatusBar(view, this)
         setContentView(view)
-
-        /*(bottom_nav.background as MaterialShapeDrawable).apply {
-            this.setStroke(2.0f, 12345)
-        }*/
-
         appVersion()
+        mWebViewPayViewModel.getOptions()
+        mCCTVViewModel.getCameras(VideoCameraModelP(0, "")) {}
+        observer()
+        Thread.sleep(500)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelId = "my_channel_id"
+            val channelName = "MainNotificationChannel"
+            val channelDescription = "Channel for showing my notifications"
+            val notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            // Проверяем, существует ли канал уведомлений
+            val channel = notificationManager.getNotificationChannel(channelId)
+            if (channel == null) {
+                // Канал уведомлений не создан - создаём его
+                val newChannel =
+                    NotificationChannel(
+                        channelId,
+                        channelName,
+                        NotificationManager.IMPORTANCE_HIGH
+                    ).apply {
+                        lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+                    }
+                newChannel.description = channelDescription
+                notificationManager.createNotificationChannel(newChannel)
+            } else {
+                // Канал уведомлений уже существует - используем его
+            }
+            // Проверяем, имеет ли приложение разрешение на отправку уведомлений
+            if (notificationManager.areNotificationsEnabled()) {
+                // Разрешение есть, можно показывать уведомления
+            } else {
+                // Разрешение отсутствует, запросить его у пользователя
+                val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+                    putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                }
+                startActivity(intent)
+            }
+        }
 
 
         val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
@@ -96,21 +161,22 @@ class MainActivity : CommonActivity() {
         } // Else, need to wait for onRestoreInstanceState
 
         binding.bottomNav.itemIconTintList = null
-
-        showBadge(this, binding.bottomNav, R.id.notification, "")
         mViewModel.onCreate()
 
-        mViewModel.badge.observe(
-            this,
-            Observer { badge ->
-                if (badge) showBadge(
-                    this,
-                    binding.bottomNav,
-                    R.id.notification,
-                    ""
-                ) else removeBadge()
-            }
-        )
+//        showBadge(this, binding.bottomNav, R.id.notification, "") //TODO Бэйдж для уведомлений
+
+
+//        mViewModel.badge.observe(
+//            this,
+//            Observer { badge ->
+//                if (badge) showBadge(
+//                    this,
+//                    binding.bottomNav,
+//                    R.id.notification,
+//                    ""
+//                ) else removeBadge()
+//            }
+//        ) //TODO Бэйдж для уведомлений
 
         mViewModel.chat.observe(
             this,
@@ -122,44 +188,6 @@ class MainActivity : CommonActivity() {
                 }
             }
         )
-
-
-//        //В Android 11 и выше появляется визуальный глюк нижней панели навгации после скрытия виртуальной клавиатуры.
-//        //Поэтому, после окончания анимации показа виртуальной клавиатуры, скрываем панель навигации,
-//        //а после исчезновения виртуальной клавиатуры - вновь показываем.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-//            binding.root.setWindowInsetsAnimationCallback(object :
-//                WindowInsetsAnimation.Callback(DISPATCH_MODE_STOP) {
-//                override fun onProgress(
-//                    insets: WindowInsets,
-//                    runningAnimations: MutableList<WindowInsetsAnimation>
-//                ): WindowInsets {
-//                    return insets
-//                }
-//
-//                override fun onStart(
-//                    animation: WindowInsetsAnimation,
-//                    bounds: WindowInsetsAnimation.Bounds
-//                ): WindowInsetsAnimation.Bounds {
-//                    Log.d("NAVBAR", "NAVBARSHOW")
-//
-//                    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-//                    if (!binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
-//                        bottomNavigationView.visibility = View.VISIBLE
-//                    }
-//                    return super.onStart(animation, bounds)
-//                }
-//
-//                override fun onEnd(animation: WindowInsetsAnimation) {
-//                    Log.d("NAVBAR", "NAVBARHIDE")
-//                    val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-//                    if (binding.root.rootWindowInsets.isVisible(WindowInsetsCompat.Type.ime())) {
-//                        bottomNavigationView.visibility = View.INVISIBLE
-//
-//                    }
-//                }
-//            })
-//        }
 
         mViewModel.updateToAppNavigateDialog.observe(
             this,
@@ -184,6 +212,29 @@ class MainActivity : CommonActivity() {
         }
 
         handleIntent(intent)
+    }
+
+    private fun setLightStatusBar(view: View, activity: Activity) {
+        var flags = view.systemUiVisibility
+        flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        view.systemUiVisibility = flags
+        activity.window.statusBarColor = Color.TRANSPARENT
+        //TODO Смена цвета для статус бара костыль
+    }
+
+    private fun observer() {
+        val messageObserver = Observer<List<ItemOption>> {
+            if (it.isNotEmpty()) {
+                val activeTab = it[0].activeTab
+                if (activeTab == "centra") {
+                    mViewModel.bottomNavigateToMain()
+                }
+                if (activeTab == "intercom") {
+                    mViewModel.bottomNavigateToIntercom()
+                }
+            }
+        }
+        mWebViewPayViewModel.options.observe(this, messageObserver)
     }
 
     private fun dialogForceUpgrade() {
@@ -221,15 +272,32 @@ class MainActivity : CommonActivity() {
 
     private fun rootingTabMessage(messageType: TypeMessage) {
         if (messageType == TypeMessage.INBOX) {
-            binding.bottomNav.selectedItemId = R.id.notification
+            binding.bottomNav.selectedItemId = R.id.main
+            try {
+                val transaction = supportFragmentManager.beginTransaction()
+                transaction.replace(R.id.cl_fragment_wv, NotificationFragment())
+                supportFragmentManager.popBackStack(
+                    "root",
+                    FragmentManager.POP_BACK_STACK_INCLUSIVE
+                )
+                transaction.addToBackStack(null)
+                transaction.commit()
+
+            } catch (e: Exception) {
+                binding.bottomNav.selectedItemId = R.id.main
+            }
         } else {
-            binding.bottomNav.selectedItemId = R.id.address
+            binding.bottomNav.selectedItemId = R.id.main
         }
     }
 
     override fun onResume() {
         super.onResume()
         mViewModel.onResume()
+    }
+
+    override fun onPause() {
+        super.onPause()
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -256,9 +324,12 @@ class MainActivity : CommonActivity() {
         val navGraphIds = listOf(
             R.navigation.address,
             R.navigation.notification,
+            R.navigation.intercom,
             R.navigation.chat,
             R.navigation.pay,
-            R.navigation.settings
+            R.navigation.settings,
+            R.navigation.cam,
+            R.navigation.main
         )
 
         // Setup the bottom navigation view with a list of navigation graphs
@@ -310,6 +381,10 @@ class MainActivity : CommonActivity() {
         mViewModel.navigationToAddressAuthFragmentAction()
     }
 
+    fun navigateTo(id: Int) {
+        binding.bottomNav.selectedItemId = id
+    }
+
     fun reloadToAddress() {
         if (binding.bottomNav.selectedItemId == R.id.address) {
             binding.bottomNav.selectedItemId = R.id.address
@@ -324,16 +399,46 @@ class MainActivity : CommonActivity() {
         }
     }
 
+    private fun checkPermission(context: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            if (ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.FOREGROUND_SERVICE_PHONE_CALL
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                ActivityCompat.requestPermissions(
+                    context as Activity,
+                    arrayOf(Manifest.permission.FOREGROUND_SERVICE_PHONE_CALL),
+                    REQUEST_CODE_FOREGROUND_SERVICE_PHONE_CALL
+                )
+            }
+        }
+    }
+
     private var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
-            intent?.let {
-                it.extras?.let {
-                    val isChat = it.getBoolean(NOTIFICATION_CHAT, false)
-                    if (isChat) {
-                        mViewModel.chat.postValue(true)
-                    } else {
-                        val badge = it.getInt(NOTIFICATION_BADGE, 0)
-                        mViewModel.badgeParse(badge)
+            when (intent?.action) {
+                REQUEST_PERMISSION -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+                        ru.madbrains.smartyard.ui.requestPermissions(
+                            arrayOf(Manifest.permission.FOREGROUND_SERVICE_PHONE_CALL),
+                            this@MainActivity,
+                            REQUEST_CODE_MULTIPLE_PERMISSIONS
+                        )
+                    }
+                }
+
+                NotificationFragment.BROADCAST_ACTION_NOTIF -> {
+                    intent.let {
+                        it.extras?.let {
+                            val isChat = it.getBoolean(NOTIFICATION_CHAT, false)
+                            if (isChat) {
+                                mViewModel.chat.postValue(true)
+                            } else {
+                                val badge = it.getInt(NOTIFICATION_BADGE, 0)
+                                mViewModel.badgeParse(badge)
+                            }
+                        }
                     }
                 }
             }
@@ -342,8 +447,10 @@ class MainActivity : CommonActivity() {
 
     override fun onStart() {
         super.onStart()
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(receiver, IntentFilter(NotificationFragment.BROADCAST_ACTION_NOTIF))
+        val intentFilter = IntentFilter()
+        intentFilter.addAction(NotificationFragment.BROADCAST_ACTION_NOTIF)
+        intentFilter.addAction(REQUEST_PERMISSION)
+        LocalBroadcastManager.getInstance(this).registerReceiver(receiver, intentFilter)
     }
 
     override fun onStop() {
@@ -355,7 +462,7 @@ class MainActivity : CommonActivity() {
         context: Context?,
         bottomNavigationView: BottomNavigationView,
         @IdRes itemId: Int,
-        value: String?
+        value: String?,
     ) {
         val itemView: BottomNavigationItemView = bottomNavigationView.findViewById(itemId)
         if (itemView.childCount <= 2) {
@@ -399,18 +506,43 @@ class MainActivity : CommonActivity() {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         if (requestCode == CHAT_REQUEST_FILE && grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             mViewModel.chatOnReceiveFilePermission.postValue(Event(true))
         }
+        if (requestCode == REQUEST_CODE_MULTIPLE_PERMISSIONS) {
+            permissions.forEachIndexed { index, _ ->
+                if (grantResults[index] == PackageManager.PERMISSION_GRANTED) {
+                    val toast = Toast(applicationContext)
+                    toast.setText("Permission granted: ${permissions[index]}")
+                    toast.duration = Toast.LENGTH_LONG
+                    toast.show()
+                } else {
+                    val toast = Toast(applicationContext)
+                    toast.setText("Permission denied: ${permissions[index]}")
+                    toast.duration = Toast.LENGTH_LONG
+                    toast.show()
+                }
+            }
+        }
+
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     private fun appVersion() {
-        val pInfo: PackageInfo = this.packageManager.getPackageInfo(packageName, 0)
-        val version: String = pInfo.versionCode.toString()
-        mViewModel.appVersion(version)
+        val version = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val pInfo =
+                packageManager.getPackageInfo(packageName, PackageManager.PackageInfoFlags.of(0))
+            pInfo.longVersionCode.toString()
+
+        } else {
+            val pInfo: PackageInfo = packageManager.getPackageInfo(packageName, 0)
+            pInfo.versionCode.toString()
+        }
+
+        val device = "${Build.PRODUCT} ${Build.MODEL}"
+        mViewModel.appVersion(version, "android", Build.VERSION.SDK_INT.toString(), device)
     }
 
     private fun goToGooglePay() {
@@ -472,12 +604,16 @@ class MainActivity : CommonActivity() {
         val appLinkAction = intent?.action
         val appLinkData: Uri? = intent?.data
 
-
         //переключение нижней панели на чат
         if (appLinkAction == NOTIFICATION_CHAT) {
-            mViewModel.bottomNavigateTo.value = Event(R.id.chat)
-            supportFragmentManager.beginTransaction().detach(ChatWootFragment())
-                .attach(ChatWootFragment()).commit()
+            mViewModel.bottomNavigateToChat()
+
+            //TODO Обновление страницы при переходе на нее по пушу, возможно не нужно!! еще не понял
+            supportFragmentManager
+                .beginTransaction()
+                .detach(ChatWootFragment())
+                .attach(ChatWootFragment())
+                .commit()
         }
 
 
@@ -499,7 +635,11 @@ class MainActivity : CommonActivity() {
 
     companion object {
         const val BROADCAST_LIST_UPDATE = "BROADCAST_LIST_UPDATE"
+        const val REQUEST_PERMISSION = "REQUEST_PERMISSION"
         const val CHAT_REQUEST_FILE = 0 // todo: переписать код сдк? (код скорее защит в sdk chat)
         const val LOAD_PAYMENT_DATA_REQUEST_CODE = 991
+        const val REQUEST_CODE_MULTIPLE_PERMISSIONS = 1002
+        const val REQUEST_CODE_FOREGROUND_SERVICE_PHONE_CALL = 1001
+
     }
 }

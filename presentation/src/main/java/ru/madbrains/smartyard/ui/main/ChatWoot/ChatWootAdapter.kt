@@ -43,7 +43,7 @@ class ChatWootAdapter : RecyclerView.Adapter<ViewHolder>() {
     private val messageList = ArrayList<ChatMessageResponseItem>()
 
     class MessageInboxHolder(item: View) : ViewHolder(item) {
-        private val simpleDateFormat = SimpleDateFormat("dd.MM.yyyy HH:mm", Locale.ENGLISH)
+        private val simpleDateFormat = SimpleDateFormat("dd.MM HH:mm", Locale.ENGLISH)
         val binding = ItemInboxMessageBinding.bind(item)
         val mItem = item
         private val mContext: Context = itemView.context
@@ -169,28 +169,3 @@ class ChatWootAdapter : RecyclerView.Adapter<ViewHolder>() {
 
 
 }
-
-
-//TODO Нужно растащить по класам
-//private fun convertPixelsToDp(px: Float, context: Context): Float {
-//            return px / context.resources.displayMetrics.density
-//        }
-
-
-//                    Picasso.get().load(message.attachments!!.get(i).data_url)
-//                        .into(object : com.squareup.picasso.Target {
-//                            override fun onBitmapLoaded(
-//                                bitmap: Bitmap?,
-//                                from: Picasso.LoadedFrom?
-//                            ) {
-//                                targetWidth = convertPixelsToDp(bitmap?.width!!.toFloat(), mContext)
-//                                targetHeight = convertPixelsToDp(bitmap.height.toFloat(), mContext)
-//                                val newBitmap = Bitmap.createScaledBitmap(bitmap, bitmap.width, bitmap.height, true)
-//                                ivMessageImage.setImageBitmap(newBitmap)
-//                            }
-//                            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-//                            }
-//                            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-//                                Timber.d("Fail To load bitmap $e")
-//                            }
-//                        })

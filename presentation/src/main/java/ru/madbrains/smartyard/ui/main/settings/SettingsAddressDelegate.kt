@@ -4,6 +4,7 @@ import android.app.Activity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -50,11 +51,12 @@ class SettingsAddressDelegate(
         settingsAddressModel.run {
             holder.tvAddress.text = address
             holder.tvCaption.text = contractName
-            setImageButton(holder.ivWifi, Services.Internet, this)
+            val internet = setImageButton(holder.ivWifi, Services.Internet, this)
             setImageButton(holder.ivCall, Services.Phone, this)
-            setImageButton(holder.ivEye, Services.Cctv, this)
+            val cctv = setImageButton(holder.ivEye, Services.Cctv, this)
             setImageButton(holder.ivMonitor, Services.Iptv, this)
             val isKey = setImageButton(holder.ivKey, Services.Domophone, this)
+
             holder.llLcab.setOnClickListener {
                 openUrl(activity, lcab ?: "")
             }
@@ -75,12 +77,13 @@ class SettingsAddressDelegate(
                 hideBlockAccess(isKey, holder)
             }
             if (!isKey) {
-                hideBlockSettingAddress(false, holder)
+                hideBlockSettingAddress(true, holder)
                 hideBlockAccess(true, holder)
             }//TODO Скрываем для адресса интернет
 
-            // нет домофона скрываем доступ
-            // hideBlockAccess(isKey, holder)
+            if (!internet || !cctv){
+                hideForCctvAndInternet(true ,holder = holder)
+            }
 
             holder.llProvideAccess.setOnClickListener {
                 provideAccessListener.invoke(address, flatId, contractOwner, hasGates, clientId)
@@ -112,7 +115,7 @@ class SettingsAddressDelegate(
     private fun setImageButton(
         view: ImageView,
         service: Services,
-        model: SettingsAddressModel
+        model: SettingsAddressModel,
     ): Boolean {
         Timber.d("debug_dmm model.services: ${model.services}")
         val isConnected = model.services.contains(service.value)
@@ -138,6 +141,12 @@ class SettingsAddressDelegate(
     private fun hideBlockSettingAddress(visibilite: Boolean, holder: SettingsAddressViewHolder) {
         holder.llSettingAddress.isVisible = visibilite
         holder.viewSettingAddress.isVisible = visibilite
+    }
+
+    private fun hideForCctvAndInternet(visibilite: Boolean = true, holder: SettingsAddressViewHolder){
+        holder.llSettingAddress.isVisible = visibilite
+        holder.viewSettingAddress.isVisible = visibilite
+
     }
 
     internal class SettingsAddressViewHolder(itemView: View) :

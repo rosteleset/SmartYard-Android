@@ -5,9 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -16,17 +18,23 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
+import kotlinx.coroutines.delay
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.smartyard.EventObserver
+import ru.madbrains.smartyard.R
 import ru.madbrains.smartyard.databinding.FragmentPayBinding
+import ru.madbrains.smartyard.ui.main.ChatWoot.FragmentChatWootImage
 
 class PayAddressFragment : Fragment() {
     private var _binding: FragmentPayBinding? = null
     private val binding get() = _binding!!
 
     private val payViewModel: PayAddressViewModel by sharedStateViewModel()
+    private val mWebViewPayViewModel by sharedViewModel<WebViewPayViewModel>()
 
     lateinit var adapter: ListDelegationAdapter<List<PayAddressModel>>
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -35,6 +43,17 @@ class PayAddressFragment : Fragment() {
     ): View {
         _binding = FragmentPayBinding.inflate(inflater, container, false)
         val root = binding.root
+        val option = mWebViewPayViewModel.options.value
+        mWebViewPayViewModel.options.observe(
+            viewLifecycleOwner,
+            Observer{
+                if (!option.isNullOrEmpty()){
+                val action = PayAddressFragmentDirections.actionPayFragment3ToWebViewPayFragment()
+                this.findNavController().navigate(action)
+                }
+            }
+        )
+
         payViewModel.addressList.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -65,6 +84,7 @@ class PayAddressFragment : Fragment() {
                 this.findNavController().navigate(action)
             }
         )
+
         return root
     }
 

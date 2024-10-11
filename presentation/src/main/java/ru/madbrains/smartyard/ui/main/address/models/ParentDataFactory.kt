@@ -30,7 +30,7 @@ object ParentDataFactory {
                 image = R.drawable.ic_barrier
                 caption = "Шлагбаум Север"
                 open = kotlin.random.Random.nextBoolean()
-                this.domophoneId = kotlin.random.Random.nextInt()
+                this.domophoneId = kotlin.random.Random.nextLong()
                 this.doorId = kotlin.random.Random.nextInt()
             }
         )
@@ -39,7 +39,7 @@ object ParentDataFactory {
                 caption = "Ворота Юг"
                 image = R.drawable.ic_gates
                 open = kotlin.random.Random.nextBoolean()
-                this.domophoneId = kotlin.random.Random.nextInt()
+                this.domophoneId = kotlin.random.Random.nextLong()
                 this.doorId = kotlin.random.Random.nextInt()
             }
         )
@@ -49,7 +49,7 @@ object ParentDataFactory {
                 caption = "Подъезд ${(1..5).random()}"
                 image = R.drawable.ic_porch
                 open = kotlin.random.Random.nextBoolean()
-                this.domophoneId = kotlin.random.Random.nextInt()
+                this.domophoneId = kotlin.random.Random.nextLong()
                 this.doorId = kotlin.random.Random.nextInt()
             }
         )

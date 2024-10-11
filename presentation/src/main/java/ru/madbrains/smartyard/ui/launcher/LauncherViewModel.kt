@@ -26,6 +26,7 @@ class LauncherViewModel(
         } else {
             _launchDestination.value = Event(LaunchDestination.REGISTRATION_ACTIVITY)
         }
+//        checkAndRegisterFcmToken()
     }
 
     enum class LaunchDestination {

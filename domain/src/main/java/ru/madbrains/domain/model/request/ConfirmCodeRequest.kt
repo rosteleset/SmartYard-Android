@@ -4,5 +4,8 @@ import com.squareup.moshi.Json
 
 data class ConfirmCodeRequest(
     @Json(name = "userPhone") val userPhone: String,
-    @Json(name = "smsCode") val smsCode: String
+    @Json(name = "smsCode") val smsCode: String = "",
+    @Json(name = "type") val type: String? = "",
+    @Json(name = "requestId") val requestId: String? = "",
+
 )

@@ -7,6 +7,8 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.IBinder
@@ -20,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.PermissionChecker
 import androidx.core.content.PermissionChecker.checkSelfPermission
 import androidx.core.graphics.drawable.toDrawable
@@ -30,6 +33,13 @@ import androidx.lifecycle.viewModelScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.squareup.picasso.Picasso
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -72,13 +82,11 @@ class ChatWootFragment : Fragment(), Communicator {
         observer()
         swipeRefresh()
         sendMessage()
-
     }
 
 
     private fun observer() {
         val messageObserver = Observer<ArrayList<ChatMessageResponseItem>> {
-            Log.d("LIVECYCLE", "OBSERVER ${mChatWootViewModel.dataMessage.value}")
             dataBuilder()
             init()
 //            scroll()
@@ -116,6 +124,7 @@ class ChatWootFragment : Fragment(), Communicator {
 
     override fun onResume() {
         super.onResume()
+        mChatWootViewModel.getMessage()
         ref()
         val nav = activity?.findViewById<MorphBottomNavigationView>(R.id.bottom_nav)
         if (nav?.selectedItemId == R.id.chat) {
@@ -196,7 +205,7 @@ class ChatWootFragment : Fragment(), Communicator {
             rcViewMessages.scrollToPosition(data.size - 1)
         }
         if (data.isNotEmpty() && isScroll) {
-            rcViewMessages.scrollToPosition((mChatWootViewModel.dataMessage.value!!.size - data.size) - 1)
+            rcViewMessages.scrollToPosition((mChatWootViewModel.dataMessage.value!!.size))
         }
     }
 
@@ -308,33 +317,86 @@ class ChatWootFragment : Fragment(), Communicator {
         return binding.root
     }
 
+    private val someActivityResultLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val imageUri: Uri? = result.data?.data
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (resultCode == Activity.RESULT_OK && requestCode == IMAGE_PICK_CODE) {
-//            binding.ibPickUp.setImageURI(data?.data)
-            val imageUri = data?.dataString
+            val progressBar = binding.progressBarWoot
+            progressBar.visibility = View.VISIBLE // Показываем ProgressBar при начале загрузки
 
-            Picasso.get().load(imageUri).into(object : com.squareup.picasso.Target {
-                override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+            Glide.with(this)
+                .asBitmap()
+                .load(imageUri)
+                .listener(object : RequestListener<Bitmap> {
+                    override fun onLoadFailed(
+                        p0: GlideException?,
+                        p1: Any?,
+                        p2: Target<Bitmap>,
+                        p3: Boolean
+                    ): Boolean {
+                        progressBar.visibility = View.GONE
+                        return false
+                    }
 
-                }
+                    override fun onResourceReady(
+                        p0: Bitmap,
+                        p1: Any,
+                        p2: Target<Bitmap>?,
+                        p3: DataSource,
+                        p4: Boolean
+                    ): Boolean {
+                        progressBar.visibility = View.GONE
 
-                override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                    Timber.d("Fail To load bitmap $e")
-                }
+                        // ваш код обработки изображения
 
-                override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                    val byteArrayOutputStream = ByteArrayOutputStream()
-                    bitmap!!.compress(Bitmap.CompressFormat.PNG, 80, byteArrayOutputStream)
-                    val byteArray: ByteArray = byteArrayOutputStream.toByteArray()
-                    val encoded = Base64.encodeToString(byteArray, Base64.DEFAULT)
-                    mChatWootViewModel.sendMessage(
-                        images = arrayListOf(encoded),
-                        messageType = "image"
-                    )
-                }
+                        return false
+                    }
+                })
+                .into(object : CustomTarget<Bitmap>() {
+                    override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                        val resizedBitmap = if (resource.width > 2048 || resource.height > 2048) {
+                            val ratio = Math.min(2048f / resource.width, 2048f / resource.height)
+                            Bitmap.createScaledBitmap(resource, (resource.width * ratio).toInt(), (resource.height * ratio).toInt(), true)
+                        } else {
+                            resource
+                        }
 
-            })
+                        val compressedBitmap = Bitmap.createBitmap(resizedBitmap.width, resizedBitmap.height, Bitmap.Config.ARGB_8888)
+                        val outputStream = ByteArrayOutputStream()
+                        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream)
+                        val byteArray = outputStream.toByteArray()
+
+                        val options = BitmapFactory.Options().apply {
+                            inMutable = true
+                        }
+                        val pixels = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.size, options)?.let {
+                            val w = it.width
+                            val h = it.height
+                            val pixels = IntArray(w * h)
+                            it.getPixels(pixels, 0, w, 0, 0, w, h)
+                            pixels
+                        }
+
+                        if (pixels != null) {
+                            compressedBitmap.setPixels(pixels, 0, compressedBitmap.width, 0, 0, compressedBitmap.width, compressedBitmap.height)
+                        }
+
+                        val byteArrayOutputStream = ByteArrayOutputStream()
+                        compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 80, byteArrayOutputStream)
+
+                        mChatWootViewModel.sendMessage(
+                            images = arrayListOf(Base64.encodeToString(byteArrayOutputStream.toByteArray(), Base64.DEFAULT)),
+                            messageType = "image"
+                        )
+
+                        // Освобождаем ресурсы, связанные с изображением
+                        resizedBitmap.recycle()
+                        compressedBitmap.recycle()
+                    }
+
+                    override fun onLoadCleared(placeholder: Drawable?) {
+                    }
+                })
         }
     }
 
@@ -342,22 +404,27 @@ class ChatWootFragment : Fragment(), Communicator {
     private fun pickImageFromGallery() {
         val intent = Intent(Intent.ACTION_PICK)
         intent.type = "image/*"
-        startActivityForResult(intent, IMAGE_PICK_CODE)
+        someActivityResultLauncher.launch(intent)
     }
 
 
     private fun pickImage() = with(binding) {
         ibPickUp.setOnClickListener {
-            if (context?.let { it1 ->
-                    checkSelfPermission(
-                        it1.applicationContext,
-                        android.Manifest.permission.READ_EXTERNAL_STORAGE
-                    )
-                } == PermissionChecker.PERMISSION_DENIED) {
-                val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE);
-                requestPermissions(permissions, PERMISSION_CODE);
-            } else {
-                pickImageFromGallery();
+
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2){
+                pickImageFromGallery()
+            }else{
+                if (context?.let { it1 ->
+                        checkSelfPermission(
+                            it1.applicationContext,
+                            android.Manifest.permission.READ_EXTERNAL_STORAGE
+                        )
+                    } == PermissionChecker.PERMISSION_DENIED) {
+                    val permissions = arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+                    requestPermissions(permissions, PERMISSION_CODE)
+                } else {
+                    pickImageFromGallery()
+                }
             }
         }
     }

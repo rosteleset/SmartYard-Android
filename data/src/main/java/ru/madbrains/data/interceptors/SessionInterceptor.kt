@@ -24,7 +24,7 @@ class SessionInterceptor constructor(
         val originalRequest = chain.request()
         val tokenRequest = originalRequest.newBuilder()
 
-        tokenRequest.addHeader("Connection", "close"); //TODO devtest
+        tokenRequest.addHeader("Connection", "close")//TODO devtest
         if (!token.isNullOrBlank()) {
             tokenRequest.addHeader(KEY_TOKEN, String.format(VALUE_TOKEN, token))
         }

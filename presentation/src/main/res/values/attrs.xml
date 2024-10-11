@@ -13,4 +13,11 @@
         <attr format="dimension" name="morphVerticalOffset"/>
         <attr format="dimension" name="morphCornerRadius"/>
     </declare-styleable>
+
+    <declare-styleable name="MyCustomAttrs">
+        <attr name="statusBarSize" format="integer" />
+    </declare-styleable>
+
+    <attr name="timeLineItemMarginTop" format="dimension" />
+
 </resources>

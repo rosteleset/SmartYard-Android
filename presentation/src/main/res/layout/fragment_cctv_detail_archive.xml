@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/white_200"
     android:fillViewport="true"
     tools:context=".ui.main.address.cctv_video.detail.arhive.CCTVArchiveTab">
 
@@ -16,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/white_200"
             android:clickable="true"
             android:focusable="true">
 
@@ -64,20 +64,28 @@
                 tools:layout_editor_absoluteY="731dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.kizitonwose.calendarview.CalendarView
-            android:id="@+id/archiveCalendar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_fragment_cctv_archive"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:paddingBottom="30dp"
-            app:cv_dayViewResource="@layout/calendar_day"
-            app:cv_inDateStyle="allMonths"
-            app:cv_monthHeaderResource="@layout/calendar_header"
-            app:cv_orientation="horizontal"
-            app:cv_outDateStyle="endOfRow"
-            app:cv_scrollMode="paged" />
+            android:layout_height="match_parent">
+
+            <com.kizitonwose.calendarview.CalendarView
+                android:id="@+id/archiveCalendar"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:paddingBottom="30dp"
+                app:cv_dayViewResource="@layout/calendar_day"
+                app:cv_inDateStyle="allMonths"
+                app:cv_monthHeaderResource="@layout/calendar_header"
+                app:cv_orientation="horizontal"
+                app:cv_outDateStyle="endOfRow"
+                app:cv_scrollMode="paged"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>

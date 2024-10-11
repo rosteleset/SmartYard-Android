@@ -11,6 +11,7 @@ import ru.madbrains.domain.model.request.CreateIssuesRequest.CustomFields
 import ru.madbrains.domain.model.request.CreateIssuesRequest.TypeAction.ACTION2
 import ru.madbrains.domain.model.response.Office
 import ru.madbrains.smartyard.ui.main.BaseIssueViewModel
+import timber.log.Timber
 
 /**
  * @author Nail Shakurov
@@ -34,7 +35,7 @@ class OfficeViewModel(
     private fun getOffices() {
         viewModelScope.withProgress {
             val res = addressInteractor.getOffices()
-            _offices.postValue(res.data)
+            _offices.postValue(res.data ?: listOf())
         }
     }
 

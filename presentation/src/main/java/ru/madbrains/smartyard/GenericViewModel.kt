@@ -1,5 +1,6 @@
 package ru.madbrains.smartyard
 
+import android.content.Context
 import android.os.Build
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.crashlytics.internal.model.CrashlyticsReport
 import com.google.firebase.installations.Utils
 import com.google.firebase.messaging.FirebaseMessaging
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -22,6 +24,7 @@ import ru.madbrains.domain.interactors.AuthInteractor
 import ru.madbrains.domain.interactors.DatabaseInteractor
 import ru.madbrains.domain.model.CommonError
 import ru.madbrains.domain.model.CommonErrorThrowable
+import ru.madbrains.domain.model.ErrorStatus
 import timber.log.Timber
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -52,13 +55,14 @@ open class GenericViewModel : ViewModel(), KoinComponent {
             progress?.postValue(true)
             try {
                 query()
-            } catch (e: Throwable) {
-                if (e is CommonErrorThrowable) {
-                    localErrorsSink.value = Event(e.data)
-                    if (handleError(e.data)) {
+            } catch (e: CommonErrorThrowable) {
+                localErrorsSink.value = Event(e.data)
+                if (handleError(e.data)) {
+                    if (e.data.status != ErrorStatus.CANCEL_EXCEPTION) {
                         globalData.globalErrorsSink.value = Event(e.data)
                     }
                 }
+            } catch (_: Throwable) {
             }
             progress?.postValue(false)
         }
@@ -79,22 +83,21 @@ open class GenericViewModel : ViewModel(), KoinComponent {
     }
 
     protected fun checkAndRegisterFcmToken() {
-
         Timber.d("debug_dmm call checkAndRegisterFcmToken()")
-
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 Timber.w("debug_dmm fetching fcm token failed")
-
-                val date = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                val date =
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
                 val phone = mPreferenceStorage.phone
                 val exceptionMessage = task.exception?.message
                 val deviceInfo = "Manufacturer: " + Build.MANUFACTURER + ", model: " + Build.MODEL +
-                    ", device: " + Build.DEVICE + ", release: " + Build.VERSION.RELEASE + ", SDK: " + Build.VERSION.SDK_INT
+                        ", device: " + Build.DEVICE + ", release: " + Build.VERSION.RELEASE + ", SDK: " + Build.VERSION.SDK_INT
                 Timber.w("debug_dmm exception message: $exceptionMessage")
                 Timber.w("debug_dmm Device info: $deviceInfo")
-                FirebaseCrashlytics.getInstance().log("Date: $date; Phone: $phone; Device info: $deviceInfo; Message: $exceptionMessage\n")
-                task.exception?.let { exception->
+                FirebaseCrashlytics.getInstance()
+                    .log("Date: $date; Phone: $phone; Device info: $deviceInfo; Message: $exceptionMessage\n")
+                task.exception?.let { exception ->
                     FirebaseCrashlytics.getInstance().recordException(exception)
                 }
                 return@addOnCompleteListener
@@ -115,6 +118,19 @@ open class GenericViewModel : ViewModel(), KoinComponent {
             }
         }
     }
+
+    fun clientLogout(){
+        viewModelScope.withProgress {
+            mInteractor.logout()
+            logout.postValue(Event(true))
+            mPreferenceStorage.authToken = null
+            mPreferenceStorage.sentName = null
+            mPreferenceStorage.fcmTokenRegistered = null
+            databaseInteractor.deleteAll()
+            refreshFcmToken()
+        }
+    }
+
 
     fun logout() {
         viewModelScope.withProgress {

@@ -3,11 +3,13 @@
 buildscript {
 
     ext {
-        compileSdkVersion = 33
-        minSdkVersion = 26
-        targetSdkVersion = 30
-        kotlinVersion = '1.6.21'
-        kotlinReflect = '1.6.21'
+        compileSdkVersion = 34
+        minSdkVersion = 24
+        targetSdkVersion = 34
+//        kotlinVersion = '1.8.22'
+//        kotlinReflect = '1.8.22'
+        kotlinVersion = '1.9.23'
+        kotlinReflect = '1.9.23'
         appCompatVersion = '1.4.1'
         coreKtxVersion = '1.7.0'
         constraintLayoutVersion = '2.1.4'
@@ -19,7 +21,7 @@ buildscript {
         firebaseMessagingVersion = '21.1.0'
         timberVersion = '4.7.1'
         navigationVersion = "2.2.2"
-        roomVersion = '2.4.2'
+        roomVersion = '2.6.1'
         coroutinesVersion = '1.6.0'
         retrofitVersion = '2.6.0'
         okHttpVersion = '4.9.2'
@@ -34,7 +36,7 @@ buildscript {
         pinEntryEditText = '2.0.6'
         morphBottomNavigation = '1.0.1'
         androidxTransition = '1.4.1'
-        linphoneVersion = '4.4.35'
+        linphoneVersion = '5.3.48'
         expandablelayoutVersion = '2.9.2'
         adapterdelegates = '4.2.0'
         openStreetMapVersion = '6.1.5'
@@ -62,6 +64,9 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+        maven { url 'https://maven.google.com' }
+        maven { url 'https://dl.google.com/dl/android/maven2' }
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.2'

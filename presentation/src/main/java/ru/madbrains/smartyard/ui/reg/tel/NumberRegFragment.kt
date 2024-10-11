@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import ru.madbrains.domain.model.ErrorStatus
 import ru.madbrains.smartyard.EventObserver
+import ru.madbrains.smartyard.GenericViewModel
 import ru.madbrains.smartyard.databinding.FragmentNumberRegBinding
 
 class NumberRegFragment : Fragment() {
@@ -33,9 +34,11 @@ class NumberRegFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNumbersEditText()
+
         binding.ivExit.setOnClickListener {
             activity?.finish()
         }
+
         mViewModel.localErrorsSink.observe(
             viewLifecycleOwner,
             EventObserver { error ->

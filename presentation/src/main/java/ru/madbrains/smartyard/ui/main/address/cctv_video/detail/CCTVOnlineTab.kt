@@ -8,32 +8,38 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import android.view.Gravity
+import android.os.CountDownTimer
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.FrameLayout
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.ProgressBar
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.OnBackPressedDispatcherOwner
+import androidx.activity.addCallback
 import androidx.core.content.ContextCompat
-import androidx.core.view.marginBottom
-import androidx.core.view.marginEnd
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import androidx.recyclerview.widget.RecyclerView.VIEW_LOG_TAG
-import com.google.android.exoplayer2.*
-import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.TrackGroupArray
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.exoplayer2.util.MimeTypes
+import androidx.media3.common.C
+import androidx.media3.common.MediaItem
+import androidx.media3.common.PlaybackException
+import androidx.media3.common.Player
+import androidx.media3.common.Tracks
+import androidx.media3.common.MimeTypes
+import androidx.media3.exoplayer.ExoPlaybackException
+import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.mediacodec.MediaCodecUtil
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector
+import androidx.media3.ui.AspectRatioFrameLayout
+import androidx.media3.ui.PlayerView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView.VERTICAL
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import ru.madbrains.domain.model.response.CCTVData
@@ -52,19 +58,17 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCctvDetailOnlineBinding? = null
     private val binding get() = _binding!!
 
-    private var mPlayer: SimpleExoPlayer? = null
+    private var mPlayer: ExoPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
     private val mViewModel by sharedViewModel<AddressViewModel>()
-    private var mExoPlayerFullscreen = false
-    private var mIsPlayerMute = true //TODO MUTE
 
     //для полноэкранного режима
     private var lpVideoWrap: ViewGroup.LayoutParams? = null
     private var playerResizeMode: Int = 0
 
     private var doorId = -1
-
+    private var callback: OnBackPressedCallback? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,57 +77,88 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     ): View {
         (activity as? MainActivity)?.setExitFullscreenListener(this)
         _binding = FragmentCctvDetailOnlineBinding.inflate(inflater, container, false)
-        openDoor()
         return binding.root
     }
 
     override fun onDestroyView() {
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         (activity as? MainActivity)?.setExitFullscreenListener(null)
-
+        callback?.remove()
         super.onDestroyView()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         Timber.d("debug_dmm __onActivityCreated")
-        setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
-    }
+//        setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenIndex.value)
+        setupAdapter(mCCTVViewModel.cameraList.value, mCCTVViewModel.chosenId.value)
+        initPlayer()
 
-    private fun setMutePlayer() {
-        if (!mIsPlayerMute) {
-            mIsPlayerMute = true
-        }
-    }//TODO MUTE
-
-    private fun setUnMutePlayer() {
-        if (mIsPlayerMute) {
-            mIsPlayerMute = false
+        callback = requireActivity().onBackPressedDispatcher.addCallback {
+            if(mCCTVViewModel.isFullScreenMod.value == true){
+                mCCTVViewModel.fullScreen(false)
+            }else{
+                requireParentFragment().parentFragmentManager.popBackStack()
+            }
         }
     }
 
-    private fun openDoor() {
-        var domophoneId = 0
-        val chosenCamera =
-            mCCTVViewModel.cameraList.value?.get(mCCTVViewModel.chosenIndex.value!!.toInt())
 
+     fun openDoor() {
+        var domophoneId = 0L
+        val chosenCamera = mCCTVViewModel.chosenCamera.value
         if (chosenCamera?.doors != null) {
-            chosenCamera.doors!!.forEach {
+            chosenCamera.doors?.forEach {
                 doorId = it.doorId
                 domophoneId = it.domophoneId
             }
-            binding.ibOpenDoor.setOnClickListener {
-                if (doorId != -1) {
-                    mViewModel.openDoor(domophoneId, doorId)
-                }
+            mCCTVViewModel.isFullScreenMod.value?.let {
+                imageButtonForOpen(it)?.let { it1 -> open(domophoneId, it1) }
             }
-            binding.ibOpenDoor.visibility = View.VISIBLE
-            binding.ibOpenDoor2.visibility = View.GONE
-        } else {
-            binding.ibOpenDoor.visibility = View.GONE
-            binding.ibOpenDoor2.visibility = View.GONE
+        }else{
+            binding.ibOpenDoor.isVisible = false
+            binding.ibOpenDoor2.isVisible = false
         }
     }
+
+    private fun imageButtonForOpen(boolean: Boolean): ImageButton? {
+        if (doorId != -1) {
+            return if (boolean) {
+                binding.ibOpenDoor.isVisible = false
+                binding.ibOpenDoor2.isVisible = true
+                binding.ibOpenDoor2
+            } else {
+                binding.ibOpenDoor.isVisible = true
+                binding.ibOpenDoor2.isVisible = false
+                binding.ibOpenDoor
+            }
+        }
+        return null
+    }
+
+
+    private fun open(domophoneId: Long, btn: ImageButton) {
+        btn.setOnClickListener {
+            if (doorId != -1) {
+                btn.isClickable = false
+                btn.setImageResource(R.drawable.ic_open)
+                val countDownTimer = object : CountDownTimer(8000, 1000) {
+                    override fun onTick(millisUntilFinished: Long) {
+                    }
+
+                    override fun onFinish() {
+                        btn.isClickable = true
+                        btn.setImageResource(R.drawable.ic_open_no_active)
+                    }
+                }
+                try {
+                    mViewModel.openDoor(domophoneId, doorId)
+                }catch (_: Exception){}
+                countDownTimer.start()
+            }
+        }
+    }
+
 
     private fun setFullscreenMode() {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
@@ -143,14 +178,6 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
             binding.videoWrap.background = null
             (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
-
-
-            //openDoor
-            if (doorId >= 0 ){
-                binding.ibOpenDoor.visibility = View.GONE
-                binding.ibOpenDoor2.visibility = View.VISIBLE
-            }
-
 
             val lp = binding.videoWrap.layoutParams as LinearLayout.LayoutParams
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -179,12 +206,6 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             binding.videoWrap.background =
                 ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
 
-            //openDoor
-            if (doorId >= 0 ){
-                binding.ibOpenDoor2.visibility = View.GONE
-                binding.ibOpenDoor.visibility = View.VISIBLE
-            }
-
             //возвращаем дефолтные layouts
             if (lpVideoWrap != null) {
                 binding.videoWrap.layoutParams = lpVideoWrap
@@ -197,26 +218,22 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         }
     }
 
-    private fun setupAdapter(currentList: List<CCTVData>?, currentIndex: Int?) {
-        val lm = GridLayoutManager(context, 5)
+    private fun setupAdapter(currentList: List<CCTVData>?, currentId: Int?) {
+        val lm = LinearLayoutManager(context, VERTICAL, false)
         binding.recyclerView.layoutManager = lm
-        if (currentIndex != null && currentList != null) {
-            val spacingHor = resources.getDimensionPixelSize(R.dimen.cctv_buttons_hor)
-            val spacingVer = resources.getDimensionPixelSize(R.dimen.cctv_buttons_ver)
-            binding.recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(
-                    5,
-                    spacingHor,
-                    spacingVer
-                )
-            )
+        if (currentId != null && currentList != null) {
             binding.recyclerView.adapter = DetailButtonsAdapter(
                 requireContext(),
-                currentIndex,
-                currentList
-            ) {
-                mCCTVViewModel.chooseCamera(it)
-                openDoor()
+                currentId,
+                currentList,
+                mCCTVViewModel.favoriteCamera
+            ) { id, listId ->
+                if (id != null) {
+                    mCCTVViewModel.chooseCameraById(id)
+                }
+                if (!listId.isNullOrEmpty()) {
+                    mCCTVViewModel.setFavoriteCameraList(listId)
+                }
             }
         }
     }
@@ -226,28 +243,30 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             viewLifecycleOwner,
             Observer {
                 it?.run {
-                    changeVideoSource(context, hls)
+                    try {
+                        changeVideoSource(context, hls)
+                        openDoor()
+                    } catch (e: Exception) {
+                        Timber.e(e, "Exception CCTVOnlineTab")
+                    }
                 }
             }
         )
 
-        mCCTVViewModel.isMutePlayerVideo.observe(
+        mCCTVViewModel.chosenId.observe(
             viewLifecycleOwner
-        ) {
-            mIsPlayerMute = it
-            if (it) {
-                setMutePlayer()
-            } else {
-                setUnMutePlayer()
+        ) { id ->
+            val adapter = binding.recyclerView.adapter
+            if (adapter is DetailButtonsAdapter) {
+                adapter.setChosenId(id)
             }
-        }//TODO MUTE
+        }
 
-
-        mCCTVViewModel.stateFullScreen.observe(
+        mCCTVViewModel.isFullScreenMod.observe(
             viewLifecycleOwner,
             Observer {
-                mExoPlayerFullscreen = it
                 if (mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
+                    openDoor()
                     if (it) {
                         setFullscreenMode()
                     } else {
@@ -261,11 +280,11 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     private fun createPlayer(
         videoView: PlayerView,
         progressView: ProgressBar
-    ): SimpleExoPlayer {
+    ): ExoPlayer {
         Timber.d("debug_dmm create")
 
         val trackSelector = DefaultTrackSelector(requireContext())
-        val player = SimpleExoPlayer.Builder(requireContext())
+        val player = ExoPlayer.Builder(requireContext())
             .setTrackSelector(trackSelector)
             .build()
         //player.addAnalyticsListener(EventLogger(trackSelector))
@@ -280,11 +299,13 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         p.addView(videoView, 0)
 
         binding.mFullScreen.setOnClickListener {
-            mCCTVViewModel.fullScreen(!mExoPlayerFullscreen)
+            mCCTVViewModel.isFullScreenMod.value?.let {
+                mCCTVViewModel.fullScreen(!it)
+            }
         }
 
         binding.mMutePlayer.setOnClickListener {
-            val volume = if (mIsPlayerMute) {
+            val volume = if (mCCTVViewModel.isMutePlayerVideo.value == true) {
                 mCCTVViewModel.mutePlayerSound(false)
                 binding.mMutePlayer.setBackgroundResource(R.drawable.baseline_volume_up_24)
                 1F
@@ -296,7 +317,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
             mPlayer?.audioComponent?.volume = volume
         }//TODO MUTE
 
-        player.addListener(object : Player.EventListener {
+        player.addListener(object : Player.Listener {
             override fun onPlayerStateChanged(
                 playWhenReady: Boolean,
                 playbackState: Int
@@ -321,12 +342,15 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 }
             }
 
-            override fun onPlayerError(error: ExoPlaybackException) {
-                if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                    mCCTVViewModel.showGlobalError(error.sourceException)
+
+            override fun onPlayerError(error: PlaybackException) {
+                super.onPlayerError(error)
+
+                if (error.errorCode == ExoPlaybackException.TYPE_SOURCE) {
+                    mCCTVViewModel.showGlobalError(error)
                 }
 
-                if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+                if (error.errorCode == ExoPlaybackException.TYPE_RENDERER) {
                     if (forceVideoTrack) {
                         forceVideoTrack = false
                         releasePlayer()
@@ -336,11 +360,8 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                 }
             }
 
-            override fun onTracksChanged(
-                trackGroups: TrackGroupArray,
-                trackSelections: TrackSelectionArray
-            ) {
-                super.onTracksChanged(trackGroups, trackSelections)
+            override fun onTracksChanged(tracks: Tracks) {
+                super.onTracksChanged(tracks)
 
                 if (!forceVideoTrack) {
                     return
@@ -397,7 +418,9 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
                         }
                     }
                 }
+
             }
+
 
         })
         return player
@@ -439,8 +462,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
         private val spanCount: Int,
         private val horSpacing: Int,
         private val verSpacing: Int
-    ) :
-        ItemDecoration() {
+    ) : ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect,
             view: View,
@@ -459,7 +481,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
     }
 
     override fun onExitFullscreen() {
-        if (mExoPlayerFullscreen) {
+        if (mCCTVViewModel.isFullScreenMod.value!!) {
             setNormalMode()
         }
     }
@@ -477,7 +499,7 @@ class CCTVOnlineTab : Fragment(), ExitFullscreenListener {
 
         Timber.d("debug_dmm __onResume, is fragment hidden = $isHidden")
 
-        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address && mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
+        if (mCCTVViewModel.currentTabId == CCTVDetailFragment.ONLINE_TAB_POSITION) {
             initPlayer()
             Timber.d("debug_dmm __CCTVOnlineTab: $this")
         }
