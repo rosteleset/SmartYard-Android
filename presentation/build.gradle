@@ -164,7 +164,6 @@ dependencies {
     // Huawei
     if (flavorOrSync == "sync" || flavorOrSync == "huawei") {
         implementation "com.huawei.agconnect:agconnect-crash:$huaweiAgconnect"
-        implementation "com.huawei.hms:hianalytics:$huaweiAnalytics"
         implementation "com.huawei.hms:push:$huaweiPush"
     }
 
