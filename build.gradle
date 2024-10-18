@@ -7,10 +7,6 @@ def getMarketFlavorOrSync() {
         println 'getMarketFlavor: Gradle sync.'
         return 'sync'
     }
-    if (taskNames.size() == 1) {
-        println 'getMarketFlavor: Non Build Task.'
-        return 'sync'
-    }
     // To keep only specified flavor libs
     def matcher = taskNames =~ /(assemble|bundle)(Client|TeledomTest|Teledom)(\w+?)(Release|Debug)/
     if (matcher.find()) {
@@ -102,12 +98,31 @@ buildscript {
         maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven' }
     }
     dependencies {
+        def taskNames = gradle.startParameter.taskNames
+        def matcher = taskNames =~ /(assemble|bundle)(Client|TeledomTest|Teledom)(\w+?)(Release|Debug)/
+        def marketFlavor = ""
+        if (matcher.find()) {
+            marketFlavor = matcher.group(3).toLowerCase()
+            println "Market Flavor: " + marketFlavor
+            if (marketFlavor == "google") {
+                classpath "com.google.gms:google-services:$playServices"
+                classpath "com.google.firebase:firebase-crashlytics-gradle:$firebaseCrashlyticsPlugin"
+            }
+            if (marketFlavor == "huawei") {
+                classpath "com.huawei.agconnect:agcp:$huaweiAgconnect"
+            }
+            if (marketFlavor == "rustore") {
+                classpath "ru.ok.tracer:tracer-plugin:$rustoreTracer"
+            }
+        }
+        if (marketFlavor == "") {
+            classpath "com.google.gms:google-services:$playServices"
+            classpath "com.google.firebase:firebase-crashlytics-gradle:$firebaseCrashlyticsPlugin"
+            classpath "com.huawei.agconnect:agcp:$huaweiAgconnect"
+            classpath "ru.ok.tracer:tracer-plugin:$rustoreTracer"
+        }
         classpath "com.android.tools.build:gradle:$androidGraglePlugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinGraglePlugin"
-        classpath "com.google.gms:google-services:$playServices"
-        classpath "com.google.firebase:firebase-crashlytics-gradle:$firebaseCrashlyticsPlugin"
-        classpath "com.huawei.agconnect:agcp:$huaweiAgconnect"
-        classpath "ru.ok.tracer:tracer-plugin:$rustoreTracer"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$safeArgs"
         classpath "io.insert-koin:koin-gradle-plugin:$koin"
         classpath "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:$ksp"
