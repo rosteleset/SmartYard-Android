@@ -15,6 +15,9 @@
         <meta-data
             android:name="ru.rustore.sdk.pushclient.default_notification_icon"
             android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="ru.rustore.sdk.pushclient.default_notification_color"
+            android:resource="@color/colorAccent" />
     </application>
 
 </manifest>
