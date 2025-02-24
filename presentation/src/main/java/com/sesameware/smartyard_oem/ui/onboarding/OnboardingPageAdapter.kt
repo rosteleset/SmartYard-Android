@@ -1,11 +1,13 @@
 package com.sesameware.smartyard_oem.ui.onboarding
 
+import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.R
 
@@ -35,7 +37,14 @@ class OnboardingPageAdapter(
                 setImageDrawable(AppCompatResources.getDrawable(context, page.image))
             }
             findViewById<TextView>(R.id.titleTextView).text = page.title
-            findViewById<TextView>(R.id.subtitleTextView).text = page.subtitle
+            findViewById<TextView>(R.id.subtitleTextView).run {
+                if (page.subtitle.contains("<a href")) {
+                    text = HtmlCompat.fromHtml(page.subtitle, HtmlCompat.FROM_HTML_MODE_COMPACT)
+                    movementMethod = LinkMovementMethod.getInstance()
+                } else {
+                    text = page.subtitle
+                }
+            }
         }
     }
     class PageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
