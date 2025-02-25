@@ -11,8 +11,8 @@ class AuthInteractor(
         return repository.providers()
     }
 
-    suspend fun registerPushToken(token: String): RegisterPushTokenResponse {
-        return repository.registerPushToken(token)
+    suspend fun registerPushToken(token: String, bundle: String): RegisterPushTokenResponse {
+        return repository.registerPushToken(token, bundle)
     }
 
     suspend fun requestCode(userPhone: String, deviceToken: String): RequestCodeResponse {

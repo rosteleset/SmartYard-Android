@@ -6,7 +6,8 @@ import com.squareup.moshi.Json
 data class RegisterPushTokenRequest(
     @Json(name = "pushToken") val pushToken: String,
     @Json(name = "pushService") val pushService: String = BuildConfig.PUSH_SERVICE,
-    @Json(name = "platform") val platform: String = PUSH_PLATFORM
+    @Json(name = "platform") val platform: String = PUSH_PLATFORM,
+    @Json(name = "bundle") val bundle: String = "default"
 )
 
 const val PUSH_PLATFORM = "android"

@@ -43,7 +43,7 @@ fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context) {
             Timber.d("debug_dmm saved registered token: ${mPreferenceStorage.pushTokenRegistered}")
             if (token != mPreferenceStorage.pushTokenRegistered) {
                 viewModelScope.launchSimple {
-                    mAuthInteractor.registerPushToken(token)
+                    mAuthInteractor.registerPushToken(token, applicationContext.packageName)
                     mPreferenceStorage.pushTokenRegistered = token
                 }
             }

@@ -15,7 +15,7 @@ import com.sesameware.domain.model.response.ProviderConfigResponse
 
 interface AuthRepository {
     suspend fun providers(): ProvidersListResponse
-    suspend fun registerPushToken(token: String): RegisterPushTokenResponse
+    suspend fun registerPushToken(token: String, bundle: String): RegisterPushTokenResponse
     suspend fun requestCode(userPhone: String, deviceToken: String): RequestCodeResponse
     suspend fun confirmCode(userPhone: String, smsCode: String, deviceToken: String): ConfirmCodeResponse
     suspend fun checkPhone(userPhone: String, deviceToken: String): ConfirmCodeResponse

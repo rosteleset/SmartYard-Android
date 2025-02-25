@@ -180,7 +180,7 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
         if (preferenceStorage.authToken != null) {
             GlobalScope.launch {
                 Timber.d("debug_dmm register fcm token: $token")
-                mInteractor.registerPushToken(token)
+                mInteractor.registerPushToken(token, applicationContext.packageName)
                 preferenceStorage.pushTokenRegistered = token
             }
         }

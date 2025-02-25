@@ -26,12 +26,13 @@ class AuthRepositoryImpl(
     }
 
     override suspend fun registerPushToken(
-        token: String
+        token: String,
+        bundle: String
     ): RegisterPushTokenResponse {
         return safeApiCall {
             teledomApi.registerPushToken(
                 DataModule.BASE_URL + "user/registerPushToken",
-                RegisterPushTokenRequest(token)).getResponseBody()
+                RegisterPushTokenRequest(pushToken = token, bundle = bundle)).getResponseBody()
         }
     }
 
