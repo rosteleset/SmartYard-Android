@@ -40,7 +40,7 @@ fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context) {
                 mPreferenceStorage.pushToken = token
                 if (token != mPreferenceStorage.pushTokenRegistered) {
                     viewModelScope.launchSimple {
-                        mAuthInteractor.registerPushToken(token)
+                        mAuthInteractor.registerPushToken(token, applicationContext.packageName)
                         mPreferenceStorage.pushTokenRegistered = token
                     }
                 }

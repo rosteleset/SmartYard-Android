@@ -169,7 +169,7 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
         if (preferenceStorage.authToken != null) {
             GlobalScope.launch {
                 Timber.d("debug_dmm register hms token: $token")
-                mInteractor.registerPushToken(token)
+                mInteractor.registerPushToken(token, applicationContext.packageName)
                 preferenceStorage.pushTokenRegistered = token
             }
         }
