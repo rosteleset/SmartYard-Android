@@ -1,5 +1,8 @@
 ## History of major changes
 
+### Version 1.0.70
+- Add bundle attribute to the registerPushToken API method.
+
 ### Version 1.0.68
 - Improved Foreground Service usage during the incoming call.
 - Add deviceToken to API calls confirmCode, requestCode and checkPhone.
