@@ -3,7 +3,7 @@
 def getMarketFlavorOrSync() {
     def taskNames = gradle.startParameter.taskNames
     // To make all libs available after sync or clean
-    if (taskNames.isEmpty()) {
+    if (taskNames.isEmpty() || taskNames.contains("clean")) {
         println 'getMarketFlavor: Gradle sync.'
         return 'sync'
     }
