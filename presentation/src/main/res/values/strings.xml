@@ -256,6 +256,7 @@
     <string name="burger_common_settings_title">Общие настройки</string>
     <string name="burger_call_support_button">Звонок в техподдержку</string>
     <string name="burger_call_support_by_phone">Позвонить %s</string>
+    <string name="burger_call_support_hardcoded_phone"></string>
 
     <!-- Городские камеры  -->
     <string name="city_cameras_title">Городские камеры</string>

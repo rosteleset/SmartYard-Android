@@ -3,19 +3,19 @@ package com.sesameware.smartyard_oem.ui.main.burger
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentBurgerBinding
 import com.sesameware.smartyard_oem.ui.showStandardAlert
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class BurgerFragment : Fragment() {
     private var _binding: FragmentBurgerBinding? = null
@@ -35,7 +35,9 @@ class BurgerFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.llCallSupport.setOnClickListener {
-            viewModel.getHelpMe()
+            val hardcodedPhoneNumber =
+                requireContext().getString(R.string.burger_call_support_hardcoded_phone)
+            viewModel.getHelpMe(hardcodedPhoneNumber)
             val dialog = CallToSupportFragment()
             dialog.show(requireActivity().supportFragmentManager, "callToSupport")
         }

@@ -13,9 +13,9 @@ import com.sesameware.domain.model.request.CreateIssuesRequest
 import com.sesameware.domain.model.request.CreateIssuesRequestV2
 import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.domain.model.request.IssueTypeV2
-import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
 
 class BurgerViewModel(
     private val sipInteractor: SipInteractor,
@@ -48,8 +48,10 @@ class BurgerViewModel(
         getBurgerMenu()
     }
 
-    fun getHelpMe() {
-        _dialNumber.value = DataModule.providerConfig.supportPhone ?: ""
+    fun getHelpMe(hardcodedPhoneNumber: String) {
+        _dialNumber.value = hardcodedPhoneNumber.ifBlank {
+            DataModule.providerConfig.supportPhone ?: ""
+        }
     }
 
     fun createIssue() {

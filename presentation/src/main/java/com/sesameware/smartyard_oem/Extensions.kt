@@ -2,8 +2,10 @@ package com.sesameware.smartyard_oem
 
 import android.app.Activity
 import android.content.Context
+import android.content.Context.TELEPHONY_SERVICE
 import android.content.res.Resources
 import android.os.Build
+import android.telephony.TelephonyManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.TypedValue
@@ -153,4 +155,28 @@ fun eventHandler(view: View, context: Context) {
         val afm = context.getSystemService(AutofillManager::class.java)
         afm?.requestAutofill(view)
     }
+}
+
+fun Context.getCountryIso(): String {
+    var countryCode = ""
+
+    // Prefer getting the SIM's country ISO. The user might have set his / her
+    // language to English despite living in a non-English speaking country.
+    val telephonyManager = getSystemService(TELEPHONY_SERVICE) as TelephonyManager
+    countryCode = telephonyManager.simCountryIso.ifEmpty {
+        // Plan B: Try determining using the phone's network
+        telephonyManager.networkCountryIso.ifEmpty {
+            // Plan C: Use the default locale's country code
+            Locale.getDefault().country
+        }
+    }
+
+    // Locale..country returns an uppercase ISO 3166 2-letter code,
+    // or a UN M.49 3-digit region code (e.g. 018 for Southern Africa).
+    // 3-digit code can't be used, so it's removed
+    if (countryCode.length == 3) {
+        countryCode = ""
+    }
+
+    return countryCode.uppercase()
 }

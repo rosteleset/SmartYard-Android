@@ -1,14 +1,15 @@
 package com.sesameware.smartyard_oem.ui.main.burger
 
 import android.os.Bundle
+import android.telephony.PhoneNumberUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCallToSupportBinding
+import com.sesameware.smartyard_oem.getCountryIso
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class CallToSupportFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCallToSupportBinding? = null
@@ -49,8 +50,12 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
         ) {
             it?.let { dialNumber ->
                 if (dialNumber.isNotEmpty()) {
-                    binding.tvCallToSupport.text =
+                    val phoneNnumber =
                         resources.getString(R.string.burger_call_support_by_phone, dialNumber)
+                    val formattedNumber =
+                        PhoneNumberUtils.formatNumber(phoneNnumber, requireContext().getCountryIso())
+                    binding.tvCallToSupport.text = formattedNumber
+
                     binding.pbCallToSupport.visibility = View.GONE
 
                     //когда получили номер, тогда и создаем обработчик
