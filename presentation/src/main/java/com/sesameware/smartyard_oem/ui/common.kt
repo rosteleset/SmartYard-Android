@@ -14,7 +14,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
-import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BlendMode.SRC_ATOP
@@ -47,7 +46,6 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment

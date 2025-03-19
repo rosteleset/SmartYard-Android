@@ -323,6 +323,7 @@
     <string name="event_log_key">Kalit: %s</string>
     <string name="event_log_phone">Telefon: %s</string>
     <string name="event_log_code">Kod: %s</string>
+    <string name="event_log_plate_number">Avtomobil raqami: %s</string>
     <string name="settings_by_face_comments">Siz o‘zingizning yuzingizning tasvirlarini yig‘ishga rozilik berasiz.</string>
     <string name="face_settings_comments">
         Mehmonlaringizning tasvirlari "Hodislar" bo‘limida saqlanadi.\n
@@ -379,6 +380,7 @@
     <string name="event_open_by_face">Yuz bilan ochish</string>
     <string name="event_open_by_code">Kod bilan ochish</string>
     <string name="event_open_gates_by_call">Qo‘ng‘iroq orqali eynak ochish</string>
+    <string name="event_open_gates_by_vehicle">Avtomobil raqami bo‘yicha eshiklarni ochish</string>
     <string name="event_unknown">Noma‘lum voqea</string>
 
     <!-- xml layouts -->

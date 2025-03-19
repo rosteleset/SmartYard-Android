@@ -46,4 +46,8 @@
     <color name="calendar_blue_light">#D2E3FC</color>
     <color name="calendar_toolbar_color">#607D8B</color>
     <color name="calendar_statusbar_color">#455A64</color>
+
+    <!-- Vehicle -->
+    <color name="vehicle_box">#0000FF</color>
+    <color name="plate_key_points">#FF6602</color>
 </resources>

@@ -327,6 +327,7 @@
     <string name="event_log_key">Key: %s</string>
     <string name="event_log_phone">Phone: %s</string>
     <string name="event_log_code">Code: %s</string>
+    <string name="event_log_plate_number">Car number: %s</string>
     <string name="settings_by_face_comments">You consent to storing photos of your face in the face recognition system.</string>
     <string name="face_settings_comments">
         Photos of your guests are stored in the \"Events\" section.\n
@@ -384,6 +385,7 @@
     <string name="event_open_by_face">Opened by face</string>
     <string name="event_open_by_code">Opened by code</string>
     <string name="event_open_gates_by_call">Gate opened by call</string>
+    <string name="event_open_gates_by_vehicle">Gate opened by car number</string>
     <string name="event_unknown">Unknown event</string>
 
     <!-- xml layouts -->

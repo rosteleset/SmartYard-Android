@@ -44,7 +44,8 @@ data class Plog(
         @Json(name = "phone_from") val phoneFrom: String? = null, // телефон
         @Json(name = "phone_to") val phoneTo: String? = null, // телефон
         @Json(name = "flags") val flags: MutableList<String>? = null, // список флагов к событию
-        @Json(name = "face") val face: Face? = null // данные о лице в кадре
+        @Json(name = "face") val face: Face? = null, // данные о лице в кадре
+        @Json(name = "vehicle") val vehicle: Vehicle? = null // информация по распознанному автомобильному номеру
     ) {
         val opened: Boolean?
             get() = if (_opened == null) null else _opened == "t"
@@ -56,6 +57,12 @@ data class Plog(
             @Json(name = "width") val width: Int, // ширина
             @Json(name = "height") val height: Int // высота
         )
+
+        data class Vehicle(
+            @Json(name = "vehicleBox") val vehicleBox: MutableList<Int>? = null, // координаты левого верхнего и правого нижнего угла прямоугольной области, определяющей положение автомобиля
+            @Json(name = "plateKeyPoints") val plateKeyPoints: MutableList<Int>? = null, // координаты четырёхугольника, определяющие положение автомобильного номера
+            @Json(name = "plateNumber") val plateNumber: String? // автомобильный номер
+        )
     }
 
     companion object {
@@ -66,6 +73,8 @@ data class Plog(
         const val EVENT_OPEN_BY_FACE = 5
         const val EVENT_OPEN_BY_CODE = 6
         const val EVENT_OPEN_GATES_BY_CALL = 7
+        const val EVENT_RESERVED_FOR_FUTURE = 8
+        const val EVENT_OPEN_GATES_BY_VEHICLE = 9
 
         const val NO_PREVIEW = 0
         const val PREVIEW_FLUSSONIC = 1
@@ -83,7 +92,9 @@ data class Plog(
         EVENT_OPEN_FROM_APP,
         EVENT_OPEN_BY_FACE,
         EVENT_OPEN_BY_CODE,
-        EVENT_OPEN_GATES_BY_CALL)
+        EVENT_OPEN_GATES_BY_CALL,
+        EVENT_RESERVED_FOR_FUTURE,
+        EVENT_OPEN_GATES_BY_VEHICLE)
     @Retention(AnnotationRetention.SOURCE)
     annotation class IntercomEvent
 
@@ -100,5 +111,3 @@ data class Plog(
     @Retention(AnnotationRetention.SOURCE)
     annotation class LikeFlag
 }
-
-

@@ -326,6 +326,7 @@
     <string name="event_log_key">Кілт: %s</string>
     <string name="event_log_phone">Телефон: %s</string>
     <string name="event_log_code">Код: %s</string>
+    <string name="event_log_plate_number">Көлік нөмірі</string>
     <string name="settings_by_face_comments">Сіз өзіңіздің бетіңіздің фотосуреттерін бетті тану жүйесінде сақтауға келісім бересіз.</string>
     <string name="face_settings_comments">
         Қонақтарыңыздың суреттері \ "оқиғалар\" бөлімінде сақталады.Тұлғаны таңдау және тіркеу үшін Плюс батырмасын басу арқылы көрсетілген бөлімге өтіңіз.\ N оқиғаларда қажетті оқиғаға қарама-қарсы ақпарат белгішесін нұқыңыз және ашылған экранда қажетті фотосуретті таңдаңыз..
@@ -381,6 +382,7 @@
     <string name="event_open_by_face">Бет ашылуы</string>
     <string name="event_open_by_code">Код бойынша ашу</string>
     <string name="event_open_gates_by_call">Қақпаны қоңырау арқылы ашу</string>
+    <string name="event_open_gates_by_vehicle">Автокөлік нөмірі бойынша қақпаларды ашу</string>
     <string name="event_unknown">Белгісіз оқиға</string>
 
     <!-- xml layouts -->

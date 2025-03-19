@@ -328,6 +328,7 @@
     <string name="event_log_key">Ключ: %s</string>
     <string name="event_log_phone">Телефон: %s</string>
     <string name="event_log_code">Код: %s</string>
+    <string name="event_log_plate_number">Номер автомобиля: %s</string>
     <string name="settings_by_face_comments">Вы даете согласие на хранение фотографий вашего лица в системе распознавания лиц.</string>
     <string name="face_settings_comments">
         Фотографии ваших гостей хранятся в разделе \"События\".\n
@@ -385,6 +386,7 @@
     <string name="event_open_by_face">Открывание по лицу</string>
     <string name="event_open_by_code">Открывание по коду</string>
     <string name="event_open_gates_by_call">Открытие ворот звонком</string>
+    <string name="event_open_gates_by_vehicle">Открытие ворот по номеру машины</string>
     <string name="event_unknown">Неизвестное событие</string>
 
     <!-- xml layouts -->

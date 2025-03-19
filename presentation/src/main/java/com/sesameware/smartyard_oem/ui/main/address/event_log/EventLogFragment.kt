@@ -78,7 +78,7 @@ class EventLogFragment : Fragment() {
                         s.add(Plog.EVENT_OPEN_BY_FACE)
                         s.add(Plog.EVENT_OPEN_BY_CODE)
                         s.add(Plog.EVENT_OPEN_GATES_BY_CALL)
-                    }
+                        s.add(Plog.EVENT_OPEN_GATES_BY_VEHICLE)                    }
                     1 -> {
                         s.add(Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED)
                         s.add(Plog.EVENT_DOOR_PHONE_CALL_ANSWERED)
@@ -97,6 +97,9 @@ class EventLogFragment : Fragment() {
                     }
                     6 -> {
                         s.add(Plog.EVENT_OPEN_BY_CODE)
+                    }
+                    7 -> {
+                        s.add(Plog.EVENT_OPEN_GATES_BY_VEHICLE)
                     }
                 }
                 mViewModel.filterEventType = s

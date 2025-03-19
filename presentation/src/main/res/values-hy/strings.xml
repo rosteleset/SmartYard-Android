@@ -323,6 +323,7 @@
     <string name="event_log_key">Ստեղծագործած բանալին: %s</string>
     <string name="event_log_phone">Հեռախոս: %s</string>
     <string name="event_log_code">Կոդ: %s</string>
+    <string name="event_log_plate_number">Մեքենայի համարը: %s</string>
     <string name="settings_by_face_comments">Դուք համաձայն եք ձեր դիմացից ներկայացված ձեր նկարները պահելու համար։</string>
     <string name="face_settings_comments">
         Ձեր հյութի նկարները պահելու համար, ձեր հյութի գործարկիչները պահանջում են "Անցնել բաժին" բաժնում։\n
@@ -379,6 +380,7 @@
     <string name="event_open_by_face">Օգտագործելով դեմքից բացվեց</string>
     <string name="event_open_by_code">Կոդից բացվեց</string>
     <string name="event_open_gates_by_call">Պատասխանելով զանգով բացեց դառնումները</string>
+    <string name="event_open_gates_by_vehicle">Դարպասների բացում մեքենայի համարով</string>
     <string name="event_unknown">Անհայտ իրավունք</string>
 
     <!-- xml layouts -->

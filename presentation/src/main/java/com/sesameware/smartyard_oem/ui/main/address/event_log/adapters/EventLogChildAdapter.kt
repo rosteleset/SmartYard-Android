@@ -49,6 +49,7 @@ class EventLogChildAdapter(
                 Plog.EVENT_OPEN_BY_FACE -> R.drawable.ic_el_face
                 Plog.EVENT_OPEN_BY_CODE -> R.drawable.ic_el_code
                 Plog.EVENT_OPEN_GATES_BY_CALL -> R.drawable.ic_el_gates
+                Plog.EVENT_OPEN_GATES_BY_VEHICLE -> R.drawable.ic_el_vehicle
                 else -> android.R.color.transparent
             }
         }
@@ -62,6 +63,7 @@ class EventLogChildAdapter(
                 Plog.EVENT_OPEN_BY_FACE -> itemView.context.getString(R.string.event_open_by_face)
                 Plog.EVENT_OPEN_BY_CODE -> itemView.context.getString(R.string.event_open_by_code)
                 Plog.EVENT_OPEN_GATES_BY_CALL -> itemView.context.getString(R.string.event_open_gates_by_call)
+                Plog.EVENT_OPEN_GATES_BY_VEHICLE -> itemView.context.getString(R.string.event_open_gates_by_vehicle)
                 else -> itemView.context.getString(R.string.event_unknown)
             }
         }

@@ -85,8 +85,7 @@ class EventLogDetailVH(
 
         with (binding) {
             tvEventImage.setFaceRect(-1, -1, 0, 0, false)
-
-
+            tvEventImage.setVehicleData(mutableListOf(), mutableListOf())
 
             tvEventName.text = when (plog.eventType) {
                 Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED -> itemView.context.getString(R.string.event_door_phone_call_unanswered)
@@ -96,6 +95,7 @@ class EventLogDetailVH(
                 Plog.EVENT_OPEN_BY_FACE -> itemView.context.getString(R.string.event_open_by_face)
                 Plog.EVENT_OPEN_BY_CODE -> itemView.context.getString(R.string.event_open_by_code)
                 Plog.EVENT_OPEN_GATES_BY_CALL -> itemView.context.getString(R.string.event_open_gates_by_call)
+                Plog.EVENT_OPEN_GATES_BY_VEHICLE -> itemView.context.getString(R.string.event_open_gates_by_vehicle)
                 else -> itemView.context.getString(R.string.event_unknown)
             }
             tvEventAddress.text = plog.address
@@ -159,6 +159,16 @@ class EventLogDetailVH(
                     if (plog.detailX?.phone?.isNotEmpty() == true) {
                         tvEventAdditional.text =
                             itemView.resources.getString(R.string.event_log_phone, plog.detailX?.phone)
+                    }
+                }
+
+                Plog.EVENT_OPEN_GATES_BY_VEHICLE -> {
+                    tvEventUnansweredCall.isVisible = false
+                    tvEventAnsweredCall.isVisible = false
+                    tvEventAdditional.isVisible = true
+                    if (plog.detailX?.vehicle?.plateNumber?.isNotEmpty() == true) {
+                        tvEventAdditional.text =
+                            itemView.resources.getString(R.string.event_log_plate_number, plog.detailX?.vehicle?.plateNumber)
                     }
                 }
 
@@ -239,6 +249,10 @@ class EventLogDetailVH(
                         onAction(EventLogDetailItemAction.OnAddRemoveRegistrationClick(position, plog))
                     }
                 }
+            }
+
+            plog.detailX?.vehicle?.let { vehicle ->
+                tvEventImage.setVehicleData(vehicle.vehicleBox ?: mutableListOf(), vehicle.plateKeyPoints ?: mutableListOf())
             }
 
             ivEventMute.setOnClickListener {
