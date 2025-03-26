@@ -130,7 +130,7 @@ class FaceImageView : AppCompatImageView {
             canvas.drawLine(plateKeyPoints[0] * scaleX, plateKeyPoints[1] * scaleY, plateKeyPoints[2] * scaleX, plateKeyPoints[3] * scaleY, plateKeyPointsPaint)
             canvas.drawLine(plateKeyPoints[2] * scaleX, plateKeyPoints[3] * scaleY, plateKeyPoints[4] * scaleX, plateKeyPoints[5] * scaleY, plateKeyPointsPaint)
             canvas.drawLine(plateKeyPoints[4] * scaleX, plateKeyPoints[5] * scaleY, plateKeyPoints[6] * scaleX, plateKeyPoints[7] * scaleY, plateKeyPointsPaint)
-            canvas.drawLine(plateKeyPoints[6] * scaleX, plateKeyPoints[7] * scaleY, plateKeyPoints[1] * scaleX, plateKeyPoints[1] * scaleY, plateKeyPointsPaint)
+            canvas.drawLine(plateKeyPoints[6] * scaleX, plateKeyPoints[7] * scaleY, plateKeyPoints[0] * scaleX, plateKeyPoints[1] * scaleY, plateKeyPointsPaint)
         }
     }
 
