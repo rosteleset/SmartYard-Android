@@ -39,7 +39,7 @@ data class PushCallData(
         }
     val webRtcVideoUrl: String get() =
         when (mediaServerType) {
-            else -> "$videoStream/whap?token=$videoToken"
+            else -> "$videoStream/whep?token=$videoToken"
         }
 }
 
