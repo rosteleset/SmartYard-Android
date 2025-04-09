@@ -441,8 +441,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun waitForLinServiceAndRun(fcmCallData: PushCallData?, listener: listenerGeneric<LinphoneProvider>) {
-        var doStartService = false
         lifecycleScope.launch(Dispatchers.IO) {
+            var doStartService = false
             if (!LinphoneService.isReady()) {
                 doStartService = true
                 startService(
