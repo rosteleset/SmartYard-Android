@@ -1,6 +1,8 @@
 package com.sesameware.smartyard_oem.ui.call
 
 import android.content.Context
+import android.graphics.ColorMatrix
+import android.graphics.ColorMatrixColorFilter
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.Checkable
@@ -97,6 +99,16 @@ class IncomingButtonView @JvmOverloads constructor(
             mChecked = checked
             mCheckListener?.run { this(checked) }
             updateDrawable(checked)
+        }
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        binding.mButton.isEnabled = enabled
+
+        if (enabled) {
+            binding.mButton.background.colorFilter = null
+        } else {
+            binding.mButton.background.colorFilter = ColorMatrixColorFilter(ColorMatrix().apply { setSaturation(0f) })
         }
     }
 

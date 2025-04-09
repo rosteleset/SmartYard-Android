@@ -1,8 +1,8 @@
 package com.sesameware.smartyard_oem.ui.launcher
 
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -20,6 +20,8 @@ class LauncherActivity : CommonActivity() {
     override val mViewModel by viewModel<LauncherViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        Timber.d("debug_dmm    onCreate in LauncherActivity")
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             installSplashScreen()
@@ -61,28 +63,28 @@ class LauncherActivity : CommonActivity() {
 
     private fun createNotificationChannels() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
             val channelMessages = NotificationChannel(
                 MessagingService.CHANNEL_INBOX_ID,
                 this.getString(R.string.channel_inbox_title),
                 NotificationManager.IMPORTANCE_HIGH
-            )
+            ).apply {
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
+            }
             notificationManager.createNotificationChannel(channelMessages)
+
+            // remove the old call channel
+            notificationManager.deleteNotificationChannel(MessagingService.CHANNEL_CALLS_ID_OLD)
 
             val channelCalls = NotificationChannel(
                 MessagingService.CHANNEL_CALLS_ID,
                 this.getString(R.string.channel_calls_title),
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
+                lockscreenVisibility = Notification.VISIBILITY_PUBLIC
                 setShowBadge(false)
             }
-
-            //включаем вибрацию
-            channelCalls.enableVibration(true)
-
-            //отключаем звук уведомления, так как он запускается при успешном sip соединении
-            channelCalls.setSound(null, null)
 
             notificationManager.createNotificationChannel(channelCalls)
         }

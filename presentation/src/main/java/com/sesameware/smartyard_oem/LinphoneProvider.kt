@@ -1,21 +1,11 @@
 package com.sesameware.smartyard_oem
 
-import android.app.NotificationManager
-import android.content.Context
-import android.media.Ringtone
-import android.media.RingtoneManager
-import android.os.Build
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.sesameware.data.DataModule
-import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.doDelayed
-import com.sesameware.smartyard_oem.ui.SoundChooser
-import com.sesameware.smartyard_oem.ui.call.AndroidAudioManager
-import com.sesameware.smartyard_oem.ui.sendCallNotification
 import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import org.linphone.core.AccountCreator
 import org.linphone.core.AudioDevice
 import org.linphone.core.Call
@@ -27,9 +17,7 @@ import org.linphone.core.TransportType
 import timber.log.Timber
 
 class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinComponent {
-    private var currentRingtone: Ringtone? = null
     var pushCallData: PushCallData? = null
-    private val preferenceStorage: PreferenceStorage by inject()
 
     val registrationState = MutableLiveData(
         CRegistrationState(RegistrationState.None)
@@ -37,10 +25,6 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     val callState = MutableLiveData(CCallState(Call.State.Idle))
     val dtmfIsSent = MutableLiveData(false)
     val finishCallActivity = MutableLiveData<Event<Unit>>()
-    var mAudioManager: AndroidAudioManager = AndroidAudioManager(service)
-
-    private var shouldVibrate = false
-    private var vibrationPattern = longArrayOf(0, 1000, 1000)
 
     private var speakerDevice: AudioDevice? = null
     private var earpieceDevice: AudioDevice? = null
@@ -55,13 +39,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         ) {
             Timber.d("debug_dmm reg_state: $state message: $message")
             registrationState.value = CRegistrationState(state, message)
-            when (state) {
-                RegistrationState.Failed -> {
-                    service.stopSelf()
-                }
-                else -> {
-                }
-            }
+
             super.onRegistrationStateChanged(core, proxyConfig, state, message)
         }
 
@@ -77,14 +55,14 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
             when (cState.state) {
                 CallStateSimple.INCOMING -> {
-                    notifyIncomingCall()
+                    Timber.d("debug_dmm    call is ok")
+                    service.isCallOk = true
                 }
                 CallStateSimple.END,
                 CallStateSimple.ERROR -> {
                     service.stopSelf()
                 }
                 CallStateSimple.CONNECTED -> {
-                    stopRinging()
                 }
                 CallStateSimple.OTHER_CONNECTED,
                 CallStateSimple.IDLE,
@@ -97,29 +75,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         }
     }
 
-    private fun notifyIncomingCall() {
-        pushCallData?.let { data ->
-            val notificationManager = service.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                val notification = notificationManager.getNotificationChannel(MessagingService.CHANNEL_CALLS_ID)
-                shouldVibrate = notification?.shouldVibrate() ?: false
-                vibrationPattern = notification?.vibrationPattern ?: vibrationPattern
-            }
-            sendCallNotification(data, service, preferenceStorage)
-            if (notificationManager.currentInterruptionFilter == NotificationManager.INTERRUPTION_FILTER_ALL) {
-                startRinging()
-            }
-        }
-    }
-
     fun setNativeVideoWindowId(videoWindow: View) {
         core.nativeVideoWindowId = videoWindow
-    }
-
-    private fun deleteCallNotifications(context: Context) {
-        val notificationManager =
-            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.cancel(preferenceStorage.notificationData.currentCallId)
     }
 
     fun isConnected(): Boolean {
@@ -134,32 +91,10 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         false
     }
 
-    fun listenAndGetNotifications(pendingData: PushCallData) {
-        val ring = SoundChooser.getChosenTone(
-            service,
-            RingtoneManager.TYPE_RINGTONE,
-            pendingData.flatId,
-            preferenceStorage
-        )
-
-        Timber.d("debug_dmm ring.uri: ${ring.uri}")
-
-        currentRingtone = RingtoneManager.getRingtone(service, ring.uri)
-        pushCallData = pendingData
-        connect(pendingData)
-    }
-
-    private fun startRinging() {
-        currentRingtone?.play()
-        if (shouldVibrate) {
-            mAudioManager.vibrator?.vibrate(vibrationPattern, 0)
-        }
-    }
-
-    fun stopRinging() {
-        currentRingtone?.stop()
-        deleteCallNotifications(service)
-        mAudioManager.vibrator?.cancel()
+    fun startConnection(data: PushCallData) {
+        service.connectionStarted = true
+        pushCallData = data
+        connect(data)
     }
 
     fun acceptCall() {
@@ -180,18 +115,7 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         }
     }
 
-    fun resume() {
-        if (isConnected()) {
-            core.addListener(mCoreListener)
-        }
-    }
-
-    fun pause() {
-        core.removeListener(mCoreListener)
-    }
-
     fun onDestroy() {
-        stopRinging()
         disconnect()
         finishCallActivity.value = Event(Unit)
     }

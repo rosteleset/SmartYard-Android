@@ -5,12 +5,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.media.RingtoneManager
-import android.os.Build
-import android.os.Handler
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.squareup.moshi.Moshi
 import kotlinx.coroutines.GlobalScope
@@ -20,24 +15,21 @@ import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
-import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.model.PushCallData
-import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment.Companion.BROADCAST_ACTION_NOTIF
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment.Companion.BROADCAST_PAY_UPDATE
+import com.sesameware.smartyard_oem.ui.sendCallNotification
 import ru.rustore.sdk.pushclient.messaging.model.RemoteMessage
 import ru.rustore.sdk.pushclient.messaging.service.RuStoreMessagingService
 import timber.log.Timber
 
 class MessagingService : RuStoreMessagingService(), KoinComponent {
-    private var mHandler = Handler()
     private val preferenceStorage: PreferenceStorage by inject()
     private val mInteractor: AuthInteractor by inject()
     private val moshi: Moshi by inject()
-    private val inboxInteractor: InboxInteractor by inject()
     private val context: Context get() = this
 
     private val TAG = "notification"
@@ -93,14 +85,7 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
                                 msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
                             }
 
-                            if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-                                waitForLinServiceAndRun(msg) {
-                                    Timber.d("debug_dmm linphone service is running")
-                                    it.listenAndGetNotifications(msg)
-                                }
-                            } else {
-                                Timber.d("debug_dmm notifications are disabled")
-                            }
+                            notifyUserAboutIncomingCall(msg)
                         }
                     }
 
@@ -227,17 +212,15 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
 
         notificationManager.notify(notId, notificationBuilder.build())
     }
 
     companion object {
         const val CHANNEL_INBOX_ID = "channel_inbox"
-        const val CHANNEL_INBOX_TITLE = "Сообщения"
-        const val CHANNEL_CALLS_ID = "channel_calls"
-        const val CHANNEL_CALLS_TITLE = "Входящие звонки"
+        const val CHANNEL_CALLS_ID_OLD = "channel_calls"
+        const val CHANNEL_CALLS_ID = "channel_calls_new"
         const val NOTIFICATION_MESSAGE_ID = "messageId"
         const val NOTIFICATION_MESSAGE_TYPE = "messageType"
         const val NOTIFICATION_BADGE = "badge"
@@ -262,43 +245,7 @@ class MessagingService : RuStoreMessagingService(), KoinComponent {
         }
     }
 
-    private fun waitForLinServiceAndRun(fcmCallData: PushCallData, listener: listenerGeneric<LinphoneProvider>) {
-        Thread {
-            if (!LinphoneService.isReady()) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    Timber.d("__S__    call startService")
-                    startService(
-                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
-                            if (fcmCallData.stun?.isNotEmpty() == true) {
-                                intent.putExtra(CALL_STUN, fcmCallData.stun)
-                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
-                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
-                            }
-                        }
-                    )
-                } else {
-                    Timber.d("__S__    call startForegroundService")
-                    startForegroundService(
-                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
-                            if (fcmCallData.stun?.isNotEmpty() == true) {
-                                intent.putExtra(CALL_STUN, fcmCallData.stun)
-                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
-                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
-                            }
-                        }
-                    )
-                }
-            }
-            while (!LinphoneService.isReady()) {
-                try {
-                    Thread.sleep(30)
-                } catch (e: InterruptedException) {
-                    throw RuntimeException("waiting thread sleep() has been interrupted")
-                }
-            }
-            mHandler.post { LinphoneService.instance?.provider?.let { listener(it) } }
-        }.start()
+    private fun notifyUserAboutIncomingCall(data: PushCallData) {
+        sendCallNotification(data, context, preferenceStorage)
     }
 }

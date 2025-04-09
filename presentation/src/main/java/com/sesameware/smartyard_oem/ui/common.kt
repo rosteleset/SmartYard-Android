@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
 import android.app.Dialog
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TimePickerDialog
@@ -61,10 +62,10 @@ import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.data.Crashlytics
-import com.sesameware.smartyard_oem.LinphoneService
 import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
+import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.PUSH_DATA
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
 import org.threeten.bp.LocalDate
@@ -74,6 +75,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import androidx.core.graphics.createBitmap
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
     showStandardAlert(context, context.getString(msgResId), callback)
@@ -321,11 +323,13 @@ fun sendCallNotification(
     context: Context,
     prefs: PreferenceStorage
 ) {
+    Timber.d("debug_dmm  call sendCallNotification")
     context.run {
         val notId = prefs.notificationData.currentCallId
         val intent = Intent(this, IncomingCallActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION)
             putExtra(PUSH_DATA, data)
+            putExtra(NOTIFICATION_ID, notId)
         }
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent,
@@ -340,30 +344,15 @@ fun sendCallNotification(
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setSound(null)  //отключаем звук уведомления, так как он запускается при успешном sip соединении
-            .setVibrate(null)  //отключаем вибрацию в уведомлении, так как она запускается при успешном sip соединении
             .setTimeoutAfter(30000)
-            .setContentIntent(pendingIntent)
             .setWhen(System.currentTimeMillis())
             .setFullScreenIntent(pendingIntent, true)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = notificationBuilder.build()
-        if (VERSION.SDK_INT >= VERSION_CODES.O) {
-            try {
-                Timber.d("__S__ before call startForeground")
-                LinphoneService.instance?.startForeground(notId, notification)
-                Timber.d("__S__ after call startForeground")
-            } catch (e: Exception) {
-                Timber.d("__S__ exception")
-                val crashlytics = Crashlytics.getInstance()
-                crashlytics.recordException(e)
-            }
-        } else {
-            notificationManager.notify(notId, notification)
-        }
+        notification.flags += Notification.FLAG_INSISTENT
+        notification.flags += Notification.FLAG_AUTO_CANCEL
+        notificationManager.notify(notId, notification)
     }
 }
 
@@ -410,11 +399,7 @@ fun resourceToBitmap(context: Context, drawableSrc: Int): Bitmap {
 }
 
 private fun drawableToBitmap(vectorDrawable: Drawable): Bitmap {
-    val bitmap = Bitmap.createBitmap(
-        vectorDrawable.intrinsicWidth,
-        vectorDrawable.intrinsicHeight,
-        Bitmap.Config.ARGB_8888
-    )
+    val bitmap = createBitmap(vectorDrawable.intrinsicWidth, vectorDrawable.intrinsicHeight)
     val canvas = Canvas(bitmap)
     vectorDrawable.setBounds(0, 0, canvas.width, canvas.height)
     vectorDrawable.draw(canvas)

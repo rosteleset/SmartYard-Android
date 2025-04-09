@@ -96,16 +96,6 @@ class BasicSettingsFragment : Fragment() {
             }
         }
 
-        binding.tvTitleSecurity.setOnClickListener {
-            if (binding.expandableLayoutSecurity.isExpanded) {
-                binding.expandableLayoutSecurity.collapse()
-                binding.ivSecurity.setImageResource(drawable.ic_arrow_bottom)
-            } else {
-                binding.expandableLayoutSecurity.expand()
-                binding.ivSecurity.setImageResource(drawable.ic_arrow_top)
-            }
-        }
-
         binding.ivNameEdit.setOnClickListener {
             val dialog = DialogChangeName()
             dialog.onSuccess = { mViewModel.refreshUserData() }

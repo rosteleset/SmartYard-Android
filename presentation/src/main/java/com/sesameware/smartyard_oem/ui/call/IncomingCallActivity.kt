@@ -2,7 +2,7 @@ package com.sesameware.smartyard_oem.ui.call
 
 import android.Manifest
 import android.app.Application
-import android.content.Context
+import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
@@ -29,8 +29,12 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.request.transition.Transition
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.doDelayed
+import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.CCallState
 import com.sesameware.smartyard_oem.CRegistrationState
 import com.sesameware.smartyard_oem.CallStateSimple
@@ -38,12 +42,15 @@ import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.LinphoneProvider
 import com.sesameware.smartyard_oem.LinphoneService
+import com.sesameware.smartyard_oem.MessagingService.Companion.CALL_STUN
+import com.sesameware.smartyard_oem.MessagingService.Companion.CALL_STUN_TRANSPORT
+import com.sesameware.smartyard_oem.MessagingService.Companion.CALL_TURN_PASSWORD
+import com.sesameware.smartyard_oem.MessagingService.Companion.CALL_TURN_USERNAME
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityIncomingCallBinding
 import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -249,7 +256,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }, constraints)
     }
 
-    private lateinit var mLinphone: LinphoneProvider
+    private var mLinphone: LinphoneProvider? = null
     private var mTryingToOpenDoor: Boolean = false
     override val mViewModel by viewModel<IncomingCallActivityViewModel>()
     private lateinit var mPushCallData: PushCallData
@@ -327,80 +334,150 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityIncomingCallBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        Timber.d("debug_dmm    onCreate")
 
-        mSensorManager = this.getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        mSensorManager = this.getSystemService(SENSOR_SERVICE) as SensorManager
         mProximity = mSensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         setupUi()
+        enableCallButtons(false)
 
         @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
-        val provider = LinphoneService.instance?.provider
-        if (provider != null && fcmData != null) {
-            mLinphone = provider
-            mPushCallData = fcmData
-            resetView(mPushCallData)
-            observeChanges()
-            checkAndRequestCallPermissions()
-            mLinphone.setNativeVideoWindowId(binding.mVideoSip)
+        waitForLinServiceAndRun(fcmData) {
+            mLinphone = LinphoneService.instance?.provider
+            if (mLinphone != null && fcmData != null) {
+                if (LinphoneService.instance?.connectionStarted == false) {
+                    mLinphone?.startConnection(fcmData)
+                }
+                mPushCallData = fcmData
+                resetView(mPushCallData)
+                checkAndRequestCallPermissions()
+                mLinphone?.setNativeVideoWindowId(binding.mVideoSip)
 
-            mViewModel.start(mPushCallData)
-            binding.mImageViewWrap.clipToOutline = true
-            window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
-                @Suppress("DEPRECATION")
-                window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
-                @Suppress("DEPRECATION")
-                window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
-            }
+                mViewModel.start(mPushCallData)
+                binding.mImageViewWrap.clipToOutline = true
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
+                    window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
+                    window.addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON)
+                }
 
-            if (fcmData.dtmf.isNotEmpty()) {
-                binding.mOpenButton.setOnClickListener { openDoor() }
+                observeChanges()
+                if (LinphoneService.instance?.isCallOk == true) {
+                    enableCallButtons(true)
+                }
+                setConnectedState(mLinphone?.isConnected() == true)
             } else {
-                binding.mOpenButton.setOnClickListener(null)
-                binding.mOpenButton.show(on = false, invisible = true)
+                finishAndRemoveTask()
             }
 
-            binding.mAnswerButton.setOnClickListener { answerCall() }
-            mViewModel.eyeState.value = LinphoneService.instance?.provider?.pushCallData?.eyeState == true
-            binding.mPeepholeButton.setOnClickListener {
-                mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
-                mLinphone.stopRinging()
-            }
-            binding.mHangUpButton.setOnClickListener { hangUp() }
-        } else {
-            finish()
-            return
-        }
-
-        var useSpeaker = false
-        if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            useSpeaker = true
-        } else {
-            //включение громкой связи, если выставлен флаг в настройках домофона
-            if (mViewModel.mPreferenceStorage.addressOptions.getOption(fcmData.flatId).isSpeaker == true) {
+            var useSpeaker = false
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 useSpeaker = true
+            } else {
+                //включение громкой связи, если выставлен флаг в настройках домофона
+                if (fcmData != null) {
+                    if (mViewModel.mPreferenceStorage.addressOptions.getOption(fcmData.flatId).isSpeaker == true) {
+                        useSpeaker = true
+                    }
+                }
             }
-        }
-        mViewModel.routeAudioToValue(useSpeaker)
 
-        if (hasWebRTC) {
-            initWebRTC()
+            mViewModel.routeAudioToValue(useSpeaker)
+            if (hasWebRTC) {
+                initWebRTC()
+            }
         }
     }
 
     private fun setupUi() {
-        binding.ivFullscreenMinimalize.setOnClickListener {
-            requestedOrientation =
-                if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
-                } else {
-                    ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
-                }
-        }
+        binding = ActivityIncomingCallBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
+    }
 
-        binding.mSpeakerButton.setOnClickListener {
-            mViewModel.routeAudioToValue(!binding.mSpeakerButton.isSelected)
+    private fun enableCallButtons(isEnabled: Boolean) {
+        binding.mPeepholeButton.isEnabled = isEnabled
+        binding.mAnswerButton.isEnabled = isEnabled
+        binding.mSpeakerButton.isEnabled = isEnabled
+        binding.mHangUpButton.isEnabled = isEnabled
+        binding.mOpenedButton.isEnabled = isEnabled
+        binding.mOpenButton.isEnabled = isEnabled
+        binding.pbIncomingCall.isVisible = !isEnabled
+
+        if (isEnabled) {
+            binding.ivFullscreenMinimalize.setOnClickListener {
+                cancelNotification()
+                requestedOrientation =
+                    if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
+                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
+                    } else {
+                        ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+                    }
+            }
+
+            binding.mSpeakerButton.setOnClickListener {
+                cancelNotification()
+                mViewModel.routeAudioToValue(!binding.mSpeakerButton.isSelected)
+            }
+
+            binding.mOpenButton.setOnClickListener {
+                cancelNotification()
+                openDoor()
+            }
+            binding.mAnswerButton.setOnClickListener {
+                cancelNotification()
+                answerCall()
+            }
+            mViewModel.eyeState.value = LinphoneService.instance?.provider?.pushCallData?.eyeState == true
+            binding.mPeepholeButton.setOnClickListener {
+                cancelNotification()
+                mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
+            }
+            binding.mHangUpButton.setOnClickListener {
+                cancelNotification()
+                hangUp()
+            }
+        }
+    }
+
+    private fun waitForLinServiceAndRun(fcmCallData: PushCallData?, listener: listenerGeneric<LinphoneProvider>) {
+        var doStartService = false
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (!LinphoneService.isReady()) {
+                doStartService = true
+                startService(
+                    Intent().setClass(this@IncomingCallActivity, LinphoneService::class.java).also { intent ->
+                        if (fcmCallData?.stun?.isNotEmpty() == true) {
+                            intent.putExtra(CALL_STUN, fcmCallData.stun)
+                            intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
+                            intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
+                            intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
+                        }
+                    }
+                )
+            }
+            val timestamp = System.currentTimeMillis()
+            var failed = false
+            while (!LinphoneService.isReady() && !failed) {
+                delay(30L)
+
+                // If the Linphone service does not start within WAIT_FOR_LINPHONE milliseconds, then interrupt the call
+                if (System.currentTimeMillis() - timestamp > WAIT_FOR_LINPHONE) {
+                    failed = true
+                }
+            }
+            withContext(Dispatchers.Main) {
+                if (failed) {
+                    processFailedCall()
+                } else {
+                    if (doStartService) {
+                        Timber.d("debug_dmm  Linphone service has started...")
+                    }
+                    LinphoneService.instance?.provider?.let {
+                        listener(it)
+                    }
+                }
+            }
         }
     }
 
@@ -409,23 +486,29 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun openDoor() {
-        if (mLinphone.isConnected()) {
+        if (mLinphone?.isConnected() == true) {
             binding.mAnswerButton.setText(R.string.connecting)
-            mLinphone.sendDtmf()
+            mLinphone?.sendDtmf()
         } else {
             mTryingToOpenDoor = true
-            mLinphone.acceptCallForDoor()
+            mLinphone?.acceptCallForDoor()
         }
     }
 
     private fun observeChanges() {
-        mLinphone.registrationState.observe(this) { observeRegistrationState(it) }
-        mLinphone.callState.observe(this) { observeCallState(it) }
-        mLinphone.dtmfIsSent.observe(this) { setDoorState(it) }
-        mLinphone.finishCallActivity.observe(
+        mLinphone?.registrationState?.observe(this) { observeRegistrationState(it) }
+        mLinphone?.callState?.observe(this) { observeCallState(it) }
+        mLinphone?.dtmfIsSent?.observe(this) { setDoorState(it) }
+        mLinphone?.finishCallActivity?.observe(
             this,
             EventObserver {
-                finish()
+                Timber.d("debug_dmm    finishCallActivity")
+                mLinphone?.core?.calls?.let { calls ->
+                    if (calls.isNotEmpty()) {
+                        Timber.d("debug_dmm    call state ${calls[0].state}")
+                    }
+                }
+                finishAndRemoveTask()
             }
         )
         mViewModel.localErrorsSink.observe(
@@ -504,12 +587,20 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             this
         ) {
             if (it) {
-                mLinphone.routeAudioToSpeaker()
+                mLinphone?.routeAudioToSpeaker()
                 binding.mSpeakerButton.isSelected = true
             } else {
-                mLinphone.routeAudioToEarpiece()
+                mLinphone?.routeAudioToEarpiece()
                 binding.mSpeakerButton.isSelected = false
             }
+        }
+    }
+
+    private fun cancelNotification() {
+        Timber.d("debug_dmm    cancelNotification")
+        intent.extras?.getInt(NOTIFICATION_ID)?.let {
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.cancel(it)
         }
     }
 
@@ -519,7 +610,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun resetView(data: PushCallData) {
-        mLinphone.reset()
+        mLinphone?.reset()
         setDoorState(false)
         binding.mStatusText.text = data.callerId
     }
@@ -528,7 +619,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         if (opened) {
             doDelayed(
                 {
-                    mLinphone.disconnect()
+                    mLinphone?.disconnect()
                     hangUp()
                 },
                 3000
@@ -542,17 +633,18 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun answerCall() {
-        if (!binding.mAnswerButton.isSelected && mLinphone.dtmfIsSent.value != true) {
+        Timber.d("debug_dmm    answerCall")
+        if (!binding.mAnswerButton.isSelected && mLinphone?.dtmfIsSent?.value == false) {
             binding.mAnswerButton.isSelected = true
-            mLinphone.acceptCall()
+            mLinphone?.acceptCall()
         }
     }
 
     private fun setConnectedState(connected: Boolean) {
         if (connected) {
             binding.mPeepholeButton.setOnClickListener(null)
-            enablePeepholeVideo(hasWebRTC && !mLinphone.isVideoCall())
-            if (mLinphone.isVideoCall()) {
+            enablePeepholeVideo(hasWebRTC && mLinphone?.isVideoCall() == false)
+            if (mLinphone?.isVideoCall() == true) {
                 Timber.d("debug_webrtc    answer the call with video in SIP")
                 binding.mVideoSip.show(true)
                 binding.mVideoSip.bringToFront()
@@ -562,8 +654,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             mViewModel.connectedChangeStateUiAudioToSpeaker()
         } else if (mPushCallData.image.isNotEmpty()) {
             binding.mPeepholeButton.setOnClickListener {
+                cancelNotification()
                 mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
-                mLinphone.stopRinging()
             }
         }
 
@@ -574,10 +666,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun enablePeepholeVideo(isEnabled: Boolean) {
-        val text = if (!mLinphone.isConnected()) {
-            if (isEnabled) R.string.call_peek_on else R.string.call_on_domophone
-        } else {
+        val text = if (mLinphone?.isConnected() == true) {
             R.string.call_talk
+        } else {
+            if (isEnabled) R.string.call_peek_on else R.string.call_on_domophone
         }
         binding.mTitle.setText(text)
         mViewModel.setSlideShowEnabled(!hasWebRTC && isEnabled)
@@ -601,7 +693,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         binding.mStatusText.show(!on)
         binding.mCallTimer.show(on)
         if (on) {
-            binding.mCallTimer.base = SystemClock.elapsedRealtime() - 1000 * (mLinphone.getCallDuration())
+            binding.mCallTimer.base = SystemClock.elapsedRealtime() - 1000 * (mLinphone?.getCallDuration() ?: 0)
             binding.mCallTimer.start()
         } else {
             binding.mCallTimer.stop()
@@ -620,17 +712,21 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             if (state == RegistrationState.None) {
                 binding.mAnswerButton.isSelected = false
             }
+            if (it.state == RegistrationState.Failed) {
+                processFailedCall()
+            }
         }
     }
 
     private fun observeCallState(it: CCallState) {
-        Timber.d("debug_dmm call observeCallState with state = $it")
+        Timber.d("debug_dmm    call observeCallState")
         it.run {
             when (state) {
                 CallStateSimple.INCOMING -> {
+                    Timber.d("debug_dmm  enable call buttons")
+                    enableCallButtons(true)
                 }
                 CallStateSimple.OTHER_CONNECTED -> {
-                    Timber.d("debug_webrtc    observeCallState    CallStateSimple.OTHER_CONNECTED")
                     setConnectedState(true)
                 }
                 CallStateSimple.CONNECTED -> {
@@ -644,39 +740,41 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 CallStateSimple.END -> {
                 }
                 CallStateSimple.IDLE -> {
-                    Timber.d("debug_webrtc    observeCallState    CallStateSimple.IDLE")
                     setConnectedState(false)
                 }
                 CallStateSimple.STREAMS_RUNNING -> {
                     if (mTryingToOpenDoor) {
                         binding.mAnswerButton.setText(R.string.connecting)
-                        mLinphone.sendDtmf()
+                        mLinphone?.sendDtmf()
                     } else {
-                        Timber.d("debug_webrtc    observeCallState    CallStateSimple.STREAMS_RUNNING")
                         setConnectedState(true)
                     }
-                    setConnectedState(true)
                 }
             }
         }
     }
 
     override fun onResume() {
+        Timber.d("debug_dmm    onResume")
+
         super.onResume()
         mSensorManager?.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL)
     }
 
     override fun onPause() {
-        super.onPause()
+        Timber.d("debug_dmm    onPause")
 
+        super.onPause()
         mSensorManager?.unregisterListener(this)
-        mLinphone.routeAudioToEarpiece()
+        mLinphone?.routeAudioToEarpiece()
         LinphoneService.instance?.provider?.pushCallData?.eyeState = binding.mPeepholeButton.isChecked
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
+        Timber.d("debug_dmm    onDestroy")
+        cancelNotification()
         stopWebRTC()
     }
 
@@ -698,15 +796,22 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         if (recordAudio != PackageManager.PERMISSION_GRANTED) {
             permissionsList.add(Manifest.permission.RECORD_AUDIO)
         }
-        if (permissionsList.size > 0) {
+        if (permissionsList.isNotEmpty()) {
             val permissions: Array<String> = permissionsList.toTypedArray()
             ActivityCompat.requestPermissions(this, permissions, 0)
         }
     }
 
+    private fun processFailedCall() {
+        LinphoneService.instance?.stopSelf()
+        binding.pbIncomingCall.isVisible = false
+        finishAndRemoveTask()
+    }
+
     companion object {
         const val NOTIFICATION_ID = "NOTIFICATION_ID"
         const val PUSH_DATA = "PUSH_DATA"
+        const val WAIT_FOR_LINPHONE = 10_000
         const val SENSOR_SENSITIVITY = 4
     }
 }

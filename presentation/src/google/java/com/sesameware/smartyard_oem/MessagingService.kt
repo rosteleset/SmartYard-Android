@@ -4,23 +4,18 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import android.graphics.Bitmap
 import android.media.RingtoneManager
-import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ProcessLifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.bumptech.glide.Glide
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.model.PushCallData
-import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.main.MainActivity
@@ -32,10 +27,10 @@ import kotlinx.coroutines.launch
 import org.json.JSONObject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import com.sesameware.smartyard_oem.ui.sendCallNotification
 import timber.log.Timber
 
 class MessagingService : FirebaseMessagingService(), KoinComponent {
-    private var mHandler = Handler(Looper.getMainLooper())
     private val preferenceStorage: PreferenceStorage by inject()
     private val mInteractor: AuthInteractor by inject()
     private val moshi: Moshi by inject()
@@ -105,14 +100,7 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
                                 msg.image = "${preferenceStorage.providerBaseUrl}call/camshot/123456"
                             }*/
 
-                            if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-                                waitForLinServiceAndRun(msg) {
-                                    Timber.d("debug_dmm linphone service is running")
-                                    it.listenAndGetNotifications(msg)
-                                }
-                            } else {
-                                Timber.d("debug_dmm notifications are disabled")
-                            }
+                            notifyUserAboutIncomingCall(msg)
                         }
                     }
 
@@ -166,6 +154,33 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
                         )
                     }
 
+                    get("action") == "paranoid" -> {
+                        val messageId = get("messageId")
+                        val messageType = get("messageType")
+                        val badge = 0
+                        val title = dataTitle ?: remoteMessage.notification?.title
+                        val message = dataBody ?: remoteMessage.notification?.body
+                        var imageUrl = ""
+
+                        val json = JSONObject(data as Map<*, *>).toString()
+                        Timber.tag(TAG).d("debug_dmm incoming event: $json")
+                        moshi.adapter(PushCallData::class.java).fromJson(json)?.let { msg ->
+                            msg.hash?.let { hash ->
+                                imageUrl = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
+                            }
+                        }
+
+                        sendNotificationInbox(
+                            messageId = messageId ?: "",
+                            title = title ?: "",
+                            message = message ?: "",
+                            messageType = messageType ?: "",
+                            badge = badge,
+                            isChat =  false,
+                            imageUrl = imageUrl
+                        )
+                    }
+
                     else -> {
                     }
                 }
@@ -192,9 +207,20 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
         message: String,
         messageType: String,
         badge: Int,
-        isChat: Boolean = false
+        isChat: Boolean = false,
+        imageUrl: String = ""
     ) {
-        Timber.d("debug_dmm __Notification__")
+        var bitmap: Bitmap? = null
+        val nullBitmap: Bitmap? = null
+        if (imageUrl.isNotEmpty()) {
+            bitmap = Glide.with(context)
+                .asBitmap()
+                .load(imageUrl)
+                .error(nullBitmap)
+                .submit()
+                .get()
+        }
+        Timber.d("debug_dmm __Notification__ bitmap = $bitmap")
         preferenceStorage.notificationData.addInboxNotification(preferenceStorage)
         val notId = preferenceStorage.notificationData.currentInboxId
 
@@ -238,15 +264,22 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(pendingIntent)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        bitmap?.let {bitmap ->
+            notificationBuilder
+                .setLargeIcon(bitmap)
+                .setStyle(NotificationCompat.BigPictureStyle()
+                    .bigPicture(bitmap)
+                    .bigLargeIcon(nullBitmap))
+        }
+
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(notId, notificationBuilder.build())
     }
 
     companion object {
         const val CHANNEL_INBOX_ID = "channel_inbox"
-        const val CHANNEL_CALLS_ID = "channel_calls"
-        val CALL_VIBRATION_PATTERN = longArrayOf(0, 1000, 1000)
+        const val CHANNEL_CALLS_ID_OLD = "channel_calls"
+        const val CHANNEL_CALLS_ID = "channel_calls_new"
         const val NOTIFICATION_MESSAGE_ID = "messageId"
         const val NOTIFICATION_MESSAGE_TYPE = "messageType"
         const val NOTIFICATION_BADGE = "badge"
@@ -271,43 +304,7 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
         }
     }
 
-    private fun waitForLinServiceAndRun(fcmCallData: PushCallData, listener: listenerGeneric<LinphoneProvider>) {
-        Thread {
-            if (!LinphoneService.isReady()) {
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    Timber.d("__S__    call startService")
-                    startService(
-                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
-                            if (fcmCallData.stun?.isNotEmpty() == true) {
-                                intent.putExtra(CALL_STUN, fcmCallData.stun)
-                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
-                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
-                            }
-                        }
-                    )
-                } else {
-                    Timber.d("__S__    call startForegroundService")
-                    startForegroundService(
-                        Intent().setClass(context, LinphoneService::class.java).also { intent ->
-                            if (fcmCallData.stun?.isNotEmpty() == true) {
-                                intent.putExtra(CALL_STUN, fcmCallData.stun)
-                                intent.putExtra(CALL_STUN_TRANSPORT, fcmCallData.stun_transport ?: "udp")
-                                intent.putExtra(CALL_TURN_USERNAME, fcmCallData.extension)
-                                intent.putExtra(CALL_TURN_PASSWORD, fcmCallData.pass)
-                            }
-                        }
-                    )
-                }
-            }
-            while (!LinphoneService.isReady()) {
-                try {
-                    Thread.sleep(30)
-                } catch (e: InterruptedException) {
-                    throw RuntimeException("waiting thread sleep() has been interrupted")
-                }
-            }
-            mHandler.post { LinphoneService.instance?.provider?.let { listener(it) } }
-        }.start()
+    private fun notifyUserAboutIncomingCall(data: PushCallData) {
+        sendCallNotification(data, context, preferenceStorage)
     }
 }

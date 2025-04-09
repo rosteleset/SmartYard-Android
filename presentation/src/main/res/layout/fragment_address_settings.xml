@@ -115,7 +115,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
-                android:id="@+id/cvNotification"
+                android:id="@+id/cvDomophone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -126,13 +126,12 @@
                 app:cardElevation="0dp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/clItemNotif"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/tvTitleNotif"
+                        android:id="@+id/tvTitleDomophone"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="false"
@@ -160,14 +159,14 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvTitleNotif">
+                        app:layout_constraintTop_toBottomOf="@id/tvTitleDomophone">
 
                         <androidx.constraintlayout.widget.ConstraintLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
 
                             <View
-                                android:id="@+id/view3"
+                                android:id="@+id/vDomophone"
                                 android:layout_width="match_parent"
                                 android:layout_height="0.7dp"
                                 android:background="@color/white"
@@ -186,7 +185,7 @@
                                 android:textColor="@color/black"
                                 app:layout_constraintEnd_toStartOf="@+id/switchPaperBill"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/view3" />
+                                app:layout_constraintTop_toBottomOf="@id/vDomophone" />
 
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/switchPaperBill"
@@ -199,7 +198,7 @@
                                 android:track="@null"
                                 app:layout_constraintBottom_toBottomOf="@+id/tvPaperBill"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/view3" />
+                                app:layout_constraintTop_toBottomOf="@+id/vDomophone" />
 
                             <View
                                 android:id="@+id/vPaperBill"
@@ -212,7 +211,7 @@
                                 app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
 
                             <TextView
-                                android:id="@+id/t333333"
+                                android:id="@+id/tvIntercom"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -232,23 +231,23 @@
                                 android:paddingStart="24dp"
 
                                 android:thumb="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/t333333"
+                                app:layout_constraintBottom_toBottomOf="@+id/tvIntercom"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/vPaperBill"
                                 app:track="@null" />
 
                             <View
-                                android:id="@+id/view2"
+                                android:id="@+id/vIntercom"
                                 android:layout_width="match_parent"
                                 android:layout_height="0.7dp"
                                 android:background="@color/white"
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.615"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/t333333" />
+                                app:layout_constraintTop_toBottomOf="@+id/tvIntercom" />
 
                             <TextView
-                                android:id="@+id/textView23"
+                                android:id="@+id/tvVoip"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
@@ -257,7 +256,7 @@
                                 android:textColor="@color/black"
                                 app:layout_constraintEnd_toStartOf="@+id/switchVoip"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/t333333" />
+                                app:layout_constraintTop_toBottomOf="@+id/tvIntercom" />
 
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/switchVoip"
@@ -267,10 +266,20 @@
                                 android:button="@drawable/switch_button_selector"
                                 android:paddingStart="24dp"
                                 android:thumb="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/textView23"
+                                app:layout_constraintBottom_toBottomOf="@+id/tvVoip"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/view2"
+                                app:layout_constraintTop_toBottomOf="@+id/vIntercom"
                                 app:track="@null" />
+
+                            <View
+                                    android:id="@+id/vVoip"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0.7dp"
+                                    android:background="@color/white"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintHorizontal_bias="0.307"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/tvVoip" />
 
                             <TextView
                                 android:id="@+id/tvWhiteRabbit"
@@ -284,7 +293,7 @@
                                 android:text="@string/settings_white_rabbit"
                                 android:textColor="@color/black"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/view5" />
+                                app:layout_constraintTop_toBottomOf="@id/vVoip" />
 
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/switchWhiteRabbit"
@@ -297,7 +306,7 @@
                                 android:track="@null"
                                 app:layout_constraintBottom_toBottomOf="@+id/tvWhiteRabbit"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/view5" />
+                                app:layout_constraintTop_toBottomOf="@+id/vVoip" />
 
                             <View
                                 android:id="@+id/vWhiteRabbit"
@@ -424,49 +433,6 @@
                                 app:layout_constraintTop_toBottomOf="@id/tvUseFRS" />
 
                             <TextView
-                                android:id="@+id/soundTitle"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/sound"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/tvSoundChoose"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vUseFRS" />
-
-                            <View
-                                android:id="@+id/view5"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.307"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/textView23" />
-
-                            <View
-                                android:id="@+id/view6"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.307"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/soundTitle" />
-
-                            <TextView
-                                android:id="@+id/tvSoundChoose"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:padding="24dp"
-                                android:textColor="@color/blue"
-                                app:layout_constraintBottom_toBottomOf="@+id/soundTitle"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vUseFRS"
-                                tools:text="Def" />
-
-                            <TextView
                                 android:id="@+id/tvIsSpeaker"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
@@ -476,7 +442,7 @@
                                 android:textColor="@color/black"
                                 app:layout_constraintEnd_toStartOf="@+id/switchUseSpeaker"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/view6" />
+                                app:layout_constraintTop_toBottomOf="@id/vUseFRS" />
 
                             <androidx.appcompat.widget.SwitchCompat
                                 android:id="@+id/switchUseSpeaker"
@@ -489,7 +455,7 @@
                                 android:track="@null"
                                 app:layout_constraintBottom_toBottomOf="@+id/tvIsSpeaker"
                                 app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/view6" />
+                                app:layout_constraintTop_toBottomOf="@+id/vUseFRS" />
 
                         </androidx.constraintlayout.widget.ConstraintLayout>
 

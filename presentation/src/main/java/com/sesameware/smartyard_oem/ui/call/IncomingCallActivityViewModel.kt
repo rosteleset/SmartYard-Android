@@ -20,13 +20,17 @@ class IncomingCallActivityViewModel(
     val routeAudioTo = MutableLiveData<Boolean>()
 
     private fun playSlideShow(live: String) {
+        Timber.d("debug_dmm    call playSlideShow")
+
         if (live.isEmpty()) {
             return
         }
 
-        slideShowTimer = fixedRateTimer("timer", false, 0, 1000) {
-            Timber.d("debug_dmm slideshow tick")
-            imageStringData.postValue(Event(live))
+        if (slideShowTimer == null) {
+            slideShowTimer = fixedRateTimer("timer", false, 0, 1000) {
+                Timber.d("debug_dmm slideshow tick")
+                imageStringData.postValue(Event(live))
+            }
         }
     }
 
@@ -35,6 +39,7 @@ class IncomingCallActivityViewModel(
     }
 
     private fun stopSlideShow() {
+        Timber.d("debug_dmm    call stopSlideShow")
         slideShowTimer?.cancel()
         slideShowTimer = null
     }

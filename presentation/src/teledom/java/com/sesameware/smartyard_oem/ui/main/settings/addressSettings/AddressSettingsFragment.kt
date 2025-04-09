@@ -1,8 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main.settings.addressSettings
 
 import android.app.AlertDialog
-import android.content.Intent
-import android.media.RingtoneManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +15,6 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.string
 import com.sesameware.smartyard_oem.databinding.FragmentAddressSettingsBinding
-import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogDeleteReason.DialogDeleteReasonFragment
@@ -77,27 +74,11 @@ class AddressSettingsFragment : Fragment() {
                 showDialogDelete()
             }
         }
-        binding.tvSoundChoose.setOnClickListener {
-            SoundChooser.showSoundChooseIntent(
-                this,
-                RingtoneManager.TYPE_RINGTONE,
-                mSetting.flatId,
-                viewModel.preferenceStorage
-            )
-        }
-        context?.let {
-            val tone = SoundChooser.getChosenTone(
-                it,
-                RingtoneManager.TYPE_RINGTONE,
-                mSetting.flatId,
-                viewModel.preferenceStorage
-            )
-            binding.tvSoundChoose.text = tone.getToneTitle(it)
-        }
-        binding.tvTitleNotif.setOnClickListener {
+
+        binding.tvTitleDomophone.setOnClickListener {
             if (binding.expandableLayoutNotif.isExpanded) {
                 binding.expandableLayoutNotif.collapse()
-                binding.tvTitleNotif.setCompoundDrawablesWithIntrinsicBounds(
+                binding.tvTitleDomophone.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
                     R.drawable.ic_arrow_bottom,
@@ -105,7 +86,7 @@ class AddressSettingsFragment : Fragment() {
                 )
             } else {
                 binding.expandableLayoutNotif.expand()
-                binding.tvTitleNotif.setCompoundDrawablesWithIntrinsicBounds(
+                binding.tvTitleDomophone.setCompoundDrawablesWithIntrinsicBounds(
                     0,
                     0,
                     R.drawable.ic_arrow_top,
@@ -125,7 +106,7 @@ class AddressSettingsFragment : Fragment() {
         flatOwner = mSetting.flatOwner
 
         // Значение домофона
-        binding.cvNotification.isVisible = isKey
+        binding.cvDomophone.isVisible = isKey
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
@@ -384,17 +365,6 @@ class AddressSettingsFragment : Fragment() {
         }
 
         binding.switchUseSpeaker.isChecked = (viewModel.preferenceStorage.addressOptions.getOption(flatId).isSpeaker == true)
-    }
-
-    @Deprecated("Deprecated in Java")
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        SoundChooser.getDataFromIntent(context, requestCode, resultCode, data) { tone ->
-            context?.let {
-                binding.tvSoundChoose.text = tone.getToneTitle(it)
-                viewModel.saveSoundToPref(tone, mSetting.flatId)
-            }
-        }
     }
 
     private fun showDialogDelete() {

@@ -1,9 +1,12 @@
 package com.sesameware.smartyard_oem
 
-import android.app.Service
 import android.content.Intent
 import android.os.Handler
-import android.os.IBinder
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.linphone.core.Core
 import org.linphone.core.Factory
 import org.linphone.core.LogLevel
@@ -13,17 +16,17 @@ import java.io.File
 import java.io.IOException
 import java.util.*
 
-class LinphoneService : Service() {
+class LinphoneService : LifecycleService() {
     var mCore: Core? = null
     var provider: LinphoneProvider? = null
+    var connectionStarted = false
+    var isCallOk = false
     private val mTaskHandler = Handler()
     private var mTimer = Timer()
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
 
     override fun onCreate() {
         super.onCreate()
+
         Timber.d("debug_dmm LinphoneService create")
         val basePath = filesDir.absolutePath
         try {
@@ -48,6 +51,15 @@ class LinphoneService : Service() {
 
         // prevent double ringing
         mCore?.isNativeRingingEnabled = false
+
+        // check if the call ok after WAIT_FOR_CALL_STARTING seconds
+        lifecycleScope.launch(Dispatchers.IO) {
+            delay(WAIT_FOR_CALL_STARTING)
+            if (!isCallOk) {
+                Timber.d("debug_dmm    call is not ok")
+                stopSelf()
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -181,6 +193,7 @@ class LinphoneService : Service() {
     companion object {
         const val FOLDER = "linphonerc"
         const val FILE = ".linphonerc"
+        const val WAIT_FOR_CALL_STARTING = 10_000L
         var instance: LinphoneService? = null
         fun isReady(): Boolean {
             return instance != null
