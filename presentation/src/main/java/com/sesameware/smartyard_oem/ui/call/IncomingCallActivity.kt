@@ -57,6 +57,7 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
+import org.linphone.core.Call
 import org.linphone.core.RegistrationState
 import org.webrtc.DataChannel
 import org.webrtc.DefaultVideoDecoderFactory
@@ -265,6 +266,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private var hasSnapshot = true
     private var mSensorManager: SensorManager? = null
     private var mProximity: Sensor? = null
+    private var useSpeaker = false
 
     private fun initWebRTC() {
         initPeerConnectionFactory(application)
@@ -367,10 +369,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
                 setConnectedState(mLinphone?.isConnected() == true)
             } else {
+                Timber.d("debug_dmm    call finishAndRemoveTask")
                 finishAndRemoveTask()
             }
 
-            var useSpeaker = false
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 useSpeaker = true
             } else {
@@ -382,7 +384,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
             }
 
-            mViewModel.routeAudioToValue(useSpeaker)
             if (hasWebRTC) {
                 initWebRTC()
             }
@@ -503,11 +504,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             this,
             EventObserver {
                 Timber.d("debug_dmm    finishCallActivity")
-                mLinphone?.core?.calls?.let { calls ->
-                    if (calls.isNotEmpty()) {
-                        Timber.d("debug_dmm    call state ${calls[0].state}")
-                    }
-                }
                 finishAndRemoveTask()
             }
         )
@@ -589,6 +585,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             if (it) {
                 mLinphone?.routeAudioToSpeaker()
                 binding.mSpeakerButton.isSelected = true
+
+                /*Timber.d("debug_dmm    pause call;    state = ${mLinphone?.core?.currentCall?.state}")
+                mLinphone?.core?.currentCall?.pause()*/
             } else {
                 mLinphone?.routeAudioToEarpiece()
                 binding.mSpeakerButton.isSelected = false
@@ -725,6 +724,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 CallStateSimple.INCOMING -> {
                     Timber.d("debug_dmm  enable call buttons")
                     enableCallButtons(true)
+                    mViewModel.routeAudioToValue(useSpeaker)
                 }
                 CallStateSimple.OTHER_CONNECTED -> {
                     setConnectedState(true)
@@ -750,6 +750,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         setConnectedState(true)
                     }
                 }
+                CallStateSimple.PAUSED -> {
+                }
             }
         }
     }
@@ -759,6 +761,15 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
         super.onResume()
         mSensorManager?.registerListener(this, mProximity, SensorManager.SENSOR_DELAY_NORMAL)
+
+        LinphoneService.instance?.mCore?.calls?.let { calls ->
+            if (calls.size > 0) {
+                if (calls[0].state == Call.State.Pausing || calls[0].state == Call.State.Paused) {
+                    Timber.d("debug_dmm    resume paused call")
+                    calls[0].resume()
+                }
+            }
+        }
     }
 
     override fun onPause() {
@@ -768,6 +779,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mSensorManager?.unregisterListener(this)
         mLinphone?.routeAudioToEarpiece()
         LinphoneService.instance?.provider?.pushCallData?.eyeState = binding.mPeepholeButton.isChecked
+
+        mLinphone?.core?.currentCall?.pause()
     }
 
     override fun onDestroy() {
@@ -803,8 +816,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun processFailedCall() {
+        Timber.d("debug_dmm    call processFailedCall")
+
         LinphoneService.instance?.stopSelf()
         binding.pbIncomingCall.isVisible = false
+
+        Timber.d("debug_dmm    call finishAndRemoveTask")
         finishAndRemoveTask()
     }
 

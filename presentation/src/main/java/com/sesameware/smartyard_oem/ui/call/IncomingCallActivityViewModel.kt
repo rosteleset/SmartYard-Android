@@ -35,7 +35,7 @@ class IncomingCallActivityViewModel(
     }
 
     fun routeAudioToValue(flag: Boolean) {
-        routeAudioTo.value = (flag)
+        routeAudioTo.value = flag
     }
 
     private fun stopSlideShow() {

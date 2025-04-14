@@ -101,8 +101,7 @@
         </activity>
         <activity
             android:name=".ui.call.IncomingCallActivity"
-            android:launchMode="singleTop"
-            android:noHistory="true"
+            android:launchMode="singleTask"
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
 

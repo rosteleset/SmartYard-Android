@@ -2,8 +2,8 @@
 #Paths to resources must be set from LinphoneManager, after creating LinphoneCore.
 [net]
 mtu=1300
-download_bw=1000
-upload_bw=1000
+download_bw=3000
+upload_bw=3000
 force_ice_disablement=0
 dtmf_delay_ms=500
 
@@ -20,6 +20,10 @@ sip_tls_random_port=1
 
 [video]
 displaytype=MSAndroidTextureDisplay
+
+[audio]
+android_disable_audio_focus_requests=1
+android_monitor_audio_devices=0
 
 [video_codec_0]
 mime=VP8

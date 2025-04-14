@@ -70,6 +70,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
                 }
                 CallStateSimple.STREAMS_RUNNING -> {
                 }
+                CallStateSimple.PAUSED -> {
+                }
             }
             super.onCallStateChanged(core, call, state, message)
         }
@@ -82,11 +84,12 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     fun isConnected(): Boolean {
         return callState.value?.state == CallStateSimple.CONNECTED
                 || callState.value?.state == CallStateSimple.OTHER_CONNECTED
+                || callState.value?.state == CallStateSimple.PAUSED
                 || callState.value?.state == CallStateSimple.STREAMS_RUNNING
     }
 
     fun isVideoCall(): Boolean = if (isConnected()) {
-        core.currentCall?.remoteParams?.isVideoEnabled ?: false
+        core.currentCall?.remoteParams?.isVideoEnabled == true
     } else {
         false
     }
@@ -300,11 +303,13 @@ private fun convertCallState(state: Call.State): CallStateSimple {
         Call.State.StreamsRunning -> {
             CallStateSimple.STREAMS_RUNNING
         }
+        Call.State.Pausing,
+        Call.State.Paused -> {
+            CallStateSimple.PAUSED
+        }
         Call.State.Updating,
         Call.State.PausedByRemote,
         Call.State.UpdatedByRemote,
-        Call.State.Pausing,
-        Call.State.Paused,
         Call.State.Resuming,
         Call.State.Referred,
         Call.State.EarlyUpdatedByRemote,
@@ -319,5 +324,5 @@ private fun convertCallState(state: Call.State): CallStateSimple {
 }
 
 enum class CallStateSimple {
-    CONNECTED, CONNECTING, ERROR, IDLE, INCOMING, END, OTHER_CONNECTED, STREAMS_RUNNING
+    CONNECTED, CONNECTING, ERROR, IDLE, INCOMING, END, OTHER_CONNECTED, STREAMS_RUNNING, PAUSED
 }
