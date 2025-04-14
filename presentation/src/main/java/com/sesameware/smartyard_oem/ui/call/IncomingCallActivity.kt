@@ -605,7 +605,13 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-        intent?.let { resetView(mPushCallData) }
+        intent?.let {
+            @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
+            fcmData?.let {
+                mPushCallData = it
+                resetView(mPushCallData)
+            }
+        }
     }
 
     private fun resetView(data: PushCallData) {
@@ -767,6 +773,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 if (calls[0].state == Call.State.Pausing || calls[0].state == Call.State.Paused) {
                     Timber.d("debug_dmm    resume paused call")
                     calls[0].resume()
+                    mViewModel.routeAudioTo.value?.let { v ->
+                        mViewModel.routeAudioToValue(v)
+                    }
                 }
             }
         }
