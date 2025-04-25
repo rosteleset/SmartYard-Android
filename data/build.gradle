@@ -71,8 +71,8 @@ android {
     namespace 'com.sesameware.data'
 }
 
-if (project.file('flavors.gradle').exists()) {
-    apply from: 'flavors.gradle'
+if (project.file('../../smartyard-flavors/data/flavors.gradle').exists()) {
+    apply from: '../../smartyard-flavors/data/flavors.gradle'
 }
 
 project.afterEvaluate {
