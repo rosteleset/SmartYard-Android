@@ -232,7 +232,7 @@
                 android:id="@+id/expLayoutByFace"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:el_expanded="false">
+                app:el_expanded="true">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -254,13 +254,6 @@
                             android:layout_marginTop="16dp"
                             android:layout_marginEnd="4dp"
                             android:text="@string/entrance_by_face" />
-
-                        <ImageView
-                            android:id="@+id/ivByFaceBeta"
-                            android:layout_width="24dp"
-                            android:layout_height="12dp"
-                            android:layout_marginTop="16dp"
-                            android:src="@drawable/beta" />
 
                         <Space
                             android:layout_width="wrap_content"
@@ -288,12 +281,10 @@
                                 android:id="@+id/tvEnterByFace"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_marginStart="24dp"
+                                android:layout_marginVertical="20dp"
                                 android:layout_weight="1"
                                 android:gravity="center_vertical"
-                                android:paddingStart="24dp"
-                                android:paddingTop="20dp"
-                                android:paddingEnd="24dp"
-                                android:paddingBottom="20dp"
                                 android:text="@string/registered_faces"
                                 android:textColor="@color/black"
                                 android:textSize="14sp" />
