@@ -383,6 +383,10 @@
     <string name="event_open_gates_by_vehicle">Դարպասների բացում մեքենայի համարով</string>
     <string name="event_unknown">Անհայտ իրավունք</string>
 
+    <string name="permission_fullscreen_lock_screen">Թույլ տվեք, որ հավելվածը ցուցադրվի կողպէկրանին, որպեսզի մուտքային զանգերը կարողանան ճիշտ աշխատել:</string>
+    <string name="settings">Կարգավորումներ</string>
+    <string name="not_now">Ոչ հիմա</string>
+
     <!-- xml layouts -->
     <string name="turn_on_guest_access">Արտագծել հյուրանոցային մուտքը մեկ ժամվա համարով?</string>
     <string name="open_barrier_info">Նշված հեռախոսահամարին մենք կուղարկենք SMS-ը, որով կարող եք զանգամենել շլագբումի ավտոմատ բացման համար: Էլ պատահական ժամվայրում շլագբումը կլինի հասանելի 6 ժամվայրի ընթացքում, հետո ավտոմատ կվերադարձնի ստանդարտ ռեժիմին:</string>
@@ -469,6 +473,7 @@
     <string name="title_common_settings">Ընդհանուր կարգավորումներ</string>
     <string name="user_name_sample">Ալեքսեեվ Վ.Բ.</string>
     <string name="title_notifications">Ծանուցումներ</string>
+    <string name="title_call_ringtone">Մուտքային զանգի զանգ</string>
     <string name="receive_notifications">Ստանալ ծանուցումներ</string>
     <string name="lack_funds_notifications">Տեղեկացնել մնացորդի սահմանը</string>
     <string name="balance_notify_near_zero">Ուղարկել ծանուցում, երբ մնացորդը մոռացում է կետավորը</string>

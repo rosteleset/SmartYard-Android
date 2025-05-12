@@ -108,7 +108,7 @@
     <string name="input_address_ok">Проверить доступные услуги</string>
     <string name="input_address_text_qr">У меня есть QR-код</string>
 
-    <!-- Потверждение адреса -->
+    <!-- Подтверждение адреса -->
     <string name="address_verification_title">Подтверждение адреса</string>
     <string name="address_verification_descriptions">Как вам будет удобнее это сделать?</string>
     <string name="address_verification_courier_block1_title">Оставьте заявку</string>
@@ -123,7 +123,7 @@
     <string name="address_verification_tab_title_1">Через курьера</string>
     <string name="address_verification_tab_title_2">Визит в офис</string>
 
-    <!-- Диалоговые окны. Настройки. -->
+    <!-- Диалоговые окна. Настройки. -->
     <string name="setting_dialog_service_connected_title">подключена</string>
     <string name="setting_dialog_service_connected_caption">Если хотите сменить тариф, оставьте заявку</string>
     <string name="setting_dialog_service_connected_button">Сменить тариф</string>
@@ -389,6 +389,10 @@
     <string name="event_open_gates_by_vehicle">Открытие ворот по номеру машины</string>
     <string name="event_unknown">Неизвестное событие</string>
 
+    <string name="permission_fullscreen_lock_screen">Пожалуйста, разрешите показывать приложение на экране блокировки, чтобы входящие звонки могли корректно работать.</string>
+    <string name="settings">Настройки</string>
+    <string name="not_now">Не сейчас</string>
+
     <!-- xml layouts -->
     <string name="turn_on_guest_access">Включить гостевой доступ на час?</string>
     <string name="open_barrier_info">На указанный телефон мы отправим СМС номером, на который можно позвонить для автоматического открытия шлагбаума. Шлагбаум будет доступен в течение 6 часов, после чего автоматически вернется в стандартный режим работы.</string>
@@ -477,6 +481,7 @@
     <string name="user_name_sample">Алексеев В.Б.</string>
     <string name="user_phone_sample" translatable="false">+7 (912) 345-67-82</string>
     <string name="title_notifications">Уведомления</string>
+    <string name="title_call_ringtone">Мелодия входящих звонков</string>
     <string name="receive_notifications">Получать уведомления</string>
     <string name="lack_funds_notifications">Оповестить о недостатке средств</string>
     <string name="balance_notify_near_zero">Прислать уведомление, когда баланс приблизится к нулю</string>

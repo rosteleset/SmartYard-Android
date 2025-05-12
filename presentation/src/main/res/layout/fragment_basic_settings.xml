@@ -253,16 +253,6 @@
                                 app:layout_constraintStart_toStartOf="parent"
                                 app:layout_constraintTop_toBottomOf="@+id/pdShowNotify" />
 
-                            <View
-                                android:id="@+id/pdSound"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.307"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/soundTitle" />
-
                             <TextView
                                 android:id="@+id/tvSoundChoose"
                                 android:layout_width="wrap_content"
@@ -274,6 +264,53 @@
                                 app:layout_constraintTop_toBottomOf="@+id/pdShowNotify"
                                 tools:text="Def" />
 
+                            <View
+                                android:id="@+id/pdSound"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.7dp"
+                                android:background="@color/white"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.307"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/soundTitle" />
+
+                            <TextView
+                                android:id="@+id/tvCallRingtone"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="false"
+                                android:gravity="center_vertical"
+                                android:paddingStart="24dp"
+                                android:paddingTop="24dp"
+                                android:paddingBottom="24dp"
+                                android:text="@string/title_call_ringtone"
+                                android:textColor="@color/black"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/pdSound" />
+
+                            <ImageView
+                                android:id="@+id/ivCallRingtone"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="24dp"
+                                android:clickable="false"
+                                android:longClickable="false"
+                                app:layout_constraintBottom_toBottomOf="@+id/tvCallRingtone"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="@+id/pdSound"
+                                app:srcCompat="@drawable/ic_arrow_right" />
+
+                            <View
+                                android:id="@+id/pdCallRingtone"
+                                android:layout_width="match_parent"
+                                android:layout_height="0.7dp"
+                                android:background="@color/white"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.307"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/tvCallRingtone" />
+
                             <TextView
                                 android:id="@+id/tvBalanseCaption"
                                 android:layout_width="wrap_content"
@@ -284,7 +321,7 @@
                                 android:text="@string/lack_funds_notifications"
                                 android:textColor="@color/black"
                                 app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/pdSound" />
+                                app:layout_constraintTop_toBottomOf="@+id/pdCallRingtone" />
 
                             <TextView
                                 android:id="@+id/tvBalanseTitle"

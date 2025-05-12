@@ -383,6 +383,10 @@
     <string name="event_open_gates_by_vehicle">Avtomobil raqami bo‘yicha eshiklarni ochish</string>
     <string name="event_unknown">Noma‘lum voqea</string>
 
+    <string name="permission_fullscreen_lock_screen">Iltimos, kiruvchi qo‘ng‘iroqlar to‘g‘ri ishlashi uchun ilovaning bloklangan ekranda ko‘rsatilishiga ruxsat bering.</string>
+    <string name="settings">Sozlamalar</string>
+    <string name="not_now">Hozir emas</string>
+
     <!-- xml layouts -->
     <string name="turn_on_guest_access">Soatlik mehmon kirishini yoqish?</string>
     <string name="open_barrier_info">Ko‘rsatilgan telefon raqamiga SMS jo‘natamiz, shu raqam orqali avtomatik ravishda shlagbaumni ochish mumkin. Shlagbaum 6 soat ichida foydalanish uchun mavjud bo‘ladi, so‘ng avtomatik ravishda standart ish rejimiga qaytadi.</string>
@@ -471,6 +475,7 @@
     <string name="title_common_settings">Umumiy sozlamalar</string>
     <string name="user_name_sample">Alekseyev V.B.</string>
     <string name="title_notifications">Bildirishnomalar</string>
+    <string name="title_call_ringtone">Kiruvchi qo‘ng‘iroq ohangi</string>
     <string name="receive_notifications">Bildirishnomalarni olish</string>
     <string name="lack_funds_notifications">Mablag‘ yetarlichasini ogohlantirish</string>
     <string name="balance_notify_near_zero">Balansni yaqinlashishi haqidagi ogohlantirish</string>

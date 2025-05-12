@@ -16,6 +16,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -58,6 +59,7 @@ import com.sesameware.smartyard_oem.ui.setupWithNavController
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
+import androidx.core.net.toUri
 
 interface UserInteractionListener {
     fun onUserInteraction()
@@ -243,6 +245,30 @@ class MainActivity : CommonActivity() {
         }
     }
 
+    private fun checkLockedScreenPermission() {
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE
+            && !mViewModel.mPreferenceStorage.askedAboutLockedScreen
+            && !notificationManager.canUseFullScreenIntent())
+        {
+            AlertDialog.Builder(this, R.style.AlertDialogStyle)
+                .setMessage(R.string.permission_fullscreen_lock_screen)
+                .setPositiveButton(R.string.settings) { _: DialogInterface?, _: Int ->
+                    val intent = Intent(Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT)
+                    intent.data = ("package:" + applicationContext.packageName).toUri()
+                    try {
+                        startActivity(intent)
+                    } catch (_: Exception) {
+
+                    }
+                }
+                .setNegativeButton(R.string.not_now) { _: DialogInterface?, _: Int ->
+                    mViewModel.mPreferenceStorage.askedAboutLockedScreen = true
+                }
+                .show()
+        }
+    }
+
     override fun onResume() {
         super.onResume()
         mViewModel.onResume()
@@ -254,6 +280,8 @@ class MainActivity : CommonActivity() {
                 putExtra(IncomingCallActivity.PUSH_DATA, LinphoneService.instance?.provider?.pushCallData)
             }
             startActivity(intent)
+        } else {
+            checkLockedScreenPermission()
         }
     }
 

@@ -5,15 +5,18 @@ import android.content.Intent
 import android.media.RingtoneManager
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.smartyard_oem.BuildConfig
+import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.drawable
 import com.sesameware.smartyard_oem.databinding.FragmentBasicSettingsBinding
@@ -86,6 +89,17 @@ class BasicSettingsFragment : Fragment() {
             mViewModel.saveShowOnMapPref(isChecked)
         }
 
+        binding.tvCallRingtone.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                showChannelSetup()
+            }
+        }
+        binding.ivCallRingtone.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                showChannelSetup()
+            }
+        }
+
         binding.tvTitleCameras.setOnClickListener {
             if (binding.expandableLayoutCameras.isExpanded) {
                 binding.expandableLayoutCameras.collapse()
@@ -119,6 +133,10 @@ class BasicSettingsFragment : Fragment() {
             binding.soundTitle.isVisible = false
             binding.pdSound.isVisible = false
             binding.tvSoundChoose.isVisible = false
+        } else {
+            binding.tvCallRingtone.isVisible = false
+            binding.ivCallRingtone.isVisible = false
+            binding.pdCallRingtone.isVisible = false
         }
 
         mViewModel.userName.observe(
@@ -177,5 +195,18 @@ class BasicSettingsFragment : Fragment() {
             .setNegativeButton(resources.getString(R.string.setting_dialog_exit_no)) { _, _ ->
                 return@setNegativeButton
             }.show()
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun showChannelSetup() {
+        val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS).apply {
+            putExtra(Settings.EXTRA_APP_PACKAGE, requireContext().applicationContext.packageName)
+            putExtra(Settings.EXTRA_CHANNEL_ID, MessagingService.CHANNEL_CALLS_ID)
+        }
+        try {
+            startActivity(intent)
+        } catch (_: Exception) {
+
+        }
     }
 }

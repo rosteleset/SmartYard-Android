@@ -29,6 +29,7 @@ interface PreferenceStorage {
     var houseIdPositions: Map<Int, Int>?
     var expandedHouseIds: Set<Int>?
     var justRegistered: Boolean
+    var askedAboutLockedScreen: Boolean
 
     fun clear()
 }
@@ -61,6 +62,7 @@ class SharedPreferenceStorage constructor(
         const val PREFS_HOUSE_ID_POSITIONS = "PREFS_HOUSE_ID_POSITIONS"
         const val PREFS_EXPANDED_HOUSE_IDS = "PREFS_EXPANDED_HOUSE_IDS"
         const val PREFS_JUST_REGISTERED = "PREFS_ADDRESS_LIST_FIRST_LAUNCH"
+        const val PREFS_ASKED_ABOUT_LOCKED_SCREEN = "PREFS_ASKED_ABOUT_LOCKED_SCREEN"
     }
 
     private val prefs = context.applicationContext.getSharedPreferences(PREFS_NAME, MODE_PRIVATE)
@@ -108,6 +110,8 @@ class SharedPreferenceStorage constructor(
     )
     override var justRegistered by BooleanPreference(prefs,
         PREFS_JUST_REGISTERED, true)
+    override var askedAboutLockedScreen by BooleanPreference(prefs,
+        PREFS_ASKED_ABOUT_LOCKED_SCREEN, false)
 
     override fun clear() {
         providerId = null
@@ -120,6 +124,7 @@ class SharedPreferenceStorage constructor(
         houseIdPositions = null
         expandedHouseIds = null
         justRegistered = true
+        askedAboutLockedScreen = false
     }
 }
 

@@ -385,6 +385,10 @@
     <string name="event_open_gates_by_vehicle">Автокөлік нөмірі бойынша қақпаларды ашу</string>
     <string name="event_unknown">Белгісіз оқиға</string>
 
+    <string name="permission_fullscreen_lock_screen">Кіріс қоңыраулар дұрыс жұмыс істеуі үшін қолданбаны құлыптау экранында көрсетуге рұқсат етіңіз.</string>
+    <string name="settings">Параметрлер</string>
+    <string name="not_now">Қазір емес</string>
+
     <!-- xml layouts -->
     <string name="turn_on_guest_access">Бір сағатқа қонаққа кіруді қосу керек пе?</string>
     <string name="open_barrier_info">Көрсетілген телефонға біз шлагбаумды автоматты түрде ашу үшін қоңырау шалуға болатын нөмірмен SMS жібереміз. Шлагбаум 6 сағат ішінде қол жетімді болады, содан кейін ол автоматты түрде стандартты жұмыс режиміне оралады.</string>
@@ -471,6 +475,7 @@
     <string name="title_common_settings">Жалпы параметрлер</string>
     <string name="user_name_sample">Алексеев В.Б.</string>
     <string name="title_notifications">Хабарламалар</string>
+    <string name="title_call_ringtone">Кіріс қоңырау үні</string>
     <string name="receive_notifications">Хабарламалар алу</string>
     <string name="lack_funds_notifications">Қаражаттың жетіспеушілігі туралы хабарлаңыз</string>
     <string name="balance_notify_near_zero">Баланс нөлге жақындаған кезде хабарлама жіберіңіз</string>

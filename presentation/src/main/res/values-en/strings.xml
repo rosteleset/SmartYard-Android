@@ -388,6 +388,10 @@
     <string name="event_open_gates_by_vehicle">Gate opened by car number</string>
     <string name="event_unknown">Unknown event</string>
 
+    <string name="permission_fullscreen_lock_screen">Please allow the app to be shown on the lock screen so that incoming calls can work properly.</string>
+    <string name="settings">Settings</string>
+    <string name="not_now">Not now</string>
+
     <!-- xml layouts -->
     <string name="turn_on_guest_access">Enable guest access for an hour?</string>
     <string name="open_barrier_info">We will send an SMS to the specified phone number, which can be called to automatically open the barrier. The barrier will be available for 6 hours, after which it will return to standard operation.</string>
@@ -474,6 +478,7 @@
     <string name="title_common_settings">Common settings</string>
     <string name="user_name_sample">Alexeyev V.B.</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_call_ringtone">Incoming call ringtone</string>
     <string name="receive_notifications">Receive notifications</string>
     <string name="lack_funds_notifications">Notify about low balance</string>
     <string name="balance_notify_near_zero">Send notification when the balance approaches zero</string>
