@@ -1,5 +1,12 @@
 ## History of major changes
 
+### Version 1.0.73
+- Added requesting permission to show app on lock screen for Android 14+.
+- Added transition to incoming call ringtone settings.
+- New call processing logic: start incoming call actions after notification.
+- Fixed WebRTC URL for the incoming calls.
+- Added new event to event details: EVENT_OPEN_GATES_BY_VEHICLE.
+
 ### Version 1.0.70
 - Add bundle attribute to the registerPushToken API method.
 
