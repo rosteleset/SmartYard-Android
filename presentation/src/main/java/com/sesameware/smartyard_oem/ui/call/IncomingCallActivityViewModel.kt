@@ -27,6 +27,7 @@ class IncomingCallActivityViewModel(
         }
 
         if (slideShowTimer == null) {
+            Timber.d("debug_dmm    create slideShowTimer")
             slideShowTimer = fixedRateTimer("timer", false, 0, 1000) {
                 Timber.d("debug_dmm slideshow tick")
                 imageStringData.postValue(Event(live))

@@ -668,6 +668,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         binding.mHangUpButton.setText(if (connected) R.string.reject else R.string.ignore)
         binding.mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
         binding.mAnswerButton.isSelected = connected
+        if (connected) {
+            mViewModel.connectedChangeStateUiAudioToSpeaker()
+        }
     }
 
     private fun enablePeepholeVideo(isEnabled: Boolean) {
@@ -733,7 +736,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     mViewModel.routeAudioToValue(useSpeaker)
                 }
                 CallStateSimple.OTHER_CONNECTED -> {
-                    setConnectedState(true)
+                    //setConnectedState(true)
                 }
                 CallStateSimple.CONNECTED -> {
                 }
@@ -742,8 +745,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
                 CallStateSimple.ERROR -> {
                     binding.mAnswerButton.setText(R.string.error)
+                    processFailedCall()
                 }
                 CallStateSimple.END -> {
+                    finishAndRemoveTask()
                 }
                 CallStateSimple.IDLE -> {
                     setConnectedState(false)
@@ -789,7 +794,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mLinphone?.routeAudioToEarpiece()
         LinphoneService.instance?.provider?.pushCallData?.eyeState = binding.mPeepholeButton.isChecked
 
-        mLinphone?.core?.currentCall?.pause()
+        //mLinphone?.core?.currentCall?.pause()
     }
 
     override fun onDestroy() {
