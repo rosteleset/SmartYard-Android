@@ -177,18 +177,14 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     fun sendDtmf() {
         Timber.d("debug_dmm sending dtmf...")
+        core.useRfc2833ForDtmf = false
+        core.useInfoForDtmf = true
         core.currentCall?.run {
+            sendDtmfs(pushCallData?.dtmf ?: "")
             doDelayed(
                 {
-                    val dtmfs = "${pushCallData?.dtmf}${pushCallData?.dtmf}${pushCallData?.dtmf}"
-                    sendDtmfs(dtmfs)
-                    doDelayed(
-                        {
-                            Timber.d("debug_dmm dtmf sent")
-                            dtmfIsSent.value = true
-                        },
-                        1000
-                    )
+                    Timber.d("debug_dmm dtmf sent")
+                    dtmfIsSent.value = true
                 },
                 1000
             )
