@@ -72,7 +72,7 @@ class AddressViewModel(
     fun setHouseItemSavedPosition(oldPosition: Int, newPosition: Int) {
         val list = houseUiState.value?.toMutableList() ?: return
         // Ignore Issue items, and House items moved over Issue items
-        if (oldPosition >= list.size || newPosition >= list.size ) return
+        if (oldPosition >= list.size || newPosition >= list.size) return
         val state = list.removeAt(oldPosition)
         list.add(newPosition, state)
         houseUiState.value = list
@@ -108,7 +108,7 @@ class AddressViewModel(
         res?.data?.forEach { settingItem ->
             flatToNumber[settingItem.flatId] = settingItem.flatNumber
             if (settingItem.hasPlog) {
-                (houseFlats.getOrPut(settingItem.houseId) {mutableSetOf()}).add(settingItem.flatId)
+                (houseFlats.getOrPut(settingItem.houseId) { mutableSetOf() }).add(settingItem.flatId)
             }
         }
 
