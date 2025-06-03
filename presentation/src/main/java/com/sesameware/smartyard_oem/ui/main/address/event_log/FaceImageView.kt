@@ -42,12 +42,12 @@ class FaceImageView : AppCompatImageView {
 
     private fun init(context: Context) {
         registeredPaint = Paint().apply {
-            color = context.resources.getColorCompat(R.color.green_100)
+            color = context.resources.getColorCompat(R.color.positive)
             strokeWidth = resources.getDimensionPixelSize(R.dimen.event_log_detail_stroke_size).toFloat()
             style = Paint.Style.STROKE
         }
         unregisteredPaint = Paint().apply {
-            color = context.resources.getColorCompat(R.color.red_100)
+            color = context.resources.getColorCompat(R.color.negative)
             strokeWidth = resources.getDimensionPixelSize(R.dimen.event_log_detail_stroke_size).toFloat()
             style = Paint.Style.STROKE
         }

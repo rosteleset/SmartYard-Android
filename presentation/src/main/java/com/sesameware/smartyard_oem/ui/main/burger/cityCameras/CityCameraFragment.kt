@@ -12,26 +12,24 @@ import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.util.TypedValue
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlaybackException
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.sesameware.domain.model.response.MediaServerType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.lib.dpToPx
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCityCameraBinding
@@ -44,6 +42,11 @@ import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
 import com.sesameware.smartyard_oem.ui.main.burger.cityCameras.adapters.CityCameraEventAdapter
 import com.sesameware.smartyard_oem.ui.showStandardAlert
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import timber.log.Timber
 
 class CityCameraFragment : Fragment(), ExitFullscreenListener {
@@ -90,6 +93,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             lp.startToEnd = R.id.ivCityCameraBack
             lp.topToTop = R.id.ivCityCameraBack
             lp.topMargin = 16.dpToPx()
+            lp.leftMargin = 8.dpToPx()
             binding.tvCityCameraTitle.layoutParams = lp
             binding.tvCityCameraTitle.requestLayout()
 
@@ -406,7 +410,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
         (activity as? MainActivity)?.hideSystemUI()
-        (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.INVISIBLE
+        (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.INVISIBLE
         (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)
         (activity as? MainActivity)?.binding?.llMain?.addView(binding.flCityCameraVideoWrap, 0)
 
@@ -423,7 +427,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private fun setNormalMode() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
         (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)
-        (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.VISIBLE
+        (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.VISIBLE
         binding.llCityCameraMain.addView(binding.flCityCameraVideoWrap, 0)
         (activity as? MainActivity)?.showSystemUI()
         binding.pvCityCamera.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
@@ -441,23 +445,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             binding.flCityCameraVideoWrap.requestLayout()
         }
         (binding.pvCityCamera.parent as ZoomLayout).resetZoom()
-        (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white_200))
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        Timber.d("debug_dmm __onHiddenChanged hidden = $hidden")
-
-        if (hidden) {
-            releasePlayer()
-            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        } else {
-            if (mPlayer == null && view != null) {
-                mPlayer = createPlayer(viewModel.chosenCamera.value?.serverType, binding.pvCityCamera, binding.pbCityCamera)
-                loadDelayed(0L)
-            }
-        }
-
-        super.onHiddenChanged(hidden)
+        (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.shaded_background))
     }
 
     companion object {

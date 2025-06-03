@@ -11,7 +11,7 @@
         android:id="@+id/viewEL"
         android:layout_width="0dp"
         android:layout_height="0.7dp"
-        android:background="@color/white"
+        android:background="@color/dialog_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:text="@string/addresses_events"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="@+id/ivImageEL"
         app:layout_constraintStart_toEndOf="@+id/ivImageEL"
@@ -49,12 +49,13 @@
         android:background="@drawable/ic_round"
         android:gravity="center"
         android:text="@string/text_count_sample"
-        android:textColor="@color/white_0"
+        android:textColor="@color/on_filled"
         android:textStyle="bold"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitleEL"
         app:layout_constraintStart_toEndOf="@+id/tvTitleEL"
-        app:layout_constraintTop_toTopOf="@+id/tvTitleEL" />
+        app:layout_constraintTop_toTopOf="@+id/tvTitleEL"
+        tools:visibility="visible" />
 
     <ImageView
         android:id="@+id/ivArrowRightEL"

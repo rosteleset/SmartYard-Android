@@ -1,80 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@android:color/transparent"
+    android:layout_height="wrap_content"
     android:orientation="vertical"
-    tools:context=".ui.main.settings.dialog.DialogServiceFragment"
-    >
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        app:cardCornerRadius="20dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tvTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="center"
-                android:text="@string/turn_on_guest_access"
-                android:textColor="@color/black"
-                android:textSize="24sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:text="@string/open_barrier_info"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:gravity="center"
-                android:textColor="@color/black" />
-
-            <Button
-                android:id="@+id/btnDone"
-                android:layout_width="match_parent"
-                android:layout_height="61dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="24dp"
-                style="@style/buttonBlueFlooded"
-                android:paddingStart="50dp"
-                android:paddingTop="18dp"
-                android:paddingEnd="50dp"
-                android:paddingBottom="18dp"
-                android:text="@string/share_access" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    tools:context=".ui.main.settings.dialog.DialogServiceFragment">
 
     <ImageView
         android:id="@+id/ivDismiss"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
         android:layout_marginEnd="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_close_dialog" />
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="end"
+        app:srcCompat="@drawable/ic_close_dialog"
+        tools:ignore="ContentDescription" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:paddingHorizontal="16dp"
+        android:paddingVertical="24dp"
+        android:background="@drawable/background_dialog_large"
+        android:orientation="vertical">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/accent"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="Услуга Телефония пока недоступна" />
+
+        <TextView
+            android:id="@+id/tvCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center"
+            android:textColor="@color/accent"
+            tools:text="@string/setting_dialog_service_unavailable_caption" />
+
+        <Button
+            android:id="@+id/btnDone"
+            style="@style/buttonBlueFlooded"
+            android:layout_width="match_parent"
+            android:layout_height="61dp"
+            android:layout_marginTop="24dp"
+            android:paddingStart="50dp"
+            android:paddingTop="18dp"
+            android:paddingEnd="50dp"
+            android:paddingBottom="18dp"
+            tools:text="@string/setting_dialog_service_not_connected_button" />
+
+    </LinearLayout>
+
+</LinearLayout>

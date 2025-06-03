@@ -18,7 +18,7 @@
         tools:text="03.00 - 06.00"
         android:paddingStart="9dp"
         android:paddingEnd="9dp"
-        android:textColor="@color/grey_100"
+        android:textColor="@color/no_accent"
         android:textSize="14sp"
         android:textStyle="normal"
         android:background="@drawable/ic_time_fragment_button_bg"

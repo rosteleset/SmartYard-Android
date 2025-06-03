@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand -->
+    <color name="brand">#4399FF</color>
+    <color name="brand_pressed">#2D6AB3</color>
+<!--    <color name="splash">#272729</color>-->
+
+    <!-- Additional -->
+    <color name="light_background">#191919</color>
+    <color name="shaded_background">#0A0A0A</color>
+    <color name="dialog_background">#232325</color>
+    <color name="on_filled">#FFFFFF</color>
+    <color name="accent">#E0E0E0</color>
+    <color name="no_accent">#A0A0A0</color>
+    <color name="positive">#6DC17D</color>
+    <color name="positive_pressed">#2B9268</color>
+    <color name="negative">#E5695C</color>
+    <color name="negative_pressed">#D04F45</color>
+    <color name="disabled">#585C62</color>
+    <color name="gray_button">@color/disabled</color>
+
+    <!-- Background gradient -->
+    <color name="gradient_start">#283D55</color>
+    <color name="gradient_end">#252525</color>
+
+    <!-- Widget -->
+    <color name="widget_background">#E6191919</color>
+
+</resources>

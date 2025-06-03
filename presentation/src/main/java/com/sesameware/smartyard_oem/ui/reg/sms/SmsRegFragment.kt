@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.res.ColorStateList
 import android.os.Build
 import android.os.Bundle
-import android.provider.Settings
 import android.provider.Settings.Secure
 import android.view.LayoutInflater
 import android.view.View
@@ -154,9 +153,9 @@ class SmsRegFragment : Fragment() {
 
     private fun togglePinLineColor(error: Boolean) {
         if (error) {
-            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.red_100)))
+            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.negative)))
         } else {
-            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.black)))
+            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(android.R.color.black)))
         }
     }
 

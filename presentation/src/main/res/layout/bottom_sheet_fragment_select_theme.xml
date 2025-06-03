@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_bottom_sheet"
+    android:orientation="vertical"
+    tools:context=".ui.main.settings.dialog.SelectThemeBottomSheetFragment">
+
+    <ImageView
+        android:id="@+id/bottom_sheet_handle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_dialog_bottom_sheet_rectangle"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tvItemSystemDefault"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical"
+        android:padding="24dp"
+        android:text="@string/item_theme_system_default"
+        android:textColor="@color/accent"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/dialog_background"
+        android:paddingHorizontal="24dp" />
+
+    <TextView
+        android:id="@+id/tvItemLight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="24dp"
+        android:text="@string/item_theme_light"
+        android:textColor="@color/accent"
+        android:textSize="18sp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.7dp"
+        android:background="@color/dialog_background"
+        android:paddingHorizontal="24dp" />
+
+    <TextView
+        android:id="@+id/tvItemDark"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="24dp"
+        android:text="@string/item_theme_dark"
+        android:textColor="@color/accent"
+        android:textSize="18sp" />
+
+</LinearLayout>

@@ -3,9 +3,9 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
         <item name="android:windowTranslucentStatus">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimary">@color/brand</item>
+        <item name="colorPrimaryDark">@color/brand</item>
+        <item name="colorAccent">@color/brand</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="fontFamily">@font/source_sans_family</item>
@@ -27,15 +27,23 @@
     </style>
     <style name="AppThemeSplash" parent="AppTheme.Launcher" />
 
+    <style name="DatePickerStyle" parent="AppTheme.NoActionBar">
+        <item name="android:windowBackground">@color/dialog_background</item>
+        <item name="colorSecondary">@color/brand</item>
+        <item name="android:textColorPrimary">@color/accent</item>
+        <item name="android:textColorSecondary">@color/no_accent</item>
+        <item name="colorControlActivated">@color/brand</item>
+    </style>
+
     <!-- Dialog style -->
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/blue</item>
-        <item name="android:textColorPrimary">@color/grey_100</item>
+        <item name="colorAccent">@color/brand</item>
+        <item name="android:textColorPrimary">@color/no_accent</item>
         <item name="android:windowTitleStyle">@style/WindowTitleStyle</item>
     </style>
 
     <style name="WindowTitleStyle" parent="TextAppearance.AppCompat.Title">
-        <item name="android:textColor">@color/black</item>
+        <item name="android:textColor">@color/negative</item>
     </style>
 
     <!-- Нижняя навигация -->
@@ -60,7 +68,7 @@
     <!-- Кнопка зеленая, с залитым фоном-->
     <style name="buttonGreenFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_flooded_rounded_green</item>
-        <item name="android:textColor">@color/white_0</item>
+        <item name="android:textColor">@drawable/button_text_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -68,7 +76,7 @@
     <!-- Кнопка красная, с залитым фоном-->
     <style name="buttonRedFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_flooded_rounded_red</item>
-        <item name="android:textColor">@color/white_0</item>
+        <item name="android:textColor">@drawable/button_text_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -76,7 +84,7 @@
     <!-- Кнопка синяя, с залитым фоном-->
     <style name="buttonBlueFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_flooded_rounded</item>
-        <item name="android:textColor">@color/white_0</item>
+        <item name="android:textColor">@drawable/button_text_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -88,8 +96,32 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
+
+    <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
+        <item name="android:background">@drawable/background_edit_text_radius</item>
+        <item name="android:ems">10</item>
+        <item name="android:textColorHint">@color/no_accent</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:inputType">textPersonName|textCapSentences</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AutoCompleteTextViewStyle" parent="Widget.AppCompat.AutoCompleteTextView">
+        <item name="android:background">@drawable/background_edit_text_radius</item>
+        <item name="android:completionThreshold">1</item>
+        <item name="android:ems">10</item>
+        <item name="android:textColorHint">@color/no_accent</item>
+        <item name="android:textColor">@color/accent</item>
+        <item name="android:inputType">textPersonName|textCapSentences</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textCursorDrawable">@drawable/color_cursor</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="clock_style" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/on_filled</item>
         <item name="android:textSize">16sp</item>
     </style>
 
@@ -110,7 +142,6 @@
     <style name="Theme.Transparent" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@color/white_transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>

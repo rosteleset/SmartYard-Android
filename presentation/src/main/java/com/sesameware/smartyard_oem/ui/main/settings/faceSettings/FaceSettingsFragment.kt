@@ -1,24 +1,22 @@
 package com.sesameware.smartyard_oem.ui.main.settings.faceSettings
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentFaceSettingsBinding
-import com.sesameware.smartyard_oem.ui.getFragmentTag
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.Flat
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.adapters.FaceSettingsAdapter
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogRemovePhoto.DialogRemovePhotoFragment
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogViewPhoto.DialogViewPhotoFragment
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class FaceSettingsFragment : Fragment() {
     private var _binding: FragmentFaceSettingsBinding? = null
@@ -63,13 +61,11 @@ class FaceSettingsFragment : Fragment() {
             mEventLogVM.currentEventItem = null
 
             (requireActivity() as MainActivity).binding.bottomNav.selectedItemId = R.id.address
-            val host = (requireActivity() as? MainActivity)?.supportFragmentManager?.findFragmentByTag(
-                getFragmentTag(0)) as NavHostFragment?
             val navOptions = NavOptions.Builder()
                 .setLaunchSingleTop(true)
                 .setPopUpTo(R.id.addressFragment, false)
                 .build()
-            host?.navController?.navigate(R.id.eventLogFragment, null, navOptions)
+            findNavController().navigate(R.id.eventLogFragment, null, navOptions)
         }
     }
 

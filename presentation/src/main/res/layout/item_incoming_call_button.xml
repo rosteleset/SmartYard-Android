@@ -28,7 +28,7 @@
         android:paddingTop="8dp"
         android:text=""
         android:textAlignment="center"
-        android:textColor="@color/white"
+        android:textColor="@color/on_filled"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

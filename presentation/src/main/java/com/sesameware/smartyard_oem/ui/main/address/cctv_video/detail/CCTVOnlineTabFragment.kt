@@ -18,21 +18,26 @@ import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.google.android.exoplayer2.ExoPlaybackException
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailOnlineBinding
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.*
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
+import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import timber.log.Timber
 
 class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
@@ -57,13 +62,6 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         (activity as? MainActivity)?.setExitFullscreenListener(this)
         _binding = FragmentCctvDetailOnlineBinding.inflate(inflater, container, false)
         return binding.root
-    }
-
-    override fun onDestroyView() {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        (activity as? MainActivity)?.setExitFullscreenListener(null)
-
-        super.onDestroyView()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -94,7 +92,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             lpVideoWrap = LinearLayout.LayoutParams(binding.videoWrap.layoutParams as LinearLayout.LayoutParams)
             (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
 
-            (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.INVISIBLE
+            (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.INVISIBLE
             (activity as? MainActivity)?.binding?.llMain?.addView(binding.videoWrap, 0)
 
             (activity as? MainActivity)?.hideSystemUI()
@@ -122,7 +120,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
             (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
-            (activity as? MainActivity)?.binding?.relativeLayout?.visibility = View.VISIBLE
+            (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.VISIBLE
             binding.llVideoPlayback.addView(binding.videoWrap, 0)
 
             (activity as? MainActivity)?.showSystemUI()
@@ -139,7 +137,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             }
             (binding.mVideoView.parent as ZoomLayout).resetZoom()
 
-            (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white_200))
+            (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.shaded_background))
         }
     }
 
@@ -331,8 +329,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         private val spanCount: Int,
         private val horSpacing: Int,
         private val verSpacing: Int
-    ) :
-        ItemDecoration() {
+    ) : ItemDecoration() {
         override fun getItemOffsets(
             outRect: Rect,
             view: View,
@@ -362,14 +359,13 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         Timber.d("__Q__   releasePlayer from onStop")
         releasePlayer()
         mCCTVViewModel.mute(true)
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
-    override fun onPause() {
-        super.onPause()
+    override fun onDestroyView() {
+        (activity as? MainActivity)?.setExitFullscreenListener(null)
 
-        Timber.d("__Q__   releasePlayer from onPause")
-        releasePlayer()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        super.onDestroyView()
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {

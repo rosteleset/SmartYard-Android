@@ -13,10 +13,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentRestoreAccessBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RestoreAccessFragment : Fragment() {
     private var _binding: FragmentRestoreAccessBinding? = null
@@ -110,16 +110,6 @@ class RestoreAccessFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        activity?.window?.setSoftInputMode(
-            if (hidden)
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-            else
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-        )
-        super.onHiddenChanged(hidden)
     }
 
     override fun onStop() {

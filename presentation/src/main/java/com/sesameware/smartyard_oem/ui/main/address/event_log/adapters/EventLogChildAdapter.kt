@@ -72,7 +72,7 @@ class EventLogChildAdapter(
             val eType = eventsByDay[position].eventType
             ivType.setImageResource(getEventTypeResource(eType))
             tvType.text = getEventTypeDescription(eType)
-            tvType.setTextColorRes(if (eType == Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED) R.color.red_100 else R.color.black_200)
+            tvType.setTextColorRes(if (eType == Plog.EVENT_DOOR_PHONE_CALL_UNANSWERED) R.color.negative else R.color.accent)
             tvTime.text = eventsByDay[position].date.format(DateTimeFormatter.ofPattern("HH:mm"))
             vLine.visibility = (if (position == eventsByDay.size - 1) View.INVISIBLE else View.VISIBLE)
         }

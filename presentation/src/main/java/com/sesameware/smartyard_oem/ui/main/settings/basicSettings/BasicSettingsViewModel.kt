@@ -1,8 +1,10 @@
 package com.sesameware.smartyard_oem.ui.main.settings.basicSettings
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.prefs.NightMode
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.data.prefs.SentName
 import com.sesameware.domain.interactors.AuthInteractor
@@ -104,5 +106,14 @@ class BasicSettingsViewModel(
 
     fun saveShowOnMapPref(value: Boolean) {
         mPreferenceStorage.showCamerasOnMap = value
+    }
+
+    fun setNightMode(mode: NightMode) {
+        with (mPreferenceStorage) {
+            if (mode == nightMode) return
+            nightModeHasChanged = true
+            nightMode = mode
+            AppCompatDelegate.setDefaultNightMode(mode.value)
+        }
     }
 }

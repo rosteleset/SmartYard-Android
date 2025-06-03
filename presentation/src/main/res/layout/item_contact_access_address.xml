@@ -29,7 +29,7 @@
             android:layout_marginBottom="16dp"
             android:maxLines="1"
             android:text="@string/address_access_contact_sample"
-            android:textColor="@color/black"
+            android:textColor="@color/accent"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/tvSms"
@@ -45,18 +45,18 @@
             android:layout_marginBottom="16dp"
             android:gravity="end"
             android:text="@string/text_sms"
-            android:textColor="@color/blue"
+            android:textColor="@color/brand"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <View
-            android:id="@+id/view8"
+            android:id="@+id/divider1"
             android:layout_width="match_parent"
             android:layout_height="0.6dp"
             android:layout_marginTop="20dp"
-            android:background="@color/white_200"
+            android:background="@color/shaded_background"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
@@ -68,7 +68,7 @@
         android:id="@+id/rightViewDelete"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/red_100"
+        android:background="@color/negative"
         android:gravity="center"
         app:gravity="right">
 

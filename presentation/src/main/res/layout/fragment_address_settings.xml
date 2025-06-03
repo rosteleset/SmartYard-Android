@@ -26,7 +26,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/address_setup"
-        android:textColor="@color/white"
+        android:textColor="@color/on_filled"
         android:textSize="32sp"
         android:textStyle="bold"
         app:autoSizeMinTextSize="15sp"
@@ -49,448 +49,377 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/background_radius_upper"
+        android:background="@drawable/background_surface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvTitle" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/address"
+    <TextView
+        android:id="@+id/tvAddressName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:layout_marginHorizontal="24dp"
         android:layout_marginTop="24dp"
-        app:cardBackgroundColor="@color/white_0"
-        app:cardCornerRadius="13dp"
-        app:cardElevation="0dp"
-        app:layout_constraintTop_toTopOf="@id/background"
-        tools:layout_editor_absoluteX="24dp">
+        android:padding="24dp"
+        android:background="@drawable/background_card"
+        android:text="@string/address_sample"
+        android:textColor="@color/accent"
+        android:textSize="18sp"
+        app:layout_constraintTop_toTopOf="@id/background" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/tvAddressName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="false"
-                android:layout_weight="1"
-                android:gravity="center_vertical"
-                android:paddingStart="24dp"
-                android:paddingTop="24dp"
-                android:paddingBottom="24dp"
-                android:text="@string/address_sample"
-                android:textColor="@color/black"
-                android:textSize="18sp" />
-
-
-            <ImageView
-                android:id="@+id/ivPencilEdit"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:paddingRight="24dp"
-                android:visibility="gone"
-                app:srcCompat="@drawable/ic_pincil_edit" />
-
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="24dp"
+        android:paddingHorizontal="24dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/address">
+        app:layout_constraintTop_toBottomOf="@+id/tvAddressName">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
+            <LinearLayout
                 android:id="@+id/cvDomophone"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:orientation="vertical"
-                app:cardBackgroundColor="@color/white_0"
-                app:cardCornerRadius="13dp"
-                app:cardElevation="0dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/tvTitleDomophone"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="false"
-                        android:drawableEnd="@drawable/ic_arrow_top"
-                        android:drawablePadding="24dp"
-                        android:gravity="center_vertical"
-                        android:paddingStart="24dp"
-                        android:paddingTop="24dp"
-                        android:paddingRight="24dp"
-                        android:paddingBottom="24dp"
-                        android:text="@string/domophone_notif_title"
-                        android:textColor="@color/black"
-                        android:textSize="18sp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                    <net.cachapa.expandablelayout.ExpandableLayout
-                        android:id="@+id/expandableLayoutNotif"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:el_duration="300"
-                        app:el_expanded="true"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/tvTitleDomophone">
-
-                        <androidx.constraintlayout.widget.ConstraintLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content">
-
-                            <View
-                                android:id="@+id/vDomophone"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                android:paddingEnd="18dp"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toTopOf="parent" />
-
-                            <TextView
-                                android:id="@+id/tvPaperBill"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/get_paper_bill"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/switchPaperBill"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/vDomophone" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchPaperBill"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                android:track="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvPaperBill"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vDomophone" />
-
-                            <View
-                                android:id="@+id/vPaperBill"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.615"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
-
-                            <TextView
-                                android:id="@+id/tvIntercom"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/switch_intercom"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/switchIntercom"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchIntercom"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-
-                                android:thumb="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvIntercom"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vPaperBill"
-                                app:track="@null" />
-
-                            <View
-                                android:id="@+id/vIntercom"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.615"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/tvIntercom" />
-
-                            <TextView
-                                android:id="@+id/tvVoip"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/switch_voip"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/switchVoip"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/tvIntercom" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchVoip"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvVoip"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vIntercom"
-                                app:track="@null" />
-
-                            <View
-                                    android:id="@+id/vVoip"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0.7dp"
-                                    android:background="@color/white"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.307"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toBottomOf="@+id/tvVoip" />
-
-                            <TextView
-                                android:id="@+id/tvWhiteRabbit"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:drawableRight="@drawable/ic_baseline_help"
-                                android:drawablePadding="8dp"
-                                android:gravity="center_vertical"
-                                android:padding="24dp"
-                                android:text="@string/settings_white_rabbit"
-                                android:textColor="@color/black"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/vVoip" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchWhiteRabbit"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                android:track="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvWhiteRabbit"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vVoip" />
-
-                            <View
-                                android:id="@+id/vWhiteRabbit"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.615"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvWhiteRabbit" />
-
-                            <TextView
-                                android:id="@+id/tvUseEventLog"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/switch_use_event_log"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/switchUseEventLog"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/vWhiteRabbit" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchUseEventLog"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                android:track="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvUseEventLog"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vWhiteRabbit" />
-
-                            <View
-                                android:id="@+id/vUseEventLog"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.615"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvUseEventLog" />
-
-                            <TextView
-                                android:id="@+id/tvOwnerEventLog"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/switch_owner_event_log"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/switchOwnerEventLog"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/vUseEventLog" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchOwnerEventLog"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                android:track="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvOwnerEventLog"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vUseEventLog" />
-
-                            <View
-                                android:id="@+id/vOwnerEventLog"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.615"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvOwnerEventLog" />
-
-                            <TextView
-                                android:id="@+id/tvUseFRS"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:paddingEnd="4dp"
-                                android:text="@string/switch_use_frs"
-                                android:textColor="@color/black"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/vOwnerEventLog" />
-
-                            <ImageView
-                                android:id="@+id/ivUseFRSBeta"
-                                android:layout_width="24dp"
-                                android:layout_height="20dp"
-                                android:layout_marginTop="20dp"
-                                android:src="@drawable/beta"
-                                app:layout_constraintStart_toEndOf="@+id/tvUseFRS"
-                                app:layout_constraintTop_toBottomOf="@id/vOwnerEventLog" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchUseFRS"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                android:track="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvUseFRS"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vOwnerEventLog" />
-
-                            <View
-                                android:id="@+id/vUseFRS"
-                                android:layout_width="match_parent"
-                                android:layout_height="0.7dp"
-                                android:background="@color/white"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.615"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/tvUseFRS" />
-
-                            <TextView
-                                android:id="@+id/tvIsSpeaker"
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:padding="24dp"
-                                android:text="@string/switch_use_speaker"
-                                android:textColor="@color/black"
-                                app:layout_constraintEnd_toStartOf="@+id/switchUseSpeaker"
-                                app:layout_constraintStart_toStartOf="parent"
-                                app:layout_constraintTop_toBottomOf="@id/vUseFRS" />
-
-                            <androidx.appcompat.widget.SwitchCompat
-                                android:id="@+id/switchUseSpeaker"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:background="@null"
-                                android:button="@drawable/switch_button_selector"
-                                android:paddingStart="24dp"
-                                android:thumb="@null"
-                                android:track="@null"
-                                app:layout_constraintBottom_toBottomOf="@+id/tvIsSpeaker"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintTop_toBottomOf="@+id/vUseFRS" />
-
-                        </androidx.constraintlayout.widget.ConstraintLayout>
-
-                    </net.cachapa.expandablelayout.ExpandableLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvDeleteAddress"
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:orientation="vertical"
-                app:cardBackgroundColor="@color/white_0"
-                app:cardCornerRadius="13dp"
-                app:cardElevation="0dp">
+                android:background="@drawable/background_card"
+                android:orientation="vertical">
 
                 <TextView
+                    android:id="@+id/tv_title_domophone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="false"
+                    android:drawablePadding="24dp"
                     android:gravity="center_vertical"
-                    android:paddingStart="24dp"
-                    android:paddingTop="24dp"
-                    android:paddingBottom="24dp"
-                    android:text="@string/delete_address"
-                    android:textColor="@color/red_100"
-                    android:textSize="18sp" />
+                    android:padding="24dp"
+                    android:text="@string/domophone_notif_title"
+                    android:textColor="@color/accent"
+                    android:textSize="18sp"
+                    app:drawableEndCompat="@drawable/ic_arrow_top" />
 
-            </androidx.cardview.widget.CardView>
+
+                <net.cachapa.expandablelayout.ExpandableLayout
+                    android:id="@+id/expandableLayoutNotif"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:el_duration="300"
+                    app:el_expanded="true">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <View
+                            android:id="@+id/vDomophone"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            android:paddingEnd="18dp"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tvPaperBill"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:text="@string/get_paper_bill"
+                            android:textColor="@color/accent"
+                            app:layout_constraintEnd_toStartOf="@+id/switchPaperBill"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vDomophone" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchPaperBill"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvPaperBill"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/vDomophone" />
+
+                        <View
+                            android:id="@+id/vPaperBill"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.615"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
+
+                        <TextView
+                            android:id="@+id/tvIntercom"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:text="@string/switch_intercom"
+                            android:textColor="@color/accent"
+                            app:layout_constraintEnd_toStartOf="@id/switchIntercom"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvPaperBill" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchIntercom"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+
+                            android:thumb="@null"
+                            app:layout_constraintBottom_toBottomOf="@id/tvIntercom"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vPaperBill"
+                            app:track="@null" />
+
+                        <View
+                            android:id="@+id/view2"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.615"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvIntercom" />
+
+                        <TextView
+                            android:id="@+id/tvVoip"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:text="@string/switch_voip"
+                            android:textColor="@color/accent"
+                            app:layout_constraintEnd_toStartOf="@id/switchVoip"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvIntercom" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchVoip"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            app:layout_constraintBottom_toBottomOf="@id/tvVoip"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vIntercom"
+                            app:track="@null" />
+
+                        <View
+                            android:id="@+id/vVoip"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.307"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvVoip" />
+
+                        <TextView
+                            android:id="@+id/tvWhiteRabbit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:drawableRight="@drawable/ic_baseline_help"
+                            android:drawablePadding="8dp"
+                            android:gravity="center_vertical"
+                            android:padding="24dp"
+                            android:text="@string/settings_white_rabbit"
+                            android:textColor="@color/accent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vVoip" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchWhiteRabbit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvWhiteRabbit"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/vVoip" />
+
+                        <View
+                            android:id="@+id/vWhiteRabbit"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.615"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvWhiteRabbit" />
+
+                        <TextView
+                            android:id="@+id/tvUseEventLog"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:text="@string/switch_use_event_log"
+                            android:textColor="@color/accent"
+                            app:layout_constraintEnd_toStartOf="@+id/switchUseEventLog"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vWhiteRabbit" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchUseEventLog"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvUseEventLog"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/vWhiteRabbit" />
+
+                        <View
+                            android:id="@+id/vUseEventLog"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.615"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvUseEventLog" />
+
+                        <TextView
+                            android:id="@+id/tvOwnerEventLog"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:text="@string/switch_owner_event_log"
+                            android:textColor="@color/accent"
+                            app:layout_constraintEnd_toStartOf="@+id/switchOwnerEventLog"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vUseEventLog" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchOwnerEventLog"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvOwnerEventLog"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/vUseEventLog" />
+
+                        <View
+                            android:id="@+id/vOwnerEventLog"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.615"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvOwnerEventLog" />
+
+                        <TextView
+                            android:id="@+id/tvUseFRS"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:paddingEnd="4dp"
+                            android:text="@string/switch_use_frs"
+                            android:textColor="@color/accent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vOwnerEventLog" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchUseFRS"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvUseFRS"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/vOwnerEventLog" />
+
+                        <View
+                            android:id="@+id/vUseFRS"
+                            android:layout_width="match_parent"
+                            android:layout_height="0.7dp"
+                            android:background="@color/dialog_background"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.615"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/tvUseFRS" />
+
+                        <TextView
+                            android:id="@+id/tvIsSpeaker"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:padding="24dp"
+                            android:text="@string/switch_use_speaker"
+                            android:textColor="@color/accent"
+                            app:layout_constraintEnd_toStartOf="@+id/switchUseSpeaker"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/vUseFRS" />
+
+                        <androidx.appcompat.widget.SwitchCompat
+                            android:id="@+id/switchUseSpeaker"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@null"
+                            android:button="@drawable/switch_button_selector"
+                            android:paddingStart="24dp"
+                            android:thumb="@null"
+                            android:track="@null"
+                            app:layout_constraintBottom_toBottomOf="@+id/tvIsSpeaker"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/vUseFRS" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                </net.cachapa.expandablelayout.ExpandableLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/cvDeleteAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp"
+                android:padding="24dp"
+                android:background="@drawable/background_card"
+                android:text="@string/delete_address"
+                android:textColor="@color/negative"
+                android:textSize="18sp" />
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

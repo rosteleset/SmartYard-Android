@@ -5,7 +5,7 @@
     android:id="@+id/nsvVideoPlayback"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/dialog_background"
     android:fillViewport="true"
     tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTabFragment">
 
@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:background="@color/white"
+        android:background="@color/dialog_background"
         android:orientation="vertical"
         android:paddingBottom="40dp">
 

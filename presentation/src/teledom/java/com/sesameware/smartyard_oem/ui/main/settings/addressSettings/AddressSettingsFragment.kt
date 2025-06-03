@@ -178,7 +178,6 @@ class AddressSettingsFragment : Fragment() {
 
             //new code for FRS switch: just hidden
             binding.tvUseFRS.isVisible = false
-            binding.ivUseFRSBeta.isVisible = false
             binding.switchUseFRS.isVisible = false
             binding.vUseFRS.isVisible = false
 
@@ -369,7 +368,7 @@ class AddressSettingsFragment : Fragment() {
 
     private fun showDialogDelete() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
-        builder
+        val dialog = builder
             .setMessage(resources.getString(R.string.setting_dialog_delete_title))
             .setPositiveButton(resources.getString(R.string.setting_dialog_delete_yes)) { _, _ ->
                 viewModel.deleteRoommate(flatId, clientId)
@@ -377,6 +376,7 @@ class AddressSettingsFragment : Fragment() {
             .setNegativeButton(resources.getString(R.string.setting_dialog_delete_no)) { _, _ ->
                 returnTransition
             }.show()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.background_dialog_large)
     }
 
     private fun manageControls(enabled: Boolean) {

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_200"
+    android:background="@color/shaded_background"
     tools:context=".ui.main.burger.BurgerFragment">
 
     <TextView
@@ -15,7 +15,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:text="@string/burger_title"
-        android:textColor="@color/black_200"
+        android:textColor="@color/accent"
         android:textSize="32sp"
         android:textStyle="bold"
         app:autoSizeMinTextSize="15sp"
@@ -59,10 +59,10 @@
 
         <ImageView
             android:id="@+id/ivBurgerCallSupport"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1"
+            android:padding="16dp"
             android:src="@drawable/call_support_burger" />
 
         <TextView
@@ -73,7 +73,7 @@
             android:gravity="center_vertical"
             android:text="@string/burger_call_support_button"
             android:textAlignment="center"
-            android:textColor="@color/blue_200"
+            android:textColor="@color/brand"
             android:textSize="18sp"
             android:textStyle="bold" />
 

@@ -110,7 +110,7 @@ class TimeFragmentButtonsAdapter(
                 lp.marginStart = 0
             }
             textView.text = mItems[position].intervalText
-            textView.setTextColor(ContextCompat.getColor(textView.context, if (isFullscreen) R.color.white_0 else R.color.grey_100))
+            textView.setTextColor(ContextCompat.getColor(textView.context, if (isFullscreen) R.color.on_filled else R.color.no_accent))
             textView.setSel(position == currentPos)
             buttonView.setOnClickListener { select(position) }
         }

@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem.ui.main.settings.accessAddress
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,14 +9,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.GuestAccessType
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAccessAddressBinding
@@ -26,8 +25,10 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogShareAc
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Locale
 
 class AccessAddressFragment : Fragment() {
     private var _binding: FragmentAccessAddressBinding? = null
@@ -56,7 +57,7 @@ class AccessAddressFragment : Fragment() {
     }
 
     private fun initAddContact() {
-        binding.tvAddBarrierGate.setOnClickListener {
+        binding.tvAddAccessBarrierGate.setOnClickListener {
             val dialog = DialogShareAccessDialog(requireActivity() as? MainActivity)
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
@@ -68,7 +69,7 @@ class AccessAddressFragment : Fragment() {
             dialog.show(parentFragmentManager, "")
         }
 
-        binding.tvPermanentAccessAddress.setOnClickListener {
+        binding.tvAddPermanentAccessAddress.setOnClickListener {
             val dialog = DialogShareAccessDialog(requireActivity() as? MainActivity)
             dialog.onDialogServiceListener =
                 object : DialogShareAccessDialog.OnDialogAccessListener {
@@ -81,15 +82,16 @@ class AccessAddressFragment : Fragment() {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun initObservable() {
         mViewModel.intercom.observe(
             viewLifecycleOwner
         ) {
             it?.let {
                 if (it.doorCode == null) {
-                    binding.llCode.isVisible = false
+                    binding.gOpeningCode.isVisible = false
                 } else {
-                    binding.tvCodeOpen.text = it.doorCode
+                    binding.tvOpeningCode.text = it.doorCode
                 }
                 val c: Calendar = Calendar.getInstance()
                 val sdf = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
@@ -105,11 +107,7 @@ class AccessAddressFragment : Fragment() {
                 }
                 hideCodeOpen(it.allowDoorCode)
 
-                if (it.frsDisabled == false) {
-                    binding.expLayoutByFace.expand()
-                } else {
-                    binding.expLayoutByFace.collapse()
-                }
+                binding.gEnterByFace.isVisible = !(it.frsDisabled ?: true)
             }
         }
 
@@ -149,7 +147,7 @@ class AccessAddressFragment : Fragment() {
             viewLifecycleOwner
         ) {
             it?.let {
-                binding.tvCodeOpen.text = it.code.toString()
+                binding.tvOpeningCode.text = it.code.toString()
             }
         }
 
@@ -159,18 +157,12 @@ class AccessAddressFragment : Fragment() {
     }
 
     private fun checkHide() {
-        // скрываем постоянный доступ к адресу
-        binding.cvPermanentAccessAddress.isVisible = flatOwner
-        binding.tvTitlePermanentAccessAddress.isVisible = flatOwner
-
-        // Если hasGates = false, то скрываем временный доступ
-        binding.tvTitleAccessBarrierGate.isVisible = hasGates
-        binding.cvAccessGate.isVisible = hasGates
+        binding.gAccessBarrierGate.isVisible = hasGates
+        binding.gPermanentAccessAddress.isVisible = flatOwner
     }
 
     private fun hideCodeOpen(availableDoorCode: Boolean) {
-        binding.llCode.isVisible = availableDoorCode
-        binding.view8.isVisible = availableDoorCode
+        binding.gOpeningCode.isVisible = availableDoorCode
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -282,6 +274,7 @@ class AccessAddressFragment : Fragment() {
     }
 
     private fun requestCameraPermission() {
+        @Suppress("DEPRECATION")
         requestPermissions(
             arrayOf(Manifest.permission.READ_CONTACTS, Manifest.permission.WRITE_CONTACTS),
             0

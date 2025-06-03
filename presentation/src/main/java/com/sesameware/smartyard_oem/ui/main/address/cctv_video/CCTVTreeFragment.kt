@@ -1,7 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.CCTVDataTree
@@ -93,7 +93,7 @@ class CCTVTreeFragment : Fragment() {
                             )
                         Text(
                             text = stringResource(id = R.string.address_choose_camera_title),
-                            color = colorResource(id = R.color.white),
+                            color = colorResource(id = R.color.on_filled),
                             fontSize = 32.sp,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier
@@ -101,7 +101,7 @@ class CCTVTreeFragment : Fragment() {
                         )
                         Text(
                             text = mCCTVViewModel.cctvModel.value?.address ?: "",
-                            color = colorResource(id = R.color.white),
+                            color = colorResource(id = R.color.on_filled),
                             fontSize = 14.sp,
                             modifier = Modifier
                                 .padding(start = 40.dp, top = 4.dp)
@@ -111,12 +111,12 @@ class CCTVTreeFragment : Fragment() {
                             modifier = Modifier
                                 .padding(top = 28.dp)
                                 .clip(shape = RoundedCornerShape(12.dp, 12.dp))
-                                .background(color = colorResource(id = R.color.white_200))
+                                .background(color = colorResource(id = R.color.shaded_background))
                         ) {
                             groupData?.groupName?.let { groupName ->
                                 Text(
                                     text = groupName,
-                                    color = colorResource(id = R.color.black_200),
+                                    color = colorResource(id = R.color.accent),
                                     fontSize = 24.sp,
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier
@@ -165,7 +165,7 @@ class CCTVTreeFragment : Fragment() {
     private fun GroupItem(group: CCTVDataTree) {
         Card(
             shape = RoundedCornerShape(12.dp),
-            backgroundColor = colorResource(id = R.color.white_0),
+            backgroundColor = colorResource(id = R.color.light_background),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
@@ -194,7 +194,7 @@ class CCTVTreeFragment : Fragment() {
                         .padding(start = 24.dp, top = 16.dp, bottom = 16.dp),
                     textAlign = TextAlign.Start,
                     fontSize = 14.sp,
-                    color = colorResource(id = R.color.black_200),
+                    color = colorResource(id = R.color.accent),
                     text = group.groupName ?: "",
                 )
                 Image(
@@ -213,7 +213,7 @@ class CCTVTreeFragment : Fragment() {
     private fun CameraItem(parent: CCTVDataTree, index: Int, camera: CCTVData) {
         Card(
             shape = RoundedCornerShape(12.dp),
-            backgroundColor = colorResource(id = R.color.white_0),
+            backgroundColor = colorResource(id = R.color.light_background),
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp, vertical = 4.dp)
@@ -238,7 +238,7 @@ class CCTVTreeFragment : Fragment() {
                         .padding(start = 24.dp, top = 16.dp, bottom = 16.dp),
                     textAlign = TextAlign.Start,
                     fontSize = 14.sp,
-                    color = colorResource(id = R.color.black_200),
+                    color = colorResource(id = R.color.accent),
                     text = camera.name,
                 )
                 Image(
@@ -248,7 +248,7 @@ class CCTVTreeFragment : Fragment() {
                     modifier = Modifier
                         .padding(top = 16.dp, bottom = 16.dp, end = 24.dp)
                         .size(24.dp),
-                    colorFilter = ColorFilter.tint(colorResource(id = R.color.grey_100))
+                    colorFilter = ColorFilter.tint(colorResource(id = R.color.no_accent))
                 )
             }
         }

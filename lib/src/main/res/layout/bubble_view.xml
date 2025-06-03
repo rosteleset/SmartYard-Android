@@ -14,7 +14,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         tools:text="00:06:23"
-        android:textColor="@color/black"
+        android:textColor="@color/text_color"
         android:textSize="12sp"
         android:textStyle="bold"
         android:gravity="center"

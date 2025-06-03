@@ -255,7 +255,7 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
         val notificationBuilder = NotificationCompat.Builder(this, CHANNEL_INBOX_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-            .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+            .setColor(ContextCompat.getColor(context, R.color.brand))
             .setContentTitle(title)
             .setContentText(message)
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)

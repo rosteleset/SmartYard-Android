@@ -2,13 +2,12 @@ package com.sesameware.smartyard_oem
 
 import android.app.Application
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.sesameware.smartyard_oem.di.Modules
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.startKoin
-import com.sesameware.smartyard_oem.di.Modules
 import timber.log.Timber
 
 class App : Application() {
-    var isChatActive = false
 
     override fun onCreate() {
         super.onCreate()

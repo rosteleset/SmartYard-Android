@@ -9,7 +9,11 @@ import android.graphics.drawable.InsetDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
 import com.sesameware.data.DataModule
@@ -101,7 +105,7 @@ class DialogShareAccessDialog(private val mainActivity: MainActivity? = null) :
         dialog?.window?.setBackgroundDrawable(inset)
         dialog?.window?.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
     }
 

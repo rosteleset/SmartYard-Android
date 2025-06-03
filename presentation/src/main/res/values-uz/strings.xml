@@ -475,6 +475,9 @@
     <string name="title_common_settings">Umumiy sozlamalar</string>
     <string name="user_name_sample">Alekseyev V.B.</string>
     <string name="title_notifications">Bildirishnomalar</string>
+    <string name="title_theme">Mavzusi</string>
+    <string name="item_theme_light">Engil</string>
+    <string name="item_theme_dark">Qorong\'i</string>
     <string name="title_call_ringtone">Kiruvchi qo‘ng‘iroq ohangi</string>
     <string name="receive_notifications">Bildirishnomalarni olish</string>
     <string name="lack_funds_notifications">Mablag‘ yetarlichasini ogohlantirish</string>
@@ -509,4 +512,6 @@
     <string name="add_face">Qo‘shish</string>
     <string name="text_no_image">Rasm yo\'q</string>
     <string name="phone_number_not_saved">Telefon raqami saqlanmagan</string>
+    <string name="guest_access">Bir soat davomida mehmonlar uchun kirish</string>
+    <string name="item_theme_system_default">Tizim tomonidan belgilanadi</string>
 </resources>

@@ -66,6 +66,7 @@ android {
             buildConfigField "String", "PROVIDER_NAME", "\"\""
             buildConfigField "String", "PROVIDER_URL", "\"\""
             buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""
+//            buildConfigField "String", "MAP_BOX_TOKEN", "\"\""
         }
     }
     namespace 'com.sesameware.data'

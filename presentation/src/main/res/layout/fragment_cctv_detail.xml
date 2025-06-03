@@ -39,7 +39,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="56dp"
             tools:text="cameraName"
-            android:textColor="@color/white"
+            android:textColor="@color/on_filled"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
@@ -56,7 +56,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="5dp"
             tools:text="addressSub"
-            android:textColor="@color/white"
+            android:textColor="@color/on_filled"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle"
@@ -67,7 +67,7 @@
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/background_radius_upper_clip"
+            android:background="@drawable/background_dialog"
             android:layout_marginTop="28dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -85,10 +85,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="top"
-                    app:tabIndicatorColor="@color/blue"
-                    app:tabSelectedTextColor="@color/black"
+                    app:tabIndicatorColor="@color/brand"
+                    app:tabSelectedTextColor="@color/accent"
                     app:tabTextAppearance="@style/MyCustomTextAppearance"
-                    app:tabTextColor="@color/grey_100" />
+                    app:tabTextColor="@color/no_accent" />
 
             </androidx.viewpager.widget.ViewPager>
 

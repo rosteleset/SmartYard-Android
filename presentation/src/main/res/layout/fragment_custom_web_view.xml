@@ -29,7 +29,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:textAlignment="textStart"
-            android:textColor="@color/white"
+            android:textColor="@color/on_filled"
             android:textSize="24sp"
             android:textStyle="bold"
             android:visibility="invisible"
@@ -66,7 +66,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:indeterminateTint="@color/blue_200"
+        android:indeterminateTint="@color/brand"
         android:visibility="invisible" />
 
 </FrameLayout>

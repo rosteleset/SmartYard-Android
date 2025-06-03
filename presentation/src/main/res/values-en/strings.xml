@@ -478,6 +478,9 @@
     <string name="title_common_settings">Common settings</string>
     <string name="user_name_sample">Alexeyev V.B.</string>
     <string name="title_notifications">Notifications</string>
+    <string name="title_theme">Theme</string>
+    <string name="item_theme_light">Light</string>
+    <string name="item_theme_dark">Dark</string>
     <string name="title_call_ringtone">Incoming call ringtone</string>
     <string name="receive_notifications">Receive notifications</string>
     <string name="lack_funds_notifications">Notify about low balance</string>
@@ -512,4 +515,6 @@
     <string name="add_face">Add</string>
     <string name="text_no_image">No Image</string>
     <string name="phone_number_not_saved">Phone number is not saved</string>
+    <string name="guest_access">Guest access for an hour</string>
+    <string name="item_theme_system_default">System default</string>
 </resources>

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:text="@string/event_name"
         android:textAlignment="textStart"
-        android:textColor="@color/black_200"
+        android:textColor="@color/accent"
         android:textSize="24sp"
         android:textStyle="bold" />
 
@@ -44,7 +44,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:text="@string/text_address"
-                    android:textColor="@color/black_200"
+                    android:textColor="@color/accent"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -56,7 +56,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:text="@string/text_date_time"
-                    android:textColor="@color/grey_100"
+                    android:textColor="@color/no_accent"
                     android:textSize="12sp" />
 
                 <TextView
@@ -67,7 +67,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:text="@string/event_log_unanswered_call"
-                    android:textColor="@color/red_100"
+                    android:textColor="@color/negative"
                     android:textSize="12sp"
                     android:visibility="invisible"
                     app:drawableLeftCompat="@drawable/ic_eld_unanswered_call" />
@@ -80,7 +80,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:text="@string/event_log_answered_call"
-                    android:textColor="@color/green_100"
+                    android:textColor="@color/positive"
                     android:textSize="12sp"
                     android:visibility="invisible"
                     app:drawableLeftCompat="@drawable/ic_eld_answered_call" />
@@ -93,7 +93,7 @@
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="24dp"
                     android:text="@string/text_additional"
-                    android:textColor="@color/grey_100"
+                    android:textColor="@color/no_accent"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:visibility="invisible" />
@@ -104,14 +104,13 @@
 
             </LinearLayout>
 
-            <androidx.cardview.widget.CardView
+            <FrameLayout
                 android:id="@+id/clEventImageOrVideo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
+                android:background="@drawable/background_card"
                 app:layout_constraintDimensionRatio="16:9"
-                app:cardElevation="0dp"
-                app:cardCornerRadius="@dimen/event_log_detail_corner"
                 app:layout_constraintTop_toBottomOf="@id/llEventHeader" >
 
                 <com.sesameware.smartyard_oem.ui.main.address.event_log.FaceImageView
@@ -129,11 +128,11 @@
                     android:drawablePadding="10dp"
                     android:text="@string/text_no_image"
                     android:textAlignment="center"
-                    android:textColor="@color/black_200"
+                    android:textColor="@color/accent"
                     android:textSize="22sp"
                     android:textStyle="bold"
                     android:visibility="invisible"
-                    app:drawableTint="@color/red_100"
+                    app:drawableTint="@color/negative"
                     app:drawableTopCompat="@drawable/ic_no_photography_24"
                     tools:visibility="visible" />
 
@@ -141,13 +140,13 @@
                     android:id="@+id/pvEventVideo"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/black"
+                    android:background="@android:color/black"
                     android:alpha="0"
                     android:translationZ="5dp"
                     app:use_artwork="false"
                     app:use_controller="false" />
 
-            </androidx.cardview.widget.CardView>
+            </FrameLayout>
 
             <ImageView
                 android:id="@+id/ivEventHelp"
@@ -223,7 +222,7 @@
                 android:drawablePadding="6dp"
                 android:elevation="10dp"
                 android:text="@string/event_log_detail_friend"
-                android:textColor="@color/white_0"
+                android:textColor="@color/on_filled"
                 android:textSize="18sp"
                 app:drawableLeftCompat="@drawable/ic_eld_friend"
                 app:layout_constraintBottom_toBottomOf="@+id/bEventFriend"
@@ -240,7 +239,7 @@
                 android:layout_marginEnd="16dp"
                 android:singleLine="false"
                 android:text="@string/event_log_detail_friend_description"
-                android:textColor="@color/black_200"
+                android:textColor="@color/accent"
                 android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/bEventFriend" />
 
@@ -266,7 +265,7 @@
                 android:drawablePadding="6dp"
                 android:elevation="10dp"
                 android:text="@string/event_log_detail_foe"
-                android:textColor="@color/white_0"
+                android:textColor="@color/on_filled"
                 android:textSize="18sp"
                 app:drawableLeftCompat="@drawable/ic_eld_foe"
                 app:layout_constraintBottom_toBottomOf="@+id/bEventFoe"
@@ -283,7 +282,7 @@
                 android:layout_marginEnd="16dp"
                 android:singleLine="false"
                 android:text="@string/event_log_detail_foe_description"
-                android:textColor="@color/black_200"
+                android:textColor="@color/accent"
                 android:textSize="14sp"
                 app:layout_constraintTop_toBottomOf="@+id/bEventFoe" />
 

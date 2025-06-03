@@ -1,17 +1,17 @@
 package com.sesameware.smartyard_oem.ui.reg.providers
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentProvidersBinding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProvidersFragment : Fragment() {
     private var _binding: FragmentProvidersBinding? = null
@@ -49,16 +49,6 @@ class ProvidersFragment : Fragment() {
         binding.btnChooseProvider.setOnClickListener {
             mViewModel.goToNext(this, providerId, providerName, providerBaseUrl)
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        activity?.window?.setSoftInputMode(
-            if (hidden)
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
-            else
-                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN
-        )
-        super.onHiddenChanged(hidden)
     }
 
     override fun onStop() {

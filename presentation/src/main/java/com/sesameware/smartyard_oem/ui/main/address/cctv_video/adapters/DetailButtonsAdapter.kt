@@ -18,8 +18,8 @@ class DetailButtonsAdapter(
     private val mCallback: listenerGeneric<Int>
 ) : RecyclerView.Adapter<DetailButtonsAdapter.DetailButtonsViewHolder>() {
 
-    val colorWhite = ContextCompat.getColor(context, R.color.white)
-    val colorBlack = ContextCompat.getColor(context, R.color.black)
+    val colorWhite = ContextCompat.getColor(context, R.color.on_filled)
+    val colorBlack = ContextCompat.getColor(context, R.color.accent)
     val adapter = this
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DetailButtonsViewHolder {

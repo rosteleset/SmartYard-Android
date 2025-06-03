@@ -211,6 +211,9 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleViewModel"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycleViewModel"
 
+    // WebView
+    implementation "androidx.webkit:webkit:$webkit"
+
     // Koin Core features
     implementation "io.insert-koin:koin-core:$koin"
     // Koin Test features

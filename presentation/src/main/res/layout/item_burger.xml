@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        app:cardBackgroundColor="@color/white_0"
+        app:cardBackgroundColor="@color/light_background"
         app:cardCornerRadius="12dp"
         app:cardElevation="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -31,7 +31,7 @@
                 android:layout_weight="0"
                 android:paddingStart="24dp"
                 android:paddingEnd="12dp"
-                app:tint="#6D7A8A"
+                app:tint="@color/no_accent"
                 app:srcCompat="@drawable/address_settings_burger" />
 
             <TextView
@@ -44,7 +44,7 @@
                 android:paddingEnd="0dp"
                 android:paddingBottom="24dp"
                 android:text="Item"
-                android:textColor="@color/black_200"
+                android:textColor="@color/accent"
                 android:textSize="14sp" />
 
             <ImageView

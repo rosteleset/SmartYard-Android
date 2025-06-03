@@ -15,6 +15,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
+import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BlendMode.SRC_ATOP
@@ -36,6 +37,7 @@ import android.provider.Settings
 import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.Window
 import android.widget.DatePicker
 import android.widget.FrameLayout
@@ -47,6 +49,7 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
@@ -151,7 +154,7 @@ class ProgressDialog {
         progressBar.layoutParams = lp
 
         setColorFilter(
-            progressBar.indeterminateDrawable, ContextCompat.getColor(context, R.color.colorAccent)
+            progressBar.indeterminateDrawable, ContextCompat.getColor(context, R.color.brand)
         )
 
         frameLayout.addView(progressBar)
@@ -338,7 +341,7 @@ fun sendCallNotification(
         val notificationBuilder = NotificationCompat.Builder(this, MessagingService.CHANNEL_CALLS_ID)
             .setSmallIcon(R.drawable.ic_notification)
             .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
-            .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+            .setColor(ContextCompat.getColor(context, R.color.brand))
             .setContentTitle(getString(R.string.call))
             .setContentText(getString(R.string.from, data.callerId))
             .setCategory(NotificationCompat.CATEGORY_CALL)
@@ -429,7 +432,7 @@ fun createIconWithText(
 
     text?.let {
         val textPaint: Paint = Paint().apply {
-            color = ResourcesCompat.getColor(context.resources, R.color.blue, null)
+            color = ResourcesCompat.getColor(context.resources, R.color.brand, null)
             isAntiAlias = true
             textSize = 40f
             textAlign = Paint.Align.CENTER
@@ -470,9 +473,11 @@ class DatePickerFragment(
     private val selectedDate: LocalDate,
     private val timeZone: String = DataModule.serverTz,
     private val minDate: LocalDate? = null,
-    private val callback: listenerGeneric<LocalDate>) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+    private val callback: listenerGeneric<LocalDate>
+) : DialogFragment(), DatePickerDialog.OnDateSetListener {
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = DatePickerDialog(requireContext(), this,
+        val dialog = DatePickerDialog(requireContext(), R.style.DatePickerStyle, this,
             selectedDate.year, selectedDate.monthValue - 1, selectedDate.dayOfMonth)
         val serverMaxDate = LocalDateTime.now(ZoneId.of(timeZone))
         val localDateTime = LocalDateTime.now()
@@ -480,6 +485,13 @@ class DatePickerFragment(
         dialog.datePicker.maxDate = System.currentTimeMillis() + delta
         if (minDate != null) {
             dialog.datePicker.minDate = ZonedDateTime.of(minDate, LocalTime.of(0, 0), ZoneId.of(timeZone)).toInstant().toEpochMilli() + delta
+        }
+        dialog.window?.let {
+            it.setBackgroundDrawableResource(R.drawable.background_dialog_large)
+            val lp = it.attributes
+            lp.height = ViewGroup.LayoutParams.WRAP_CONTENT
+            lp.width = ViewGroup.LayoutParams.WRAP_CONTENT
+            it.attributes = lp
         }
         return dialog
     }

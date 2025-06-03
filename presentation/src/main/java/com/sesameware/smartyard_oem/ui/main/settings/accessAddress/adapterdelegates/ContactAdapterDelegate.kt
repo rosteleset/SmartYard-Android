@@ -91,14 +91,14 @@ class ContactAdapterDelegate(
 
             if (item.isOwner) {
                 tvTitle.isEnabled = false
-                tvTitle.setTextColorRes(R.color.grey_100)
+                tvTitle.setTextColorRes(R.color.no_accent)
                 swipeLayout.isSwipeEnabled = false
 
                 rightViewDelete.setOnClickListener(null)
                 tvSms.setOnClickListener(null)
             } else {
                 tvTitle.isEnabled = true
-                tvTitle.setTextColorRes(R.color.black)
+                tvTitle.setTextColorRes(R.color.accent)
                 swipeLayout.isSwipeEnabled = true
 
                 rightViewDelete.setOnClickListener {

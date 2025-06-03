@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    android:background="@color/dialog_background"
     android:fillViewport="true"
     tools:context=".ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment">
 
@@ -16,7 +16,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"
+            android:background="@color/dialog_background"
             android:clickable="true"
             android:focusable="true">
 
@@ -50,7 +50,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:textColor="@color/black_200"
+                android:textColor="@color/accent"
                 android:textSize="24sp"
                 app:layout_constraintBottom_toBottomOf="@+id/monthBack"
                 app:layout_constraintEnd_toStartOf="@+id/monthForward"

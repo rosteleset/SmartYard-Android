@@ -7,14 +7,15 @@ import android.content.Intent
 import android.view.View
 import android.widget.RemoteViews
 import android.widget.RemoteViewsService.RemoteViewsFactory
-import kotlinx.coroutines.runBlocking
-import org.koin.core.component.KoinComponent
-import org.koin.core.component.inject
 import com.sesameware.domain.interactors.DatabaseInteractor
 import com.sesameware.domain.model.AddressItem
 import com.sesameware.domain.model.StateButton
 import com.sesameware.smartyard_oem.R
+import kotlinx.coroutines.runBlocking
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import timber.log.Timber
+
 /**
  * @author Nail Shakurov
  * Created on 13.05.2020.
@@ -107,8 +108,10 @@ class WidgetFactory internal constructor(var context: Context, var intent: Inten
         )
         if (data.isEmpty()) {
             views.setViewVisibility(R.id.textViewEmpty, View.VISIBLE)
+            views.setViewVisibility(R.id.lvList, View.GONE)
         } else {
-            views.setViewVisibility(R.id.textViewEmpty, View.INVISIBLE)
+            views.setViewVisibility(R.id.textViewEmpty, View.GONE)
+            views.setViewVisibility(R.id.lvList, View.VISIBLE)
         }
         AppWidgetManager.getInstance(context).updateAppWidget(
             ComponentName(context, WidgetProvider::class.java), views

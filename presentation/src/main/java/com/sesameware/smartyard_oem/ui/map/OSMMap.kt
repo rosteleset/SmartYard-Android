@@ -1,13 +1,9 @@
 package com.sesameware.smartyard_oem.ui.map
 
+import android.content.res.Configuration
 import android.view.View
 import android.widget.LinearLayout
-import org.osmdroid.api.IMapController
-import org.osmdroid.util.BoundingBox
-import org.osmdroid.views.CustomZoomButtonsController
-import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.Marker
-import org.osmdroid.views.overlay.Marker.ANCHOR_CENTER
+import androidx.core.content.ContextCompat
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.getCenter
@@ -16,7 +12,14 @@ import com.sesameware.smartyard_oem.ui.createIconWithText
 import com.sesameware.smartyard_oem.ui.map.MapProvider.Companion.MAX_FOCUS_ZOOM
 import com.sesameware.smartyard_oem.ui.map.MapProvider.Companion.MAX_ZOOM
 import com.sesameware.smartyard_oem.ui.map.MapProvider.Companion.MIN_ZOOM
-import java.lang.Exception
+import org.osmdroid.api.IMapController
+import org.osmdroid.tileprovider.tilesource.XYTileSource
+import org.osmdroid.util.BoundingBox
+import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Marker.ANCHOR_CENTER
+
 
 class OSMMap(settings: MapSettings) : SimpleMap(settings) {
     companion object {
@@ -33,6 +36,7 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.MATCH_PARENT
         )
+        setNightMode()
         onInit()
         view.minZoomLevel = MIN_ZOOM.toDouble()
         view.maxZoomLevel = MAX_ZOOM.toDouble()
@@ -42,6 +46,56 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
             onLayout()
         }
         return view
+    }
+
+    private fun setNightMode() {
+        val map = map!!
+        val isNightModeOn = when (context.resources.configuration.uiMode and
+            Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_NO -> false
+                Configuration.UI_MODE_NIGHT_YES -> true
+            else -> {
+                false
+            }
+        }
+
+        if (!isNightModeOn) return
+
+        map.setBackgroundColor(ContextCompat.getColor(context, R.color.light_background))
+        map.setTileSource(
+            XYTileSource(
+                "Carto CDN",
+                0, 20, 256, ".png",
+                arrayOf(
+                    "https://a.basemaps.cartocdn.com/dark_all/",
+                    "https://b.basemaps.cartocdn.com/dark_all/",
+                    "https://c.basemaps.cartocdn.com/dark_all/"
+                )
+            )
+        )
+/*        val mapboxTilePolicy = object : TileSourcePolicy() {
+            override fun getHttpCacheControlDuration(pHttpCacheControlHeader: String?): Long {
+                val fixedHeader = pHttpCacheControlHeader
+                    ?.split(',')
+                    ?.joinToString(", ")
+                return super.getHttpCacheControlDuration(fixedHeader)
+            }
+        }
+        map.setTileSource(
+            object : OnlineTileSourceBase(
+                "Mapbox Dark",
+                0, 19, 1024, null,
+                arrayOf("https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/"),
+                null, mapboxTilePolicy
+            ) {
+                override fun getTileURLString(pMapTileIndex: Long): String {
+                    return (baseUrl + "512/" + MapTileIndex.getZoom(pMapTileIndex) + "/" +
+                            MapTileIndex.getX(pMapTileIndex) + "/" +
+                            MapTileIndex.getY(pMapTileIndex) + "@2x" +
+                            "?access_token=${DataModule.mapBoxToken}")
+                }
+            }
+        )*/
     }
 
     override fun move(coord: LatLng, zoom: Float, instant: Boolean) {

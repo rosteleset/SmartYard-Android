@@ -8,12 +8,12 @@ import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
-import org.osmdroid.config.Configuration
 import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.ProgressDialog
 import com.sesameware.smartyard_oem.ui.requestPermission
 import com.sesameware.smartyard_oem.ui.showStandardAlert
+import org.osmdroid.config.Configuration
 import java.io.File
 
 class MapProvider @JvmOverloads constructor(
@@ -39,6 +39,8 @@ class MapProvider @JvmOverloads constructor(
         osmConf.osmdroidBasePath = basePath
         val tileCache = File(osmConf.osmdroidBasePath.absolutePath, "tile")
 
+//        osmConf.isDebugMode = true
+//        osmConf.isDebugMapTileDownloader = true
         osmConf.osmdroidTileCache = tileCache
         Configuration.getInstance().load(
             applicationContext,

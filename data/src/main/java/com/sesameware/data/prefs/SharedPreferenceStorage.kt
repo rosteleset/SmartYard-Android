@@ -3,9 +3,11 @@ package com.sesameware.data.prefs
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
+import android.os.Parcelable
 import androidx.annotation.WorkerThread
 import androidx.core.content.edit
 import com.google.gson.Gson
+import kotlinx.parcelize.Parcelize
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -29,6 +31,8 @@ interface PreferenceStorage {
     var houseIdPositions: Map<Int, Int>?
     var expandedHouseIds: Set<Int>?
     var justRegistered: Boolean
+    var nightModeHasChanged: Boolean
+    var nightMode: NightMode
     var askedAboutLockedScreen: Boolean
 
     fun clear()
@@ -62,6 +66,8 @@ class SharedPreferenceStorage constructor(
         const val PREFS_HOUSE_ID_POSITIONS = "PREFS_HOUSE_ID_POSITIONS"
         const val PREFS_EXPANDED_HOUSE_IDS = "PREFS_EXPANDED_HOUSE_IDS"
         const val PREFS_JUST_REGISTERED = "PREFS_ADDRESS_LIST_FIRST_LAUNCH"
+        const val PREFS_NIGHT_MODE_HAS_CHANGED = "PREFS_NIGHT_MODE_HAS_CHANGED"
+        const val PREFS_NIGHT_MODE = "PREFS_THEME"
         const val PREFS_ASKED_ABOUT_LOCKED_SCREEN = "PREFS_ASKED_ABOUT_LOCKED_SCREEN"
     }
 
@@ -110,6 +116,15 @@ class SharedPreferenceStorage constructor(
     )
     override var justRegistered by BooleanPreference(prefs,
         PREFS_JUST_REGISTERED, true)
+
+    override var nightModeHasChanged by BooleanPreference(prefs,
+        PREFS_NIGHT_MODE_HAS_CHANGED, false)
+
+    override var nightMode by SerializablePreference(
+        prefs, PREFS_NIGHT_MODE,
+        NightMode.FOLLOW_SYSTEM,
+        NightMode::class.java)
+
     override var askedAboutLockedScreen by BooleanPreference(prefs,
         PREFS_ASKED_ABOUT_LOCKED_SCREEN, false)
 
@@ -124,6 +139,8 @@ class SharedPreferenceStorage constructor(
         houseIdPositions = null
         expandedHouseIds = null
         justRegistered = true
+        nightModeHasChanged = false
+        nightMode = NightMode.FOLLOW_SYSTEM
         askedAboutLockedScreen = false
     }
 }
@@ -281,3 +298,10 @@ private fun getExpandedHouseIdsConverter(): SetConverter<Int> =
     object : SetConverter<Int> {
         override fun fromString(s: String): Int = s.toInt()
     }
+
+@Parcelize
+enum class NightMode(val value: Int) : Parcelable {
+    FOLLOW_SYSTEM(-1),
+    NO(1),
+    YES(2),
+}

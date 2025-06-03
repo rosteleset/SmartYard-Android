@@ -13,7 +13,7 @@
         android:digits="1234567890"
         android:inputType="number"
         android:maxLength="3"
-        android:textColor="@color/grey_100"
+        android:textColor="@color/no_accent"
         android:textSize="30sp"
         android:focusable="false"
         android:focusableInTouchMode="false"

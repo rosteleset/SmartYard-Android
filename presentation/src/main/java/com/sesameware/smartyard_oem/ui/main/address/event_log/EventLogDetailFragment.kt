@@ -5,38 +5,41 @@ package com.sesameware.smartyard_oem.ui.main.address.event_log
 import android.annotation.SuppressLint
 import android.graphics.Rect
 import android.os.Bundle
-import android.view.*
-import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.annotation.Px
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
-import com.google.android.exoplayer2.ui.PlayerView
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.exoplayer2.ui.PlayerView
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailAdapter
-import timber.log.Timber
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogDetailBinding
+import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
+import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailAdapter
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailItemAction
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailVH
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogAddPhoto.DialogAddPhotoFragment
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.dialogRemovePhoto.DialogRemovePhotoFragment
 import com.sesameware.smartyard_oem.ui.toast
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
 
 class EventLogDetailFragment : Fragment() {
     private var _binding: FragmentEventLogDetailBinding? = null
@@ -185,16 +188,6 @@ class EventLogDetailFragment : Fragment() {
         if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.address) {
             playVideo(currentPosition)
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (hidden) {
-            releasePlayer()
-        } else {
-            playVideo(currentPosition)
-        }
-
-        super.onHiddenChanged(hidden)
     }
 
     private fun onEventLogDetailItemAction(action: EventLogDetailItemAction) {

@@ -475,6 +475,9 @@
     <string name="title_common_settings">Жалпы параметрлер</string>
     <string name="user_name_sample">Алексеев В.Б.</string>
     <string name="title_notifications">Хабарламалар</string>
+    <string name="title_theme">Тақырыбы</string>
+    <string name="item_theme_light">Жеңіл</string>
+    <string name="item_theme_dark">Қараңғы</string>
     <string name="title_call_ringtone">Кіріс қоңырау үні</string>
     <string name="receive_notifications">Хабарламалар алу</string>
     <string name="lack_funds_notifications">Қаражаттың жетіспеушілігі туралы хабарлаңыз</string>
@@ -509,4 +512,6 @@
     <string name="add_face">Қосу</string>
     <string name="text_no_image">Сурет жоқ</string>
     <string name="phone_number_not_saved">Телефон нөмірі сақталмаған</string>
+    <string name="guest_access">Қонақтарға бір сағатқа кіру</string>
+    <string name="item_theme_system_default">Жүйемен анықталады</string>
 </resources>

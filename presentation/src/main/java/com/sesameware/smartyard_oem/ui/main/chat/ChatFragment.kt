@@ -8,14 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
-import com.sofit.onlinechatsdk.ChatView
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import com.sesameware.smartyard_oem.App
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
-import com.sesameware.smartyard_oem.ui.main.MorphBottomNavigationView
+import com.sofit.onlinechatsdk.ChatView
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ChatFragment : Fragment() {
     private var mLoaded: Boolean = false
@@ -53,31 +51,6 @@ class ChatFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_chat, container, false)
         mChatView = root.findViewById(R.id.chatView)
         return root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        val nav = activity?.findViewById<MorphBottomNavigationView>(R.id.bottom_nav)
-        if (nav?.selectedItemId == R.id.chat) {
-            (activity?.application as? App)?.isChatActive = true
-            mMainViewModel.chat.postValue(false)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        (activity?.application as? App)?.isChatActive = false
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-
-        (activity?.application as? App)?.isChatActive = !hidden
-        if ((activity?.application as? App)?.isChatActive == true) {
-            mMainViewModel.chat.postValue(false)
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

@@ -2,6 +2,35 @@ package com.sesameware.data
 
 import android.content.Context
 import androidx.room.Room
+import com.sesameware.data.interceptors.CommonInterceptor
+import com.sesameware.data.interceptors.SessionInterceptor
+import com.sesameware.data.local.db.ItemsDatabase
+import com.sesameware.data.prefs.PreferenceStorage
+import com.sesameware.data.prefs.SharedPreferenceStorage
+import com.sesameware.data.remote.TeledomApi
+import com.sesameware.data.repository.AddressRepositoryImpl
+import com.sesameware.data.repository.AuthRepositoryImpl
+import com.sesameware.data.repository.CCTVRepositoryImpl
+import com.sesameware.data.repository.DatabaseRepositoryImpl
+import com.sesameware.data.repository.ExtRepositoryImpl
+import com.sesameware.data.repository.FRSRepositoryImpl
+import com.sesameware.data.repository.GeoRepositoryImpl
+import com.sesameware.data.repository.InboxRepositoryImpl
+import com.sesameware.data.repository.IssueRepositoryImpl
+import com.sesameware.data.repository.PayRepositroyImpl
+import com.sesameware.data.repository.SipRepositoryImpl
+import com.sesameware.domain.interfaces.AddressRepository
+import com.sesameware.domain.interfaces.AuthRepository
+import com.sesameware.domain.interfaces.CCTVRepository
+import com.sesameware.domain.interfaces.DatabaseRepository
+import com.sesameware.domain.interfaces.ExtRepository
+import com.sesameware.domain.interfaces.FRSRepository
+import com.sesameware.domain.interfaces.GeoRepository
+import com.sesameware.domain.interfaces.InboxRepository
+import com.sesameware.domain.interfaces.IssueRepository
+import com.sesameware.domain.interfaces.PayRepository
+import com.sesameware.domain.interfaces.SipRepository
+import com.sesameware.domain.model.response.ProviderConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import okhttp3.Interceptor
@@ -11,36 +40,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import com.sesameware.data.interceptors.CommonInterceptor
-import com.sesameware.data.interceptors.SessionInterceptor
-import com.sesameware.data.local.db.ItemsDatabase
-import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.data.prefs.SharedPreferenceStorage
-import com.sesameware.data.remote.TeledomApi
-import com.sesameware.data.repository.AddressRepositoryImpl
-import com.sesameware.data.repository.DatabaseRepositoryImpl
-import com.sesameware.data.repository.SipRepositoryImpl
-import com.sesameware.data.repository.AuthRepositoryImpl
-import com.sesameware.data.repository.GeoRepositoryImpl
-import com.sesameware.data.repository.IssueRepositoryImpl
-import com.sesameware.data.repository.CCTVRepositoryImpl
-import com.sesameware.data.repository.InboxRepositoryImpl
-import com.sesameware.data.repository.PayRepositroyImpl
-import com.sesameware.data.repository.FRSRepositoryImpl
-import com.sesameware.data.repository.ExtRepositoryImpl
-import com.sesameware.domain.interfaces.AddressRepository
-import com.sesameware.domain.interfaces.AuthRepository
-import com.sesameware.domain.interfaces.SipRepository
-import com.sesameware.domain.interfaces.DatabaseRepository
-import com.sesameware.domain.interfaces.CCTVRepository
-import com.sesameware.domain.interfaces.GeoRepository
-import com.sesameware.domain.interfaces.InboxRepository
-import com.sesameware.domain.interfaces.IssueRepository
-import com.sesameware.domain.interfaces.PayRepository
-import com.sesameware.domain.interfaces.FRSRepository
-import com.sesameware.domain.interfaces.ExtRepository
-import com.sesameware.domain.model.response.ProviderConfig
-
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -53,6 +52,7 @@ object DataModule {
     var xDmApiRefresh = false
     val serverTz: String
         get() = providerConfig.timeZone.orEmpty().ifEmpty { BuildConfig.SERVER_TZ }
+//    val mapBoxToken = BuildConfig.MAP_BOX_TOKEN
 
     fun create() = module {
         single {

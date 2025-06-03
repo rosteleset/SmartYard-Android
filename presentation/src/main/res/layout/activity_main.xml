@@ -4,37 +4,32 @@
     android:id="@+id/llMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white_200"
+    android:background="@color/shaded_background"
     android:clipChildren="false"
     android:clipToPadding="false"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="-16dp"
+        android:layout_height="0dp"
         android:layout_weight="1"
-        android:fitsSystemWindows="true">
-
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/nav_host_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-    </RelativeLayout>
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/root" />
 
     <com.sesameware.smartyard_oem.ui.main.MorphBottomNavigationView
         android:id="@+id/bottom_nav"
         style="@style/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="10dp"
-        app:backgroundTint="@color/white_0"
+        android:layout_marginTop="-16dp"
+        app:itemIconTint="@drawable/color_bottom_nav_item"
+        app:backgroundTint="@color/light_background"
         app:labelVisibilityMode="labeled"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/bottom_nav_menu"
         app:morphCornerRadius="50dp"
         app:morphItemRadius="37dp"
         app:morphVerticalOffset="11dp" />
+
 </LinearLayout>

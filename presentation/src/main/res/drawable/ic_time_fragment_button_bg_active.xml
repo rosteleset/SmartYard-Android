@@ -8,6 +8,6 @@
       android:pathData="M3,0.5L93,0.5A2.5,2.5 0,0 1,95.5 3L95.5,21A2.5,2.5 0,0 1,93 23.5L3,23.5A2.5,2.5 0,0 1,0.5 21L0.5,3A2.5,2.5 0,0 1,3 0.5z"
       android:strokeAlpha="0.5"
       android:fillColor="#00000000"
-      android:strokeColor="#6D7A8A"
+      android:strokeColor="@color/no_accent"
       android:fillAlpha="0.5"/>
 </vector>

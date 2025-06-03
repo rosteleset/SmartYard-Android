@@ -26,8 +26,8 @@ class MainActivityViewModel(
 ) : GenericViewModel() {
 
     val bottomNavigateTo = MutableLiveData<Event<Int>>()
-    val badge = MutableLiveData<Boolean>()
-    val chat = MutableLiveData<Boolean>()
+    val isNotificationBadgeShowed = MutableLiveData<Boolean>()
+    val isChatBadgeShowed = MutableLiveData<Boolean>()
     val chatSendMsg = MutableLiveData<Event<String>>()
     val chatSendFileUri = MutableLiveData<Event<Uri>>()
 
@@ -65,23 +65,23 @@ class MainActivityViewModel(
         viewModelScope.withProgress({ false }, null) {
             val res = inboxInteractor.unread()
             if (res.data.count <= 0) {
-                badge.postValue(false)
+                isNotificationBadgeShowed.postValue(false)
             } else {
-                badge.postValue(true)
+                isNotificationBadgeShowed.postValue(true)
             }
             if (res.data.chat <= 0) {
-                chat.postValue(false)
+                isChatBadgeShowed.postValue(false)
             } else {
-                chat.postValue(true)
+                isChatBadgeShowed.postValue(true)
             }
         }
     }
 
     fun badgeParse(count: Int) {
         if (count <= 0) {
-            badge.postValue(false)
+            isNotificationBadgeShowed.postValue(false)
         } else {
-            badge.postValue(true)
+            isNotificationBadgeShowed.postValue(true)
         }
     }
 
@@ -98,6 +98,10 @@ class MainActivityViewModel(
     }
 
     fun bottomNavigate(@IdRes id: Int) {
+        if (mPreferenceStorage.nightModeHasChanged) {
+            mPreferenceStorage.nightModeHasChanged = false
+            return
+        }
         bottomNavigateTo.postValue(Event(id))
     }
 

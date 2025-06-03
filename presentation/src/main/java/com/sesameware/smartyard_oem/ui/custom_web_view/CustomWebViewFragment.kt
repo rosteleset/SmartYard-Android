@@ -11,6 +11,8 @@ import android.webkit.CookieManager
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.webkit.WebSettingsCompat
+import androidx.webkit.WebViewFeature
 import com.sesameware.domain.utils.doDelayed
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
 import com.sesameware.smartyard_oem.ui.getStatusBarHeight
@@ -66,6 +68,9 @@ class CustomWebViewFragment : Fragment() {
         binding.wvExt.settings.setSupportMultipleWindows(true)
         binding.wvExt.webChromeClient = CustomWebChromeClient(this, null)
         binding.wvExt.webViewClient = CustomWebViewClient(fragmentId, popupId, this, null)
+        if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
+            WebSettingsCompat.setAlgorithmicDarkeningAllowed(binding.wvExt.settings, true)
+        }
         binding.wvExt.addJavascriptInterface(CustomWebInterface(object : CustomWebInterface.Callback {
             override fun onPostLoadingStarted() {
                 requireActivity().runOnUiThread {

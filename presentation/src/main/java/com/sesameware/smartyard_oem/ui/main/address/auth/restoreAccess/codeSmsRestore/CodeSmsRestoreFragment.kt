@@ -135,9 +135,9 @@ class CodeSmsRestoreFragment : Fragment() {
 
     private fun togglePinLineColor(error: Boolean) {
         if (error) {
-            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.red_100)))
+            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.negative)))
         } else {
-            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(R.color.black)))
+            binding.pin.setPinLineColors(ColorStateList.valueOf(resources.getColorCompat(android.R.color.black)))
         }
     }
 

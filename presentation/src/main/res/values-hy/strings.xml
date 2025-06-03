@@ -473,6 +473,9 @@
     <string name="title_common_settings">Ընդհանուր կարգավորումներ</string>
     <string name="user_name_sample">Ալեքսեեվ Վ.Բ.</string>
     <string name="title_notifications">Ծանուցումներ</string>
+    <string name="title_theme">Թեման</string>
+    <string name="item_theme_light">Թեթև</string>
+    <string name="item_theme_dark">Մութ</string>
     <string name="title_call_ringtone">Մուտքային զանգի զանգ</string>
     <string name="receive_notifications">Ստանալ ծանուցումներ</string>
     <string name="lack_funds_notifications">Տեղեկացնել մնացորդի սահմանը</string>
@@ -507,4 +510,6 @@
     <string name="add_face">Ավելացնել</string>
     <string name="text_no_image">Պատկեր չկա</string>
     <string name="phone_number_not_saved">Հեռախոսահամարը չի պահպանվել</string>
+    <string name="guest_access">Հյուրերի մուտք մեկ ժամով</string>
+    <string name="item_theme_system_default">Սահմանվում է համակարգի կողմից</string>
 </resources>

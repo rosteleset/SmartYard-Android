@@ -10,7 +10,7 @@
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="0.7dp"
-        android:background="@color/white"
+        android:background="@color/dialog_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -24,7 +24,7 @@
         android:layout_marginStart="16dp"
         android:padding="10dp"
         android:text="TextView"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/child_imageView"

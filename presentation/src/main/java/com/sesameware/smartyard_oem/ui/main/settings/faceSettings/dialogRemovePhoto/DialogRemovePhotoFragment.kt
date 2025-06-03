@@ -5,7 +5,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.sesameware.domain.utils.listenerEmpty
@@ -56,7 +60,7 @@ class DialogRemovePhotoFragment(
         dialog?.window?.setBackgroundDrawable(inset)
         dialog?.window?.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
     }
 }

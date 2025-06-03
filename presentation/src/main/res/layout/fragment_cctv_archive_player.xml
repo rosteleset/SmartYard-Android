@@ -43,7 +43,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginBottom="56dp"
             android:textAlignment="textStart"
-            android:textColor="@color/white"
+            android:textColor="@color/on_filled"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
@@ -57,7 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="28dp"
-            android:background="@drawable/background_radius_upper_clip"
+            android:background="@drawable/background_dialog"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
                 android:id="@+id/svContentWrap"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
+                android:background="@color/dialog_background"
                 android:fillViewport="true"
                 tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTabFragment">
 
@@ -76,7 +76,7 @@
                     android:id="@+id/llControls"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/dialog_background"
                     android:orientation="vertical"
                     android:paddingBottom="40dp">
 
@@ -142,7 +142,7 @@
                             android:layout_marginStart="12.7dp"
                             android:layout_marginEnd="12.7dp"
                             android:layout_marginBottom="16.7dp"
-                            app:maskColor="@color/white_transparent2"
+                            app:maskColor="@color/range_slider_unselected_mask"
                             app:playThumbDrawable="@drawable/ic_cctv_thumb_seek"
                             app:sliderHeight="35.31dp"
                             app:trimMode="false"
@@ -178,7 +178,7 @@
                             android:layout_marginEnd="12.7dp"
                             android:layout_marginBottom="16.7dp"
                             android:visibility="invisible"
-                            app:maskColor="@color/white_transparent2"
+                            app:maskColor="@color/range_slider_unselected_mask"
                             app:playThumbDrawable="@drawable/ic_cctv_thumb_seek"
                             app:sliderHeight="35.31dp"
                             app:trimMode="true"
@@ -201,32 +201,6 @@
                             android:overScrollMode="never"
                             tools:listitem="@layout/item_cctv_time_fragment_button" />
 
-                        <ImageView
-                            android:id="@+id/gradStart"
-                            android:layout_width="@dimen/cctv_trim_page_margin_gradient"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/ic_cctv_time_gradient_start"
-                            android:focusable="false"
-                            app:layout_constraintStart_toStartOf="parent"
-                            tools:ignore="ContentDescription" />
-
-                        <ImageView
-                            android:id="@+id/gradMiddle"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/ic_cctv_time_gradient_middle"
-                            android:focusable="false"
-                            app:layout_constraintStart_toEndOf="@id/gradStart"
-                            tools:ignore="ContentDescription" />
-
-                        <ImageView
-                            android:id="@+id/gradEnd"
-                            android:layout_width="@dimen/cctv_trim_page_margin_gradient"
-                            android:layout_height="match_parent"
-                            android:background="@drawable/ic_cctv_time_gradient_end"
-                            android:focusable="false"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            tools:ignore="ContentDescription" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
 
                     <LinearLayout
@@ -253,7 +227,7 @@
                                 android:layout_height="wrap_content"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:textColor="@color/grey_100"
+                                android:textColor="@color/no_accent"
                                 android:textSize="20sp"
                                 tools:text="0.5x" />
                         </LinearLayout>
@@ -278,7 +252,7 @@
                                 android:layout_height="wrap_content"
                                 android:clickable="true"
                                 android:focusable="true"
-                                android:textColor="@color/grey_100"
+                                android:textColor="@color/no_accent"
                                 android:textSize="20sp"
                                 tools:text="1.5x" />
                         </LinearLayout>

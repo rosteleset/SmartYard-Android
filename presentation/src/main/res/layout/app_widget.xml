@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:background="@drawable/background_widget">
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -28,7 +24,8 @@
             android:layout_marginEnd="12dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
-            android:src="@drawable/weather" />
+            android:src="@drawable/weather"
+            tools:ignore="ContentDescription" />
 
         <TextView
             android:id="@+id/tvUpdate"
@@ -38,7 +35,7 @@
             android:layout_weight="1"
             android:text="@string/widget_title"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="@color/white"
+            android:textColor="@color/on_filled"
             android:textSize="18sp" />
     </LinearLayout>
 
@@ -46,20 +43,22 @@
     <ListView
         android:id="@+id/lvList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/linearLayout"
-        tools:listitem="@layout/item_widget"/>
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        tools:listitem="@layout/item_widget"
+        tools:visibility="gone" />
 
     <TextView
         android:id="@+id/textViewEmpty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/linearLayout"
-        android:layout_alignParentBottom="true"
+        android:layout_weight="1"
         android:gravity="center"
-        android:visibility="gone"
         android:text="@string/text_empty_list"
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@color/black"
-        android:textSize="18sp" />
-</RelativeLayout>
+        android:textColor="@color/accent"
+        android:textSize="18sp"
+        android:visibility="gone"
+        tools:visibility="visible" />
+
+</LinearLayout>

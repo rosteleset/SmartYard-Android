@@ -1,5 +1,6 @@
 package com.sesameware.smartyard_oem.ui.main.settings.basicSettings
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.media.RingtoneManager
@@ -9,20 +10,24 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
+import com.sesameware.data.prefs.NightMode
 import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.R.drawable
 import com.sesameware.smartyard_oem.databinding.FragmentBasicSettingsBinding
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.firstCharacter
 import com.sesameware.smartyard_oem.ui.main.settings.dialog.DialogChangeName
+import com.sesameware.smartyard_oem.ui.main.settings.dialog.SelectThemeBottomSheetFragment
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
 import com.sesameware.smartyard_oem.ui.updateAllWidget
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -34,6 +39,24 @@ class BasicSettingsFragment : Fragment() {
 
     private val mViewModel by viewModel<BasicSettingsViewModel>()
 
+    private var isRtl: Boolean = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        childFragmentManager.setFragmentResultListener(
+            REQUEST_NIGHT_MODE, this
+        ) { _, bundle ->
+            @Suppress("DEPRECATION")
+            val mode = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                bundle.getParcelable(NIGHT_MODE_VALUE, NightMode::class.java)
+            } else {
+                bundle.getParcelable(NIGHT_MODE_VALUE) as? NightMode
+            } ?: return@setFragmentResultListener
+            mViewModel.setNightMode(mode)
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -43,8 +66,12 @@ class BasicSettingsFragment : Fragment() {
         return binding.root
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        isRtl = resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
@@ -54,7 +81,7 @@ class BasicSettingsFragment : Fragment() {
         binding.swShowNotify.setOnCheckedChangeListener { _, isChecked ->
             mViewModel.setPushSetting(isChecked)
         }
-        binding.sBalanse.setOnCheckedChangeListener { _, isChecked ->
+        binding.sBalance.setOnCheckedChangeListener { _, isChecked ->
             mViewModel.setPushMoneySetting(isChecked)
         }
         binding.tvSoundChoose.setOnClickListener {
@@ -75,13 +102,13 @@ class BasicSettingsFragment : Fragment() {
             binding.tvSoundChoose.text = tone.getToneTitle(it)
         }
 
-        binding.tvTitleNotif.setOnClickListener {
+        binding.tvTitleDomophone.setOnClickListener {
             if (binding.expandableLayoutNotif.isExpanded) {
                 binding.expandableLayoutNotif.collapse()
-                binding.ivNotif.setImageResource(drawable.ic_arrow_bottom)
+                binding.tvTitleDomophone.setArrowDown()
             } else {
                 binding.expandableLayoutNotif.expand()
-                binding.ivNotif.setImageResource(drawable.ic_arrow_top)
+                binding.tvTitleDomophone.setArrowUp()
             }
         }
         binding.swShowOnMap.isChecked = mViewModel.mPreferenceStorage.showCamerasOnMap
@@ -103,10 +130,20 @@ class BasicSettingsFragment : Fragment() {
         binding.tvTitleCameras.setOnClickListener {
             if (binding.expandableLayoutCameras.isExpanded) {
                 binding.expandableLayoutCameras.collapse()
-                binding.ivCameras.setImageResource(drawable.ic_arrow_bottom)
+                binding.tvTitleCameras.setArrowDown()
             } else {
                 binding.expandableLayoutCameras.expand()
-                binding.ivCameras.setImageResource(drawable.ic_arrow_top)
+                binding.tvTitleCameras.setArrowUp()
+            }
+        }
+
+        binding.tvTitleSecurity.setOnClickListener {
+            if (binding.expandableLayoutSecurity.isExpanded) {
+                binding.expandableLayoutSecurity.collapse()
+                binding.tvTitleSecurity.setArrowDown()
+            } else {
+                binding.expandableLayoutSecurity.expand()
+                binding.tvTitleSecurity.setArrowUp()
             }
         }
 
@@ -124,19 +161,21 @@ class BasicSettingsFragment : Fragment() {
             updateAllWidget(requireContext())
         }
 
-        binding.cvNotifications.isVisible = true
-        binding.cvCameras.isVisible = (DataModule.providerConfig.cctvView == CCTVViewTypeType.USER_DEFINED)
+        binding.llCameras.isVisible = (DataModule.providerConfig.cctvView == CCTVViewTypeType.USER_DEFINED)
 
         // для Андроид версии 8.0 и выше отключаем настройку звука уведомлений,
         // так как для этого используются настройки категорий уведомлений
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            binding.soundTitle.isVisible = false
-            binding.pdSound.isVisible = false
-            binding.tvSoundChoose.isVisible = false
-        } else {
-            binding.tvCallRingtone.isVisible = false
-            binding.ivCallRingtone.isVisible = false
-            binding.pdCallRingtone.isVisible = false
+            binding.gSound.isVisible = false
+        }else {
+            binding.gCallRingtone.isVisible = false
+        }
+
+
+        binding.tvTitleTheme.isVisible =
+            requireContext().resources.getBoolean(R.bool.feature_night_mode_is_enabled)
+        binding.tvTitleTheme.setOnClickListener {
+            SelectThemeBottomSheetFragment().show(childFragmentManager, "DialogSelectThemeFragment")
         }
 
         mViewModel.userName.observe(
@@ -144,6 +183,7 @@ class BasicSettingsFragment : Fragment() {
         ) {
             binding.tvUserName.text = "${it.name} ${firstCharacter(it.patronymic)}"
         }
+
         mViewModel.userPhone.observe(
             viewLifecycleOwner
         ) {
@@ -153,15 +193,17 @@ class BasicSettingsFragment : Fragment() {
                 binding.tvUserPhone.text = it
             }
         }
+
         mViewModel.isPushSetting.observe(
             viewLifecycleOwner
         ) {
             binding.swShowNotify.isChecked = it
         }
+
         mViewModel.isPushMoneySetting.observe(
             viewLifecycleOwner
         ) {
-            binding.sBalanse.isChecked = it
+            binding.sBalance.isChecked = it
         }
 
         binding.tvAppInfo.text = resources.getString(R.string.app_info,
@@ -172,8 +214,26 @@ class BasicSettingsFragment : Fragment() {
             "${Build.MANUFACTURER} ${Build.MODEL}")
     }
 
+    private fun TextView.setArrowDown() {
+        setArrow(this, R.drawable.ic_arrow_bottom)
+    }
+
+    private fun TextView.setArrowUp() {
+        setArrow(this, R.drawable.ic_arrow_top)
+    }
+
+    private fun setArrow(tv: TextView, @DrawableRes arrowRes: Int) {
+        val arrow = ContextCompat.getDrawable(requireContext(), arrowRes)
+        tv.setCompoundDrawablesWithIntrinsicBounds(
+            if (isRtl) arrow else null, null,
+            if (!isRtl) arrow else null, null,
+        )
+        tv.invalidate()
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        @Suppress("DEPRECATION")
         super.onActivityResult(requestCode, resultCode, data)
         Timber.d("debug_sound $resultCode")
         SoundChooser.getDataFromIntent(context, requestCode, resultCode, data) { tone ->
@@ -208,5 +268,10 @@ class BasicSettingsFragment : Fragment() {
         } catch (_: Exception) {
 
         }
+    }
+
+    companion object {
+        const val REQUEST_NIGHT_MODE = "RequestNightMode"
+        const val NIGHT_MODE_VALUE = "NightModeValue"
     }
 }

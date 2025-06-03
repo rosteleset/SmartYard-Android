@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.DialogServiceBinding
 import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
 
@@ -72,7 +71,7 @@ class DialogServiceFragment : DialogFragment() {
         dialog?.window?.setBackgroundDrawable(inset)
         dialog?.window?.setLayout(
             WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT
+            WindowManager.LayoutParams.WRAP_CONTENT
         )
     }
 

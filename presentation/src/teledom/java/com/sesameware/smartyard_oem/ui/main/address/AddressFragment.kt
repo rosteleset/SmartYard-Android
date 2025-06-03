@@ -73,8 +73,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         }
     }
 
-    private var lastIsHidden = false
-
     private val showHideFabListener = object : OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
@@ -327,13 +325,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
                 )
             )
         }
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        if (!lastIsHidden && isHidden) { // To avoid double save
-            mViewModel.persistUi()
-        }
-        lastIsHidden = isHidden
     }
 
     override fun onStop() {

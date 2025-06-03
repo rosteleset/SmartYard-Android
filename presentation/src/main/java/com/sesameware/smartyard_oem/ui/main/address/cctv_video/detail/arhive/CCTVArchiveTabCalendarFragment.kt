@@ -175,7 +175,7 @@ class CCTVArchiveTabCalendarFragment : Fragment() {
                     container.legendLayout.children.map { it as TextView }
                         .forEachIndexed { _, tv ->
                             // tv.text = daysOfWeek[index].name.first().toString()
-                            tv.setTextColorRes(R.color.calendar_black)
+                            tv.setTextColorRes(R.color.accent)
                         }
                 }
             }

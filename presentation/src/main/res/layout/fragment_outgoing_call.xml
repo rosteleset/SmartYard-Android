@@ -42,7 +42,7 @@
             android:id="@+id/ivMainOC"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/background_radius_upper"
+            android:background="@drawable/background_surface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -57,6 +57,7 @@
             android:layout_marginEnd="24dp"
             android:text="@string/outgoing_call_caption_1"
             android:textAlignment="center"
+            android:textColor="@color/accent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/ivMainOC" />
@@ -70,7 +71,7 @@
             android:layout_marginEnd="24dp"
             android:text="@string/outgoing_call_change_number"
             android:textAlignment="center"
-            android:textColor="@color/calendar_grey"
+            android:textColor="@color/no_accent"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +99,8 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/outgoing_call_caption_2"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/accent" />
 
             <TextView
                 android:id="@+id/tvCaptionNumberOC"
@@ -109,6 +111,7 @@
                 android:layout_marginEnd="24dp"
                 android:text="+74752429949"
                 android:textAlignment="center"
+                android:textColor="@color/accent"
                 android:textSize="20sp" />
 
             <TextView
@@ -119,7 +122,8 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/outgoing_call_caption_3"
-                android:textAlignment="center" />
+                android:textAlignment="center"
+                android:textColor="@color/accent" />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.Barrier

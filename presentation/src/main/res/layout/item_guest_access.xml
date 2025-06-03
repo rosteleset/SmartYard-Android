@@ -12,7 +12,7 @@
         android:layout_weight="1"
         android:padding="16dp"
         android:text="+ 7 920 123 4567"
-        android:textColor="@color/black" />
+        android:textColor="@color/accent" />
 
     <ImageView
         android:id="@+id/ivDelete"

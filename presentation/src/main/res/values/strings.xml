@@ -77,7 +77,7 @@
     <string name="addresses_video_cameras">Видеокамеры</string>
     <string name="addresses_events">События</string>
     <string name="dialog_title2">Выключить гостевой доступ?</string>
-    <string name="dialog_message2" />
+    <string name="dialog_message2" translatable="false" />
     <string name="dialog_turn_off">ВЫКЛЮЧИТЬ</string>
     <string name="guest_access_open">Открыть</string>
     <string name="guest_access_opened">Открыто</string>
@@ -394,6 +394,7 @@
     <string name="not_now">Не сейчас</string>
 
     <!-- xml layouts -->
+    <string name="guest_access">Гостевой доступ на час</string>
     <string name="turn_on_guest_access">Включить гостевой доступ на час?</string>
     <string name="open_barrier_info">На указанный телефон мы отправим СМС номером, на который можно позвонить для автоматического открытия шлагбаума. Шлагбаум будет доступен в течение 6 часов, после чего автоматически вернется в стандартный режим работы.</string>
     <string name="share_access">Поделиться</string>
@@ -481,6 +482,10 @@
     <string name="user_name_sample">Алексеев В.Б.</string>
     <string name="user_phone_sample" translatable="false">+7 (912) 345-67-82</string>
     <string name="title_notifications">Уведомления</string>
+    <string name="title_theme">Тема</string>
+    <string name="item_theme_system_default">Системная</string>
+    <string name="item_theme_light">Светлая</string>
+    <string name="item_theme_dark">Темная</string>
     <string name="title_call_ringtone">Мелодия входящих звонков</string>
     <string name="receive_notifications">Получать уведомления</string>
     <string name="lack_funds_notifications">Оповестить о недостатке средств</string>

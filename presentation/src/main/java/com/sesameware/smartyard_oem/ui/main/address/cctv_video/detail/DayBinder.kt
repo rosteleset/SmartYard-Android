@@ -7,11 +7,11 @@ import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
-import org.threeten.bp.LocalDate
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.setTextColorRes
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.AvailableRange
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.isDateInAvailableRanges
+import org.threeten.bp.LocalDate
 
 class DayViewContainer(view: View) : ViewContainer(view) {
     lateinit var day: CalendarDay
@@ -41,18 +41,18 @@ class CalendarDayBinder(
             dateNum.isVisible = true
             when (day.date) {
 //                today -> {
-//                    dateNum.setTextColorRes(R.color.calendar_white)
+//                    dateNum.setTextColorRes(R.color.no_accent)
 //                    dateNum.setBackgroundResource(R.drawable.calendar_today_bg)
 //                }
                 selectedDate -> {
-                    dateNum.setTextColorRes(R.color.calendar_blue)
+                    dateNum.setTextColorRes(R.color.brand)
                     dateNum.setBackgroundResource(R.drawable.calendar_selected_bg)
                 }
                 else -> {
                     if (rangeDays.contains(day.date) && isDateInAvailableRanges(day.date, availableRanges)) {
-                        dateNum.setTextColorRes(R.color.calendar_black)
+                        dateNum.setTextColorRes(R.color.accent)
                     } else {
-                        dateNum.setTextColorRes(R.color.calendar_grey)
+                        dateNum.setTextColorRes(R.color.disabled)
                     }
                     dateNum.background = null
                 }

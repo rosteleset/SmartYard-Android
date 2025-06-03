@@ -20,14 +20,16 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNotificationBinding
 import com.sesameware.smartyard_oem.ui.getStatusBarHeight
 import com.sesameware.smartyard_oem.ui.main.MainActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
 class NotificationFragment : Fragment() {
@@ -61,6 +63,13 @@ class NotificationFragment : Fragment() {
         }
     }
 
+    private fun getWebColorString(@ColorRes id: Int): String {
+        val color = String
+            .format("#%08x", ContextCompat.getColor(requireContext(), id) and 0xffffffff.toInt())
+        return color[0] + color.substring(3..8) + color.substring(1..2)
+    }
+
+
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,7 +82,15 @@ class NotificationFragment : Fragment() {
         binding.webViewNotification.settings.javaScriptEnabled = true
         binding.webViewNotification.addJavascriptInterface(WebAppInterface(), "AndroidFunction")
         binding.webViewNotification.webViewClient = object : WebViewClient() {
-            private val URL = "javascript:AndroidFunction.resize(document.body.scrollHeight)"
+            private val URL = """
+                javascript:document.documentElement.style.setProperty('--brand', '${getWebColorString(R.color.brand)}');
+                javascript:document.documentElement.style.setProperty('--light-background', '${getWebColorString(R.color.light_background)}');
+                javascript:document.documentElement.style.setProperty('--shaded-background', '${getWebColorString(R.color.shaded_background)}');
+                javascript:document.documentElement.style.setProperty('--accent', '${getWebColorString(R.color.accent)}');
+                javascript:document.documentElement.style.setProperty('--no-accent', '${getWebColorString(R.color.no_accent)}');
+                javascript:AndroidFunction.resize(document.body.scrollHeight);
+            """.trimIndent()
+
             override fun onLoadResource(view: WebView?, url: String?) {
                 if (url != null && url.endsWith(".mp4")) {
                     view?.stopLoading()
@@ -126,7 +143,7 @@ class NotificationFragment : Fragment() {
                     it.code,
                     "text/html", "UTF-8", null
                 )
-                (activity as MainActivity).removeBadge()
+                (activity as MainActivity).removeBadge(R.id.notification)
             }
         )
         mViewModel.progress.observe(
@@ -160,16 +177,6 @@ class NotificationFragment : Fragment() {
         val notificationManager =
             context?.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancelAll()
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        Timber.d("debug_dmm hidden: $hidden")
-        if (hidden) {
-            unregister()
-        } else {
-            refresh()
-        }
-        super.onHiddenChanged(hidden)
     }
 
     override fun onResume() {

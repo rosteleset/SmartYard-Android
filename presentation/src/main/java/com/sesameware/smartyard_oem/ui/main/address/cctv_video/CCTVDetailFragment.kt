@@ -4,17 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailBinding
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.TabAdapter
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CCTVOnlineTabFragment
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import timber.log.Timber
 
 class CCTVDetailFragment : Fragment() {
@@ -96,30 +95,6 @@ class CCTVDetailFragment : Fragment() {
         }
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        Timber.d("debug_dmm __detail fragment onHidden, hidden = $hidden")
-        if (hidden) {
-            if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-                val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as? CCTVOnlineTabFragment
-                Timber.d("debug_dmm __onlineTabFragment: $onlineTabFragment")
-                Timber.d("__Q__   releasePlayer from onHiddenChanged")
-                onlineTabFragment?.releasePlayer()
-                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-        } else {
-            if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-                val onlineTabFragment = (binding.viewPager.adapter as? TabAdapter)?.getItem(CCTVViewModel.ONLINE_TAB_POSITION) as? CCTVOnlineTabFragment
-                Timber.d("__Q__   initPlayer from onHiddenChanged")
-                onlineTabFragment?.initPlayer(mCCTVViewModel.chosenCamera.value?.serverType)
-                mCCTVViewModel.chosenCamera.value?.let {cctvData ->
-                    onlineTabFragment?.changeVideoSource(cctvData)
-                }
-            }
-        }
-
-        super.onHiddenChanged(hidden)
-    }
-
     override fun onPause() {
         super.onPause()
 
@@ -132,9 +107,9 @@ class CCTVDetailFragment : Fragment() {
         Timber.d("debug_dmm onStop")
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
 
-        Timber.d("debug_dmm onDestroy")
+        _binding = null
     }
 }

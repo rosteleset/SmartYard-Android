@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        app:cardBackgroundColor="@color/white_0"
+        app:cardBackgroundColor="@color/light_background"
         app:cardCornerRadius="13dp"
         app:cardElevation="0dp">
 
@@ -31,7 +31,7 @@
                 android:paddingTop="24dp"
                 android:paddingBottom="24dp"
                 android:text="@string/address_sample"
-                android:textColor="@color/black"
+                android:textColor="@color/accent"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toStartOf="@+id/imageView6"
                 app:layout_constraintStart_toStartOf="parent"

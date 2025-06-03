@@ -12,7 +12,6 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -24,20 +23,20 @@ import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.widget.TextView
 import androidx.annotation.IdRes
-import androidx.annotation.IntDef
 import androidx.appcompat.app.AlertDialog
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
-import androidx.lifecycle.LiveData
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationItemView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.domain.model.response.ProviderConfig
-import com.sesameware.smartyard_oem.App
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.EventObserver
@@ -48,18 +47,14 @@ import com.sesameware.smartyard_oem.MessagingService.Companion.NOTIFICATION_MESS
 import com.sesameware.smartyard_oem.MessagingService.TypeMessage
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityMainBinding
-import com.sesameware.smartyard_oem.reduceToZero
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
-import com.sesameware.smartyard_oem.ui.dpToPx
-import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
-import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogDetailFragment
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment
 import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
-import com.sesameware.smartyard_oem.ui.setupWithNavController
+import com.sesameware.smartyard_oem.ui.setupExitOnBackPressedWhenInRoot
+import com.sesameware.smartyard_oem.ui.setupPopToRootOnItemReselected
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
-import androidx.core.net.toUri
 
 interface UserInteractionListener {
     fun onUserInteraction()
@@ -69,16 +64,10 @@ interface ExitFullscreenListener {
     fun onExitFullscreen()
 }
 
-@IntDef(Configuration.ORIENTATION_PORTRAIT, Configuration.ORIENTATION_LANDSCAPE)
-@Retention(AnnotationRetention.SOURCE)
-annotation class Orientation
-
 class MainActivity : CommonActivity() {
     lateinit var binding: ActivityMainBinding
 
     override val mViewModel by viewModel<MainActivityViewModel>()
-
-    private var currentNavController: LiveData<NavController>? = null
 
     private var userInteractionListener: UserInteractionListener? = null
     private var exitFullscreenListener: ExitFullscreenListener? = null
@@ -86,6 +75,8 @@ class MainActivity : CommonActivity() {
     private val mRegModel by viewModel<RegistrationViewModel>()
 
     var filePathCallback: ValueCallback<Array<Uri>>? = null
+
+    private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -115,42 +106,44 @@ class MainActivity : CommonActivity() {
         val view = binding.root
         setContentView(view)
 
+        navController = getNavController()
+        savedInstanceState?.getBundle(NAV_CONTROLLER_STATE_KEY)?.let { bundle ->
+            navController.restoreState(bundle)
+        }
         /*(bottom_nav.background as MaterialShapeDrawable).apply {
             this.setStroke(2.0f, 12345)
         }*/
 
         appVersion()
-        val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
-        ViewCompat.setOnApplyWindowInsetsListener(binding.relativeLayout) { _, insets ->
+       /* val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
+        ViewCompat.setOnApplyWindowInsetsListener(binding.navHostContainer) { _, insets ->
             @Suppress("DEPRECATION")
             ViewCompat.onApplyWindowInsets(
-                binding.relativeLayout,
+                binding.navHostContainer,
                 insets.replaceSystemWindowInsets(
                     insets.systemWindowInsetLeft, 0,
                     insets.systemWindowInsetRight,
                     (insets.systemWindowInsetBottom - bottomNavHeight).reduceToZero()
                 )
             )
-        }
-        if (savedInstanceState == null) {
-            setupBottomNavigationBar(false)
-        } // Else, need to wait for onRestoreInstanceState
+        }*/
 
-//        binding.bottomNav.itemIconTintList = null
+        setupBottomNavigationBar()
+
         showBadge(this, binding.bottomNav, R.id.notification, "")
         mViewModel.onCreate(this)
 
-        mViewModel.badge.observe(
+        mViewModel.isNotificationBadgeShowed.observe(
             this
         ) { badge ->
             if (badge) {
                 showBadge(this, binding.bottomNav, R.id.notification, "")
             } else {
-                removeBadge()
+                removeBadge(R.id.notification)
             }
         }
 
-        mViewModel.chat.observe(
+        mViewModel.isChatBadgeShowed.observe(
             this
         ) { chat ->
             if (chat) {
@@ -181,6 +174,57 @@ class MainActivity : CommonActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        if (::navController.isInitialized) {
+            navController.saveState()?.let { bundle ->
+                outState.putBundle(NAV_CONTROLLER_STATE_KEY, bundle)
+            }
+        }
+    }
+
+    private fun setupBottomNavigationBar() {
+        val bar = binding.bottomNav
+        bar.setupWithNavController(navController)
+        bar.setupExitOnBackPressedWhenInRoot(navController, this@MainActivity)
+        bar.setupPopToRootOnItemReselected(navController)
+        bar.setOnItemSelectedListener { item ->
+            // Be sure to specify this block when redefining setOnItemSelectedListener,
+            // otherwise navigation using BottomNavigationView will not work.
+            NavigationUI.onNavDestinationSelected(
+                item,
+                navController
+            )
+            when (item.itemId) {
+                R.id.notification -> mViewModel.isNotificationBadgeShowed.postValue(false)
+                R.id.chat -> mViewModel.isChatBadgeShowed.postValue(false)
+                else -> {}
+            }
+            true
+        }
+
+        if (!DataModule.providerConfig.hasChat) {
+            bar.menu.removeItem(R.id.chat)
+        }
+        if (!DataModule.providerConfig.hasPayments) {
+            bar.menu.removeItem(R.id.pay)
+        }
+
+        mViewModel.bottomNavigateTo.observe(
+            this,
+            EventObserver { id: Int ->
+                if (bar.selectedItemId != id) bar.selectedItemId = id
+            }
+        )
+    }
+
+    private fun getNavController(): NavController {
+        val navHost =
+            supportFragmentManager.findFragmentById(R.id.nav_host_container) as NavHostFragment
+        return navHost.navController
+    }
+
     private fun dialogForceUpgrade() {
         AlertDialog.Builder(this)
             .setTitle(getString(R.string.app_title))
@@ -204,46 +248,38 @@ class MainActivity : CommonActivity() {
     }
 
     private fun parseIntent(bundle: Bundle) {
-        Timber.d("debug_dmm   call parseIntent    ${bundle.keySet().joinToString(", ")}")
+        Timber.d("debug_dmm   call parseIntent    ${bundle.keySet().map { "$it=${bundle.getString(it)}" }}")
         val notificationId = bundle.getInt(IncomingCallActivity.NOTIFICATION_ID, 0)
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.cancel(notificationId)
         @Suppress("DEPRECATION") val messageType = bundle.getSerializable(NOTIFICATION_MESSAGE_TYPE) as? TypeMessage
         if (messageType != null) {
-            rootingTabMessage(messageType)
+            routeTabMessage(messageType)
         }
     }
 
-    private fun rootingTabMessage(messageType: TypeMessage) {
-        Timber.d("debug_dmm  call rootingTabMessage    messageType = $messageType")
+    private fun routeTabMessage(messageType: TypeMessage) {
+        Timber.d("debug_dmm  call routeTabMessage    messageType = $messageType")
         when (messageType) {
-            TypeMessage.INBOX -> {
-                mViewModel.bottomNavigate(R.id.notification)
-            }
-
-            TypeMessage.CHAT -> {
-                mViewModel.bottomNavigate(R.id.chat)
-            }
-
-            else -> {
-                val tabDefault = R.id.address
-                val tabId =
-                    when (DataModule.providerConfig.activeTab) {
-                        ProviderConfig.TAB_NOTIFICATIONS -> R.id.notification
-                        ProviderConfig.TAB_CHAT -> R.id.chat
-                        ProviderConfig.TAB_PAY -> R.id.pay
-                        ProviderConfig.TAB_MENU -> R.id.settings
-                        else -> tabDefault
-                    }
-                if (binding.bottomNav.findViewById(tabId) as? BottomNavigationItemView == null) {
-                    mViewModel.bottomNavigate(tabDefault)
-                } else {
-                    mViewModel.bottomNavigate(tabId)
-                }
-            }
+            TypeMessage.INBOX -> mViewModel.bottomNavigate(R.id.notification)
+            TypeMessage.CHAT -> mViewModel.bottomNavigate(R.id.chat)
+            TypeMessage.NO_DEFINE -> routeProviderConfiguredTab()
         }
     }
+
+    private fun routeProviderConfiguredTab() {
+        val tabId = when (DataModule.providerConfig.activeTab) {
+            ProviderConfig.TAB_NOTIFICATIONS -> R.id.notification
+            ProviderConfig.TAB_CHAT -> if (isTabExists(R.id.chat)) R.id.chat else R.id.address
+            ProviderConfig.TAB_PAY -> if (isTabExists(R.id.pay)) R.id.pay else R.id.address
+            ProviderConfig.TAB_MENU -> R.id.settings
+            else -> R.id.address
+        }
+        mViewModel.bottomNavigate(tabId)
+    }
+
+    private fun isTabExists(tabId: Int) = binding.bottomNav.menu.findItem(tabId) != null
 
     private fun checkLockedScreenPermission() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -285,6 +321,7 @@ class MainActivity : CommonActivity() {
         }
     }
 
+    @SuppressLint("MissingSuperCall")
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         Timber.d("debug_dmm    onNewIntent")
@@ -293,7 +330,7 @@ class MainActivity : CommonActivity() {
         }
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+    /*override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         // Now that BottomNavigationBar has restored its instance state
         // and its selectedItemId, we can proceed with settings up the
@@ -301,9 +338,9 @@ class MainActivity : CommonActivity() {
         setupBottomNavigationBar(true)
     }
 
-    /**
+    *//**
      * Called on first creation and when restoring state.
-     */
+     *//*
     private fun setupBottomNavigationBar(resume: Boolean) {
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
         val navGraphIds = mutableListOf<Int>()
@@ -354,7 +391,7 @@ class MainActivity : CommonActivity() {
 
     override fun onSupportNavigateUp(): Boolean {
         return currentNavController?.value?.navigateUp() ?: false
-    }
+    }*/
 
     @Suppress("DEPRECATION")
     fun hideSystemUI() {
@@ -391,8 +428,9 @@ class MainActivity : CommonActivity() {
         }
     }
 
-    fun removeBadge(id: Int = R.id.notification) {
-        (binding.bottomNav.findViewById(id) as? BottomNavigationItemView)?.let {itemView ->
+    @SuppressLint("RestrictedApi")
+    fun removeBadge(id: Int) {
+        (binding.bottomNav.findViewById(id) as? BottomNavigationItemView)?.let { itemView ->
             if (itemView.childCount == 3) {
                 itemView.removeViewAt(2)
             }
@@ -406,7 +444,7 @@ class MainActivity : CommonActivity() {
                 it.extras?.let {
                     val isChat = it.getBoolean(NOTIFICATION_CHAT, false)
                     if (isChat) {
-                        mViewModel.chat.postValue(true)
+                        mViewModel.isChatBadgeShowed.postValue(true)
                     } else {
                         val badge = it.getInt(NOTIFICATION_BADGE, 0)
                         mViewModel.badgeParse(badge)
@@ -427,6 +465,7 @@ class MainActivity : CommonActivity() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 
+    @SuppressLint("RestrictedApi")
     private fun showBadge(
         context: Context?,
         bottomNavigationView: BottomNavigationView,
@@ -492,28 +531,24 @@ class MainActivity : CommonActivity() {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("market://details?id=$appPackageName")
+                    "market://details?id=$appPackageName".toUri()
                 )
             )
         } catch (anfe: ActivityNotFoundException) {
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName")
+                    "https://play.google.com/store/apps/details?id=$appPackageName".toUri()
                 )
             )
         }
     }
 
+    @Deprecated("Deprecated in Java")
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onBackPressed() {
         exitFullscreenListener?.onExitFullscreen()
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        if (currentNavController?.value?.currentDestination?.id == R.id.eventLogDetailFragment) {
-            (supportFragmentManager.primaryNavigationFragment?.childFragmentManager
-                ?.fragments?.first() as? EventLogDetailFragment)?.releasePlayer()
-        }
 
         super.onBackPressed()
     }
@@ -534,6 +569,7 @@ class MainActivity : CommonActivity() {
 
     companion object {
         const val BROADCAST_LIST_UPDATE = "BROADCAST_LIST_UPDATE"
+        const val NAV_CONTROLLER_STATE_KEY = "NAV_CONTROLLER_STATE_KEY"
         const val CHAT_REQUEST_FILE = 0 // todo: переписать код сдк? (код скорее защит в sdk chat)
         const val WEB_CHAT_CHOOSE_FILE = 1
     }

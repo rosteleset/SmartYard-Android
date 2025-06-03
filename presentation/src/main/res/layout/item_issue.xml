@@ -19,7 +19,7 @@
         android:paddingTop="24dp"
         android:paddingBottom="24dp"
         android:text="@string/address_sample"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/ivQrCode"

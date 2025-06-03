@@ -9,7 +9,7 @@
         android:id="@+id/view"
         android:layout_width="0dp"
         android:layout_height="0.7dp"
-        android:background="@color/white"
+        android:background="@color/dialog_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -35,7 +35,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:text="@string/item_sample"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/tbOpen"

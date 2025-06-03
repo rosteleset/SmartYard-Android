@@ -122,7 +122,7 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
     materialShapeDrawable = MaterialShapeDrawable(shapePathModel)
     materialShapeDrawable.shadowCompatibilityMode = MaterialShapeDrawable.SHADOW_COMPAT_MODE_NEVER
     materialShapeDrawable.paintStyle = FILL_AND_STROKE
-    materialShapeDrawable.setStroke(4.0f, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.white)))
+    materialShapeDrawable.setStroke(4.0f, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.dialog_background)))
     materialShapeDrawable.setTint(backgroundTint)
 
     background = materialShapeDrawable

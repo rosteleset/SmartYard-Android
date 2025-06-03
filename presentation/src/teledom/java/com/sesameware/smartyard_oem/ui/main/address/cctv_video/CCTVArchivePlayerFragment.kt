@@ -21,20 +21,16 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+import com.google.android.exoplayer2.ui.PlayerView
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.lib.TimeInterval
 import com.sesameware.lib.timeInMs
 import com.sesameware.smartyard_oem.EventObserver
@@ -50,6 +46,10 @@ import com.sesameware.smartyard_oem.ui.main.UserInteractionListener
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVArchivePlayerViewModel.Companion.dialogPrepareVideo
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.TimeFragmentButtonsAdapter
 import com.sesameware.smartyard_oem.ui.showStandardAlert
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.threeten.bp.LocalDate
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
 class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFullscreenListener {
@@ -300,8 +300,6 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         binding.imageView.visibility = View.INVISIBLE
         binding.ivBack.visibility = View.INVISIBLE
         binding.tvTitle.visibility = View.INVISIBLE
-        binding.gradStart.visibility = View.INVISIBLE
-        binding.gradEnd.visibility = View.INVISIBLE
         (activity as? MainActivity)?.hideSystemUI()
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
@@ -336,8 +334,8 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         (binding.mPlayerView.parent as ZoomLayout).resetZoom()
 
         (binding.rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(true)
-        binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.white_0))
-        binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.white_0))
+        binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_filled))
+        binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_filled))
         binding.btnPlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_p_button_fs)
 
         areVideoControllersShown = true
@@ -366,14 +364,12 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
             binding.imageView.visibility = View.VISIBLE
             binding.ivBack.visibility = View.VISIBLE
             binding.tvTitle.visibility = View.VISIBLE
-            binding.gradStart.visibility = View.VISIBLE
-            binding.gradEnd.visibility = View.VISIBLE
             (activity as? MainActivity)?.showSystemUI()
 
-            binding.contentWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_upper_clip)
-            binding.svContentWrap.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.flVideoPlayback.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.white))
-            binding.llControls.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.white))
+            binding.contentWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_dialog)
+            binding.svContentWrap.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.dialog_background))
+            binding.flVideoPlayback.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.dialog_background))
+            binding.llControls.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.dialog_background))
 
             binding.mPlayerView.resizeMode = playerResizeMode
             binding.mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
@@ -390,8 +386,8 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
             (binding.mPlayerView.parent as ZoomLayout).resetZoom()
 
             (binding.rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(false)
-            binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_100))
-            binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.grey_100))
+            binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.no_accent))
+            binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.no_accent))
             binding.btnPlay.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_p_button)
 
             binding.rangePlayer.setupRV(requireContext())
@@ -522,11 +518,9 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
     override fun onResume() {
         super.onResume()
 
-        if (!isHidden) {
-            mViewModel.restoreSeek()
-            if (mExoPlayerView == null) {
-                mExoPlayerView = view?.findViewById(R.id.mPlayerView)
-            }
+        mViewModel.restoreSeek()
+        if (mExoPlayerView == null) {
+            mExoPlayerView = view?.findViewById(R.id.mPlayerView)
         }
     }
 
@@ -891,28 +885,5 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         Timber.d("__Q__ call releasePlayer()")
         mPlayer?.releasePlayer()
         mPlayer = null
-    }
-
-    override fun onHiddenChanged(hidden: Boolean) {
-        Timber.d("debug_dmm __onHiddenChanged hidden = $hidden")
-
-        if (hidden) {
-            mViewModel.stopVideoPlay()
-            Timber.d("__Q__   releasePlayer from onHiddenChanged")
-            releasePlayer()
-            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        } else {
-            Timber.d("__Q__   createPlayer from onHiddenChanged")
-            mPlayer = createPlayer(mCCTVViewModel.chosenCamera.value?.serverType, binding.mPlayerView)
-            mCurrentPlaybackData?.run {
-                changeVideoSource(this)
-            }
-            mViewModel.restoreSeek()
-            if (mExoPlayerView == null) {
-                mExoPlayerView = view?.findViewById(R.id.mPlayerView)
-            }
-        }
-
-        super.onHiddenChanged(hidden)
     }
 }

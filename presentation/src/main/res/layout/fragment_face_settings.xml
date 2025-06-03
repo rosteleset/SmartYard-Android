@@ -27,7 +27,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:text="@string/face_registration"
-            android:textColor="@color/white"
+            android:textColor="@color/on_filled"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
@@ -72,7 +72,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/registered_faces"
-                android:textColor="@color/black"
+                android:textColor="@color/accent"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -102,7 +102,10 @@
                         android:id="@+id/rvFSFaces"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="start" />
+                        android:layout_gravity="start"
+                        android:orientation="horizontal"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:listitem="@layout/item_face" />
 
                 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
@@ -112,7 +115,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0.6dp"
                 android:layout_marginTop="16dp"
-                android:background="@color/white" />
+                android:background="@color/dialog_background" />
 
             <TextView
                 android:id="@+id/tvFSComments"
@@ -122,7 +125,7 @@
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:text="@string/face_settings_comments"
-                android:textColor="@color/black_200" />
+                android:textColor="@color/accent" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -13,7 +13,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/dow_mon"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp"
         tools:ignore="HardcodedText" />
 
@@ -24,7 +24,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/dow_tue"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp" />
 
     <TextView
@@ -34,7 +34,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/dow_wed"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp" />
 
     <TextView
@@ -44,7 +44,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/sow_tue"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp" />
 
     <TextView
@@ -54,7 +54,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/dow_fri"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp" />
 
     <TextView
@@ -64,7 +64,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/dow_sat"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp" />
 
     <TextView
@@ -74,7 +74,7 @@
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/dow_sun"
-        android:textColor="@color/black"
+        android:textColor="@color/accent"
         android:textSize="14sp" />
 
 </LinearLayout>

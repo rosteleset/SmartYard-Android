@@ -22,7 +22,7 @@
     <shape android:shape="rectangle">
       <stroke
           android:width="5dp"
-          android:color="@color/white_200" />
+          android:color="@color/shaded_background" />
       <corners android:radius="20dp" />
     </shape>
   </item>
