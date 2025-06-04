@@ -2,8 +2,8 @@
 <resources>
      <!-- Brand -->
     <color name="brand">#298BFF</color>
-    <color name="brand_pressed">#1D5ECD</color>
     <color name="splash">#1D5ECD</color>
+    <color name="brand_pressed">@color/splash</color>
 
     <!-- Additional -->
     <color name="light_background">#FFFFFF</color>
