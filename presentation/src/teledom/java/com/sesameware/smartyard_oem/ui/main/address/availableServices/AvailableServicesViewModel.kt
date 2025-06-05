@@ -12,7 +12,6 @@ import com.sesameware.domain.model.request.CreateIssuesRequestV2
 import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
-import timber.log.Timber
 
 /**
  * @author Nail Shakurov
