@@ -17,7 +17,7 @@
             android:resource="@drawable/ic_notification" />
         <meta-data
             android:name="ru.rustore.sdk.pushclient.default_notification_color"
-            android:resource="@color/colorAccent" />
+            android:resource="@color/ic_launcher_background" />
     </application>
 
 </manifest>

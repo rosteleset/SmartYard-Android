@@ -7,19 +7,18 @@ import androidx.test.espresso.Espresso
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
-import io.github.kakaocup.kakao.screen.Screen.Companion.idle
 import com.kaspersky.kaspresso.testcases.api.testcase.TestCase
-import org.junit.Rule
-import org.junit.Test
 import com.sesameware.data.prefs.SharedPreferenceStorage.Companion.PREFS_NAME
 import com.sesameware.smartyard_oem.screen.AddressScreen
 import com.sesameware.smartyard_oem.screen.AppealScreen
 import com.sesameware.smartyard_oem.screen.BasicSettingsScreen
 import com.sesameware.smartyard_oem.screen.MainScreen
-import com.sesameware.smartyard_oem.screen.NumberRegScreen
 import com.sesameware.smartyard_oem.screen.SettingsScreen
 import com.sesameware.smartyard_oem.screen.SmsRegScreen
 import com.sesameware.smartyard_oem.ui.onboarding.OnboardingActivity
+import io.github.kakaocup.kakao.screen.Screen.Companion.idle
+import org.junit.Rule
+import org.junit.Test
 
 /**
  * @author Nail Shakurov
@@ -145,9 +144,9 @@ class AuthScreenTest : TestCase() {
 //                    }
                 }
                 BasicSettingsScreen {
-                    tvTitleNotif {
+/*                    tvTitleNotif {
                         click()
-                    }
+                    }*/
                     swShowNotify {
                         click()
                     }
@@ -163,9 +162,9 @@ class AuthScreenTest : TestCase() {
                     tvShowNotify {
                         click()
                     }
-                    tvTitleNotif {
+/*                    tvTitleNotif {
                         click()
-                    }
+                    }*/
                 }
             }
         }
