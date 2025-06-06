@@ -220,7 +220,7 @@
                             android:thumb="@null"
                             app:layout_constraintBottom_toBottomOf="@id/tvVoip"
                             app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/vIntercom"
+                            app:layout_constraintTop_toTopOf="@id/tvVoip"
                             app:track="@null" />
 
                         <View
