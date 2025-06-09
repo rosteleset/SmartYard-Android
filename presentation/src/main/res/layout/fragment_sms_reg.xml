@@ -19,7 +19,6 @@
             app:srcCompat="@drawable/background_top_narrow"
             app:layout_constraintTop_toTopOf="parent" />
 
-
         <ImageView
             android:id="@+id/ivBack"
             android:layout_width="wrap_content"

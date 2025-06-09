@@ -35,12 +35,12 @@
         android:id="@+id/background"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="@dimen/surface_corner_radius_compensation"
         android:background="@drawable/background_surface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
     <ImageView
         android:id="@+id/ivBack"
@@ -157,15 +157,22 @@
 
             <TextView
                 android:id="@+id/tvShareAccess"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="20dp"
                 android:drawablePadding="8dp"
                 android:gravity="center"
+                android:maxLines="1"
                 android:paddingVertical="20dp"
-                android:paddingStart="24dp"
                 android:text="@string/guest_access"
                 android:textColor="@color/accent"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeTextType="uniform"
                 app:drawableRightCompat="@drawable/ic_baseline_help"
+                app:layout_constraintEnd_toStartOf="@+id/btnGuestAccessOpen"
+                app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="@id/vIntercom"
                 app:layout_constraintTop_toBottomOf="@id/divider1" />
 
@@ -179,11 +186,12 @@
                 android:paddingEnd="18dp"
                 android:text="@string/guest_access_open"
                 android:textAllCaps="false"
-                android:textColor="@drawable/toggle_color_text"
+                android:textColor="@color/toggle_color_text"
                 android:textOff="@string/guest_access_open"
                 android:textOn="@string/guest_access_opened"
                 app:layout_constraintBottom_toBottomOf="@id/tvShareAccess"
                 app:layout_constraintEnd_toEndOf="@id/vIntercom"
+                app:layout_constraintStart_toEndOf="@id/tvShareAccess"
                 app:layout_constraintTop_toTopOf="@id/tvShareAccess" />
 
             <androidx.constraintlayout.widget.Group
@@ -215,13 +223,19 @@
 
             <TextView
                 android:id="@+id/tvEnterByFace"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:layout_marginVertical="20dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="20dp"
+                android:maxLines="1"
                 android:text="@string/registered_faces"
                 android:textColor="@color/accent"
-                android:textSize="14sp"
+                app:autoSizeMaxTextSize="14sp"
+                app:autoSizeMinTextSize="8sp"
+                app:autoSizeTextType="uniform"
+                app:layout_constraintEnd_toStartOf="@id/btnManageFaces"
+                app:layout_constraintHorizontal_chainStyle="spread"
                 app:layout_constraintStart_toStartOf="@id/vEnterByFace"
                 app:layout_constraintTop_toTopOf="@id/vEnterByFace" />
 
@@ -236,6 +250,7 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toBottomOf="@id/tvEnterByFace"
                 app:layout_constraintEnd_toEndOf="@id/vEnterByFace"
+                app:layout_constraintStart_toEndOf="@id/tvEnterByFace"
                 app:layout_constraintTop_toTopOf="@id/tvEnterByFace" />
 
             <androidx.constraintlayout.widget.Group
@@ -316,9 +331,9 @@
                 android:id="@+id/rvPermanentAccessAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="@id/vPermanentAccessAddress"
                 tools:itemCount="6"
-                tools:listitem="@layout/item_contact_access_address"
-                app:layout_constraintTop_toTopOf="@id/vPermanentAccessAddress"/>
+                tools:listitem="@layout/item_contact_access_address" />
 
             <TextView
                 android:id="@+id/tvAddPermanentAccessAddress"
@@ -332,7 +347,7 @@
                 android:textColor="@color/no_accent"
                 android:textSize="18sp"
                 app:drawableRightCompat="@drawable/ic_add_circle"
-                app:layout_constraintTop_toBottomOf="@id/rvPermanentAccessAddress"/>
+                app:layout_constraintTop_toBottomOf="@id/rvPermanentAccessAddress" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

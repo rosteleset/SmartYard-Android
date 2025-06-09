@@ -2,8 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools">
+    android:layout_height="match_parent">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -97,7 +96,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/etPassword" />
 
-
         <Button
             android:id="@+id/btnSignIn"
             style="@style/buttonBlueFlooded"
@@ -181,6 +179,7 @@
                 app:srcCompat="@drawable/ic_visibility_off" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
+        
     </ScrollView>
 
 </RelativeLayout>

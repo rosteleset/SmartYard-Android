@@ -54,10 +54,11 @@
         android:paddingEnd="18dp"
         android:text="@string/opened"
         android:textAllCaps="false"
-        android:textColor="@drawable/toggle_color_text"
+        android:textColor="@color/toggle_color_text"
         android:textOff="@string/open"
         android:textOn="@string/opened"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
