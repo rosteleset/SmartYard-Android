@@ -1,5 +1,9 @@
 ## History of major changes
 
+### Version 1.0.74
+- Sending one DTMF signal via SIP INFO
+- Minor fixes
+
 ### Version 1.0.73
 - Added requesting permission to show app on lock screen for Android 14+.
 - Added transition to incoming call ringtone settings.
