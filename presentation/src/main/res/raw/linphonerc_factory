@@ -21,10 +21,6 @@ sip_tls_random_port=1
 [video]
 displaytype=MSAndroidTextureDisplay
 
-[audio]
-android_disable_audio_focus_requests=1
-android_monitor_audio_devices=0
-
 [video_codec_0]
 mime=VP8
 rate=90000
