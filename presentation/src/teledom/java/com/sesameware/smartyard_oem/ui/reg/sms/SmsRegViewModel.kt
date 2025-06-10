@@ -1,8 +1,6 @@
 package com.sesameware.smartyard_oem.ui.reg.sms
 
-import android.content.ContentResolver
 import android.os.CountDownTimer
-import android.provider.Settings.Secure
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
@@ -11,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
+import com.sesameware.data.prefs.SentName
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.CommonError
 import com.sesameware.domain.model.response.Name
