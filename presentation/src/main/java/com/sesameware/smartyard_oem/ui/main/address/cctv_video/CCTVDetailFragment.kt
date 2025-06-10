@@ -93,6 +93,18 @@ class CCTVDetailFragment : Fragment() {
         ) {
             binding.tvTitleSub.text = it?.address
         }
+        mCCTVViewModel.closedRangeCalendar.observe(
+            viewLifecycleOwner
+        ) {
+            val camHasRanges = mCCTVViewModel.availableRanges.isNotEmpty()
+            binding.tabLayout.getTabAt(1)?.view?.isClickable = camHasRanges
+            val title2 = if (camHasRanges) {
+                R.string.cctv_detail_tab_archive
+            } else {
+                R.string.cctv_detail_tab_archive_is_missing
+            }
+            binding.tabLayout.getTabAt(1)?.text = resources.getString(title2)
+        }
     }
 
     override fun onPause() {

@@ -240,6 +240,7 @@
     <string name="address_choose_camera_title"> Камераны таңдаңыз</string>
     <string name="cctv_detail_tab_online">Онлайн</string>
     <string name="cctv_detail_tab_archive">Мұрағат</string>
+    <string name="cctv_detail_tab_archive_is_missing">Мұрағат жоқ</string>
     <string name="cctv_video_from_date">Бейне %s</string>
     <string name="cctv_choose_fragment">Фрагментті таңдаңыз</string>
     <string name="cctv_download_and_get_link">Сілтемені жүктеп алыңыз және алыңыз</string>

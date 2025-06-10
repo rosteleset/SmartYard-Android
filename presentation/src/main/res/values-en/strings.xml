@@ -238,6 +238,7 @@
     <string name="address_choose_camera_title">Choose camera</string>
     <string name="cctv_detail_tab_online">Online</string>
     <string name="cctv_detail_tab_archive">Archive</string>
+    <string name="cctv_detail_tab_archive_is_missing">Archive is missing</string>
     <string name="cctv_video_from_date">Video from %s</string>
     <string name="cctv_choose_fragment">Select fragment</string>
     <string name="cctv_download_and_get_link">Download and get link</string>

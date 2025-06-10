@@ -234,6 +234,7 @@
     <string name="address_choose_camera_title">Ընտրեք տեսախցիկը</string>
     <string name="cctv_detail_tab_online">Ուղղարկված է</string>
     <string name="cctv_detail_tab_archive">Պահոց</string>
+    <string name="cctv_detail_tab_archive_is_missing">Արխիվը բացակայում է</string>
     <string name="cctv_video_from_date">Տեսախցիկները %s-ից</string>
     <string name="cctv_choose_fragment">Ընտրել մասը</string>
     <string name="cctv_download_and_get_link">Ներբեռնել և ստանալ հղում</string>

@@ -238,6 +238,7 @@
     <string name="address_choose_camera_title">Выберите камеру</string>
     <string name="cctv_detail_tab_online">Онлайн</string>
     <string name="cctv_detail_tab_archive">Архив</string>
+    <string name="cctv_detail_tab_archive_is_missing">Архив отсутствует</string>
     <string name="cctv_video_from_date">Видео от %s</string>
     <string name="cctv_choose_fragment">Выбрать фрагмент</string>
     <string name="cctv_download_and_get_link">Загрузить и получить ссылку</string>

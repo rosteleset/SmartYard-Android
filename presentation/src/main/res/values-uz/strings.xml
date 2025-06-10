@@ -234,6 +234,7 @@
     <string name="address_choose_camera_title">Kamerani tanlang</string>
     <string name="cctv_detail_tab_online">Onlayn</string>
     <string name="cctv_detail_tab_archive">Arxiv</string>
+    <string name="cctv_detail_tab_archive_is_missing">Arxiv yo\'q</string>
     <string name="cctv_video_from_date">%s sanadan videolar</string>
     <string name="cctv_choose_fragment">Bo‘limni tanlash</string>
     <string name="cctv_download_and_get_link">Yuklab olish va havolani olish</string>
