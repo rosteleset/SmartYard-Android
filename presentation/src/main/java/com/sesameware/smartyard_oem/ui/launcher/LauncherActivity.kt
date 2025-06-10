@@ -29,9 +29,6 @@ class LauncherActivity : CommonActivity() {
 
         super.onCreate(savedInstanceState)
 
-        val isNightModeFeatureDisabled = !resources.getBoolean(R.bool.feature_night_mode_is_enabled)
-        mViewModel.applySavedNightMode(isNightModeFeatureDisabled)
-
         createNotificationChannels()
 
         mViewModel.launchDestination.observe(

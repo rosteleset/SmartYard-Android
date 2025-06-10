@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -62,6 +63,10 @@ open class GenericViewModel : ViewModel(), KoinComponent {
         globalData.globalErrorsSink.value = Event(
             CommonError(throwable, getStatus(throwable))
         )
+    }
+
+    fun applySavedNightMode() {
+        AppCompatDelegate.setDefaultNightMode(mPreferenceStorage.nightMode.value)
     }
 
     fun CoroutineScope.launchSimple(

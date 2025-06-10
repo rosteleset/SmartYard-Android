@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem
 
 import android.content.Intent
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.sesameware.domain.model.ErrorStatus
 import com.sesameware.smartyard_oem.ui.ProgressDialog
@@ -11,6 +12,12 @@ import com.sesameware.smartyard_oem.ui.updateAllWidget
 abstract class CommonActivity : AppCompatActivity() {
     private lateinit var progressDialog: ProgressDialog
     abstract val mViewModel: GenericViewModel
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        mViewModel.applySavedNightMode()
+    }
 
     override fun onStart() {
         super.onStart()

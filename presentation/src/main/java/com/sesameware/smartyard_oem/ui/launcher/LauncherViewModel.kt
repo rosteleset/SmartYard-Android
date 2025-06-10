@@ -1,9 +1,7 @@
 package com.sesameware.smartyard_oem.ui.launcher
 
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.sesameware.data.prefs.NightMode
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
@@ -25,11 +23,6 @@ class LauncherViewModel(
         } else {
             _launchDestination.value = Event(LaunchDestination.REGISTRATION_ACTIVITY)
         }
-    }
-
-    fun applySavedNightMode(isNightModeDisabled: Boolean) {
-        if (isNightModeDisabled) mPreferenceStorage.nightMode = NightMode.NO
-        AppCompatDelegate.setDefaultNightMode(mPreferenceStorage.nightMode.value)
     }
 
     enum class LaunchDestination {

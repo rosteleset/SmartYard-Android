@@ -7,6 +7,7 @@ import android.os.Parcelable
 import androidx.annotation.WorkerThread
 import androidx.core.content.edit
 import com.google.gson.Gson
+import com.sesameware.data.R
 import kotlinx.parcelize.Parcelize
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -120,9 +121,13 @@ class SharedPreferenceStorage constructor(
     override var nightModeHasChanged by BooleanPreference(prefs,
         PREFS_NIGHT_MODE_HAS_CHANGED, false)
 
+    private val featureNightModeIsEnabled = runCatching {
+        context.resources.getBoolean(R.bool.feature_night_mode_is_enabled)
+    }.getOrDefault(false)
+
     override var nightMode by SerializablePreference(
         prefs, PREFS_NIGHT_MODE,
-        NightMode.FOLLOW_SYSTEM,
+        if (featureNightModeIsEnabled) NightMode.FOLLOW_SYSTEM else NightMode.NO,
         NightMode::class.java)
 
     override var askedAboutLockedScreen by BooleanPreference(prefs,
@@ -140,7 +145,7 @@ class SharedPreferenceStorage constructor(
         expandedHouseIds = null
         justRegistered = true
         nightModeHasChanged = false
-        nightMode = NightMode.FOLLOW_SYSTEM
+        nightMode = if (featureNightModeIsEnabled) NightMode.FOLLOW_SYSTEM else NightMode.NO
         askedAboutLockedScreen = false
     }
 }
