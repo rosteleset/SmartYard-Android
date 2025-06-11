@@ -24,7 +24,7 @@ buildscript {
         targetSdk = 34
         compileSdk = 34
         adapterdelegates = '4.2.0'
-        androidGraglePlugin = '8.2.2'
+        androidGraglePlugin = '8.10.1'
         androidxLegacy = '1.0.0'
         androidxTransition = '1.4.1'
         appCompat = '1.6.1'
