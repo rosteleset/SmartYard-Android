@@ -66,7 +66,7 @@ object DataModule {
 
         single {
             Room.databaseBuilder(get(), ItemsDatabase::class.java, ItemsDatabase.DATABASE_NAME)
-                .fallbackToDestructiveMigration()
+                .fallbackToDestructiveMigration(false)
                 .build()
         }
 

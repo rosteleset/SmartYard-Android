@@ -2,7 +2,7 @@
 
     <!-- Main -->
     <string name="app_name">Տելետոմ</string>
-    <string name="app_info">%s Android տարբերակի համար %s (%d) %s\n[սարք՝ %s]</string>
+    <string name="app_info">%1$s Android տարբերակի համար %2$s (%3$d) %4$s\n[սարք՝ %5$s]</string>
     <string name="app_title">Տարբերակը հարթավորված է</string>
     <string name="app_message">Թարմացնել ծրագիրը։</string>
     <string name="default_notification_channel_id">channel_inbox</string>
@@ -124,15 +124,15 @@
     <string name="setting_dialog_service_connected_title">կապված է</string>
     <string name="setting_dialog_service_connected_caption">Եթե ցանկանում եք փոխել տարեցիկ տարիֆը, թողեք հայտարարություն</string>
     <string name="setting_dialog_service_connected_button">Փոխել տարիֆը</string>
-    <string name="setting_dialog_service_connected_chat">Բարև, ես ցանկանում եմ փոխել "%s" ծառայությունի տարիֆը "%s" պայմանագրում</string>
+    <string name="setting_dialog_service_connected_chat">Բարև, ես ցանկանում եմ փոխել "%1$s" ծառայությունի տարիֆը "%2$s" պայմանագրում</string>
     <string name="setting_dialog_service_not_connected_title">չի կապված</string>
     <string name="setting_dialog_service_not_connected_caption">Եթե ցանկանում եք ակտիվացնել ծառայությունը, թողեք հայտարարություն</string>
     <string name="setting_dialog_service_not_connected_button">Թողնել հայտարարություն</string>
-    <string name="setting_dialog_service_not_connected_chat">Բարև, ես ցանկանում եմ կապել "%s" ծառայությանը "%s" պայմանագրում</string>
+    <string name="setting_dialog_service_not_connected_chat">Բարև, ես ցանկանում եմ կապել "%1$s" ծառայությանը "%2$s" պայմանագրում</string>
     <string name="setting_dialog_service_unavailable_title">այժմ հասանելի չէ</string>
     <string name="setting_dialog_service_unavailable_caption">Այս պահին ծառայությունը հասանելի չէ ձեր հասցեում։ Դրա կապը ակտիվացնելու համար պետք է մեկ քանական հայտեր հայտնաբերեք ձեր տանը։ Թողեք առաքելը առաջինը։</string>
     <string name="setting_dialog_service_unavailable_button">Թողնել հայտարարություն</string>
-    <string name="setting_dialog_service_unavailable_chat">Բարև, "%s" ծառայությունը այս պահին հասանելի չէ իմ հասցեում, բայց ես ցանկանում եմ օգտագործել այն "%s" պայմանագրում</string>
+    <string name="setting_dialog_service_unavailable_chat">Բարև, "%1$s" ծառայությունը այս պահին հասանելի չէ իմ հասցեում, բայց ես ցանկանում եմ օգտագործել այն "%2$s" պայմանագրում</string>
     <string name="setting_dialog_service_domophone_connected_title">կապված է</string>
     <string name="setting_dialog_service_domophone_connected_caption">Եթե ցանկանում եք ստանալ մուտք, թողեք նամակ</string>
     <string name="setting_dialog_service_domophone_connected_button">Ստանալ մուտք</string>

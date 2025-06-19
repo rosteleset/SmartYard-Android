@@ -2,7 +2,7 @@
 
     <!-- Main -->
     <string name="app_name">Teledom</string>
-    <string name="app_info">%s for Android version %s (%d) %s\n[device: %s]</string>
+    <string name="app_info">%1$s for Android version %2$s (%3$d) %4$s\n[device: %5$s]</string>
     <string name="app_title">An outdated version</string>
     <string name="app_message">Update app?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
@@ -127,15 +127,15 @@
     <string name="setting_dialog_service_connected_title">connected</string>
     <string name="setting_dialog_service_connected_caption">If you want to change your tariff, please leave a request</string>
     <string name="setting_dialog_service_connected_button">Change Tariff</string>
-    <string name="setting_dialog_service_connected_chat">Hello, I would like to change the tariff for the "%s" service on the contract "%s"</string>
+    <string name="setting_dialog_service_connected_chat">Hello, I would like to change the tariff for the "%1$s" service on the contract "%2$s"</string>
     <string name="setting_dialog_service_not_connected_title">not connected</string>
     <string name="setting_dialog_service_not_connected_caption">If you want to activate the service, please leave a request</string>
     <string name="setting_dialog_service_not_connected_button">Submit request</string>
-    <string name="setting_dialog_service_not_connected_chat">Hello, I would like to subscribe to the "%s" service on the contract "%s"</string>
+    <string name="setting_dialog_service_not_connected_chat">Hello, I would like to subscribe to the "%1$s" service on the contract "%2$s"</string>
     <string name="setting_dialog_service_unavailable_title">currently unavailable</string>
     <string name="setting_dialog_service_unavailable_caption">At the moment, the service is not available at your address. To enable it, we need to gather a few requests from your building. Please submit the first one!</string>
     <string name="setting_dialog_service_unavailable_button">Submit request</string>
-    <string name="setting_dialog_service_unavailable_chat">Hello, the "%s" service is not available at my address, but I would like to use it on the contract "%s"</string>
+    <string name="setting_dialog_service_unavailable_chat">Hello, the "%1$s" service is not available at my address, but I would like to use it on the contract "%2$s"</string>
     <string name="setting_dialog_service_domophone_connected_title">connected</string>
     <string name="setting_dialog_service_domophone_connected_caption">If you want to get access, please leave a message</string>
     <string name="setting_dialog_service_domophone_connected_button">Get access</string>

@@ -2,7 +2,7 @@
 
     <!-- Main -->
     <string name="app_name">Теледом</string>
-    <string name="app_info">%s для Android версия %s (%d) %s\n[устройство: %s]</string>
+    <string name="app_info">%1$s для Android версия %2$s (%3$d) %4$s [устройство: %5$s]</string>
     <string name="app_title">Версия устарела</string>
     <string name="app_message">Обновить приложение?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
@@ -127,15 +127,15 @@
     <string name="setting_dialog_service_connected_title">подключена</string>
     <string name="setting_dialog_service_connected_caption">Если хотите сменить тариф, оставьте заявку</string>
     <string name="setting_dialog_service_connected_button">Сменить тариф</string>
-    <string name="setting_dialog_service_connected_chat">Здравствуйте, я бы хотел изменить тариф для услуги "%s" на договоре "%s"</string>
+    <string name="setting_dialog_service_connected_chat">Здравствуйте, я бы хотел изменить тариф для услуги "%1$s" на договоре "%2$s"</string>
     <string name="setting_dialog_service_not_connected_title">не подключена</string>
     <string name="setting_dialog_service_not_connected_caption">Если хотите активировать услугу, оставьте заявку</string>
     <string name="setting_dialog_service_not_connected_button">Оставить заявку</string>
-    <string name="setting_dialog_service_not_connected_chat">Здравствуйте, я бы хотел подключить услугу "%s" на договор "%s"</string>
+    <string name="setting_dialog_service_not_connected_chat">Здравствуйте, я бы хотел подключить услугу "%1$s" на договор "%2$s"</string>
     <string name="setting_dialog_service_unavailable_title">пока недоступна</string>
     <string name="setting_dialog_service_unavailable_caption">На данный момент услуга недоступна по вашему адресу. Для ее подключения необходимо собрать несколько заявок с вашего дома. Оставьте заявку первым!</string>
     <string name="setting_dialog_service_unavailable_button">Оставить заявку</string>
-    <string name="setting_dialog_service_unavailable_chat">Здравствуйте, услуга "%s" недоступна по моему адресу, но я хочу пользоваться ей на договоре "%s"</string>
+    <string name="setting_dialog_service_unavailable_chat">Здравствуйте, услуга "%1$s" недоступна по моему адресу, но я хочу пользоваться ей на договоре "%2$s"</string>
     <string name="setting_dialog_service_domophone_connected_title">подключена</string>
     <string name="setting_dialog_service_domophone_connected_caption">Если хотите получить доступ, оставьте сообщение</string>
     <string name="setting_dialog_service_domophone_connected_button">Получить доступ</string>

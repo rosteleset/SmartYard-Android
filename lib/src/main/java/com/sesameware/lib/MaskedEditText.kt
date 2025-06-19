@@ -1,6 +1,7 @@
 package com.sesameware.lib
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -9,7 +10,6 @@ import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.util.AttributeSet
 import android.widget.EditText
-import android.widget.TextView.OnEditorActionListener
 
 class MaskedEditText : EditText, TextWatcher {
     private val onEditorActionListener =
@@ -79,7 +79,13 @@ class MaskedEditText : EditText, TextWatcher {
     override fun onRestoreInstanceState(state: Parcelable) {
         val bundle = state as Bundle
         keepHint = bundle.getBoolean("keepHint", false)
-        super.onRestoreInstanceState(state.getParcelable<Parcelable>("super"))
+        @Suppress("DEPRECATION")
+        val parcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                bundle.getParcelable("super", Parcelable::class.java)
+            } else {
+                state.getParcelable<Parcelable>("super")
+            }
+        super.onRestoreInstanceState(parcelable)
         val text = bundle.getString("text")
         setText(text!!)
     }
