@@ -1,9 +1,6 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        isGoogleEnabled = false
-        isHuaweiEnabled = false
-        isRustoreEnabled = false
         minSdk = 23
         targetSdk = 34
         compileSdk = 34

@@ -35,19 +35,3 @@ dependencyResolutionManagement {
 
 include ':presentation', ':data', ':domain', ':lib'
 rootProject.name='smartyard-oem-android'
-
-/*
-boolean containsTask(String name) {
-    return gradle.startParameter.taskNames.any { it.toLowerCase().contains(name) }
-}
-
-gradle.projectsLoaded {
-    def isSyncOrClean = gradle.startParameter.taskNames.isEmpty() || containsTask("clean")
-    rootProject.ext {
-        isGoogleEnabled = containsTask("google") || isSyncOrClean
-        isHuaweiEnabled = containsTask("huawei") || isSyncOrClean
-        isRustoreEnabled = containsTask("rustore") || isSyncOrClean
-        println("evaluated $it")
-        println("$ext.isGoogleEnabled + $ext.isHuaweiEnabled + $ext.isRustoreEnabled")
-    }
-}*/
