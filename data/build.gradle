@@ -89,19 +89,16 @@ dependencies {
     // Utils
     implementation "androidx.core:core-ktx:$coreKtx"
 
-    def flavorOrSync = getMarketFlavorOrSync()
-    if (flavorOrSync == "sync" || flavorOrSync == "google") {
-        implementation "com.google.firebase:firebase-crashlytics:$firebaseCrashlytics"
-    }
+    // Google
+    implementation platform("com.google.firebase:firebase-bom:$firebaseBom")
+    implementation 'com.google.firebase:firebase-crashlytics'
 
-    if (flavorOrSync == "sync" || flavorOrSync == "huawei") {
-        implementation "com.huawei.agconnect:agconnect-crash:$huaweiAgconnect"
-    }
+    // Huawei
+    huaweiImplementation "com.huawei.agconnect:agconnect-crash:$huaweiAgconnect"
 
-    if (flavorOrSync == "sync" || flavorOrSync == "rustore") {
-        implementation "ru.ok.tracer:tracer-crash-report:$rustoreTracer"
-        implementation "ru.ok.tracer:tracer-crash-report-native:$rustoreTracer"
-    }
+    //Rustore
+    rustoreImplementation "ru.ok.tracer:tracer-crash-report:$rustoreTracer"
+    rustoreImplementation "ru.ok.tracer:tracer-crash-report-native:$rustoreTracer"
 
     // OkHttp & Retrofit
     implementation "com.squareup.retrofit2:retrofit:$retrofit"

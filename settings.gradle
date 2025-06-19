@@ -1,2 +1,53 @@
+pluginManagement {
+    repositories {
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
+        gradlePluginPortal()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven' }
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+        maven { url 'https://developer.huawei.com/repo/' }
+        maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven' }
+        maven {
+            name "linphone.org maven repository"
+            url "https://linphone.org/maven_repository"
+            content {
+                includeGroup "org.linphone"
+            }
+        }
+    }
+}
+
 include ':presentation', ':data', ':domain', ':lib'
 rootProject.name='smartyard-oem-android'
+
+/*
+boolean containsTask(String name) {
+    return gradle.startParameter.taskNames.any { it.toLowerCase().contains(name) }
+}
+
+gradle.projectsLoaded {
+    def isSyncOrClean = gradle.startParameter.taskNames.isEmpty() || containsTask("clean")
+    rootProject.ext {
+        isGoogleEnabled = containsTask("google") || isSyncOrClean
+        isHuaweiEnabled = containsTask("huawei") || isSyncOrClean
+        isRustoreEnabled = containsTask("rustore") || isSyncOrClean
+        println("evaluated $it")
+        println("$ext.isGoogleEnabled + $ext.isHuaweiEnabled + $ext.isRustoreEnabled")
+    }
+}*/

@@ -1,36 +1,15 @@
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.compose'
+    id 'org.jetbrains.kotlin.plugin.compose'
     id 'kotlin-android'
     id 'kotlin-parcelize'
     id 'androidx.navigation.safeargs'
     id 'com.google.devtools.ksp'
-}
-
-def flavorOrSync = getMarketFlavorOrSync()
-
-if (flavorOrSync == "sync" || flavorOrSync == "google") {
-    apply plugin: 'com.google.gms.google-services'
-    apply plugin: 'com.google.firebase.crashlytics'
-}
-
-if (flavorOrSync == "sync" || flavorOrSync == "huawei") {
-    apply plugin: 'com.huawei.agconnect'
-}
-
-if (flavorOrSync == "sync" || flavorOrSync == "rustore") {
-    apply plugin: 'ru.ok.tracer'
-    tracer {
-        defaultConfig {
-            // See the "Settings" section
-            pluginToken = "AZ2adhatS8Jbqzud284dlmJ9mSzeKVkfI3nAvuTfPed1"
-            appToken = "MUdXdKSfjnboooRCNpeWcUcD45SzxWiN2rfRrEsOMrd"
-
-            // Enables mapping files uploading during a build. The default value is true, i.e. the uploading is enabled.
-            uploadMapping = true
-            // Enables output of debugging information about the plugin operation. The default value is false.
-            // printBuildUUID = true
-        }
-    }
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.huawei.agconnect'
+    id 'ru.ok.tracer'
 }
 
 android {
@@ -47,10 +26,10 @@ android {
 
     defaultConfig {
         applicationId "com.sesameware.smartyard_oem"
-        minSdk rootProject.minSdk
-        targetSdk rootProject.targetSdk
-        versionCode 74
-        versionName '1.0.74'
+        minSdk = rootProject.minSdk
+        targetSdk = rootProject.targetSdk
+        versionCode = 74
+        versionName = '1.0.74'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
         vectorDrawables.useSupportLibrary = true
@@ -61,15 +40,15 @@ android {
 
     buildTypes {
         disableLint {
-            signingConfig signingConfigs.debug
-            debuggable true
+            signingConfig = signingConfigs.debug
+            debuggable = true
         }
         debug {
-            signingConfig signingConfigs.debug
+            signingConfig = signingConfigs.debug
         }
         release {
-            signingConfig signingConfigs.debug
-            minifyEnabled false
+            signingConfig = signingConfigs.debug
+            minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -97,39 +76,28 @@ android {
     }
 
     buildFeatures {
-        buildConfig true
-        viewBinding true
-        compose true
+        buildConfig = true
+        viewBinding = true
+        compose = true
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.5.2'
+        kotlinCompilerExtensionVersion = '1.5.2'
     }
-    namespace 'com.sesameware.smartyard_oem'
+    namespace = 'com.sesameware.smartyard_oem'
 }
 
 if (project.file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
 }
 
-if (project.file('flavors.gradle').exists()) {
-    apply from: 'flavors.gradle'
+if (project.file('src/teledom/ok-tracer.gradle').exists()) {
+    apply from: 'src/teledom/ok-tracer.gradle'
 }
 
-project.afterEvaluate {
+//project.afterEvaluate {
     //preSesamewareDebugBuild.dependsOn ktlint
-}
-
-repositories {
-    maven {
-        name "linphone.org maven repository"
-        url "https://download.linphone.org/maven_repository"
-        content {
-            includeGroup "org.linphone"
-        }
-    }
-    mavenCentral()
-}
+//}
 
 dependencies {
     implementation project(':domain')
@@ -148,26 +116,20 @@ dependencies {
     implementation "androidx.core:core-splashscreen:$splashscreen"
 
     // Google
-    if (flavorOrSync == "sync" || flavorOrSync == "google") {
-        implementation "com.google.firebase:firebase-analytics:$firebaseAnalytics"
-        implementation "com.google.firebase:firebase-crashlytics-ktx:$firebaseCrashlytics"
-        implementation "com.google.firebase:firebase-messaging:$firebaseMessaging"
-        implementation "com.google.firebase:firebase-iid:$firebaseMessaging"
-        implementation "com.google.android.gms:play-services-location:$playServicesLocation"
-    }
+    googleImplementation platform("com.google.firebase:firebase-bom:$firebaseBom")
+    googleImplementation 'com.google.firebase:firebase-analytics'
+    googleImplementation 'com.google.firebase:firebase-crashlytics'
+    googleImplementation 'com.google.firebase:firebase-messaging'
+    googleImplementation "com.google.android.gms:play-services-location:$playServicesLocation"
 
     // Huawei
-    if (flavorOrSync == "sync" || flavorOrSync == "huawei") {
-        implementation "com.huawei.agconnect:agconnect-crash:$huaweiAgconnect"
-        implementation "com.huawei.hms:push:$huaweiPush"
-    }
+    huaweiImplementation "com.huawei.agconnect:agconnect-crash:$huaweiAgconnect"
+    huaweiImplementation "com.huawei.hms:push:$huaweiPush"
 
     //Rustore
-    if (flavorOrSync == "sync" || flavorOrSync == "rustore") {
-        implementation "ru.ok.tracer:tracer-crash-report:$rustoreTracer"
-        implementation "ru.ok.tracer:tracer-crash-report-native:$rustoreTracer"
-        implementation "ru.rustore.sdk:pushclient:$rustorePush"
-    }
+    rustoreImplementation "ru.ok.tracer:tracer-crash-report:$rustoreTracer"
+    rustoreImplementation "ru.ok.tracer:tracer-crash-report-native:$rustoreTracer"
+    rustoreImplementation "ru.rustore.sdk:pushclient:$rustorePush"
 
     // Qr code scanner
     implementation "com.google.mlkit:barcode-scanning:$mlkitBarcode"
@@ -185,7 +147,7 @@ dependencies {
 
     // Room
     implementation "androidx.room:room-runtime:$room"
-    implementation "androidx.room:room-ktx:$room"
+//    implementation "androidx.room:room-ktx:$room"
     ksp "androidx.room:room-compiler:$room"
 
     // Coroutines
