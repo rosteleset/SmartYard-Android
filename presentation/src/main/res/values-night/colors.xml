@@ -20,8 +20,8 @@
     <color name="gray_button">@color/disabled</color>
 
     <!-- Background gradient -->
-    <color name="gradient_start">#283D55</color>
-    <color name="gradient_end">#252525</color>
+<!--    <color name="gradient_start">#283D55</color>-->
+<!--    <color name="gradient_end">#252525</color>-->
 
     <!-- Widget -->
     <color name="widget_background">#E6191919</color>
