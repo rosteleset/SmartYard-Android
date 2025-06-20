@@ -33,9 +33,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
         vectorDrawables.useSupportLibrary = true
-//        ndk {
-//            abiFilters 'arm64-v8a', 'armeabi-v7a'
-//        }
+        ndk {
+            abiFilters 'arm64-v8a', 'armeabi-v7a'
+        }
     }
 
     buildTypes {
@@ -53,7 +53,22 @@ android {
         }
     }
 
-    // It must be in that order, otherwise google services.json won't catch up.
+    applicationVariants.configureEach { variant ->
+        def isClient = productFlavors[0].name == "client"
+        String rootName
+        if (isClient) {
+            rootName = variant.applicationId.split("\\.")[1]
+        } else {
+            rootName = productFlavors[0].name
+        }
+        def newApkName =
+                "$rootName-${productFlavors[1].name}-${buildType.name}-${variant.versionName}"
+        variant.outputs.each { output ->
+            output.outputFileName = "${newApkName}.apk"
+        }
+    }
+
+    // It must be in that order, otherwise google-services.json won't catch up.
     flavorDimensions = ["site", "market"]
 
     productFlavors {
