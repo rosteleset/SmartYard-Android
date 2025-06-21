@@ -1,13 +1,20 @@
 package com.sesameware.smartyard_oem.ui.webview_dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.text.Html
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import android.view.WindowManager
+import androidx.annotation.ColorRes
 import androidx.fragment.app.DialogFragment
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentWebViewDialogBinding
 
 class WebViewDialogFragment(private val resId: Int) : DialogFragment() {
@@ -25,10 +32,25 @@ class WebViewDialogFragment(private val resId: Int) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvHelpDialogContent.text = Html.fromHtml(getString(resId))
+        val brandColorWebHex = getWebColorHex(R.color.brand)
+        val html = getString(resId).replace("#007AFF", brandColorWebHex)
+        @Suppress("DEPRECATION")
+        binding.tvHelpDialogContent.text = Html.fromHtml(html)
 
         binding.ivWebViewDialogClose.setOnClickListener {
             this.dismiss()
+        }
+    }
+
+    @SuppressLint("ResourceType")
+    private fun getWebColorHex(@ColorRes color: Int): String {
+        val hexString = getString(color)
+        return if (hexString.length == 7) {
+            hexString
+        } else if (hexString.length == 9) {
+            hexString[0] + hexString.substring(3..8)
+        } else {
+            throw RuntimeException("WRONG COLOR RESOURCE: $hexString")
         }
     }
 
