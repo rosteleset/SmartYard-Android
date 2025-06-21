@@ -48,7 +48,7 @@
 
     <!-- Нижняя навигация -->
     <style name="BottomNavigationView">
-        <item name="itemTextColor">@drawable/color_bottom_nav_item</item>
+        <item name="itemTextColor">@color/color_bottom_nav_item</item>
         <item name="itemTextAppearanceActive">@style/TextAppearance.BottomNavigation.Overline</item>
         <item name="itemTextAppearanceInactive">@style/TextAppearance.BottomNavigation.Overline</item>
     </style>
@@ -68,7 +68,7 @@
     <!-- Кнопка зеленая, с залитым фоном-->
     <style name="buttonGreenFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_flooded_rounded_green</item>
-        <item name="android:textColor">@drawable/button_text_flooded</item>
+        <item name="android:textColor">@color/button_text_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -76,7 +76,7 @@
     <!-- Кнопка красная, с залитым фоном-->
     <style name="buttonRedFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_flooded_rounded_red</item>
-        <item name="android:textColor">@drawable/button_text_flooded</item>
+        <item name="android:textColor">@color/button_text_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -84,7 +84,7 @@
     <!-- Кнопка синяя, с залитым фоном-->
     <style name="buttonBlueFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_flooded_rounded</item>
-        <item name="android:textColor">@drawable/button_text_flooded</item>
+        <item name="android:textColor">@color/button_text_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>
@@ -92,7 +92,7 @@
     <!-- Кнопка синяя, без фоном-->
     <style name="buttonBlueNoFlooded" parent="@android:style/Widget.Button">
         <item name="android:background">@drawable/button_bg_no_flooded_rounded</item>
-        <item name="android:textColor">@drawable/button_text_no_flooded</item>
+        <item name="android:textColor">@color/button_text_no_flooded</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
     </style>

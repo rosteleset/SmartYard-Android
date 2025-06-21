@@ -26,7 +26,7 @@
         android:layout_weight="1"
         android:enabled="true"
         android:text="@string/item_sample"
-        android:textColor="@drawable/textview_colors"
+        android:textColor="@color/textview_colors"
         android:textSize="18sp" />
 
 </LinearLayout>

@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="-16dp"
-        app:itemIconTint="@drawable/color_bottom_nav_item"
+        app:itemIconTint="@color/color_bottom_nav_item"
         app:backgroundTint="@color/light_background"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
