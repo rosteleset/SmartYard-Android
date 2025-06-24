@@ -1,158 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.reg.outgoing_call.OutgoingCallFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/ivBackgroundOC"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/background_top_narrow"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/ivBackgroundOC"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/background_top_narrow"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:padding="16dp"
+        android:src="@drawable/ic_back_arrow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_back_arrow"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:ignore="ContentDescription" />
+    <View
+        android:id="@+id/ivMainOC"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/background_surface"
+        android:layout_marginTop="@dimen/surface_corner_radius_compensation"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivBackgroundOC" />
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guidelineOC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_percent="0.15" />
+    <TextView
+        android:id="@+id/tvCaption1OC"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/outgoing_call_caption_1"
+        android:textAlignment="center"
+        android:textColor="@color/accent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/ivMainOC" />
 
-        <ImageView
-            android:id="@+id/ivMainOC"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="@drawable/background_surface"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guidelineOC" />
+    <TextView
+        android:id="@+id/tvChangeNumberOC"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/outgoing_call_change_number"
+        android:textAlignment="center"
+        android:textColor="@color/no_accent"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCaption1OC" />
 
-        <TextView
-            android:id="@+id/tvCaption1OC"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/outgoing_call_caption_1"
-            android:textAlignment="center"
-            android:textColor="@color/accent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/ivMainOC" />
+    <TextView
+        android:id="@+id/tvCaption2OC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:textColor="@color/accent"
+        android:text="@string/outgoing_call_caption_2"
+        android:textAlignment="center"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvChangeNumberOC"
+        app:layout_constraintBottom_toTopOf="@+id/tvCaptionNumberOC" />
 
-        <TextView
-            android:id="@+id/tvChangeNumberOC"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="24dp"
-            android:text="@string/outgoing_call_change_number"
-            android:textAlignment="center"
-            android:textColor="@color/no_accent"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvCaption1OC" />
+    <TextView
+        android:id="@+id/tvCaptionNumberOC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:textColor="@color/accent"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        tools:text="+74752429949"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCaption2OC"
+        app:layout_constraintBottom_toTopOf="@+id/tvCaption3OC"/>
 
-        <LinearLayout
-            android:id="@+id/llOC"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:gravity="center"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toTopOf="@id/barrierOC"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvChangeNumberOC">
+    <TextView
+        android:id="@+id/tvCaption3OC"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:textColor="@color/accent"
+        android:text="@string/outgoing_call_caption_3"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvCaptionNumberOC"
+        app:layout_constraintBottom_toTopOf="@+id/btnMakeCall" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/btnMakeCall"
+        style="@style/buttonBlueFlooded"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="42dp"
+        android:enabled="true"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:text="@string/outgoing_call_make_call"
+        app:layout_constraintBottom_toBottomOf="@+id/ivMainOC"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-            <TextView
-                android:id="@+id/tvCaption2OC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginEnd="24dp"
-                android:textColor="@color/accent"
-                android:text="@string/outgoing_call_caption_2"
-                android:textAlignment="center" />
-
-            <TextView
-                android:id="@+id/tvCaptionNumberOC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                android:textColor="@color/accent"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                tools:text="+74752429949" />
-
-            <TextView
-                android:id="@+id/tvCaption3OC"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                android:textColor="@color/accent"
-                android:text="@string/outgoing_call_caption_3"
-                android:textAlignment="center" />
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierOC"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="top"
-            app:constraint_referenced_ids="btnMakeCall"
-            tools:layout_editor_absoluteX="800dp"
-            tools:layout_editor_absoluteY="1175dp" />
-
-        <Button
-            android:id="@+id/btnMakeCall"
-            style="@style/buttonBlueFlooded"
-            android:layout_width="match_parent"
-            android:layout_height="61dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="24dp"
-            android:layout_marginBottom="42dp"
-            android:enabled="true"
-            android:paddingTop="18dp"
-            android:paddingBottom="18dp"
-            android:text="@string/outgoing_call_make_call"
-            app:layout_constraintBottom_toBottomOf="@+id/ivMainOC"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llOC" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</FrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
