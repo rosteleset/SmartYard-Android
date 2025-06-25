@@ -2,8 +2,8 @@
 #Paths to resources must be set from LinphoneManager, after creating LinphoneCore.
 [net]
 mtu=1300
-download_bw=3000
-upload_bw=3000
+download_bw=1000
+upload_bw=1000
 force_ice_disablement=0
 dtmf_delay_ms=500
 

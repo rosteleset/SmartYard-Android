@@ -74,6 +74,7 @@ import org.webrtc.RtpReceiver
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import kotlin.math.min
 
 class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListener {
@@ -200,7 +201,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                             .url(mPushCallData.webRtcVideoUrl)
                             .method("POST", body)
                             .build()
-                        val httpClient = OkHttpClient.Builder().build()
+                        val httpClient = OkHttpClient.Builder()
+                            .callTimeout(5, TimeUnit.SECONDS)
+                            .build()
                         try {
                             httpClient.newCall(request).execute().use { response ->
                                 Timber.d("debug_webrtc    response code ${response.code}")
@@ -516,6 +519,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.eyeState.observe(
             this
         ) { boolean ->
+            Timber.d("debug_dmm  eyeState observer call enablePeepholeVideo($boolean)")
             enablePeepholeVideo(boolean)
         }
         mViewModel.imageStringData.observe(
@@ -528,6 +532,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 Glide.with(binding.mPeekImageView)
                     .asBitmap()
                     .load(string)
+                    .timeout(5_000)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .listener(object : RequestListener<Bitmap> {
@@ -542,7 +547,9 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                             binding.mPeekImageView.visibility = View.INVISIBLE
                             if (hasWebRTC) {
                                 hasSnapshot = false
-                                enablePeepholeVideo(true)
+                                Timber.d("debug_dmm  imageStringData.observe set eyeState = true")
+                                LinphoneService.instance?.provider?.pushCallData?.eyeState = true
+                                mViewModel.eyeState.value = true
                             }
                             return false
                         }
@@ -648,7 +655,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private fun setConnectedState(connected: Boolean) {
         if (connected) {
             binding.mPeepholeButton.setOnClickListener(null)
-            enablePeepholeVideo(hasWebRTC && mLinphone?.isVideoCall() == false)
+            val ff = (hasWebRTC && mLinphone?.isVideoCall() == false)
+            Timber.d("debug_dmm  setConnectedState set eyeState = $ff")
+            LinphoneService.instance?.provider?.pushCallData?.eyeState = ff
+            mViewModel.eyeState.value = ff
             if (mLinphone?.isVideoCall() == true) {
                 Timber.d("debug_webrtc    answer the call with video in SIP")
                 binding.mVideoSip.show(true)

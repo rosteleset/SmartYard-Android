@@ -38,7 +38,7 @@ buildscript {
         kspPlugin = '2.1.21-2.0.1'
         lifecycle = '2.2.0'
         lifecycleViewModel = '2.7.0'
-        linphone = '5.4.6'
+        linphone = '5.3.19'
         material = '1.11.0'
         mlkitBarcode = '17.2.0'
         morphBottomNavigation = '1.0.1'

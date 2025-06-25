@@ -217,7 +217,7 @@ dependencies {
 
     // LinPhone SDK
     implementation "org.linphone:linphone-sdk-android:$linphone"
-    //implementation 'androidx.media:media:1.2.0'
+    implementation 'androidx.media:media:1.2.0'
 
     // Expandable Layout
     implementation "com.github.cachapa:ExpandableLayout:$expandableLayout"
