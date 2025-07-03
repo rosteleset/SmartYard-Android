@@ -2,8 +2,8 @@
 buildscript {
     ext {
         minSdk = 23
-        targetSdk = 34
-        compileSdk = 34
+        targetSdk = 35
+        compileSdk = 35
         adapterdelegates = '4.2.0'
         androidPlugin = '8.10.1'
         androidxLegacy = '1.0.0'
