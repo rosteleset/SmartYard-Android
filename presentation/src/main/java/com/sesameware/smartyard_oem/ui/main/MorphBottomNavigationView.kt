@@ -20,6 +20,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationMenuView
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomnavigation.BottomNavigationView.OnNavigationItemSelectedListener
 import com.google.android.material.shape.*
+import timber.log.Timber
 
 class MorphEdgeTreatment : EdgeTreatment() {
   override fun getEdgePath(length: Float,
@@ -32,7 +33,7 @@ class MorphEdgeTreatment : EdgeTreatment() {
   }
 }
 
-class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelectedListener {
+class MorphBottomNavigationView : BottomNavigationView {
   private val paint = Paint().apply {
 
     isAntiAlias = true
@@ -129,26 +130,22 @@ class MorphBottomNavigationView : BottomNavigationView, OnNavigationItemSelected
     val menuParams = bottomNavigationMenuView.layoutParams as FrameLayout.LayoutParams
     menuParams.gravity = (Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL)
 
-    setOnNavigationItemSelectedListener(this)
-
     setWillNotDraw(false)
   }
 
   /**
    * Proxy for listener
    */
-  @Deprecated("Deprecated in Java")
-  override fun setOnNavigationItemSelectedListener(listener: OnNavigationItemSelectedListener?) {
-    super.setOnNavigationItemSelectedListener {
+  override fun setOnItemSelectedListener(listener: OnItemSelectedListener?) {
+    super.setOnItemSelectedListener {
+      listener?.onNavigationItemSelected(it)
       onNavigationItemSelected(it)
-      if (listener !is MorphBottomNavigationView) {
-        listener?.onNavigationItemSelected(it)
-      }
       true
     }
   }
 
-  override fun onNavigationItemSelected(item: MenuItem): Boolean {
+  private fun onNavigationItemSelected(item: MenuItem): Boolean {
+    Timber.d("qwe $item")
     val indexOfItemSelected = menu.indexOfItem(item)
     if (indexOfItemSelected != selectedItem) {
       topEdgeTreatment.lastSelectedItem = selectedItem
