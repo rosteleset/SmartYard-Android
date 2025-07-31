@@ -1,5 +1,15 @@
 ## History of major changes
 
+### Version 1.0.76
+- Fixed animation in the bottom menu
+- Updated minSdk to 24 (Android 7.0)
+- Updated target SDK to 35
+- Added timeout to snapshot
+- Downgraded linphone version to 5.3.19
+- Fixed peephole in WebRTC
+- Added handling of archive absence
+- Minor code fixes and refactoring
+
 ### Version 1.0.74
 - Sending one DTMF signal via SIP INFO
 - Minor fixes
