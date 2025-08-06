@@ -1,8 +1,8 @@
 tracer {
     defaultConfig {
         // See the "Settings" section
-        pluginToken = "AZ2adhatS8Jbqzud284dlmJ9mSzeKVkfI3nAvuTfPed1"
         appToken = "MUdXdKSfjnboooRCNpeWcUcD45SzxWiN2rfRrEsOMrd"
+        pluginToken = "AZ2adhatS8Jbqzud284dlmJ9mSzeKVkfI3nAvuTfPed1"
 
         // Enables mapping files uploading during a build. The default value is true, i.e. the uploading is enabled.
         uploadMapping = true
