@@ -2,7 +2,7 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="colorPrimary">@color/brand</item>
         <item name="colorPrimaryDark">@color/brand</item>
         <item name="colorAccent">@color/brand</item>

@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -22,10 +23,15 @@ import android.view.WindowManager
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.widget.TextView
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
@@ -78,6 +84,8 @@ class MainActivity : CommonActivity() {
 
     private lateinit var navController: NavController
 
+    private var bottomNavBarPaddingIsSet = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
@@ -102,9 +110,27 @@ class MainActivity : CommonActivity() {
             }
         }
 
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        // Костыль, чтобы MorphBottomNavigationView правильно отрабатывал EdgeToEdge
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
+            v.setOnApplyWindowInsetsListener(null)
+
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight,
+                v.paddingBottom + systemBars.bottom)
+            v.doOnLayout { v ->
+                v.layoutParams = v.layoutParams.apply { height = height + systemBars.bottom }
+            }
+
+            insets
+        }
 
         navController = getNavController()
         savedInstanceState?.getBundle(NAV_CONTROLLER_STATE_KEY)?.let { bundle ->
