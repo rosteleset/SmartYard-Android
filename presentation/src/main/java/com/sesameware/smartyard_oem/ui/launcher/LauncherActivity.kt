@@ -4,8 +4,11 @@ import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.EventObserver
@@ -29,6 +32,10 @@ class LauncherActivity : CommonActivity() {
 
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+        lightStatusBar = true
         createNotificationChannels()
 
         mViewModel.launchDestination.observe(

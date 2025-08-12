@@ -145,7 +145,6 @@ class MorphBottomNavigationView : BottomNavigationView {
   }
 
   private fun onNavigationItemSelected(item: MenuItem): Boolean {
-    Timber.d("qwe $item")
     val indexOfItemSelected = menu.indexOfItem(item)
     if (indexOfItemSelected != selectedItem) {
       topEdgeTreatment.lastSelectedItem = selectedItem

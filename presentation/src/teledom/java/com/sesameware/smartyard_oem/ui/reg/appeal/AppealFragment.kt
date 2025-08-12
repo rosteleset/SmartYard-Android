@@ -7,8 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAppealBinding
 import com.sesameware.smartyard_oem.ui.requestPermission
@@ -23,6 +26,15 @@ class AppealFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAppealBinding.inflate(inflater, container, false)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        (requireActivity() as CommonActivity).lightNavBar = true
+
         return binding.root
     }
 

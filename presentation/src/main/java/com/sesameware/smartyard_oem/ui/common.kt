@@ -15,7 +15,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.Intent.ACTION_VIEW
-import android.content.pm.ServiceInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BlendMode.SRC_ATOP
@@ -49,9 +48,9 @@ import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.NotificationCompat
-import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.graphics.createBitmap
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.karumi.dexter.Dexter
@@ -59,12 +58,12 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.sesameware.data.Crashlytics
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.domain.utils.listenerGeneric
-import com.sesameware.data.Crashlytics
 import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
@@ -78,7 +77,6 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
-import androidx.core.graphics.createBitmap
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
     showStandardAlert(context, context.getString(msgResId), callback)
@@ -308,16 +306,6 @@ fun Context.dimenToPx(@DimenRes id: Int): Int = resources.getDimensionPixelSize(
 
 fun dpToPx(dp: Int): Float {
     return (dp * Resources.getSystem().displayMetrics.density)
-}
-
-@SuppressLint("InternalInsetResource")
-fun getBottomNavigationHeight(context: Context?): Int {
-    return context?.resources?.let {
-        val resourceId = it.getIdentifier("navigation_bar_height", "dimen", "android")
-        return if (resourceId > 0) {
-            it.getDimensionPixelSize(resourceId)
-        } else 0
-    } ?: 0
 }
 
 @SuppressLint("ObsoleteSdkInt")

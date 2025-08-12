@@ -2,17 +2,17 @@ package com.sesameware.smartyard_oem.ui.reg
 
 import android.app.NotificationManager
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
-import androidx.core.view.ViewCompat
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.MessagingService.TypeMessage
 import com.sesameware.smartyard_oem.MessagingService.TypeMessage.Companion.getTypeMessage
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityRegistrationBinding
-import com.sesameware.smartyard_oem.reduceToZero
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
-import com.sesameware.smartyard_oem.ui.getBottomNavigationHeight
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -27,9 +27,15 @@ class RegistrationActivity : CommonActivity() {
         setTheme(R.style.AppTheme_NoActionBar)
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+
+        lightStatusBar = true
+
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+
+        setContentView(binding.root)
 
         Timber.d("debug_dmm    in onCreate")
         intent?.extras?.let {
@@ -39,17 +45,7 @@ class RegistrationActivity : CommonActivity() {
 
         mViewModel.onStart(supportFragmentManager.findFragmentById(R.id.navFragment)!!, messageId, messageType, activity = this@RegistrationActivity)
 
-        val bottomNavHeight = getBottomNavigationHeight(this@RegistrationActivity)
-        ViewCompat.setOnApplyWindowInsetsListener(binding.frameLayout) { _, insets ->
-            ViewCompat.onApplyWindowInsets(
-                binding.frameLayout,
-                insets.replaceSystemWindowInsets(
-                    insets.systemWindowInsetLeft, 0,
-                    insets.systemWindowInsetRight,
-                    (insets.systemWindowInsetBottom - bottomNavHeight).reduceToZero()
-                )
-            )
-        }
+
     }
 
     private fun intentParse(bundle: Bundle) {

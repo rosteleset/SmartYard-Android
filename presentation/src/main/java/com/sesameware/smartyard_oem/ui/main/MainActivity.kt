@@ -12,6 +12,7 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -84,7 +85,14 @@ class MainActivity : CommonActivity() {
 
     private lateinit var navController: NavController
 
-    private var bottomNavBarPaddingIsSet = false
+    val isNightModeOn: Boolean
+        get() = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+                Configuration.UI_MODE_NIGHT_NO -> false
+                Configuration.UI_MODE_NIGHT_YES -> true
+            else -> {
+                false
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -94,6 +102,10 @@ class MainActivity : CommonActivity() {
 
         super.onCreate(savedInstanceState)
 
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+        lightStatusBar = true
         runBlocking {
             try {
                 mRegModel.getProviderConfig()
@@ -110,49 +122,20 @@ class MainActivity : CommonActivity() {
             }
         }
 
-        enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
-        )
-
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
 
-        // Костыль, чтобы MorphBottomNavigationView правильно отрабатывал EdgeToEdge
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
-            v.setOnApplyWindowInsetsListener(null)
-
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight,
-                v.paddingBottom + systemBars.bottom)
-            v.doOnLayout { v ->
-                v.layoutParams = v.layoutParams.apply { height = height + systemBars.bottom }
-            }
-
-            insets
-        }
+        fixMorphBottomNavBarForEdgeToEdge()
 
         navController = getNavController()
         savedInstanceState?.getBundle(NAV_CONTROLLER_STATE_KEY)?.let { bundle ->
             navController.restoreState(bundle)
         }
-        /*(bottom_nav.background as MaterialShapeDrawable).apply {
-            this.setStroke(2.0f, 12345)
-        }*/
+
+        setupStatusBarWithNavController()
 
         appVersion()
-       /* val bottomNavHeight = getBottomNavigationHeight(this) + dpToPx(10).toInt()
-        ViewCompat.setOnApplyWindowInsetsListener(binding.navHostContainer) { _, insets ->
-            @Suppress("DEPRECATION")
-            ViewCompat.onApplyWindowInsets(
-                binding.navHostContainer,
-                insets.replaceSystemWindowInsets(
-                    insets.systemWindowInsetLeft, 0,
-                    insets.systemWindowInsetRight,
-                    (insets.systemWindowInsetBottom - bottomNavHeight).reduceToZero()
-                )
-            )
-        }*/
 
         setupBottomNavigationBar()
 
@@ -200,6 +183,35 @@ class MainActivity : CommonActivity() {
         }
     }
 
+    private fun setupStatusBarWithNavController() {
+        if (isNightModeOn) return
+
+        navController.addOnDestinationChangedListener { _, dest, _ ->
+            lightStatusBar = when (dest.id) {
+                R.id.notificationFragment, R.id.customWebViewFragmentChat, R.id.payWebViewFragment,
+                R.id.burgerFragment, R.id.eventLogDetailFragment -> false
+                else -> true
+            }
+        }
+    }
+
+    private fun fixMorphBottomNavBarForEdgeToEdge() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
+            v.setOnApplyWindowInsetsListener(null)
+
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(
+                v.paddingLeft, v.paddingTop, v.paddingRight,
+                v.paddingBottom + systemBars.bottom
+            )
+            v.doOnLayout { v ->
+                v.layoutParams = v.layoutParams.apply { height = height + systemBars.bottom }
+            }
+
+            insets
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
@@ -227,6 +239,7 @@ class MainActivity : CommonActivity() {
                 R.id.chat -> mViewModel.isChatBadgeShowed.postValue(false)
                 else -> {}
             }
+
             true
         }
 

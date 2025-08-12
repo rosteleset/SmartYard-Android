@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
 import com.sesameware.domain.model.ErrorStatus
 import com.sesameware.smartyard_oem.ui.ProgressDialog
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
@@ -12,6 +13,20 @@ import com.sesameware.smartyard_oem.ui.updateAllWidget
 abstract class CommonActivity : AppCompatActivity() {
     private lateinit var progressDialog: ProgressDialog
     abstract val mViewModel: GenericViewModel
+
+    internal var lightStatusBar: Boolean = true
+        set(value) {
+            val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+            windowInsetsController.isAppearanceLightStatusBars = !value
+            field = value
+        }
+
+    internal var lightNavBar: Boolean = true
+        set(value) {
+            val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+            windowInsetsController.isAppearanceLightNavigationBars = !value
+            field = value
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

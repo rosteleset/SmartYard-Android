@@ -84,12 +84,12 @@
         <activity
             android:name=".ui.onboarding.OnboardingActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.Launcher"
+            android:theme="@style/AppTheme.Onboarding"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.reg.RegistrationActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/AppTheme"
+            android:theme="@style/AppTheme.Onboarding"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.main.MainActivity"

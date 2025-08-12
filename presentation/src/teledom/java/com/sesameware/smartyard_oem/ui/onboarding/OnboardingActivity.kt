@@ -1,17 +1,22 @@
 package com.sesameware.smartyard_oem.ui.onboarding
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
+import androidx.activity.SystemBarStyle
+import androidx.activity.enableEdgeToEdge
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isInvisible
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.CommonActivity
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityOnboardingBinding
-import com.sesameware.smartyard_oem.ui.viewPager2.ZoomOutPageTransformer
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
+import com.sesameware.smartyard_oem.ui.viewPager2.ZoomOutPageTransformer
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
  * @author Artem Budarin
@@ -24,9 +29,23 @@ class OnboardingActivity : CommonActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+        lightStatusBar = true
+
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+
+        setContentView(binding.root)
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            v.setOnApplyWindowInsetsListener(null)
+
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            insets
+        }
 
         setupPager()
 

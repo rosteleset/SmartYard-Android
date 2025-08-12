@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowLightStatusBar">false</item>
         <item name="colorPrimary">@color/brand</item>
         <item name="colorPrimaryDark">@color/brand</item>
         <item name="colorAccent">@color/brand</item>
@@ -25,6 +24,11 @@
     <style name="AppTheme.Launcher">
         <item name="android:windowBackground">@drawable/launch_screen</item>
     </style>
+
+    <style name="AppTheme.Onboarding">
+        <item name="android:windowBackground">@color/shaded_background</item>
+    </style>
+
     <style name="AppThemeSplash" parent="AppTheme.Launcher" />
 
     <style name="DatePickerStyle" parent="AppTheme.NoActionBar">
@@ -131,7 +135,6 @@
         parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
         <item name="android:windowIsFloating">false</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
