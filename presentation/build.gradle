@@ -129,6 +129,12 @@ dependencies {
     implementation "androidx.viewpager2:viewpager2:$viewpager"
     implementation "com.github.romandanylyk:PageIndicatorView:$pageIndicator"
     implementation "androidx.core:core-splashscreen:$splashscreen"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleRuntimeKtx"
+    implementation "androidx.activity:activity-compose:$activityCompose"
+    implementation 'androidx.compose.ui:ui-graphics'
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     // Google
     googleImplementation platform("com.google.firebase:firebase-bom:$firebaseBom")
@@ -200,6 +206,7 @@ dependencies {
 
     // Images
     implementation "com.github.bumptech.glide:glide:$glide"
+    implementation "com.github.bumptech.glide:compose:$glideCompose"
     implementation "com.github.bumptech.glide:okhttp3-integration:$glide"
     implementation "androidx.legacy:legacy-support-v4:$androidxLegacy"
     ksp "com.github.bumptech.glide:compiler:$glide"
