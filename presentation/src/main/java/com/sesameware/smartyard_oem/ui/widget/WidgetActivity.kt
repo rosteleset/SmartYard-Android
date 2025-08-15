@@ -32,12 +32,12 @@ class WidgetActivity : AppCompatActivity() {
         openDoor(domophoneId, doorId, idItemDataBase)
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
 
-        val domophoneId = intent?.getIntExtra(WidgetProvider.ITEM_DOMOPHONE_ID, 0) ?: 0
-        val doorId = intent?.getIntExtra(WidgetProvider.ITEM_DOOR_ID, 0) ?: 0
-        val idItemDataBase = intent?.getLongExtra(WidgetProvider.ITEM_ID_DATA_BASE, -1) ?: -1
+        val domophoneId = intent.getIntExtra(WidgetProvider.ITEM_DOMOPHONE_ID, 0)
+        val doorId = intent.getIntExtra(WidgetProvider.ITEM_DOOR_ID, 0)
+        val idItemDataBase = intent.getLongExtra(WidgetProvider.ITEM_ID_DATA_BASE, -1)
         openDoor(domophoneId, doorId, idItemDataBase)
     }
 

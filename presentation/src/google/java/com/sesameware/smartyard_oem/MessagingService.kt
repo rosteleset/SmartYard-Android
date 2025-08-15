@@ -12,10 +12,12 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.bumptech.glide.Glide
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.model.PushCallData
+import com.sesameware.lib.toTimeStamp
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.main.MainActivity
@@ -28,6 +30,11 @@ import org.json.JSONObject
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import com.sesameware.smartyard_oem.ui.sendCallNotification
+import com.sesameware.smartyard_oem.ui.sendEventNotification
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
 class MessagingService : FirebaseMessagingService(), KoinComponent {
@@ -155,30 +162,23 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
                     }
 
                     get("action") == "paranoid" -> {
-                        val messageId = get("messageId")
-                        val messageType = get("messageType")
-                        val badge = 0
                         val title = dataTitle ?: remoteMessage.notification?.title
-                        val message = dataBody ?: remoteMessage.notification?.body
+                        val body = dataBody ?: remoteMessage.notification?.body
+                        var timestamp = LocalDateTime.now().toTimeStamp()
+                        try {
+                            timestamp = get("timestamp")?.toLong() ?: timestamp
+                        } catch (_: Exception) {
+                        }
+                        val date = Instant.ofEpochSecond(timestamp).atZone(ZoneId.of(DataModule.serverTz)).toLocalDateTime().format(
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
+                        )
+                        val hash = get("hash")
                         var imageUrl = ""
-
-                        val json = JSONObject(data as Map<*, *>).toString()
-                        Timber.tag(TAG).d("debug_dmm incoming event: $json")
-                        moshi.adapter(PushCallData::class.java).fromJson(json)?.let { msg ->
-                            msg.hash?.let { hash ->
-                                imageUrl = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
-                            }
+                        hash?.let { hash ->
+                            imageUrl = "${preferenceStorage.providerBaseUrl}call/camshot/${hash}"
                         }
 
-                        sendNotificationInbox(
-                            messageId = messageId ?: "",
-                            title = title ?: "",
-                            message = message ?: "",
-                            messageType = messageType ?: "",
-                            badge = badge,
-                            isChat =  false,
-                            imageUrl = imageUrl
-                        )
+                        notifyUserAboutEvent(title, body, date, imageUrl)
                     }
 
                     else -> {
@@ -288,6 +288,7 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
         const val CALL_STUN_TRANSPORT = "stn_transport"
         const val CALL_TURN_USERNAME = "turn_username"
         const val CALL_TURN_PASSWORD = "turn_password"
+        const val EVENT_NOTIFICATION_ID = 1004
     }
 
     enum class TypeMessage {
@@ -306,5 +307,9 @@ class MessagingService : FirebaseMessagingService(), KoinComponent {
 
     private fun notifyUserAboutIncomingCall(data: PushCallData) {
         sendCallNotification(data, context, preferenceStorage)
+    }
+
+    private fun notifyUserAboutEvent(title: String?, body: String?, date: String, imageUrl: String?) {
+        sendEventNotification(title, body, date, imageUrl, context)
     }
 }

@@ -539,7 +539,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         override fun onLoadFailed(
                             e: GlideException?,
                             model: Any?,
-                            target: Target<Bitmap>?,
+                            target: Target<Bitmap?>,
                             isFirstResource: Boolean
                         ): Boolean {
                             Timber.d("debug_webrtc    snapshot failed")
@@ -555,10 +555,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         }
 
                         override fun onResourceReady(
-                            resource: Bitmap?,
-                            model: Any?,
-                            target: Target<Bitmap>?,
-                            dataSource: DataSource?,
+                            resource: Bitmap,
+                            model: Any,
+                            target: Target<Bitmap?>?,
+                            dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
                             Timber.d("debug_webrtc    make mPeekImageView visible onResourceReady")
@@ -610,14 +610,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }
     }
 
-    override fun onNewIntent(intent: Intent?) {
+    override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        intent?.let {
-            @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
-            fcmData?.let {
-                mPushCallData = it
-                resetView(mPushCallData)
-            }
+        @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
+        fcmData?.let {
+            mPushCallData = it
+            resetView(mPushCallData)
         }
     }
 

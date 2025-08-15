@@ -69,6 +69,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.PUSH_DATA
+import com.sesameware.smartyard_oem.ui.show_event.ShowEventActivity
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
 import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
@@ -344,6 +345,38 @@ fun sendCallNotification(
         notification.flags += Notification.FLAG_INSISTENT
         notification.flags += Notification.FLAG_AUTO_CANCEL
         notificationManager.notify(notId, notification)
+    }
+}
+
+fun sendEventNotification(title: String?, body: String?, date: String, imageUrl: String?, context: Context) {
+    Timber.d("debug_dmm  call sendEventNotification")
+    context.run {
+        val notifyIntent = Intent(this, ShowEventActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            putExtra(ShowEventActivity.EVENT_TITLE, title)
+            putExtra(ShowEventActivity.EVENT_BODY, body)
+            putExtra(ShowEventActivity.EVENT_DATE, date)
+            putExtra(ShowEventActivity.EVENT_IMAGE_URL, imageUrl)
+        }
+        val pendingIntent =
+            PendingIntent.getActivity(this, 0, notifyIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+
+        val notificationBuilder = NotificationCompat.Builder(this, MessagingService.CHANNEL_INBOX_ID)
+            .setSmallIcon(R.drawable.ic_notification)
+            .setBadgeIconType(NotificationCompat.BADGE_ICON_SMALL)
+            .setColor(ContextCompat.getColor(context, R.color.brand))
+            .setContentTitle(title)
+            .setContentText(body)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setAutoCancel(true)
+            .setContentIntent(pendingIntent)
+
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = notificationBuilder.build()
+        notificationManager.notify(MessagingService.EVENT_NOTIFICATION_ID, notification)
     }
 }
 
