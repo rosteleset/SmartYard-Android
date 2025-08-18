@@ -188,18 +188,19 @@
                 app:srcCompat="@drawable/ic_forward_10"
                 tools:ignore="ContentDescription" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/ivEventMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginStart="12dp"
+                android:padding="12dp"
                 android:translationZ="10dp"
-                android:background="@drawable/ic_cctv_volume_off_24px"
                 android:visibility="gone"
-                app:layout_constraintTop_toTopOf="@id/clEventImageOrVideo"
+                android:scaleType="centerInside"
+                app:srcCompat="@drawable/selector_mute"
                 app:layout_constraintStart_toStartOf="@id/clEventImageOrVideo"
-                tools:ignore="ContentDescription" />
+                app:layout_constraintTop_toTopOf="@id/clEventImageOrVideo"
+                tools:ignore="ContentDescription"
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/gEventFriend"

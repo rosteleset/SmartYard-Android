@@ -36,6 +36,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.fixedRateTimer
 
 abstract class BaseCCTVPlayer {
+    open var isMuted: Boolean = true
     abstract fun play()
     abstract fun pause()
     abstract fun stop()
@@ -47,8 +48,6 @@ abstract class BaseCCTVPlayer {
     abstract fun isPlaying(): Boolean
     abstract fun isEnded(): Boolean
     abstract fun isIdle(): Boolean
-    abstract fun mute()
-    abstract fun unMute()
     abstract fun prepareMedia(mediaUrl: String?, from: Long = INVALID_POSITION, mediaDuration: Long = INVALID_DURATION, seekMediaTo: Long = 0L, doPlay: Boolean = false)
     abstract fun releasePlayer()
     open var playWhenReady: Boolean = false
@@ -71,6 +70,12 @@ abstract class BaseCCTVPlayer {
 }
 
 open class DefaultCCTVPlayer(private val context: Context, private val forceVideoTrack: Boolean, protected val callbacks: Callbacks? = null) : BaseCCTVPlayer() {
+
+    override var isMuted: Boolean = false
+        set(value) {
+            field = value
+            mPlayer?.volume = if (value) 0.0f else 1.0f
+        }
     protected var mPlayer: ExoPlayer? = null
 
     override var playWhenReady: Boolean
@@ -78,8 +83,6 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         set(value) {
             mPlayer?.playWhenReady = value
         }
-
-    private var mCurrentVolume: Float = 1.0f
 
     init {
         createPlayer()
@@ -129,19 +132,6 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         return mPlayer?.playbackState == Player.STATE_IDLE
     }
 
-    override fun mute() {
-        mPlayer?.let {
-            if (it.volume != 0.0f) mCurrentVolume = it.volume
-        }
-        mPlayer?.volume = 0f
-        Timber.d("__P__   Muting. Current volume = $mCurrentVolume. Player volume = ${mPlayer?.volume}")
-    }
-
-    override fun unMute() {
-        mPlayer?.volume = mCurrentVolume
-        Timber.d("__P__   Unmuting. Current volume = $mCurrentVolume. Player volume = ${mPlayer?.volume}")
-    }
-
     override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
         Timber.d("debug_dmm  mediaUrl = $mediaUrl")
         mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(mediaUrl)))
@@ -169,6 +159,7 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         mPlayer  = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
             .build()
+        mPlayer?.volume = 0.0f
         mPlayer?.addAnalyticsListener(EventLogger())
         mPlayer?.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {

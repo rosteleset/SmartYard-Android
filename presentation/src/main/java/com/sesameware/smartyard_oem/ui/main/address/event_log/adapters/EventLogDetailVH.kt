@@ -257,13 +257,7 @@ class EventLogDetailVH(
 
             ivEventMute.setOnClickListener {
                 isMuted = !isMuted
-                if (isMuted) {
-                    ivEventMute.background =
-                        ContextCompat.getDrawable(itemView.context, R.drawable.ic_cctv_volume_off_24px)
-                } else {
-                    ivEventMute.background =
-                        ContextCompat.getDrawable(itemView.context, R.drawable.ic_cctv_volume_on_24px)
-                }
+                ivEventMute.isSelected = isMuted
                 onAction(EventLogDetailItemAction.OnMuteClick(isMuted))
             }
         }

@@ -665,12 +665,9 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
 
         mCCTVViewModel.isMuted.observe(
             viewLifecycleOwner
-        ) { mute ->
-            if (mute) {
-                mute()
-            } else {
-                unMute()
-            }
+        ) { isMuted ->
+            binding.mMute.isSelected = isMuted
+            mPlayer?.isMuted = isMuted
         }
 
         mCCTVViewModel.chosenCamera.observe(
@@ -688,16 +685,6 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
                 }
             }
         }
-    }
-
-    private fun unMute() {
-        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_on_24px)
-        mPlayer?.unMute()
-    }
-
-    private fun mute() {
-        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_off_24px)
-        mPlayer?.mute()
     }
 
     private fun setTrimMode(active: Boolean) {

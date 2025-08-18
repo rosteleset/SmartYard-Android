@@ -20,7 +20,6 @@ import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.widget.TextView
@@ -31,7 +30,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -369,90 +370,22 @@ class MainActivity : CommonActivity() {
         }
     }
 
-    /*override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        super.onRestoreInstanceState(savedInstanceState)
-        // Now that BottomNavigationBar has restored its instance state
-        // and its selectedItemId, we can proceed with settings up the
-        // BottomNavigationBar with Navigation
-        setupBottomNavigationBar(true)
-    }
-
-    *//**
-     * Called on first creation and when restoring state.
-     *//*
-    private fun setupBottomNavigationBar(resume: Boolean) {
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_nav)
-        val navGraphIds = mutableListOf<Int>()
-
-        //основное меню
-        navGraphIds.add(R.navigation.address)  //вкладка адреса есть всегда
-        navGraphIds.add(R.navigation.notification)  //вкладка уведомления есть всегда
-        if (DataModule.providerConfig.hasChat) {
-            navGraphIds.add(R.navigation.chat)
-        } else {
-            bottomNavigationView.menu.removeItem(R.id.chat)
-        }
-        if (DataModule.providerConfig.hasPayments) {
-            navGraphIds.add(R.navigation.pay)
-        } else {
-            bottomNavigationView.menu.removeItem(R.id.pay)
-        }
-        navGraphIds.add(R.navigation.settings)  //вкладка дополнительно есть всегда
-
-        // Setup the bottom navigation view with a list of navigation graphs
-        val controller = bottomNavigationView.setupWithNavController(
-            navGraphIds = navGraphIds,
-            fragmentManager = supportFragmentManager,
-            containerId = R.id.nav_host_container,
-            intent = intent,
-            resume = resume
-        )
-
-        controller.observe(
-            this
-        ) { navController ->
-            if (navController.graph.id == R.id.chat) {
-                (application as App).isChatActive = true
-                mViewModel.chat.postValue(false)
-            } else {
-                (application as App).isChatActive = false
-            }
-        }
-
-        currentNavController = controller
-        mViewModel.bottomNavigateTo.observe(
-            this,
-            EventObserver { id: Int ->
-                bottomNavigationView?.selectedItemId = id
-            }
-        )
-    }
-
-    override fun onSupportNavigateUp(): Boolean {
-        return currentNavController?.value?.navigateUp() ?: false
-    }*/
-
     @Suppress("DEPRECATION")
     fun hideSystemUI() {
-        window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        binding.navHostContainer.post {
-            binding.navHostContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_LOW_PROFILE or
-                View.SYSTEM_UI_FLAG_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION or
-                View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-        }
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+        windowInsetsController.systemBarsBehavior =
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         binding.bottomNav.isVisible = false
+        lightNavBar = true
     }
 
     @Suppress("DEPRECATION")
     fun showSystemUI() {
-        window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-        binding.navHostContainer.post {
-            binding.navHostContainer.systemUiVisibility = View.SYSTEM_UI_FLAG_VISIBLE
-        }
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         binding.bottomNav.isVisible = true
+        lightNavBar = false
     }
 
     fun navigateToAddressAuthFragment() {

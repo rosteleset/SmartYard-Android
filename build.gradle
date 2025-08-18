@@ -5,7 +5,7 @@ buildscript {
         targetSdk = 35
         compileSdk = 35
         adapterdelegates = '4.2.0'
-        androidPlugin = '8.11.1'
+        androidPlugin = '8.12.0'
         androidxLegacy = '1.0.0'
         androidxTransition = '1.4.1'
         appCompat = '1.6.1'

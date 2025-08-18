@@ -212,12 +212,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         viewModel.isMuted.observe(
             viewLifecycleOwner
-        ) { mute ->
-            if (mute) {
-                mute()
-            } else {
-                unMute()
-            }
+        ) { isMuted ->
+            mPlayer?.isMuted
         }
     }
 
@@ -375,16 +371,6 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         return player
     }
 
-    private fun unMute() {
-        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_on_24px)
-        mPlayer?.unMute()
-    }
-
-    private fun mute() {
-        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_off_24px)
-        mPlayer?.mute()
-    }
-
     private fun changeVideoSource(hls_url: String) {
         if (hls_url.isEmpty()) {
             return
@@ -405,7 +391,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         binding.pbCityCamera.progress = 0
         binding.ivCityCameraFullscreen.visibility = View.VISIBLE
         binding.pvCityCamera.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        binding.ivCityCameraFullscreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
+        binding.ivCityCameraFullscreen.isSelected = true
         binding.flCityCameraVideoWrap.background = null
         (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
@@ -431,7 +417,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         binding.llCityCameraMain.addView(binding.flCityCameraVideoWrap, 0)
         (activity as? MainActivity)?.showSystemUI()
         binding.pvCityCamera.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
-        binding.ivCityCameraFullscreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
+        binding.ivCityCameraFullscreen.isSelected = false
         binding.flCityCameraVideoWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
 
         //возвращаем дефолтные layouts

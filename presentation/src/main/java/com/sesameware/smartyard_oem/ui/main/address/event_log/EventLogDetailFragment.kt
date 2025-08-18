@@ -84,7 +84,6 @@ class EventLogDetailFragment : Fragment() {
         if (mPlayer == null) {
             val callbacks = object : BaseCCTVPlayer.Callbacks {
                 override fun onPlayerStateReady() {
-                    mPlayer?.mute()
                     activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
 
@@ -260,11 +259,7 @@ class EventLogDetailFragment : Fragment() {
     }
 
     private fun onMuteClick(isMuted: Boolean) {
-        if (isMuted) {
-            mPlayer?.mute()
-        } else {
-            mPlayer?.unMute()
-        }
+        mPlayer?.isMuted = isMuted
     }
 
     private fun onPlayOrPause() {

@@ -54,6 +54,8 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private var canRenewToken = true
 
+    private var bottomInset = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -100,7 +102,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
             playerResizeMode = binding.mVideoView.resizeMode
             binding.mVideoView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-            binding.mFullScreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
+            binding.mFullScreen.isSelected = true
             binding.videoWrap.background = null
             (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
@@ -126,7 +128,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             (activity as? MainActivity)?.showSystemUI()
 
             binding.mVideoView.resizeMode = playerResizeMode
-            binding.mFullScreen.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
+            binding.mFullScreen.isSelected = false
 
             binding.videoWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
 
@@ -188,25 +190,12 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
         mCCTVViewModel.isMuted.observe(
             viewLifecycleOwner
-        ) { mute ->
+        ) { isMuted ->
             if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-                if (mute) {
-                    mute()
-                } else {
-                    unMute()
-                }
+                binding.mMute.isSelected = isMuted
+                mPlayer?.isMuted = isMuted
             }
         }
-    }
-
-    private fun unMute() {
-        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_on_24px)
-        mPlayer?.unMute()
-    }
-
-    private fun mute() {
-        binding.mMute.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_volume_off_24px)
-        mPlayer?.mute()
     }
 
     private fun createPlayer(
@@ -228,7 +217,6 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 if (mPlayer?.playWhenReady == true) {
                     activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
-                mute()
             }
 
             override fun onPlayerStateEnded() {
