@@ -54,8 +54,6 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private var canRenewToken = true
 
-    private var bottomInset = 0
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
