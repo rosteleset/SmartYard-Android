@@ -109,7 +109,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:background="@drawable/background_card"
+                app:cardBackgroundColor="@color/light_background"
                 app:cardElevation="0dp"
                 app:cardCornerRadius="13dp"
                 app:layout_constraintDimensionRatio="16:9"
