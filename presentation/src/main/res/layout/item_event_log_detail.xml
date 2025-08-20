@@ -104,12 +104,14 @@
 
             </LinearLayout>
 
-            <FrameLayout
+            <androidx.cardview.widget.CardView
                 android:id="@+id/clEventImageOrVideo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/background_card"
+                app:cardElevation="0dp"
+                app:cardCornerRadius="13dp"
                 app:layout_constraintDimensionRatio="16:9"
                 app:layout_constraintTop_toBottomOf="@id/llEventHeader" >
 
@@ -146,7 +148,7 @@
                     app:use_artwork="false"
                     app:use_controller="false" />
 
-            </FrameLayout>
+            </androidx.cardview.widget.CardView>
 
             <ImageView
                 android:id="@+id/ivEventHelp"
