@@ -72,6 +72,9 @@
         <activity
             android:name=".ui.show_event.ShowEventActivity"
             android:exported="false"
+            android:launchMode="singleTask"
+            android:showWhenLocked="true"
+            android:turnScreenOn="true"
             android:theme="@style/Theme.Transparent" />
 
         <service

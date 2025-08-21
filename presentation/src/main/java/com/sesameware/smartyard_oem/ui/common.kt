@@ -309,7 +309,6 @@ fun dpToPx(dp: Int): Float {
     return (dp * Resources.getSystem().displayMetrics.density)
 }
 
-@SuppressLint("ObsoleteSdkInt")
 fun sendCallNotification(
     data: PushCallData,
     context: Context,
@@ -325,7 +324,8 @@ fun sendCallNotification(
         }
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent,
-                if (VERSION.SDK_INT >= VERSION_CODES.M) PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE else PendingIntent.FLAG_UPDATE_CURRENT)
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
 
         val notificationBuilder = NotificationCompat.Builder(this, MessagingService.CHANNEL_CALLS_ID)
             .setSmallIcon(R.drawable.ic_notification)
@@ -336,7 +336,7 @@ fun sendCallNotification(
             .setCategory(NotificationCompat.CATEGORY_CALL)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setTimeoutAfter(30000)
+            .setTimeoutAfter(30_000)
             .setWhen(System.currentTimeMillis())
             .setFullScreenIntent(pendingIntent, true)
 
@@ -348,8 +348,18 @@ fun sendCallNotification(
     }
 }
 
-fun sendEventNotification(title: String?, body: String?, date: String, imageUrl: String?, context: Context) {
+fun sendEventNotification(
+    title: String?,
+    body: String?,
+    date: String,
+    imageUrl: String?,
+    context: Context,
+    prefs: PreferenceStorage) {
     Timber.d("debug_dmm  call sendEventNotification")
+
+    prefs.notificationData.addInboxNotification(prefs)
+    val notId = prefs.notificationData.currentInboxId
+
     context.run {
         val notifyIntent = Intent(this, ShowEventActivity::class.java).apply {
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_NO_USER_ACTION or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -359,8 +369,8 @@ fun sendEventNotification(title: String?, body: String?, date: String, imageUrl:
             putExtra(ShowEventActivity.EVENT_IMAGE_URL, imageUrl)
         }
         val pendingIntent =
-            PendingIntent.getActivity(this, 0, notifyIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            PendingIntent.getActivity(this, notId, notifyIntent,
+                PendingIntent.FLAG_IMMUTABLE
             )
 
         val notificationBuilder = NotificationCompat.Builder(this, MessagingService.CHANNEL_INBOX_ID)
@@ -369,6 +379,7 @@ fun sendEventNotification(title: String?, body: String?, date: String, imageUrl:
             .setColor(ContextCompat.getColor(context, R.color.brand))
             .setContentTitle(title)
             .setContentText(body)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
@@ -376,7 +387,7 @@ fun sendEventNotification(title: String?, body: String?, date: String, imageUrl:
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = notificationBuilder.build()
-        notificationManager.notify(MessagingService.EVENT_NOTIFICATION_ID, notification)
+        notificationManager.notify(notId, notification)
     }
 }
 

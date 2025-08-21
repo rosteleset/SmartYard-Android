@@ -156,7 +156,7 @@ class MessagingService : HmsMessageService(), KoinComponent {
                         } catch (_: Exception) {
                         }
                         val date = Instant.ofEpochSecond(timestamp).atZone(ZoneId.of(DataModule.serverTz)).toLocalDateTime().format(
-                            DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm")
+                            DateTimeFormatter.ofPattern("dd.MM.yyyy, HH:mm:ss")
                         )
                         val hash = get("hash")
                         var imageUrl = ""
@@ -257,7 +257,6 @@ class MessagingService : HmsMessageService(), KoinComponent {
         const val CALL_STUN_TRANSPORT = "stn_transport"
         const val CALL_TURN_USERNAME = "turn_username"
         const val CALL_TURN_PASSWORD = "turn_password"
-        const val EVENT_NOTIFICATION_ID = 1004
     }
 
     enum class TypeMessage {
@@ -279,6 +278,6 @@ class MessagingService : HmsMessageService(), KoinComponent {
     }
 
     private fun notifyUserAboutEvent(title: String?, body: String?, date: String, imageUrl: String?) {
-        sendEventNotification(title, body, date, imageUrl, context)
+        sendEventNotification(title, body, date, imageUrl, context, preferenceStorage)
     }
 }
