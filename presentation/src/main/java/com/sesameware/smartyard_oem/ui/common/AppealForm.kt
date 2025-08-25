@@ -4,15 +4,16 @@ import android.content.Context
 import android.os.Bundle
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.LifecycleOwner
+import com.sesameware.data.DataModule
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FormAppealBinding
+import com.sesameware.smartyard_oem.ui.regexInputFilter
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
@@ -44,6 +45,12 @@ class AppealForm @JvmOverloads constructor(
         binding.nameText.addTextChangedListener {
             this.textChangeListener()
         }
+        if (DataModule.providerConfig.validationNamePattern.isNotEmpty()) {
+            binding.nameText.regexInputFilter(DataModule.providerConfig.validationNamePattern)
+        }
+        if (DataModule.providerConfig.validationPatronymicPattern.isNotEmpty()) {
+            binding.patronymicText.regexInputFilter(DataModule.providerConfig.validationPatronymicPattern)
+        }
 
         mViewModel.sentName.observe(
             viewLifecycleOwner
@@ -60,7 +67,8 @@ class AppealForm @JvmOverloads constructor(
         binding.btnDone.setText(btnText)
         binding.btnDone.setOnClickListener {
             toggleError(false)
-            if (validate()) {
+            val resId = validate()
+            if (resId == -1) {
                 mViewModel.sendName(
                     binding.nameText.text.toString(),
                     binding.patronymicText.text.toString()
@@ -68,24 +76,35 @@ class AppealForm @JvmOverloads constructor(
                     success()
                 }
             } else {
-                toggleError(true, R.string.appeal_validation_error)
+                toggleError(true, resId)
             }
         }
     }
 
-    private fun validate(): Boolean {
-        return binding.nameText.text.isNotEmpty()
+    private fun validate(): Int {
+        if (DataModule.providerConfig.validationNamePattern.isNotEmpty()) {
+            if (!Regex(DataModule.providerConfig.validationNamePattern).matches(binding.nameText.text)) {
+                return R.string.appeal_validation_name_error
+            }
+        }
+        if (DataModule.providerConfig.validationPatronymicPattern.isNotEmpty()) {
+            if (!Regex(DataModule.providerConfig.validationPatronymicPattern).matches(binding.patronymicText.text)) {
+                return R.string.appeal_validation_patronymic_error
+            }
+        }
+
+        return if (binding.nameText.text.isNotEmpty()) -1 else R.string.appeal_validation_name_error
     }
 
     private fun toggleError(error: Boolean, @StringRes mesId: Int? = null) {
         if (error && mesId != null) {
-            binding.tvError.visibility = View.VISIBLE
+            binding.tvError.visibility = VISIBLE
             binding.tvError.setText(mesId)
             if (mesId == com.sesameware.domain.R.string.common_do_authorization_on_another) {
                 mViewModel.logout(context)
             }
         } else {
-            binding.tvError.visibility = View.GONE
+            binding.tvError.visibility = GONE
         }
     }
 }

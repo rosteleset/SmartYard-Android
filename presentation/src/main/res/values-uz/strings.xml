@@ -166,7 +166,8 @@
     <string name="address_work_soon_courier_btn_0">Kuryer chaqirish</string>
 
     <!-- Как к вам обращаться? -->
-    <string name="appeal_validation_error">Ism bo‘sh bo‘lishi mumkin emas</string>
+    <string name="appeal_validation_name_error">Ism bo‘sh bo‘lishi mumkin emas</string>
+    <string name="appeal_validation_patronymic_error">Otasining ismi bo‘sh bo‘lmasligi kerak</string>
     <string name="appeal_title">Sizga\nqanday murojaat qilish kerak?</string>
     <string name="appeal_title_patronymic">Otasining ismi</string>
 

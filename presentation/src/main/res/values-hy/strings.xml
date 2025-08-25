@@ -167,7 +167,8 @@
     <string name="address_work_soon_courier_btn_0">Դիմել քուրիեր</string>
 
     <!-- Как к вам обращаться? -->
-    <string name="appeal_validation_error">Անունը չի կարող լրացնել դատարկ լինի</string>
+    <string name="appeal_validation_name_error">Անունը չի կարող լրացնել դատարկ լինի</string>
+    <string name="appeal_validation_patronymic_error">Հայրանունը չպետք է դատարկ լինի</string>
     <string name="appeal_title">Ինչպես\nկարելի է Ձեզ\nկանչել?</string>
     <string name="appeal_title_patronymic">Հայրանուն</string>
 

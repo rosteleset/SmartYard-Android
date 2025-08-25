@@ -37,7 +37,12 @@ data class ProviderConfig(
     @Json(name = ACTIVE_TAB) val activeTab: String = TAB_ADDRESSES,
 
     //версия заявок
-    @Json(name = ISSUES_VERSION) val issuesVersion: String = "1"
+    @Json(name = ISSUES_VERSION) val issuesVersion: String = "1",
+
+    //appeal form name, patronymic and last validation
+    @Json(name = VALIDATION_NAME_PATTERN) val validationNamePattern: String = "",
+    @Json(name = VALIDATION_PATRONYMIC_PATTERN) val validationPatronymicPattern: String = "",
+    @Json(name = VALIDATION_LAST_PATTERN) val validationLastPattern: String = "",
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
@@ -105,6 +110,11 @@ data class ProviderConfig(
 
         //версия заявок
         const val ISSUES_VERSION = "issuesVersion"
+
+        //appeal form validation
+        const val VALIDATION_NAME_PATTERN = "validationNamePattern"
+        const val VALIDATION_PATRONYMIC_PATTERN = "validationPatronymicPattern"
+        const val VALIDATION_LAST_PATTERN = "validationLastPattern"
     }
 }
 

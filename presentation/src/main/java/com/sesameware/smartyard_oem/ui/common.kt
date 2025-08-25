@@ -1,6 +1,5 @@
 package com.sesameware.smartyard_oem.ui
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Activity.RESULT_OK
 import android.app.DatePickerDialog
@@ -33,12 +32,15 @@ import android.os.Build.VERSION
 import android.os.Build.VERSION_CODES
 import android.os.Bundle
 import android.provider.Settings
+import android.text.InputFilter
+import android.text.Spanned
 import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.widget.DatePicker
+import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TimePicker
@@ -78,6 +80,7 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import java.util.regex.PatternSyntaxException
 
 fun showStandardAlert(context: Context, @StringRes msgResId: Int, callback: listenerEmpty? = null) {
     showStandardAlert(context, context.getString(msgResId), callback)
@@ -559,4 +562,61 @@ fun Context.toast(@StringRes resId: Int, long: Boolean = true) {
 fun Context.toast(message: String, long: Boolean = true) {
     val length = if (long) Toast.LENGTH_LONG else Toast.LENGTH_SHORT
     Toast.makeText(this, message, length).show()
+}
+
+fun EditText.regexInputFilter(pattern: String) {
+    try {
+        filters = arrayOf<InputFilter>(
+            RegexInputFilter(pattern)
+        )
+    }catch (e: PatternSyntaxException){
+        isEnabled = false
+        hint = e.message
+    }
+}
+
+class RegexInputFilter(private var pattern: String) : InputFilter {
+    init {
+        // replace regexp pattern length range with * (if it exists)
+        var start = -1
+        var end = -1
+        for (i in pattern.length - 1 downTo 0) {
+            if (pattern[i] == '}') {
+                end = i
+            }
+            if (pattern[i] == '{') {
+                start = i
+            }
+
+            if (start >= 0 && end >= 0) {
+                break
+            }
+        }
+        if (start >= 0 && end >= 0) {
+            pattern = StringBuilder(pattern.removeRange(start, end + 1)).apply {
+                insert(start, "*")
+            }.toString()
+
+        }
+        Timber.d("debug_dmm final regex pattern = $pattern")
+    }
+
+    override fun filter(
+        source: CharSequence?,
+        start: Int,
+        end: Int,
+        dest: Spanned?,
+        dstart: Int,
+        dend: Int
+    ): CharSequence? {
+        source?.let { s ->
+            return if (Regex(pattern).matches(s)) {
+                null
+            } else {
+                ""
+            }
+        }
+
+        return null;
+    }
 }
