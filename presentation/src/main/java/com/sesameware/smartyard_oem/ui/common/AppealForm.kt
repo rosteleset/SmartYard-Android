@@ -45,6 +45,9 @@ class AppealForm @JvmOverloads constructor(
         binding.nameText.addTextChangedListener {
             this.textChangeListener()
         }
+        binding.patronymicText.addTextChangedListener {
+            this.textChangeListener()
+        }
         if (DataModule.providerConfig.validationNamePattern.isNotEmpty()) {
             binding.nameText.regexInputFilter(DataModule.providerConfig.validationNamePattern)
         }
@@ -93,7 +96,7 @@ class AppealForm @JvmOverloads constructor(
             }
         }
 
-        return if (binding.nameText.text.isNotEmpty()) -1 else R.string.appeal_validation_name_error
+        return if (binding.nameText.text.isNotEmpty()) -1 else R.string.appeal_empty_name_error
     }
 
     private fun toggleError(error: Boolean, @StringRes mesId: Int? = null) {

@@ -569,14 +569,33 @@ fun EditText.regexInputFilter(pattern: String) {
         filters = arrayOf<InputFilter>(
             RegexInputFilter(pattern)
         )
-    }catch (e: PatternSyntaxException){
+    } catch (e: PatternSyntaxException){
         isEnabled = false
         hint = e.message
     }
 }
 
 class RegexInputFilter(private var pattern: String) : InputFilter {
+    private var maxLength: Int = Int.MAX_VALUE
     init {
+        // find if exists the maximum length
+        try {
+            val res = Regex("^.*\\{(\\d*),*(\\d*)\\}.*$").find(pattern)?.groups
+            if (res?.size == 3) {
+                val l = res[1]?.value ?: ""
+                val r = res[2]?.value ?: ""
+                if (l.isNotEmpty() && r.isNotEmpty()) {
+                    maxLength = if (r.isEmpty()) {
+                        l.toInt()
+                    } else {
+                        r.toInt()
+                    }
+                }
+            }
+        } catch (_: Exception) {
+
+        }
+
         // replace regexp pattern length range with * (if it exists)
         var start = -1
         var end = -1
@@ -610,7 +629,7 @@ class RegexInputFilter(private var pattern: String) : InputFilter {
         dend: Int
     ): CharSequence? {
         source?.let { s ->
-            return if (Regex(pattern).matches(s)) {
+            return if (Regex(pattern).matches(s) && dend < maxLength) {
                 null
             } else {
                 ""

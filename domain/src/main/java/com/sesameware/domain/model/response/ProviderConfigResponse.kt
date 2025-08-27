@@ -43,6 +43,11 @@ data class ProviderConfig(
     @Json(name = VALIDATION_NAME_PATTERN) val validationNamePattern: String = "",
     @Json(name = VALIDATION_PATRONYMIC_PATTERN) val validationPatronymicPattern: String = "",
     @Json(name = VALIDATION_LAST_PATTERN) val validationLastPattern: String = "",
+
+    //address verification UI
+    @Json(name = ADDRESS_VERIFICATION_TAB_LAYOUT_VISIBLE) val _addressVerificationTabLayoutVisible: String = "t",
+    @Json(name = ADDRESS_VERIFICATION_TAB_1_VISIBLE) val _addressVerificationTab1Visible: String = "t",
+    @Json(name = ADDRESS_VERIFICATION_TAB_2_VISIBLE) val _addressVerificationTab2Visible: String = "t",
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
@@ -62,6 +67,14 @@ data class ProviderConfig(
     val guestAccess: GuestAccessType get() = GuestAccessType.getType(_guestAccess)
 
     val cctvView: CCTVViewTypeType get() = CCTVViewTypeType.getType(_cctvView)
+
+    //address verification UI
+    val addressVerificationTabLayoutVisible: Boolean
+        get() = _addressVerificationTabLayoutVisible == "t"
+    val addressVerificationTab1Visible: Boolean
+        get() = _addressVerificationTab1Visible == "t"
+    val addressVerificationTab2Visible: Boolean
+        get() = _addressVerificationTab2Visible == "t"
 
     companion object {
         //чат
@@ -115,6 +128,11 @@ data class ProviderConfig(
         const val VALIDATION_NAME_PATTERN = "validationNamePattern"
         const val VALIDATION_PATRONYMIC_PATTERN = "validationPatronymicPattern"
         const val VALIDATION_LAST_PATTERN = "validationLastPattern"
+
+        //address verification UI
+        const val ADDRESS_VERIFICATION_TAB_LAYOUT_VISIBLE = "addressVerificationTabLayoutVisible"
+        const val ADDRESS_VERIFICATION_TAB_1_VISIBLE = "addressVerificationTab1Visible"
+        const val ADDRESS_VERIFICATION_TAB_2_VISIBLE = "addressVerificationTab2Visible"
     }
 }
 

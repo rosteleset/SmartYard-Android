@@ -170,6 +170,7 @@
     <string name="address_work_soon_courier_btn_0">Вызвать курьера</string>
 
     <!-- Как к вам обращаться? -->
+    <string name="appeal_empty_name_error">Имя не должно быть пустым</string>
     <string name="appeal_validation_name_error">Имя не должно быть пустым</string>
     <string name="appeal_validation_patronymic_error">Отчество не должно быть пустым</string>
     <string name="appeal_title">Как к вам\nобращаться?</string>

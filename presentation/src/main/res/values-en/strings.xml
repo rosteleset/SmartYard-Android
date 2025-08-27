@@ -170,6 +170,7 @@
     <string name="address_work_soon_courier_btn_0">Request a courier</string>
 
     <!-- Как к вам обращаться? -->
+    <string name="appeal_empty_name_error">Name cannot be empty</string>
     <string name="appeal_validation_name_error">Name cannot be empty</string>
     <string name="appeal_validation_patronymic_error">Patronymic should not be empty</string>
     <string name="appeal_title">How can\nwe address you?</string>

@@ -172,6 +172,7 @@
     <string name="address_work_soon_courier_btn_0">Курьерді шақыру</string>
 
     <!-- Как к вам обращаться? -->
+    <string name="appeal_empty_name_error">Аты бос болмауы керек</string>
     <string name="appeal_validation_name_error">Аты бос болмауы керек</string>
     <string name="appeal_validation_patronymic_error">Әкесінің аты бос болмауы керек</string>
     <string name="appeal_title">Сізге қалай хабарласуға болады</string>
