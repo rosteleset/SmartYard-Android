@@ -213,7 +213,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         viewModel.isMuted.observe(
             viewLifecycleOwner
         ) { isMuted ->
-            mPlayer?.isMuted
+            binding.mMute.isSelected = isMuted
+            mPlayer?.isMuted = isMuted
         }
     }
 
