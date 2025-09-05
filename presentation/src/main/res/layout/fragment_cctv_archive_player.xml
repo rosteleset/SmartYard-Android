@@ -159,15 +159,17 @@
                             android:background="@drawable/ic_cctv_enter_fullscreen"
                             tools:ignore="ContentDescription" />
 
-                        <ImageButton
+                        <ImageView
                             android:id="@+id/mMute"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="top|start"
-                            android:layout_margin="12dp"
-                            android:background="@drawable/ic_cctv_volume_on_24px"
+                            android:padding="12dp"
+                            android:scaleType="centerInside"
                             android:visibility="gone"
-                            tools:ignore="ContentDescription" />
+                            app:srcCompat="@drawable/selector_mute"
+                            tools:ignore="ContentDescription"
+                            tools:visibility="visible" />
 
                         <com.sesameware.lib.RangeSlider
                             android:id="@+id/rangeTrimmer"
