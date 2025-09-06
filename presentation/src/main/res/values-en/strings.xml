@@ -452,13 +452,14 @@
     <string name="text_count_sample">4</string>
     <string name="events_title">Events</string>
     <string name="title_my_addresses">My addresses</string>
-    <string name="dow_mon">Mon</string>
-    <string name="dow_tue">Tue</string>
-    <string name="dow_wed">Wed</string>
-    <string name="sow_tue">Thu</string>
-    <string name="dow_fri">Fri</string>
-    <string name="dow_sat">Sat</string>
-    <string name="dow_sun">Sun</string>
+    <!-- В en локали понедельник начинается в воскресенье -->
+    <string name="dow_mon">Sun</string>
+    <string name="dow_tue">Mon</string>
+    <string name="dow_wed">Tue</string>
+    <string name="sow_tue">Wed</string>
+    <string name="dow_fri">Thu</string>
+    <string name="dow_sat">Fri</string>
+    <string name="dow_sun">Sat</string>
     <string name="event_day_sample">Monday, April 19</string>
     <string name="payment_error">Error!</string>
     <string name="payment_error_description">An error occurred.</string>
