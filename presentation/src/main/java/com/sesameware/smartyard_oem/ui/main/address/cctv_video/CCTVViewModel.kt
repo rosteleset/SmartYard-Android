@@ -33,7 +33,8 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import timber.log.Timber
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 @Parcelize
 data class AvailableRange(
@@ -64,8 +65,6 @@ class CCTVViewModel(
     var initialThumb: Bitmap? = null
     private val _isFullScreen = MutableLiveData<Boolean>(false)
     val isFullscreen: LiveData<Boolean> get() = _isFullScreen
-    private val _isMuted = MutableLiveData<Boolean>(true)
-    val isMuted: LiveData<Boolean> get() = _isMuted
     var closedRangeCalendar = MutableLiveData<Event<ClosedRange<LocalDate>>>()
 
     var endDate: LocalDate = LocalDate.now(ZoneId.of(DataModule.serverTz))
@@ -78,11 +77,6 @@ class CCTVViewModel(
 
     fun setFullscreen(flag: Boolean) {
         _isFullScreen.value = flag
-    }
-
-    fun mute(flag: Boolean) {
-        _isMuted.value = flag
-        Timber.d("__Q__   isMuted = ${_isMuted.value}")
     }
 
     private fun getDateTime(s: Long): String? {

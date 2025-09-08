@@ -408,9 +408,8 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         }
 
         binding.mMute.setOnClickListener {
-            mCCTVViewModel.isMuted.value?.let {
-                mCCTVViewModel.mute(!it)
-            }
+            val isMuted = mPlayer?.isMuted != false
+            setMute(!isMuted)
         }
         binding.tvTitle.text = getString(R.string.cctv_video_from_date, chosenDate.format(mDateFormatter))
         binding.rvTimeFragmentButtons.apply {
@@ -491,6 +490,13 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         }
     }
 
+    fun setMute(isMuted: Boolean) {
+        mPlayer?.let {
+            it.isMuted = isMuted
+            binding.mMute.isSelected = isMuted
+        }
+    }
+
     override fun onExitFullscreen() {
         if (mCCTVViewModel.isFullscreen.value == true) {
             mCCTVViewModel.setFullscreen(false)
@@ -509,7 +515,7 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
     override fun onStop() {
         super.onStop()
 
-        mCCTVViewModel.mute(true)
+        setMute(true)
         mViewModel.stopVideoPlay()
         Timber.d("__Q__   releasePlayer from onStop")
         releasePlayer()
@@ -663,13 +669,6 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
             }
         }
 
-        mCCTVViewModel.isMuted.observe(
-            viewLifecycleOwner
-        ) { isMuted ->
-            binding.mMute.isSelected = isMuted
-            mPlayer?.isMuted = isMuted
-        }
-
         mCCTVViewModel.chosenCamera.observe(
             viewLifecycleOwner
         ) {
@@ -783,7 +782,7 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
 
             override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
                 binding.mMute.isVisible = isAvailable
-                if (isAvailable) mCCTVViewModel.mute(true)
+                if (isAvailable) setMute(true)
             }
         }
 

@@ -81,9 +81,15 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         }
 
         binding.mMute.setOnClickListener {
-            mCCTVViewModel.isMuted.value?.let {
-                mCCTVViewModel.mute(!it)
-            }
+            val isMuted = mPlayer?.isMuted != false
+            setMute(!isMuted)
+        }
+    }
+
+    fun setMute(isMuted: Boolean) {
+        mPlayer?.let {
+            it.isMuted = isMuted
+            binding.mMute.isSelected = isMuted
         }
     }
 
@@ -185,15 +191,6 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
                 }
             }
         }
-
-        mCCTVViewModel.isMuted.observe(
-            viewLifecycleOwner
-        ) { isMuted ->
-            if (mCCTVViewModel.currentTabId == CCTVViewModel.ONLINE_TAB_POSITION) {
-                binding.mMute.isSelected = isMuted
-                mPlayer?.isMuted = isMuted
-            }
-        }
     }
 
     private fun createPlayer(
@@ -267,6 +264,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
             override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
                 binding.mMute.isVisible = isAvailable
+                if (isAvailable) setMute(true)
             }
         }
 
@@ -342,9 +340,9 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     override fun onStop() {
         super.onStop()
 
+        setMute(true)
         Timber.d("__Q__   releasePlayer from onStop")
         releasePlayer()
-        mCCTVViewModel.mute(true)
         activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
