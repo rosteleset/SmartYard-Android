@@ -7,7 +7,6 @@ import android.util.Base64
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
-import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -168,7 +167,10 @@ class EventLogDetailVH(
                     tvEventAdditional.isVisible = true
                     if (plog.detailX?.vehicle?.plateNumber?.isNotEmpty() == true) {
                         tvEventAdditional.text =
-                            itemView.resources.getString(R.string.event_log_plate_number, plog.detailX?.vehicle?.plateNumber)
+                            itemView.resources.getString(
+                                R.string.event_log_plate_number,
+                                plog.detailX?.vehicle?.plateNumber
+                            )
                     }
                 }
 
@@ -296,6 +298,11 @@ class EventLogDetailVH(
 
     fun setMuteControlVisibility(isVisible: Boolean) {
         binding.ivEventMute.isVisible = isVisible
+        if (isVisible) {
+            isMuted = true
+            binding.ivEventMute.isSelected = true
+            onAction(EventLogDetailItemAction.OnMuteClick(true))
+        }
     }
 
     fun getPlayerView() = binding.pvEventVideo
