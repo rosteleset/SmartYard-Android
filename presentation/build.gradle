@@ -13,7 +13,7 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.compileSdk
+    compileSdkVersion rootProject.compileSdk
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_17

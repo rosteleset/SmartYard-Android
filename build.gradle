@@ -80,6 +80,7 @@ buildscript {
 }
 
 plugins {
+    //noinspection GradlePluginVersion
     id 'com.android.application' version "$androidPlugin" apply false
     id 'org.jetbrains.kotlin.android' version "$kotlinPlugin" apply false
     id 'org.jetbrains.compose' version "$composePlugin" apply false
@@ -92,5 +93,5 @@ plugins {
 }
 
 tasks.register('clean', Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }
