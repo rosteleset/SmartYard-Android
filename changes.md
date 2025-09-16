@@ -1,5 +1,18 @@
 ## History of major changes
 
+### Version 1.0.80
+- Fixed mute button in the event item
+- Fixed days of the week in the calendar for en locale
+- Added ext options to the appeal form and address verification UIs
+- Added regex validation for name and patronymic to the AppealForm
+- Added notification id to event notifications
+- Fixed event record clipping
+- Fixed system bars appearance in the incoming call and fullscreen mode
+- Update libraries for 16kb alignment
+- Added showing push event for RFID
+- Fixed System Bars appearance
+- Fixed bump animation in the bottom navigation bar
+
 ### Version 1.0.76
 - Fixed animation in the bottom menu
 - Updated minSdk to 24 (Android 7.0)
