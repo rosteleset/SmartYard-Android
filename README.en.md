@@ -5,7 +5,7 @@ This application was originally commissioned in 2020 by the telecom operator [La
 
 Later, we continued developing this project on our own and extended it with additional features. We added overview cameras, an event log, face recognition settings, and also fixed bugs that kept appearing here and there during operation.
 
-In October 2021 we decided to open-source the project and invite everyone interested in building similar services not to “reinvent the wheel” from scratch, but to develop this project together with us by sharing ideas and solutions. At that time the application was being used by around 15,000 users living in buildings equipped with our intercom panels and video surveillance systems.
+In October 2021 we decided to open-source the project and invite everyone interested in building similar services not to “reinvent the wheel” from scratch, but to develop this project together with us by sharing ideas and solutions. At that time the application was being used by around 65,000 users living in buildings equipped with our intercom panels and video surveillance systems.
 
 ## API
 The application uses our own proprietary API. [(API link)](https://rosteleset.github.io/ApplicationAPI/)  
