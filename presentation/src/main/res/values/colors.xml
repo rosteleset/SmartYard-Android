@@ -26,8 +26,12 @@
     <!-- Widget -->
     <color name="widget_background">#E6FFFFFF</color>
 
+    <!-- Map -->
+    <color name="marker_tint">@color/brand</color>
+
     <!-- Misc -->
     <color name="range_slider_unselected_mask">#4DFFFFFF</color>
+    <color name="untinted_vector">#FF00FF</color>
 
     <!-- Vehicle -->
     <color name="vehicle_box">@color/negative</color>

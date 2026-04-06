@@ -467,7 +467,7 @@ fun createIconWithText(
 
     text?.let {
         val textPaint: Paint = Paint().apply {
-            color = ResourcesCompat.getColor(context.resources, R.color.brand, null)
+            color = ResourcesCompat.getColor(context.resources, R.color.marker_tint, null)
             isAntiAlias = true
             textSize = 40f
             textAlign = Paint.Align.CENTER

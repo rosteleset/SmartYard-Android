@@ -10,13 +10,16 @@ import androidx.core.view.doOnPreDraw
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.sesameware.smartyard_oem.databinding.ItemEventLogBinding
 import com.sesameware.smartyard_oem.databinding.ItemHouseBinding
 import com.sesameware.smartyard_oem.databinding.ItemIssueBinding
 import com.sesameware.smartyard_oem.databinding.ItemVideoCameraBinding
+import com.sesameware.smartyard_oem.databinding.ItemWebExtBinding
 import com.sesameware.smartyard_oem.databinding.ItemYardBinding
 import com.sesameware.smartyard_oem.ui.main.address.models.AddressUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.EntranceState
+import com.sesameware.smartyard_oem.ui.main.address.models.ExtItemModel
 import com.sesameware.smartyard_oem.ui.main.address.models.HouseAction
 import com.sesameware.smartyard_oem.ui.main.address.models.HouseUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueAction
@@ -29,6 +32,7 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnIssueClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnItemFullyExpanded
 import com.sesameware.smartyard_oem.ui.main.address.models.OnOpenEntranceClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
+import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
 import net.cachapa.expandablelayout.ExpandableLayout.OnExpansionUpdateListener
 
@@ -199,6 +203,7 @@ class HouseViewHolder private constructor(
             addCameras(houseContent, model, state.cameraCount, callback)
             addEventLog(houseContent, state.hasEventLog,
                 state.address, state.houseId, callback)
+            addWebExtensions(houseContent, state.extList, callback)
         }
     }
 
@@ -264,6 +269,28 @@ class HouseViewHolder private constructor(
         with(binding) {
             root.setOnClickListener {
                 callback(OnEventLogClick(title, houseId))
+            }
+        }
+    }
+
+    private fun addWebExtensions(
+        layout: LinearLayout,
+        extItems: List<ExtItemModel>,
+        callback: HouseCallback
+    ) {
+        extItems.forEach { item ->
+            val binding = ItemWebExtBinding.inflate(
+                LayoutInflater.from(layout.context),
+                layout, true
+            )
+            item.icon?.let { icon ->
+                Glide.with(binding.ivImageWebExt)
+                    .load(icon)
+                    .into(binding.ivImageWebExt)
+            }
+            binding.tvTitleWebExt.text = item.caption
+            binding.root.setOnClickListener {
+                callback(OnWebExtensionClick(item.caption,item.basePath, item.code))
             }
         }
     }

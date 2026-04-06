@@ -1,4 +1,4 @@
-package com.sesameware.smartyard_oem.ui.main.address.inputAdress
+package com.sesameware.smartyard_oem.ui.main.address.inputAddress
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope

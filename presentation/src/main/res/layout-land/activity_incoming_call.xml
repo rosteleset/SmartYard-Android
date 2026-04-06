@@ -77,6 +77,7 @@
             android:layout_marginBottom="16dp"
             android:gravity="center|center_vertical"
             android:orientation="horizontal"
+            tools:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/ivFullscreenMinimalize"
             app:layout_constraintStart_toStartOf="parent"
@@ -139,6 +140,39 @@
                 app:buttonBG="@drawable/checkbox_round_state_unlocked"
                 app:orientationLandscap="true" />
 
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mSupportRow"
+            android:layout_width="0dp"
+            android:layout_height="100dp"
+            android:layout_marginHorizontal="100dp"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/ivFullscreenMinimalize"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
+                android:id="@+id/mAnswerButtonSupport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/answer"
+                app:buttonBG="@drawable/checkbox_round_state_answer_support"
+                app:orientationLandscap="true" />
+
+            <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
+                android:id="@+id/mHangUpButtonSupport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/ignore"
+                app:buttonBG="@drawable/checkbox_round_state_hang_support"
+                app:orientationLandscap="true" />
 
         </LinearLayout>
 

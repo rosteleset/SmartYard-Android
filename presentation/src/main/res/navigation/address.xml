@@ -32,10 +32,13 @@
         <action
             android:id="@+id/action_addressFragment_to_CCTVTreeFragment"
             app:destination="@id/CCTVTreeFragment" />
+        <action
+            android:id="@+id/action_addressFragment_to_customWebViewFragmentAddress"
+            app:destination="@id/customWebViewFragmentAddress" />
     </fragment>
     <fragment
         android:id="@+id/inputAddressFragment"
-        android:name="com.sesameware.smartyard_oem.ui.main.address.inputAdress.InputAddressFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.inputAddress.InputAddressFragment"
         android:label="InputAddressFragment"
         tools:layout="@layout/fragment_input_address" >
         <action
@@ -236,4 +239,47 @@
             android:name="startDate"
             app:argType="org.threeten.bp.LocalDate" />
     </fragment>
+    <fragment
+        android:id="@+id/customWebViewFragmentAddress"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebViewFragment"
+        android:label="fragment_custom_web_view"
+        tools:layout="@layout/fragment_custom_web_view" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
+        <argument
+            android:name="basePath"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="hasBackButton"
+            app:argType="boolean"
+            android:defaultValue="true" />
+    </fragment>
+    <dialog
+        android:id="@+id/customWebBottomFragmentAddress"
+        android:name="com.sesameware.smartyard_oem.ui.custom_web_view.CustomWebBottomFragment"
+        android:label="fragment_custom_web_bottom"
+        tools:layout="@layout/fragment_custom_web_bottom" >
+        <argument
+            android:name="fragmentId"
+            app:argType="integer" />
+        <argument
+            android:name="popupId"
+            app:argType="integer" />
+        <argument
+            android:name="url"
+            app:argType="string" />
+    </dialog>
 </navigation>

@@ -12,6 +12,8 @@ plugins {
     id 'ru.ok.tracer'
 }
 
+// TODO убрать отсюда клиента, переделать всё в LF, Сделать сводку изменений в версии 
+
 android {
     compileSdk rootProject.compileSdk
 
@@ -28,14 +30,15 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdk = rootProject.minSdk
         targetSdk = rootProject.targetSdk
-        versionCode = 80
-        versionName = '1.0.80'
+        versionCode = 81
+        versionName = '1.0.81'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
         vectorDrawables.useSupportLibrary = true
-/*        ndk {
+        ndk {
+            //noinspection ChromeOsAbiSupport
             abiFilters 'arm64-v8a', 'armeabi-v7a'
-        }*/
+        }
     }
 
     buildTypes {
@@ -50,21 +53,6 @@ android {
             signingConfig = signingConfigs.debug
             minifyEnabled = false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-    }
-
-    applicationVariants.configureEach { variant ->
-        def isClient = productFlavors[0].name == "client"
-        String rootName
-        if (isClient) {
-            rootName = variant.applicationId.split("\\.")[1]
-        } else {
-            rootName = productFlavors[0].name
-        }
-        def newApkName =
-                "$rootName-${productFlavors[1].name}-${buildType.name}-${variant.versionName}"
-        variant.outputs.each { output ->
-            output.outputFileName = "${newApkName}.apk"
         }
     }
 

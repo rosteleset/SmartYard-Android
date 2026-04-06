@@ -164,13 +164,19 @@ class EventLogDetailFragment : Fragment() {
 
         adapter.eventsByDays[day]?.get(index)?.let { eventItem ->
             val fromDate = eventItem.date.minusSeconds(EventLogViewModel.EVENT_VIDEO_BACK_SECONDS)
-            if (eventItem.entranceId != null) {
-                mViewModel.camMapDataByEntrance[eventItem.entranceId]?.let { data ->
+            if (eventItem.cameraId != null) {
+                mViewModel.camMapData[eventItem.cameraId]?.let { data ->
                     setMedia(fromDate, data)
                 }
             } else {
-                mViewModel.camMapData[eventItem.objectId]?.let { data ->
-                    setMedia(fromDate, data)
+                if (eventItem.entranceId != null) {
+                    mViewModel.camMapDataByEntrance[eventItem.entranceId]?.let { data ->
+                        setMedia(fromDate, data)
+                    }
+                } else {
+                    mViewModel.camMapData[eventItem.objectId]?.let { data ->
+                        setMedia(fromDate, data)
+                    }
                 }
             }
         }

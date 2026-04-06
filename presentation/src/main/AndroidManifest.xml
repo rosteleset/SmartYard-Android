@@ -117,7 +117,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".ui.main.MainActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize"
             android:exported="true"
             android:launchMode="singleTop"
             android:screenOrientation="portrait"

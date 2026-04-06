@@ -101,6 +101,27 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <!-- FABы -->
+    <style name="floatingActionButtonBranded"
+        parent="Widget.Design.FloatingActionButton">
+        <item name="tint">@color/on_filled</item>
+        <item name="android:tint">@color/on_filled</item>
+        <item name="backgroundTint">@color/brand</item>
+        <item name="android:backgroundTint">@color/brand</item>
+        <item name="srcCompat">@drawable/ic_plus</item>
+    </style>
+
+    <style name="floatingActionButtonScrollUp"
+        parent="Widget.Design.FloatingActionButton">
+        <item name="tint">@color/brand</item>
+        <item name="android:tint">@color/brand</item>
+        <item name="backgroundTint">@color/light_background</item>
+        <item name="android:backgroundTint">@color/light_background</item>
+        <item name="srcCompat">@drawable/ic_el_scroll_up</item>
+        <item name="fabCustomSize">48dp</item>
+        <item name="maxImageSize">26dp</item>
+    </style>
+
     <style name="EditTextStyle" parent="Widget.AppCompat.EditText">
         <item name="android:background">@drawable/background_edit_text_radius</item>
         <item name="android:ems">10</item>

@@ -134,9 +134,13 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
         if (config.validate()) {
             core.let { core ->
                 core.removeListener(mCoreListener)
+                Timber.d("debug_dmm creating account...")
                 val mAccountCreator = core.createAccountCreator(null)
-                @Suppress("DEPRECATION") val cfg = config.setAccount(mAccountCreator).createProxyConfig()
-                core.addProxyConfig(cfg!!)
+                config.setAccount(mAccountCreator).createAccountInCore()?.let { account ->
+                    Timber.d("debug_dmm adding account...")
+                    core.addAccount(account)
+                    Timber.d("debug_dmm account has added")
+                }
                 core.ringback = null
                 core.ring = null
 

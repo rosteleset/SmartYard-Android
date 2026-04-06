@@ -53,12 +53,12 @@ class FaceImageView : AppCompatImageView {
         }
         vehicleBoxPaint = Paint().apply {
             color = context.resources.getColorCompat(R.color.vehicle_box)
-            strokeWidth = resources.getDimensionPixelSize(R.dimen.event_log_detail_stroke_size).toFloat()
+            strokeWidth = resources.getDimensionPixelSize(R.dimen.event_log_detail_stroke_size_car).toFloat()
             style = Paint.Style.STROKE
         }
         plateKeyPointsPaint = Paint().apply {
             color = context.resources.getColorCompat(R.color.plate_key_points)
-            strokeWidth = resources.getDimensionPixelSize(R.dimen.event_log_detail_stroke_size).toFloat()
+            strokeWidth = resources.getDimensionPixelSize(R.dimen.event_log_detail_stroke_size_car).toFloat()
             style = Paint.Style.STROKE
         }
     }

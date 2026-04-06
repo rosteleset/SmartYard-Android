@@ -1,4 +1,4 @@
-package com.sesameware.smartyard_oem.ui.main.address.inputAdress
+package com.sesameware.smartyard_oem.ui.main.address.inputAddress
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -9,31 +9,32 @@ import android.widget.Filter
 import android.widget.Filterable
 import android.widget.TextView
 import androidx.annotation.LayoutRes
-import com.sesameware.domain.model.response.StreetsData
+import com.sesameware.domain.model.response.LocationData
 import java.util.*
 
 /**
  * @author Nail Shakurov
  * Created on 12/03/2020.
  */
-class StreetAdapter(
+class CityAdapter(
     context: Context,
     @LayoutRes private val layoutResource: Int,
-    private val list: MutableList<StreetsData>
-) : ArrayAdapter<StreetsData>(context, layoutResource, list), Filterable {
-    private var listStreetsData: MutableList<StreetsData> = list
+    private val list: MutableList<LocationData>
+) : ArrayAdapter<LocationData>(context, layoutResource, list), Filterable {
 
-    fun addData(list: List<StreetsData>) {
-        listStreetsData.clear()
-        listStreetsData.addAll(list)
+    private var listLocationData: MutableList<LocationData> = list
+
+    fun addData(list: List<LocationData>) {
+        listLocationData.clear()
+        listLocationData.addAll(list)
         this.notifyDataSetChanged()
     }
 
-    override fun getCount(): Int = listStreetsData.size
+    override fun getCount(): Int = listLocationData.size
 
-    override fun getItem(position: Int): StreetsData? = listStreetsData[position]
+    override fun getItem(position: Int): LocationData? = listLocationData[position]
 
-    override fun getItemId(position: Int): Long = listStreetsData[position].streetId.toLong()
+    override fun getItemId(position: Int): Long = listLocationData[position].locationId.toLong()
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: TextView = convertView as TextView? ?: LayoutInflater.from(context).inflate(
@@ -41,7 +42,7 @@ class StreetAdapter(
             parent,
             false
         ) as TextView
-        view.text = "${listStreetsData[position].name}"
+        view.text = "${listLocationData[position].name}"
         return view
     }
 
@@ -51,12 +52,13 @@ class StreetAdapter(
                 charSequence: CharSequence?,
                 filterResults: FilterResults
             ) {
-                listStreetsData = filterResults.values as MutableList<StreetsData>
+                listLocationData = filterResults.values as MutableList<LocationData>
                 notifyDataSetChanged()
             }
 
             override fun performFiltering(charSequence: CharSequence?): FilterResults {
                 val queryString = charSequence?.toString()?.lowercase(Locale.getDefault())
+
                 val filterResults = FilterResults()
                 filterResults.values = if (queryString == null || queryString.isEmpty())
                     list
@@ -64,6 +66,7 @@ class StreetAdapter(
                     list.filter {
                         it.name.lowercase(Locale.getDefault()).contains(queryString)
                     }
+
                 return filterResults
             }
         }

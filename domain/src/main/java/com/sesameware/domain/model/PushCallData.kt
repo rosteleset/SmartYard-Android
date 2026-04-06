@@ -26,8 +26,21 @@ data class PushCallData(
     var videoServer: String = "",
     var videoStream: String = "",
     var videoToken: String = "",
-    var flagNotification: Boolean = false
+    var flagNotification: Boolean = false,
+    @param:Json(name = "isSupport")
+    private val _isSupport: String? = null,
+    @param:Json(name = "title")
+    private val _title: String? = null
+
 ) : Serializable {
+    val isSupport: Boolean
+        get() = when (_isSupport) {
+            "1", "t", "true" -> true
+            else -> false
+        }
+    val title: String
+        get() = _title ?: ""
+
     private val mediaServerType: MediaServerType
         get() {
             return when (videoServer) {

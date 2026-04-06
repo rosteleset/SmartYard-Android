@@ -108,6 +108,9 @@ class EventLogViewModel(
                 it.entranceId?.let { entranceId ->
                     dataByEntrance[entranceId] = DoorphoneData(it.url, it.token, it.serverType)
                 }
+                it.altCameras?.forEach { camera ->
+                    data[camera.cameraId] = DoorphoneData(camera.url, camera.token, camera.serverType)
+                }
             }
             withContext(Dispatchers.Main) {
                 camMapData = HashMap(data)

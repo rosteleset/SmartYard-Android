@@ -1,4 +1,4 @@
-package com.sesameware.smartyard_oem.ui.main.address.inputAdress
+package com.sesameware.smartyard_oem.ui.main.address.inputAddress
 
 import android.content.Context
 import android.view.LayoutInflater

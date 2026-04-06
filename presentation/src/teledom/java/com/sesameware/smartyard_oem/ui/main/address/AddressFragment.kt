@@ -45,6 +45,7 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnIssueClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnItemFullyExpanded
 import com.sesameware.smartyard_oem.ui.main.address.models.OnOpenEntranceClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
+import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
 import com.sesameware.smartyard_oem.ui.updateAllWidget
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
@@ -153,6 +154,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             is OnOpenEntranceClick -> mViewModel.openDoor(action.entranceId)
             is OnItemFullyExpanded -> scrollUntilFullItemVisible(action.position)
             is OnHouseAddressLongClick -> startDrag(action.position)
+            is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath, action.code)
         }
     }
 
@@ -217,6 +219,16 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
 
     private fun navigateToEventLogFragment() {
         findNavController().navigate(R.id.action_addressFragment_to_eventLogFragment)
+    }
+
+    private fun navigateToWebFragment(title: String?, basePath: String?, code: String?) {
+        val action = AddressFragmentDirections.actionAddressFragmentToCustomWebViewFragmentAddress(
+            R.id.customWebViewFragmentAddress,
+            R.id.customWebBottomFragmentAddress,
+            basePath,
+            code,
+            title)
+        this.findNavController().navigate(action)
     }
 
     private fun onIssueAction(action: IssueAction) {

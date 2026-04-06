@@ -18,7 +18,7 @@ import com.sesameware.smartyard_oem.ui.main.address.availableServices.AvailableS
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVArchivePlayerViewModel
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
-import com.sesameware.smartyard_oem.ui.main.address.inputAdress.InputAddressViewModel
+import com.sesameware.smartyard_oem.ui.main.address.inputAddress.InputAddressViewModel
 import com.sesameware.smartyard_oem.ui.main.address.noNetwork.NoNetworkViewModel
 import com.sesameware.smartyard_oem.ui.main.address.qrCode.QrCodeViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.courier.WorkSoonCourierViewModel
@@ -73,7 +73,7 @@ object PresentationModule {
         viewModel { MainActivityViewModel(get(), get(), get(), get()) }
         viewModel { ChatViewModel(get()) }
         viewModel { SettingsViewModel(get(), get(), get()) }
-        viewModel { AddressViewModel(get(), get(), get(), get(), get()) }
+        viewModel { AddressViewModel(get(), get(), get(), get(), get(), get()) }
         viewModel { EventLogViewModel(get(), get()) }
         viewModel { FaceSettingsViewModel(get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get()) }

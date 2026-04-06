@@ -123,6 +123,7 @@
             android:layout_marginBottom="47dp"
             android:baselineAligned="false"
             android:paddingTop="28dp"
+            tools:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/mImageViewWrap"
             tools:layout_editor_absoluteX="16dp">
@@ -205,8 +206,38 @@
                     android:layout_weight="1"
                     android:text="@string/open"
                     app:buttonBG="@drawable/checkbox_round_state_unlock" />
+
             </LinearLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/mSupportRow"
+            android:layout_width="match_parent"
+            android:layout_height="140dp"
+            android:orientation="horizontal"
+            android:visibility="invisible"
+            tools:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mImageViewWrap">
+
+            <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
+                android:id="@+id/mAnswerButtonSupport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/answer"
+                app:buttonBG="@drawable/checkbox_round_state_answer_support" />
+
+            <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
+                android:id="@+id/mHangUpButtonSupport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:text="@string/ignore"
+                app:buttonBG="@drawable/checkbox_round_state_hang_support" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/ivFullscreenMinimalize"

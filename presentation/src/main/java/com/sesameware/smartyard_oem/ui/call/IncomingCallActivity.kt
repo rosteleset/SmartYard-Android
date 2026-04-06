@@ -419,8 +419,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private fun enableCallButtons(isEnabled: Boolean) {
         binding.mPeepholeButton.isEnabled = isEnabled
         binding.mAnswerButton.isEnabled = isEnabled
+        binding.mAnswerButtonSupport?.isEnabled = isEnabled
         binding.mSpeakerButton.isEnabled = isEnabled
         binding.mHangUpButton.isEnabled = isEnabled
+        binding.mHangUpButtonSupport?.isEnabled = isEnabled
         binding.mOpenedButton.isEnabled = isEnabled
         binding.mOpenButton.isEnabled = isEnabled
         binding.pbIncomingCall.isVisible = !isEnabled
@@ -445,19 +447,23 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 cancelNotification()
                 openDoor()
             }
-            binding.mAnswerButton.setOnClickListener {
+            val onAnswerClick = View.OnClickListener {
                 cancelNotification()
                 answerCall()
             }
+            binding.mAnswerButton.setOnClickListener(onAnswerClick)
+            binding.mAnswerButtonSupport?.setOnClickListener(onAnswerClick)
             mViewModel.eyeState.value = LinphoneService.instance?.provider?.pushCallData?.eyeState == true
             binding.mPeepholeButton.setOnClickListener {
                 cancelNotification()
                 mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
             }
-            binding.mHangUpButton.setOnClickListener {
+            val onHangUpClick = View.OnClickListener {
                 cancelNotification()
                 hangUp()
             }
+            binding.mHangUpButton.setOnClickListener(onHangUpClick)
+            binding.mHangUpButtonSupport?.setOnClickListener(onHangUpClick)
         }
     }
 
@@ -509,6 +515,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private fun openDoor() {
         if (mLinphone?.isConnected() == true) {
             binding.mAnswerButton.setText(R.string.connecting)
+            binding.mAnswerButtonSupport?.setText(R.string.connecting)
             mLinphone?.sendDtmf()
         } else {
             mTryingToOpenDoor = true
@@ -599,6 +606,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             this,
             EventObserver {
                 binding.mAnswerButton.isVisible = false
+                binding.mAnswerButtonSupport?.isVisible = false
                 binding.mSpeakerButton.isVisible = true
             }
         )
@@ -640,6 +648,13 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mLinphone?.reset()
         setDoorState(false)
         binding.mStatusText.text = data.callerId
+        if (data.isSupport) {
+            binding.mPanel.visibility = View.INVISIBLE
+            binding.mSupportRow?.visibility = View.VISIBLE
+        } else {
+            binding.mPanel.visibility = View.VISIBLE
+            binding.mSupportRow?.visibility = View.INVISIBLE
+        }
     }
 
     private fun setDoorState(opened: Boolean) {
@@ -654,6 +669,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }
         binding.mOpenedButton.show(opened, true)
         binding.mHangUpButton.show(!opened)
+        binding.mHangUpButtonSupport?.show(!opened)
         if (this::mPushCallData.isInitialized && mPushCallData.dtmf.isNotEmpty()) {
             binding.mOpenButton.show(!opened)
         }
@@ -663,6 +679,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         Timber.d("debug_dmm    answerCall")
         if (!binding.mAnswerButton.isSelected && mLinphone?.dtmfIsSent?.value == false) {
             binding.mAnswerButton.isSelected = true
+            binding.mAnswerButtonSupport?.isSelected = true
             mLinphone?.acceptCall()
         }
     }
@@ -691,20 +708,24 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
         switchCallClock(connected)
         binding.mHangUpButton.setText(if (connected) R.string.reject else R.string.ignore)
+        binding.mHangUpButtonSupport?.setText(if (connected) R.string.reject else R.string.ignore)
         binding.mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
+        binding.mAnswerButtonSupport?.setText(if (connected) R.string.connected else R.string.answer)
         binding.mAnswerButton.isSelected = connected
+        binding.mAnswerButtonSupport?.isSelected = connected
         if (connected) {
             mViewModel.connectedChangeStateUiAudioToSpeaker()
         }
     }
 
     private fun enablePeepholeVideo(isEnabled: Boolean) {
-        val text = if (mLinphone?.isConnected() == true) {
-            R.string.call_talk
-        } else {
-            if (isEnabled) R.string.call_peek_on else R.string.call_on_domophone
+        val text = when {
+            mLinphone?.isConnected() == true -> getString(R.string.call_talk)
+            isEnabled -> getString(R.string.call_peek_on)
+            mPushCallData.isSupport -> mPushCallData.title
+            else -> getString(R.string.call_on_domophone)
         }
-        binding.mTitle.setText(text)
+        binding.mTitle.text = text
         mViewModel.setSlideShowEnabled(!hasWebRTC && isEnabled)
         binding.mPeepholeButton.isChecked = isEnabled
 
@@ -742,8 +763,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 else -> R.string.answer
             }
             binding.mAnswerButton.setText(text)
+            binding.mAnswerButtonSupport?.setText(text)
             if (state == RegistrationState.None) {
                 binding.mAnswerButton.isSelected = false
+                binding.mAnswerButtonSupport?.isSelected = false
             }
             if (it.state == RegistrationState.Failed) {
                 processFailedCall()
@@ -767,9 +790,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
                 CallStateSimple.CONNECTING -> {
                     binding.mAnswerButton.setText(R.string.connecting)
+                    binding.mAnswerButtonSupport?.setText(R.string.connecting)
                 }
                 CallStateSimple.ERROR -> {
                     binding.mAnswerButton.setText(R.string.error)
+                    binding.mAnswerButtonSupport?.setText(R.string.error)
                     processFailedCall()
                 }
                 CallStateSimple.END -> {
@@ -781,6 +806,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 CallStateSimple.STREAMS_RUNNING -> {
                     if (mTryingToOpenDoor) {
                         binding.mAnswerButton.setText(R.string.connecting)
+                        binding.mAnswerButtonSupport?.setText(R.string.connecting)
                         mLinphone?.sendDtmf()
                     } else {
                         setConnectedState(true)

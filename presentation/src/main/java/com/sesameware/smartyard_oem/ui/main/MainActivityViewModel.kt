@@ -6,6 +6,7 @@ import androidx.annotation.IdRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
@@ -54,7 +55,8 @@ class MainActivityViewModel(
     }
 
     fun onCreate(context: Context) {
-        checkAndRegisterPushToken(context.applicationContext)
+        checkAndRegisterPushToken(context.applicationContext, mPreferenceStorage.providerId,
+            DataModule.providerName)
     }
 
     fun onResume() {

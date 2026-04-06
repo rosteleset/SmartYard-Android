@@ -124,6 +124,9 @@ class CustomWebViewFragment : Fragment() {
         }
 
         binding.tvEWVTitle.text = title
+        if (binding.tvEWVTitle.text.isNotEmpty()) {
+            binding.tvEWVTitle.visibility = View.VISIBLE
+        }
         if (hasBackButton) {
             binding.ivEWVBack.visibility = View.VISIBLE
         } else {

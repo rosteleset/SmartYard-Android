@@ -151,6 +151,7 @@ class LinphoneService : LifecycleService() {
             return START_STICKY
         }
         mCore?.let { core ->
+            Timber.d("debug_dmm starting core...")
             core.start()
             core.clearAllAuthInfo()
             core.clearProxyConfig()

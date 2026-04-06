@@ -9,7 +9,8 @@ data class CamMap(
     @Json(name = "entranceId") val entranceId: Int? = null,
     @Json(name = "url") val url: String,
     @Json(name = "token") val token: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    @Json(name = "altCameras") val altCameras: List<AltCameras>? = null  // additional cameras
 ) {
     val serverType: MediaServerType
         get() {
@@ -20,4 +21,21 @@ data class CamMap(
                 else -> MediaServerType.FLUSSONIC
             }
         }
+
+    data class AltCameras(
+        @Json(name = "cameraId") val cameraId: Int,
+        @Json(name = "url") val url: String,
+        @Json(name = "token") val token: String,
+        @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    ) {
+        val serverType: MediaServerType
+            get() {
+                return when(_serverType) {
+                    MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
+                    MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
+                    MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                    else -> MediaServerType.FLUSSONIC
+                }
+            }
+    }
 }

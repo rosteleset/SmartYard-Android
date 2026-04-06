@@ -7,4 +7,5 @@ data class HouseUiModel(
     val cameraCount: Int,
     val hasEventLog: Boolean,
     val isExpanded: Boolean = false,
+    val extList: List<ExtItemModel> = listOf(),
 ) : AddressUiModel

@@ -8,9 +8,11 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.DatabaseInteractor
+import com.sesameware.domain.interactors.ExtInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.model.AddressItem
 import com.sesameware.domain.model.StateButton
+import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.domain.model.response.Address
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
@@ -20,6 +22,7 @@ import com.sesameware.smartyard_oem.ui.main.address.helpers.CombinedLiveData
 import com.sesameware.smartyard_oem.ui.main.address.models.AddressUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.EntranceId
 import com.sesameware.smartyard_oem.ui.main.address.models.EntranceState
+import com.sesameware.smartyard_oem.ui.main.address.models.ExtItemModel
 import com.sesameware.smartyard_oem.ui.main.address.models.HouseUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 import kotlinx.coroutines.Dispatchers
@@ -31,7 +34,8 @@ class AddressViewModel(
     override val mPreferenceStorage: PreferenceStorage,
     override val mAuthInteractor: AuthInteractor,
     private val issueInteractor: IssueInteractor,
-    override val mDatabaseInteractor: DatabaseInteractor
+    override val mDatabaseInteractor: DatabaseInteractor,
+    private val extInteractor: ExtInteractor
 ) : GenericViewModel() {
 
     private val houseUiState = MutableLiveData<List<HouseUiModel>>()
@@ -175,6 +179,27 @@ class AddressViewModel(
             val houseHasEntrances = entranceList.isNotEmpty()
             val houseHasFlats = houseIdFlats[addressDto.houseId]?.isNotEmpty() ?: false
             val isExpanded = expandedHouseIds.contains(addressDto.houseId)
+            val extList = mutableListOf<ExtItemModel>()
+            addressDto.ext.forEachIndexed { i, item ->
+                item.extId?.let { extId ->
+                    extInteractor.ext(ExtRequest(extId))?.let { extData ->
+                        extList.add(
+                            ExtItemModel(
+                                extId = item.extId,
+                                caption = item.caption,
+                                icon = item.icon,
+                                order = item.order ?: i,
+                                highlight = item.highlight,
+                                basePath = extData.data.basePath,
+                                code = extData.data.code
+                            ))
+                    }
+                }
+            }
+            extList.sortWith(
+                compareBy { it.order },
+            )
+
             HouseUiModel(
                 houseId = addressDto.houseId,
                 address = addressDto.address,
@@ -182,6 +207,7 @@ class AddressViewModel(
                 cameraCount = addressDto.cctv,
                 hasEventLog = addressDto.hasPlog && houseHasEntrances && houseHasFlats,
                 isExpanded = isExpanded,
+                extList = extList,
             )
         }.toMutableList()
 

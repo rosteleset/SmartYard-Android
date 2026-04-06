@@ -122,9 +122,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="32dp"
-            android:clickable="true"
-            android:src="@drawable/ic_plus"
-            app:backgroundTint="@color/brand"
+            style="@style/floatingActionButtonBranded"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent" />
 

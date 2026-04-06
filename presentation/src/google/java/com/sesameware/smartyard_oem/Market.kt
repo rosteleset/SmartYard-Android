@@ -3,6 +3,8 @@ package com.sesameware.smartyard_oem
 import android.content.Context
 import android.os.Build
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.analytics.ktx.analytics
+import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.FirebaseMessaging
 import com.sesameware.data.Crashlytics
 import org.threeten.bp.LocalDateTime
@@ -10,7 +12,13 @@ import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
 
-fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context) {
+fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context, providerId: String? = null, providerName: String? = null) {
+    if (providerId != null && providerName != null) {
+        val firebaseAnalytics = Firebase.analytics
+        firebaseAnalytics.setUserProperty("provider_id", providerId)
+        firebaseAnalytics.setUserProperty("provider_name", providerName)
+    }
+
     val crashlytics = Crashlytics.getInstance()
     crashlytics.setUserId("_user_${mPreferenceStorage.phone.orEmpty()}")
     val deviceInfo = "Manufacturer: ${Build.MANUFACTURER}, model: ${Build.MODEL}, device: ${Build.DEVICE}, release: ${Build.VERSION.RELEASE}, SDK: ${Build.VERSION.SDK_INT}"

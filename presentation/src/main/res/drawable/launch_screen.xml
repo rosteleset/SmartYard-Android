@@ -4,7 +4,7 @@
 
     <item android:drawable="@drawable/background_fullscreen" />
 
-    <item android:drawable="@drawable/ic_logo"
+    <item android:drawable="@drawable/ic_logo_splash_old"
         android:gravity="center"/>
 
 </layer-list>

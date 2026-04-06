@@ -146,16 +146,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
-            android:backgroundTint="@color/light_background"
-            android:clickable="true"
-            android:src="@drawable/ic_el_scroll_up"
             android:visibility="invisible"
-            app:fabCustomSize="48dp"
+            tools:visibility="visible"
+            style="@style/floatingActionButtonScrollUp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:maxImageSize="26dp"
-            tools:visibility="visible" />
+            app:layout_constraintStart_toStartOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
