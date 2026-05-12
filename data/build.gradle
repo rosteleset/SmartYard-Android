@@ -61,8 +61,9 @@ android {
         teledom {
             dimension "site"
             buildConfigField "String", "USER_AGENT", "\"\""
-            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.lanta.me/providers.json\""
+            buildConfigField "String", "PROVIDERS_URL", "\"https://isdn.sesameware.com/providers.json\""
             buildConfigField "String", "DEFAULT_PHONE_PATTERN", "\"+7 (###) ###-##-##\""
+            buildConfigField "String", "DEFAULT_LICENSE_PLATE_PATTERN", "\"* ### ** ###\""
             buildConfigField "String", "PROVIDER_NAME", "\"\""
             buildConfigField "String", "PROVIDER_URL", "\"\""
             buildConfigField "String", "SERVER_TZ", "\"Europe/Moscow\""

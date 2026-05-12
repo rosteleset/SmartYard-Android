@@ -7,6 +7,7 @@
     <string name="app_message">Թարմացնել ծրագիրը։</string>
     <string name="default_notification_channel_id">channel_inbox</string>
     <string name="widget_title">Ծանր դարակ</string>
+    <string name="privacy_policy"></string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Դուրս գալ ծրագրից</string>
@@ -78,8 +79,8 @@
     <string name="dialog_title2">Անջատել Հյուրանոցային մուտքը?</string>
     <string name="dialog_message2" />
     <string name="dialog_turn_off">ԱՆՋԱՏԵԼ</string>
-    <string name="guest_access_open">Բացել</string>
-    <string name="guest_access_opened">Բացված է</string>
+    <string name="guest_access_enable">Բացել</string>
+    <string name="guest_access_enabled">Բացված է</string>
     <string name="addresses_empty_list">Ցուցակը դատարկ է</string>
 
     <!-- Qr code -->
@@ -144,7 +145,8 @@
 
     <!-- Диалог предоставление доступа -->
     <string name="dialog_share_access_title">Կիսել մուտքով</string>
-    <string name="dialog_share_access_caption">Մուտքով տրամադրեք այն անձի հեռախոսահամարը, որը ցանկանում եք տալ մուտք</string>
+    <string name="dialog_share_access_by_phone_caption">Մուտքով տրամադրեք այն անձի հեռախոսահամարը, որը ցանկանում եք տալ մուտք</string>
+    <string name="dialog_share_access_by_license_plate_caption">Նշեք մեքենայի գրանցման համարը, որին ցանկանում եք թույլատրել մուտքը</string>
     <string name="dialog_share_access_btn_ok">Կիսել</string>
 
     <!-- Нет сети по адресу. -->
@@ -504,15 +506,27 @@
     <string name="manage_faces"> Կարգավիճակել  </string>
     <string name="temporary_barrier_access">Ժամանակավոր հասանելիություն շագամանքի/դառնակարգի համար</string>
     <string name="barrier_add_contact">Ավելացնել կոնտակտ</string>
+    <string name="barrier_add_vehicle">Ավելացնել մեքենա</string>
     <string name="permanent_access_address">Մշտական հասանելիություն հասցեին</string>
+    <string name="title_gate_access">Մուտք դեպի պատնեշ / դարպաս</string>
     <string name="permanent_add_contact">Ավելացնել կոնտակտ</string>
     <string name="title_delete_face">Ջնջել այս դեռևստանիչը։</string>
     <string name="delete_face">Ջնջել</string>
     <string name="dialog_face_cancel">Չեղարկել</string>
     <string name="title_add_face">Ավելացնել այս դեռևստանիչը։</string>
-    <string name="add_face">Ավելացնել</string>
+    <string name="add_item">Ավելացնել</string>
     <string name="text_no_image">Պատկեր չկա</string>
     <string name="phone_number_not_saved">Հեռախոսահամարը չի պահպանվել</string>
     <string name="guest_access">Հյուրերի մուտք մեկ ժամով</string>
     <string name="item_theme_system_default">Սահմանվում է համակարգի կողմից</string>
+    <string name="all_phone_numbers">Բոլոր հեռախոսահամարները</string>
+    <string name="all_cars">Բոլոր մեքենաները</string>
+    <string name="tab_title_by_license_plate">Ըստ մեքենայի համարի</string>
+    <string name="tab_title_by_phone_number">Հեռախոսահամարով</string>
+
+    <string-array name="registered_number_or_car_types">
+        <item>Բոլորը</item>
+        <item>Միայն ակտիվ</item>
+        <item>Միայն անգործուն</item>
+    </string-array>
 </resources>

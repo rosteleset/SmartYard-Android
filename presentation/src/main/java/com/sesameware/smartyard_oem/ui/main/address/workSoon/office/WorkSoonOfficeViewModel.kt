@@ -50,7 +50,7 @@ class WorkSoonOfficeViewModel(
     private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName}\n Адрес, введённый пользователем: $address.\n Требуется подтверждение адреса и подключение выбранных услуг"
+            "ФИО: ${preferenceStorage.userName}\n Адрес, введённый пользователем: $address.\n Требуется подтверждение адреса и подключение выбранных услуг"
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
         val x12440 = "Приложение"
@@ -65,14 +65,14 @@ class WorkSoonOfficeViewModel(
                 x12440 = x12440,
                 x10941 = x10941
             ),
-            CreateIssuesRequest.TypeAction.ACTION1
+            CreateIssuesRequest.TypeAction.ACTION1,
         )
     }
 
     private fun createIssueV2(address: String) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.CONNECT_SERVICES_HAS_COMMON,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             inputAddress = address,
             services = ""
         )

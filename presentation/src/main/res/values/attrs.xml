@@ -13,4 +13,9 @@
         <attr format="dimension" name="morphVerticalOffset"/>
         <attr format="dimension" name="morphCornerRadius"/>
     </declare-styleable>
+
+    <declare-styleable name="FixedListView">
+        <attr name="tools_listItem" format="reference" />
+        <attr name="tools_itemCount" format="integer" />
+    </declare-styleable>
 </resources>

@@ -73,12 +73,15 @@ class MaskedEditText : EditText, TextWatcher {
         state.putParcelable("super", superParcellable)
         state.putString("text", getRawText())
         state.putBoolean("keepHint", isKeepHint())
+        state.putString("mask", mask)
         return state
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
         val bundle = state as Bundle
         keepHint = bundle.getBoolean("keepHint", false)
+        mask = bundle.getString("mask")
+        cleanUp()
         @Suppress("DEPRECATION")
         val parcelable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                 bundle.getParcelable("super", Parcelable::class.java)
@@ -230,6 +233,8 @@ class MaskedEditText : EditText, TextWatcher {
         s: CharSequence, start: Int, count: Int,
         after: Int
     ) {
+        if (!initialized) return
+
         if (!editingBefore) {
             editingBefore = true
             if (start > lastValidMaskPosition) {
@@ -258,6 +263,8 @@ class MaskedEditText : EditText, TextWatcher {
     }
 
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+        if (!initialized) return
+
         var count = count
         if (!editingOnChanged && editingBefore) {
             editingOnChanged = true
@@ -277,6 +284,8 @@ class MaskedEditText : EditText, TextWatcher {
     }
 
     override fun afterTextChanged(s: Editable) {
+        if (!initialized) return
+
         if (!editingAfter && editingBefore && editingOnChanged) {
             editingAfter = true
             if (hasHint() && (keepHint || rawText.length() == 0)) {

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.settings.accessAddress.AccessAddressFragment">
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/background_top_narrow"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:padding="16dp"
+        android:src="@drawable/ic_back_arrow"
+        app:tint="@color/on_top_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="32dp"
+        android:text="@string/title_gate_access"
+        android:textColor="@color/on_top_background"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:autoSizeMinTextSize="15sp"
+        app:layout_constraintTop_toBottomOf="@+id/ivBack" />
+
+
+    <View
+        android:id="@+id/background"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/surface_corner_radius_compensation"
+        android:background="@drawable/background_surface"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+
+    <TextView
+        android:id="@+id/tvAddressName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/background_card"
+        android:padding="24dp"
+        android:textAlignment="textStart"
+        android:textColor="@color/accent"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/background"
+        tools:text="@string/address_sample" />
+
+    <EditText
+        android:id="@+id/etSearch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_search"
+        android:drawablePadding="8dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="20dp"
+        android:hint="Поиск"
+        android:padding="8dp"
+        android:textColor="@color/accent"
+        android:textColorHint="@color/no_accent"
+        android:textSize="14sp"
+        app:drawableLeftCompat="@drawable/ic_search"
+        app:layout_constraintTop_toBottomOf="@id/tvAddressName"/>
+
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tl_gate_access"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/background_card"
+        android:padding="4dp"
+        app:tabIndicator="@drawable/background_tab_indicator"
+        app:tabIndicatorColor="@android:color/transparent"
+        app:tabIndicatorGravity="stretch"
+        app:tabMode="fixed"
+        app:tabTextAppearance="@style/TabTextAppearance"
+        app:layout_constraintTop_toBottomOf="@id/etSearch">
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_title_by_license_plate" />
+
+        <com.google.android.material.tabs.TabItem
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tab_title_by_phone_number" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="24dp"
+        android:text="Только активные"
+        android:textColor="@color/brand"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tl_gate_access" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

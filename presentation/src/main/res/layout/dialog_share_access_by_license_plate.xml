@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/background_dialog_large"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:text="@string/dialog_share_access_title"
+        android:textColor="@color/accent"
+        android:textSize="24sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/dialog_share_access_by_phone_caption"
+        android:textColor="@color/accent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.sesameware.lib.MaskedEditText
+            android:id="@+id/prefix_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/accent"
+            android:ems="10"
+            android:inputType="number"
+            android:maxLength="26"
+            android:textColor="@color/accent"
+            android:textColorHint="@color/no_accent"
+            android:typeface="monospace"
+            app:allowed_chars="1234567890"
+            app:enable_ime_action="true"
+            app:keep_hint="true" />
+
+        <ImageView
+            android:id="@+id/ivAddContact"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/ic_add_user"
+            tools:ignore="ContentDescription" />
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnDone"
+        style="@style/buttonBlueFlooded"
+        android:layout_width="match_parent"
+        android:layout_height="61dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:enabled="false"
+        android:paddingStart="50dp"
+        android:paddingTop="18dp"
+        android:paddingEnd="50dp"
+        android:paddingBottom="18dp"
+        android:text="@string/dialog_share_access_btn_ok" />
+</LinearLayout>

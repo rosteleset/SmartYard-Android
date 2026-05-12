@@ -30,12 +30,14 @@ class LauncherActivity : CommonActivity() {
             installSplashScreen()
         }
 
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+
         super.onCreate(savedInstanceState)
 
-        enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.auto(Color.TRANSPARENT, Color.TRANSPARENT)
-        )
-        lightStatusBar = true
+        fragmentHasHeader = true
+
         createNotificationChannels()
 
         mViewModel.launchDestination.observe(

@@ -87,6 +87,7 @@ class EventLogViewModel(
     var currentEventDayFilter: LocalDate? = null
 
     var camMapData = hashMapOf<Int, DoorphoneData>()
+    var altCamData = hashMapOf<Int, DoorphoneData>()
     var camMapDataByEntrance = hashMapOf<Int, DoorphoneData>()
 
     var faceIdToUrl = hashMapOf<Int, String>()
@@ -98,9 +99,11 @@ class EventLogViewModel(
 
     private fun camMap() {
         camMapData.clear()
+        altCamData.clear()
         camMapDataByEntrance.clear()
         viewModelScope.withProgress(progress = null) {
             val data = hashMapOf<Int, DoorphoneData>()
+            val altData = hashMapOf<Int, DoorphoneData>()
             val dataByEntrance = hashMapOf<Int, DoorphoneData>()
             val result = addressInteractor.camMap()
             result?.data?.forEach {
@@ -109,11 +112,12 @@ class EventLogViewModel(
                     dataByEntrance[entranceId] = DoorphoneData(it.url, it.token, it.serverType)
                 }
                 it.altCameras?.forEach { camera ->
-                    data[camera.cameraId] = DoorphoneData(camera.url, camera.token, camera.serverType)
+                    altData[camera.cameraId] = DoorphoneData(camera.url, camera.token, camera.serverType)
                 }
             }
             withContext(Dispatchers.Main) {
                 camMapData = HashMap(data)
+                altCamData = HashMap(altData)
                 camMapDataByEntrance = HashMap(dataByEntrance)
             }
         }
@@ -335,7 +339,7 @@ class EventLogViewModel(
                 addressInteractor.plog(flat.flatId, dayFormat)?.let { plogResponse ->
                     plogResponse.data.forEach { plog ->
                         if (flat.flatNumber.isNotEmpty()) {
-                            plog.address = address + ", кв. ${flat.flatNumber}"
+                            plog.address = address + ", ${flat.flatNumber}"
                         } else {
                             plog.address = address
                         }

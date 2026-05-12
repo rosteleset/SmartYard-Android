@@ -36,6 +36,9 @@ class ShowEventActivity : ComponentActivity() {
     private var imageUrl: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        enableEdgeToEdge()
+
         super.onCreate(savedInstanceState)
 
         title = intent.getStringExtra(EVENT_TITLE) ?: title
@@ -43,7 +46,6 @@ class ShowEventActivity : ComponentActivity() {
         date = intent.getStringExtra(EVENT_DATE) ?: date
         imageUrl = intent.getStringExtra(EVENT_IMAGE_URL) ?: imageUrl
 
-        enableEdgeToEdge()
         setContent {
             EventDialog {
                 finish()

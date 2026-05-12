@@ -2,15 +2,6 @@ package com.sesameware.data.prefs
 
 import java.util.ArrayList
 
-data class SentName(
-    val name: String,
-    val patronymic: String? = null
-) {
-    override fun toString(): String {
-        return "$name $patronymic"
-    }
-}
-
 data class AddressOptions(
     private val addresses: MutableMap<Int, AddressOption> = HashMap()
 ) {

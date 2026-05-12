@@ -19,6 +19,9 @@
     <color name="disabled">#B8C3D0</color>
     <color name="gray_button">@color/shaded_background</color>
 
+    <!-- Tokens -->
+    <color name="on_top_background">@color/on_filled</color>
+
     <!-- Background gradient -->
     <color name="gradient_start">#4DA6F9</color>
     <color name="gradient_end">#084EB6</color>

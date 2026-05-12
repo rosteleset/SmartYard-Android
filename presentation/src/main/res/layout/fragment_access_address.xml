@@ -14,7 +14,8 @@
         android:adjustViewBounds="true"
         android:scaleType="centerCrop"
         app:srcCompat="@drawable/background_top_narrow"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
 
     <TextView
@@ -24,7 +25,7 @@
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="8dp"
         android:text="@string/title_access_address"
-        android:textColor="@color/on_filled"
+        android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
         app:autoSizeMinTextSize="15sp"
@@ -50,8 +51,10 @@
         android:layout_marginTop="28dp"
         android:padding="16dp"
         android:src="@drawable/ic_back_arrow"
+        app:tint="@color/on_top_background"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="ContentDescription" />
 
     <TextView
         android:id="@+id/tvAddressName"
@@ -87,6 +90,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clipToPadding="false"
             android:paddingHorizontal="24dp">
 
             <TextView
@@ -106,6 +110,8 @@
                 android:background="@drawable/background_card"
                 app:layout_constraintBottom_toBottomOf="@id/tvShareAccess"
                 app:layout_constraintTop_toBottomOf="@id/tvTitleIntercom" />
+
+            <!-- Door Opening Code -->
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/gOpeningCode"
@@ -184,18 +190,20 @@
                 android:background="@drawable/tooglebutton_selector"
                 android:paddingStart="18dp"
                 android:paddingEnd="18dp"
-                android:text="@string/guest_access_open"
+                android:text="@string/guest_access_enable"
                 android:textAllCaps="false"
                 android:textColor="@color/toggle_color_text"
-                android:textOff="@string/guest_access_open"
-                android:textOn="@string/guest_access_opened"
+                android:textOff="@string/guest_access_enable"
+                android:textOn="@string/guest_access_enabled"
                 app:layout_constraintBottom_toBottomOf="@id/tvShareAccess"
                 app:layout_constraintEnd_toEndOf="@id/vIntercom"
                 app:layout_constraintStart_toEndOf="@id/tvShareAccess"
                 app:layout_constraintTop_toTopOf="@id/tvShareAccess" />
 
+            <!-- Enter By Face -->
+
             <androidx.constraintlayout.widget.Group
-                android:id="@+id/g_enter_by_face"
+                android:id="@+id/gEnterByFace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:constraint_referenced_ids="tvTitleByFace, vEnterByFace, tvEnterByFace, btnManageFaces" />
@@ -207,8 +215,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/entrance_by_face"
                 android:textColor="@color/no_accent"
-                app:layout_constraintTop_toBottomOf="@+id/tvShareAccess"
-                tools:layout_editor_absoluteX="24dp" />
+                app:layout_constraintTop_toBottomOf="@+id/tvShareAccess" />
 
             <View
                 android:id="@+id/vEnterByFace"
@@ -253,53 +260,90 @@
                 app:layout_constraintStart_toEndOf="@id/tvEnterByFace"
                 app:layout_constraintTop_toTopOf="@id/tvEnterByFace" />
 
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/gAccessBarrierGate"
+            <!-- Gate access -->
+
+            <TextView
+                android:id="@+id/tv_title_gate_access"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:constraint_referenced_ids="tvTitleAccessBarrierGate, vAccessBarrierGate, rvAccessBarrierGate, tvAddAccessBarrierGate" />
-
-            <TextView
-                android:id="@+id/tvTitleAccessBarrierGate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="@string/temporary_barrier_access"
+                android:text="@string/title_gate_access"
                 android:textColor="@color/no_accent"
-                app:layout_constraintTop_toBottomOf="@id/vEnterByFace"
-                tools:layout_editor_absoluteX="24dp" />
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/vEnterByFace" />
 
-            <View
-                android:id="@+id/vAccessBarrierGate"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_add_gate_access"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
+                android:gravity="center"
+                android:text="@string/add_item"
+                android:textColor="@color/brand"
+                android:textStyle="bold"
+                android:visibility="gone"
+                tools:visibility="visible"
+                app:drawableLeftCompat="@drawable/ic_circle_plus"
+                app:layout_constraintBottom_toBottomOf="@id/tv_title_gate_access"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/tv_title_gate_access" />
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tlGateAccess"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="45dp"
                 android:layout_marginTop="8dp"
                 android:background="@drawable/background_card"
-                app:layout_constraintBottom_toBottomOf="@id/tvAddAccessBarrierGate"
-                app:layout_constraintTop_toBottomOf="@id/tvTitleAccessBarrierGate"
-                tools:layout_editor_absoluteX="24dp" />
+                android:padding="4dp"
+                app:layout_constraintTop_toBottomOf="@id/tv_title_gate_access"
+                app:tabIndicator="@drawable/background_tab_indicator"
+                app:tabIndicatorColor="@android:color/transparent"
+                app:tabIndicatorGravity="stretch"
+                app:tabMode="fixed"
+                app:tabTextAppearance="@style/TabTextAppearance">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvAccessBarrierGate"
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tab_title_by_license_plate" />
+
+                <com.google.android.material.tabs.TabItem
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/tab_title_by_phone_number" />
+
+            </com.google.android.material.tabs.TabLayout>
+
+            <include
+                android:id="@+id/hsvGateAccessByLicensePlate"
+                layout="@layout/list_gate_access"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toTopOf="@id/vAccessBarrierGate"
-                tools:itemCount="5"
-                tools:layout_editor_absoluteX="24dp"
-                tools:listitem="@layout/item_contact_access_address" />
+                android:layout_marginStart="-24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="-24dp"
+                app:layout_constraintTop_toBottomOf="@id/tlGateAccess" />
 
-            <TextView
-                android:id="@+id/tvAddAccessBarrierGate"
+            <include
+                android:id="@+id/hsvGateAccessByPhone"
+                layout="@layout/list_gate_access"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="20dp"
-                android:text="@string/barrier_add_contact"
-                android:textColor="@color/no_accent"
-                android:textSize="18sp"
-                app:drawableRightCompat="@drawable/ic_add_circle"
-                app:layout_constraintTop_toBottomOf="@id/rvAccessBarrierGate"
-                tools:layout_editor_absoluteX="24dp" />
+                android:layout_marginStart="-24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="-24dp"
+                app:layout_constraintTop_toBottomOf="@id/tlGateAccess" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/bGateAccess"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="hsvGateAccessByPhone, hsvGateAccessByLicensePlate" />
+
+            <!-- Permanent Access Address -->
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/gPermanentAccessAddress"
@@ -314,7 +358,7 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/permanent_access_address"
                 android:textColor="@color/no_accent"
-                app:layout_constraintTop_toBottomOf="@id/tvAddAccessBarrierGate"
+                app:layout_constraintTop_toBottomOf="@id/bGateAccess"
                 tools:layout_editor_absoluteX="24dp" />
 
             <View
@@ -331,6 +375,8 @@
                 android:id="@+id/rvPermanentAccessAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintTop_toTopOf="@id/vPermanentAccessAddress"
                 tools:itemCount="6"
                 tools:listitem="@layout/item_contact_access_address" />

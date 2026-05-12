@@ -29,11 +29,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:src="@drawable/ic_addd"
         android:visibility="invisible"
+        android:src="@drawable/ic_addd"
+        app:tint="@color/on_top_background"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/tvTitle"
+        tools:visibility="visible"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -45,7 +47,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/title_my_addresses"
-        android:textColor="@color/on_filled"
+        android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
         app:autoSizeMinTextSize="15sp"

@@ -29,6 +29,7 @@
             android:layout_marginTop="28dp"
             android:padding="16dp"
             android:src="@drawable/ic_back_arrow"
+            app:tint="@color/on_top_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -41,7 +42,7 @@
             android:maxLines="2"
             android:text="@string/request_record_title"
             android:textAlignment="textStart"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
@@ -54,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="5dp"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"
             app:layout_constraintStart_toStartOf="parent"

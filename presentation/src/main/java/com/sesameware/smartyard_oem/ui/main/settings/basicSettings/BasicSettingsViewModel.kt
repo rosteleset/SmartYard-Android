@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.prefs.NightMode
 import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.data.prefs.SentName
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.DatabaseInteractor
 import com.sesameware.domain.model.TF
@@ -24,7 +24,7 @@ class BasicSettingsViewModel(
     override val mAuthInteractor: AuthInteractor
 ) : GenericViewModel() {
 
-    val userName = MutableLiveData<SentName>()
+    val userName = MutableLiveData<UserName>()
     val userPhone = MutableLiveData<String>()
 
     val isPushSetting = MutableLiveData<Boolean>()
@@ -63,7 +63,7 @@ class BasicSettingsViewModel(
     }
 
     fun refreshUserData() {
-        userName.postValue(mPreferenceStorage.sentName ?: SentName("", ""))
+        userName.postValue(mPreferenceStorage.userName ?: UserName("", ""))
         val phoneCode = mPreferenceStorage.countryPhoneCode
         val phone = mPreferenceStorage.phone
         val formatted = if (phone != null) {

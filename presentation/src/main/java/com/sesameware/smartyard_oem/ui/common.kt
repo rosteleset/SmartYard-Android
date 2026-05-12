@@ -636,6 +636,24 @@ class RegexInputFilter(private var pattern: String) : InputFilter {
             }
         }
 
-        return null;
+        return null
+    }
+}
+
+fun String.formatPhoneWith(pattern: String): String {
+    val digits = this.filter { it.isDigit() }
+    var i = 0
+    return buildString {
+        for (char in pattern) {
+            if (i >= digits.length) break
+            if (char == '#') {
+                append(digits[i++])
+            } else {
+                append(char)
+                if (char == digits[i]) {
+                    i++
+                }
+            }
+        }
     }
 }

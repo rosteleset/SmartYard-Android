@@ -7,6 +7,7 @@
     <string name="app_message">Обновить приложение?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
     <string name="widget_title">Умный двор</string>
+    <string name="privacy_policy"></string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Выход из приложения</string>
@@ -79,8 +80,8 @@
     <string name="dialog_title2">Выключить гостевой доступ?</string>
     <string name="dialog_message2" translatable="false" />
     <string name="dialog_turn_off">ВЫКЛЮЧИТЬ</string>
-    <string name="guest_access_open">Открыть</string>
-    <string name="guest_access_opened">Открыто</string>
+    <string name="guest_access_enable">Включить</string>
+    <string name="guest_access_enabled">Включён</string>
     <string name="addresses_empty_list">Список пуст</string>
 
     <!-- Qr code -->
@@ -147,7 +148,8 @@
 
     <!-- Диалог предоставление доступа -->
     <string name="dialog_share_access_title">Поделиться доступом</string>
-    <string name="dialog_share_access_caption">Введите номер телефона человека, которому хотите предоставить доступ, или выберите его из контактов</string>
+    <string name="dialog_share_access_by_phone_caption">Введите номер телефона человека, которому хотите предоставить доступ, или выберите его из контактов</string>
+    <string name="dialog_share_access_by_license_plate_caption">Введите автомобильный номер телефона человека, которому хотите предоставить доступ</string>
     <string name="dialog_share_access_btn_ok">Поделиться</string>
 
     <!-- Нет сети по адресу. -->
@@ -514,12 +516,24 @@
     <string name="manage_faces">  Настроить  </string>
     <string name="temporary_barrier_access">Временный доступ к шлагбауму/воротам</string>
     <string name="barrier_add_contact">Добавить контакт</string>
+    <string name="barrier_add_vehicle">Добавить автомобиль</string>
     <string name="permanent_access_address">Постоянный доступ к адресу</string>
+    <string name="title_gate_access">Доступ к шлагбауму/воротам</string>
     <string name="permanent_add_contact">Добавить контакт</string>
     <string name="title_delete_face">Удалить это лицо?</string>
     <string name="delete_face">Удалить</string>
     <string name="dialog_face_cancel">Отмена</string>
     <string name="title_add_face">Добавить это лицо?</string>
-    <string name="add_face">Добавить</string>
+    <string name="add_item">Добавить</string>
     <string name="phone_number_not_saved">Номер телефона не сохранен</string>
+    <string name="all_phone_numbers">Все номера</string>
+    <string name="all_cars">Все авто</string>
+    <string name="tab_title_by_license_plate">По номеру авто</string>
+    <string name="tab_title_by_phone_number">По телефону</string>
+
+    <string-array name="registered_number_or_car_types">
+        <item>Все</item>
+        <item>Только активные</item>
+        <item>Только неактивные</item>
+    </string-array>
 </resources>

@@ -5,14 +5,17 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.response.AuthMethod
 import com.sesameware.domain.model.response.RequestCode
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallFragment
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
+import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragmentDirections
 import kotlin.random.Random
 
 /**
@@ -75,9 +78,9 @@ class NumberRegViewModel(
 
     fun onStart(fragment: Fragment, activity: Activity) {
         if (mPreferenceStorage.authToken != null) {
-            if (mPreferenceStorage.sentName == null) {
-                NavHostFragment.findNavController(fragment)
-                    .navigate(R.id.action_numberRegFragment_to_appealFragment)
+            if (mPreferenceStorage.userName == null) {
+                val action = NumberRegFragmentDirections.actionNumberRegFragmentToAppealFragment()
+                fragment.findNavController().navigate(action)
             } else {
                 NavHostFragment.findNavController(fragment)
                     .navigate(R.id.action_numberRegFragment_to_mainActivity)

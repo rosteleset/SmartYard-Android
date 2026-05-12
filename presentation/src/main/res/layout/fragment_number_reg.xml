@@ -112,6 +112,7 @@
             android:layout_marginBottom="16dp"
             android:padding="5dp"
             android:src="@drawable/ic_close"
+            app:tint="@color/on_top_background"
             app:layout_constraintBottom_toTopOf="@+id/guideline8"
             app:layout_constraintEnd_toEndOf="parent" />
 

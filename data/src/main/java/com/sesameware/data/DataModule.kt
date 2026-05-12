@@ -17,6 +17,7 @@ import com.sesameware.data.repository.FRSRepositoryImpl
 import com.sesameware.data.repository.GeoRepositoryImpl
 import com.sesameware.data.repository.InboxRepositoryImpl
 import com.sesameware.data.repository.IssueRepositoryImpl
+import com.sesameware.data.repository.LPRSRepositoryImpl
 import com.sesameware.data.repository.PayRepositroyImpl
 import com.sesameware.data.repository.SipRepositoryImpl
 import com.sesameware.domain.interfaces.AddressRepository
@@ -28,6 +29,7 @@ import com.sesameware.domain.interfaces.FRSRepository
 import com.sesameware.domain.interfaces.GeoRepository
 import com.sesameware.domain.interfaces.InboxRepository
 import com.sesameware.domain.interfaces.IssueRepository
+import com.sesameware.domain.interfaces.LPRSRepository
 import com.sesameware.domain.interfaces.PayRepository
 import com.sesameware.domain.interfaces.SipRepository
 import com.sesameware.domain.model.response.ProviderConfig
@@ -49,6 +51,8 @@ object DataModule {
     var providerName = BuildConfig.PROVIDER_NAME
     var defaultPhonePattern = BuildConfig.DEFAULT_PHONE_PATTERN
     var phonePattern = defaultPhonePattern
+    var defaultLicensePlatePattern = BuildConfig.DEFAULT_LICENSE_PLATE_PATTERN
+    var licensePlatePattern = defaultLicensePlatePattern
     var xDmApiRefresh = false
     val serverTz: String
         get() = providerConfig.timeZone.orEmpty().ifEmpty { BuildConfig.SERVER_TZ }
@@ -91,6 +95,8 @@ object DataModule {
         factory { SipRepositoryImpl(get(), get()) as SipRepository }
 
         factory { FRSRepositoryImpl(get(), get()) as FRSRepository }
+
+        factory { LPRSRepositoryImpl(get(), get()) as LPRSRepository }
 
         factory { ExtRepositoryImpl(get(), get()) as ExtRepository }
 

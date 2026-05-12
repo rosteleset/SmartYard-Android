@@ -28,6 +28,7 @@
             android:padding="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:tint="@color/on_top_background"
             app:srcCompat="@drawable/ic_back_arrow" />
 
         <ImageView
@@ -49,7 +50,7 @@
             android:layout_marginTop="8dp"
             android:maxLines="2"
             android:text="@string/burger_address_settings_title"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"

@@ -17,7 +17,7 @@
         android:backgroundTint="@color/accent"
         android:padding="16dp"
         android:src="@drawable/ic_back_arrow"
-        app:tint="@color/accent"
+        app:tint="@color/on_top_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />

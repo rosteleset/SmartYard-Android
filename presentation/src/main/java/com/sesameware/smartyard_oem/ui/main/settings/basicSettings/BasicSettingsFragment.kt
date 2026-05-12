@@ -181,7 +181,7 @@ class BasicSettingsFragment : Fragment() {
         mViewModel.userName.observe(
             viewLifecycleOwner
         ) {
-            binding.tvUserName.text = "${it.name} ${firstCharacter(it.patronymic)}"
+            binding.tvUserName.text = "${it.firstName} ${firstCharacter(it.patronymic)}"
         }
 
         mViewModel.userPhone.observe(

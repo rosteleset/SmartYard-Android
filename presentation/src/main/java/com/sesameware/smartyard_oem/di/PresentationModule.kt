@@ -56,7 +56,7 @@ object PresentationModule {
         viewModel { IncomingCallActivityViewModel(get()) }
         viewModel { InputAddressViewModel(get()) }
         viewModel { AddressSettingsViewModel(get(), get(), get(), get()) }
-        viewModel { AccessAddressViewModel(get(), get()) }
+        viewModel { AccessAddressViewModel(get(), get(), get()) }
         viewModel { BasicSettingsViewModel(get(), get(), get()) }
         viewModel { AuthViewModel(get(), get(), get(), get()) }
         viewModel { OfficeViewModel(get(), get(), get(), get()) }

@@ -1,7 +1,6 @@
 package com.sesameware.smartyard_oem.ui.reg.sms
 
 import android.os.CountDownTimer
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -9,13 +8,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.gson.Gson
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.data.prefs.SentName
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.CommonError
-import com.sesameware.domain.model.response.Name
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
-import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.checkAndRegisterPushToken
 
 /**
@@ -61,17 +58,15 @@ class SmsRegViewModel(
                 DataModule.providerConfig = result.data
             }
 
-            val name: Name = if (res.data.names is Boolean)
-                Name("", "")
-            else
-                Gson().fromJson<Name>(Gson().toJson(res.data.names), Name::class.java)
-            fragment.findNavController().navigate(
-                R.id.action_smsRegFragment_to_appealFragment,
-                bundleOf(
-                    SmsRegFragment.KEY_NAME to name.name,
-                    SmsRegFragment.KEY_PATRONYMIC to name.patronymic
-                )
-            )
+            mPreferenceStorage.userName = if (res.data.names is Boolean) {
+                UserName()
+            } else {
+                Gson().fromJson<UserName>(Gson().toJson(res.data.names), UserName::class.java)
+            }
+
+            val action = SmsRegFragmentDirections.actionSmsRegFragmentToAppealFragment()
+            fragment.findNavController().navigate(action)
+
             checkAndRegisterPushToken(fragment.requireContext().applicationContext)
         }
     }

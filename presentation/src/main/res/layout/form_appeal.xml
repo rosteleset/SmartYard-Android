@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_dialog"
     android:orientation="vertical"
-    android:paddingBottom="24dp">
+    android:paddingBottom="24dp"
+    tools:context="com.sesameware.smartyard_oem.ui.common.AppealForm">
 
     <EditText
         android:id="@+id/nameText"
@@ -26,13 +27,46 @@
         android:hint="@string/appeal_title_patronymic"
         android:inputType="textPersonName|textCapSentences" />
 
+    <LinearLayout
+        android:id="@+id/privacy_policy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="24dp"
+        android:baselineAligned="false"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <CheckBox
+            android:id="@+id/privacy_policy_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/checkbox_selector_with_8dp_inset"
+            android:button="@null" />
+
+        <TextView
+            android:id="@+id/privacy_policy_caption"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_weight="1"
+            android:includeFontPadding="true"
+            android:lineSpacingExtra="4dp"
+            android:textSize="15sp"
+            tools:text="Я согласен(на) на обработку персональных\nданных в соответствии с политикой\nконфиденциальности и с пользовательским\nсоглашением" />
+
+
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnDone"
         style="@style/buttonBlueFlooded"
         android:layout_width="match_parent"
         android:layout_height="61dp"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
         android:paddingStart="50dp"
         android:paddingTop="18dp"

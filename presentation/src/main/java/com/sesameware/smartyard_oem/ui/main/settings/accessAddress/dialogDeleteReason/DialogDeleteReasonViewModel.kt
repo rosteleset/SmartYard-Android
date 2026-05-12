@@ -50,7 +50,7 @@ class DialogDeleteReasonViewModel(
     private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName} Телефон: ${preferenceStorage.phone} Адрес, введённый пользователем: $address nУдаление адреса из приложения. Причина описание\$"
+            "ФИО: ${preferenceStorage.userName} Телефон: ${preferenceStorage.phone} Адрес, введённый пользователем: $address nУдаление адреса из приложения. Причина описание\$"
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
         val x12440 = "Приложение"
@@ -65,7 +65,7 @@ class DialogDeleteReasonViewModel(
                 x12440 = x12440,
                 x10941 = x10941
             ),
-            ACTION2
+            ACTION2,
         )
     }
 
@@ -73,7 +73,7 @@ class DialogDeleteReasonViewModel(
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.REMOVE_ADDRESS,
             inputAddress = address,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             comments = ""
         )
         super.createIssueV2(issue)

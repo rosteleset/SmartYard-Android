@@ -7,6 +7,7 @@
     <string name="app_message">Қосымшаны жаңарту?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
     <string name="widget_title">Ақылды аула</string>
+    <string name="privacy_policy"></string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Қосымшадан шығу</string>
@@ -81,8 +82,8 @@
     <string name="dialog_title2">Қонақтарға кіруді өшіріңіз?</string>
     <string name="dialog_message2" />
     <string name="dialog_turn_off">Өшіру</string>
-    <string name="guest_access_open">Ашу</string>
-    <string name="guest_access_opened">Ашық</string>
+    <string name="guest_access_enable">Ашу</string>
+    <string name="guest_access_enabled">Ашық</string>
     <string name="addresses_empty_list">Тізім бос</string>
 
     <!-- Qr code -->
@@ -149,7 +150,8 @@
 
     <!-- Диалог предоставление доступа -->
     <string name="dialog_share_access_title">Қол жеткізуді бөлісу</string>
-    <string name="dialog_share_access_caption">Қол жеткізгіңіз келетін адамның телефон нөмірін енгізіңіз немесе оны контактілерден таңдаңыз</string>
+    <string name="dialog_share_access_by_phone_caption">Қол жеткізгіңіз келетін адамның телефон нөмірін енгізіңіз немесе оны контактілерден таңдаңыз</string>
+    <string name="dialog_share_access_by_license_plate_caption">Кіруге рұқсат бергіңіз келетін көліктің тіркеу нөмірін көрсетіңіз</string>
     <string name="dialog_share_access_btn_ok">Бөлісу</string>
 
     <!-- Нет сети по адресу. -->
@@ -506,15 +508,27 @@
     <string name="manage_faces">Орнату</string>
     <string name="temporary_barrier_access">Шлагбаумға/қақпаға уақытша қол жеткізу</string>
     <string name="barrier_add_contact">Контактіні қосу</string>
+    <string name="barrier_add_vehicle">Көлік қосу</string>
     <string name="permanent_access_address">Постоянный доступ к адресу</string>
+    <string name="title_gate_access">Шлагбаумға/Қақпаға кіру</string>
     <string name="permanent_add_contact">Мекен-жайға тұрақты қол жетімділік</string>
     <string name="title_delete_face">Бұл бетті алып тастайсыз ба?</string>
     <string name="delete_face">Жою</string>
     <string name="dialog_face_cancel">Бас тарту</string>
     <string name="title_add_face">Бұл бетті қосу керек пе??</string>
-    <string name="add_face">Қосу</string>
+    <string name="add_item">Қосу</string>
     <string name="text_no_image">Сурет жоқ</string>
     <string name="phone_number_not_saved">Телефон нөмірі сақталмаған</string>
     <string name="guest_access">Қонақтарға бір сағатқа кіру</string>
     <string name="item_theme_system_default">Жүйемен анықталады</string>
+    <string name="all_phone_numbers">Барлық телефон нөмірлері</string>
+    <string name="all_cars">Барлық автомобильдер</string>
+    <string name="tab_title_by_license_plate">Нөмір бойынша</string>
+    <string name="tab_title_by_phone_number">Телефон нөмірі бойынша</string>
+
+    <string-array name="registered_number_or_car_types">
+        <item>Барлығы</item>
+        <item>Тек белсенді</item>
+        <item>Тек белсенді емес</item>
+    </string-array>
 </resources>

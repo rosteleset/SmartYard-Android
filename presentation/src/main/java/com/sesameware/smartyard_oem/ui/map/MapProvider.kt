@@ -33,19 +33,24 @@ class MapProvider @JvmOverloads constructor(
     var map: SimpleMap? = null
 
     private fun configOsm(applicationContext: Context) {
-        Configuration.getInstance().userAgentValue = applicationContext.packageName
+        val prefs = PreferenceManager.getDefaultSharedPreferences(applicationContext)
+
         val osmConf = Configuration.getInstance()
-        val basePath = File(applicationContext.cacheDir.absolutePath, "osmdroid")
+
+        osmConf.load(applicationContext, prefs)
+
+        osmConf.userAgentValue = applicationContext.packageName
+
+        val basePath = File(applicationContext.cacheDir, "osmdroid")
+        if (!basePath.exists()) basePath.mkdirs()
         osmConf.osmdroidBasePath = basePath
-        val tileCache = File(osmConf.osmdroidBasePath.absolutePath, "tile")
+
+        val tileCache = File(osmConf.osmdroidBasePath, "tile")
+        if (!tileCache.exists()) tileCache.mkdirs()
+        osmConf.osmdroidTileCache = tileCache
 
 //        osmConf.isDebugMode = true
 //        osmConf.isDebugMapTileDownloader = true
-        osmConf.osmdroidTileCache = tileCache
-        Configuration.getInstance().load(
-            applicationContext,
-            PreferenceManager.getDefaultSharedPreferences(applicationContext)
-        )
     }
 
     fun createMap(

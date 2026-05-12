@@ -26,7 +26,7 @@
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/address_setup"
-        android:textColor="@color/on_filled"
+        android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
         app:autoSizeMinTextSize="15sp"
@@ -41,6 +41,7 @@
         android:layout_marginTop="28dp"
         android:padding="16dp"
         android:src="@drawable/ic_back_arrow"
+        app:tint="@color/on_top_background"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

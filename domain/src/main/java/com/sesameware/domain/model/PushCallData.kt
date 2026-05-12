@@ -3,6 +3,7 @@ package com.sesameware.domain.model
 import com.sesameware.domain.model.response.MediaServerType
 import com.squareup.moshi.Json
 import java.io.Serializable
+import java.util.Locale.getDefault
 
 data class PushCallData(
     val server: String,
@@ -11,6 +12,10 @@ data class PushCallData(
     val extension: String,
     var pass: String = "",
     val dtmf: String = "",
+
+    @param:Json(name = "dtmfProtocol")
+    val _dtmfProtocol: String = "",
+
     var image: String = "",
     var live: String = "",
     val timestamp: String,
@@ -54,10 +59,29 @@ data class PushCallData(
         when (mediaServerType) {
             else -> "$videoStream/whep?token=$videoToken"
         }
+
+    val dtmfProtocol: DtmfProtocol
+        get() {
+            return when(_dtmfProtocol.lowercase(getDefault())) {
+                DTMF_INFO -> DtmfProtocol.INFO
+                DTMF_RFC2833 -> DtmfProtocol.RFC2833
+                else -> DtmfProtocol.INFO
+            }
+        }
+
+    companion object {
+        const val DTMF_INFO = "info"
+        const val DTMF_RFC2833 = "rfc2833"
+    }
 }
 
 enum class PushTransport {
     @Json(name = "udp") Udp,
     @Json(name = "tcp") Tcp,
     @Json(name = "tls") Tls
+}
+
+enum class DtmfProtocol {
+    INFO,
+    RFC2833
 }

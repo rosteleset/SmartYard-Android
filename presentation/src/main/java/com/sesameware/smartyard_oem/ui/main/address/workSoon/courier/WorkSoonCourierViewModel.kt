@@ -43,7 +43,7 @@ class WorkSoonCourierViewModel(
     private fun createIssueV1(address: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName}\n Адрес, введённый пользователем: $address.\n   клиент подойдет в офис для получения подтверждения."
+            "ФИО: ${preferenceStorage.userName}\n Адрес, введённый пользователем: $address.\n   клиент подойдет в офис для получения подтверждения."
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
         val x12440 = "Приложение"
@@ -58,14 +58,14 @@ class WorkSoonCourierViewModel(
                 x12440 = x12440,
                 x10941 = x10941
             ),
-            ACTION2
+            ACTION2,
         )
     }
 
     private fun createIssueV2(address: String) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.REQUEST_QR_CODE_OFFICE,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             inputAddress = address,
             services = ""
         )

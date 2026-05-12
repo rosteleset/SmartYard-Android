@@ -6,7 +6,7 @@ import com.google.gson.Gson
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
-import com.sesameware.domain.model.response.Name
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.checkAndRegisterPushToken
 import kotlinx.coroutines.CoroutineScope
@@ -20,7 +20,7 @@ class OutgoingCallViewModel(
     override val mAuthInteractor: AuthInteractor,
     override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
-    val phoneConfirmed = MutableLiveData(Pair(false, Name("", "")))
+    val phoneConfirmed = MutableLiveData(false)
 
     fun startRepeatingCheckPhone(deviceToken: String, userPhone: String, context: Context): Job {
         return CoroutineScope(Dispatchers.IO).launch {
@@ -30,17 +30,18 @@ class OutgoingCallViewModel(
                     val res = mAuthInteractor.checkPhone(userPhone, deviceToken)
                     isDone = true
                     mPreferenceStorage.authToken = res.data.accessToken
-                    val name: Name = if (res.data.names is Boolean)
-                        Name("", "")
+                    val userName: UserName = if (res.data.names is Boolean)
+                        UserName("", "")
                     else
-                        Gson().fromJson(Gson().toJson(res.data.names), Name::class.java)
+                        Gson().fromJson(Gson().toJson(res.data.names), UserName::class.java)
+                    mPreferenceStorage.userName = userName
 
                     //получение настроек
                     mAuthInteractor.getOptions()?.let { result ->
                         DataModule.providerConfig = result.data
                     }
 
-                    phoneConfirmed.postValue(Pair(true, name))
+                    phoneConfirmed.postValue(true)
 
                     break
                 } catch (e: Throwable) {

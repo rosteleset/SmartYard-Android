@@ -95,14 +95,14 @@ class CityCamerasViewModel(
             description,
             null,
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
-            CreateIssuesRequest.TypeAction.ACTION3
+            CreateIssuesRequest.TypeAction.ACTION3,
         )
     }
 
     private fun createIssueV2(recordDate: LocalDate, recordTime: LocalTime, duration: Int, comments: String) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.REQUEST_FRAGMENT,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             cameraName = chosenCamera.value?.name,
             cameraId = chosenCamera.value?.id.toString(),
             fragmentDate = recordDate.format(DateTimeFormatter.ofPattern("d.MM.yyyy")),

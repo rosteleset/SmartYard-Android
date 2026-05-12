@@ -14,6 +14,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="cctv_trim_page_margin">16dp</dimen>
     <dimen name="cctv_trim_page_margin_gradient">20dp</dimen>
     <dimen name="event_log_detail_corner">12dp</dimen>
+    <dimen name="card_corner">12dp</dimen>
     <dimen name="event_log_detail_spacing">8dp</dimen>
     <dimen name="event_log_detail_stroke_size">3dp</dimen>
     <dimen name="event_log_detail_stroke_size_car">1dp</dimen>
@@ -33,5 +34,6 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="surface_corner_radius">24dp</dimen>
     <dimen name="surface_corner_radius_compensation">-24dp</dimen>
     <dimen name="edit_text_corner_radius">8dp</dimen>
+    <dimen name="tab_layout_corner_radius">8dp</dimen>
     <dimen name="dialog_large_corner_radius">20dp</dimen>
 </resources>

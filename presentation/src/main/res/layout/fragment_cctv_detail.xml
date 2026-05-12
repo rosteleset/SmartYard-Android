@@ -28,6 +28,7 @@
             android:layout_marginTop="28dp"
             android:padding="16dp"
             android:src="@drawable/ic_back_arrow"
+            app:tint="@color/on_top_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.0" />
@@ -42,7 +43,7 @@
             android:gravity="bottom"
             android:maxLines="1"
             android:textAlignment="gravity"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
@@ -57,7 +58,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
             android:layout_marginTop="5dp"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="14sp"
             app:autoSizeMinTextSize="10sp"
             android:ellipsize="end"
@@ -88,7 +89,7 @@
                     android:layout_gravity="top"
                     app:tabIndicatorColor="@color/brand"
                     app:tabSelectedTextColor="@color/accent"
-                    app:tabTextAppearance="@style/MyCustomTextAppearance"
+                    app:tabTextAppearance="@style/TabTextAppearance"
                     app:tabTextColor="@color/no_accent" />
 
             </androidx.viewpager.widget.ViewPager>

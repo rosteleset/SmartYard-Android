@@ -48,7 +48,7 @@ abstract class BaseIssueViewModel(
         description: String,
         address: String?,
         customFields: CustomFields,
-        typeAction: TypeAction
+        typeAction: TypeAction,
     ) {
         val project = "REM"
         val type = 32L

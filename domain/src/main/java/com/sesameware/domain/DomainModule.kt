@@ -12,6 +12,7 @@ import com.sesameware.domain.interactors.PayInteractor
 import com.sesameware.domain.interactors.SipInteractor
 import com.sesameware.domain.interactors.FRSInteractor
 import com.sesameware.domain.interactors.ExtInteractor
+import com.sesameware.domain.interactors.LPRSInteractor
 
 object DomainModule {
 
@@ -26,6 +27,7 @@ object DomainModule {
         factory { CCTVInteractor(get()) }
         factory { SipInteractor(get()) }
         factory { FRSInteractor(get()) }
+        factory { LPRSInteractor(get()) }
         factory { ExtInteractor(get()) }
     }
 }

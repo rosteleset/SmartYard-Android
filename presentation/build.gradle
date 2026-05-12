@@ -12,8 +12,6 @@ plugins {
     id 'ru.ok.tracer'
 }
 
-// TODO убрать отсюда клиента, переделать всё в LF, Сделать сводку изменений в версии 
-
 android {
     compileSdk rootProject.compileSdk
 
@@ -30,8 +28,8 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdk = rootProject.minSdk
         targetSdk = rootProject.targetSdk
-        versionCode = 81
-        versionName = '1.0.81'
+        versionCode = 85
+        versionName = '1.0.85'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
         vectorDrawables.useSupportLibrary = true

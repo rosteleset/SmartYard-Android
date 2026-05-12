@@ -97,7 +97,7 @@ class AvailableServicesViewModel(
     private fun issueOnlyServiceV1(address: String, connectedServicesText: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName}.\n Телефон: ${preferenceStorage.phone}.\n Адрес, введённый пользователем: $address.\n" +
+            "ФИО: ${preferenceStorage.userName}.\n Телефон: ${preferenceStorage.phone}.\n Адрес, введённый пользователем: $address.\n" +
                 "Подключение услуг(и): $connectedServicesText.\n Выполнить звонок клиенту и осуществить консультацию"
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
@@ -118,7 +118,7 @@ class AvailableServicesViewModel(
     private fun issueOnlyServiceV2(address: String, connectedServicesText: String) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.CONNECT_SERVICES_NO_COMMON,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             inputAddress = address,
             services = connectedServicesText
         )
@@ -155,7 +155,7 @@ class AvailableServicesViewModel(
     private fun issueGoToTheOfficeMyV1(address: String, connectedServicesText: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName}\n Адрес, введённый пользователем: $address.\n $connectedServicesText \n Требуется подтверждение адреса и подключение выбранных услуг"
+            "ФИО: ${preferenceStorage.userName}\n Адрес, введённый пользователем: $address.\n $connectedServicesText \n Требуется подтверждение адреса и подключение выбранных услуг"
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
         val x12440 = "Приложение"
@@ -177,7 +177,7 @@ class AvailableServicesViewModel(
     private fun issueGoToTheOfficeMyV2(address: String, connectedServicesText: String) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.CONNECT_SERVICES_HAS_COMMON,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             inputAddress = address,
             services = connectedServicesText
         )

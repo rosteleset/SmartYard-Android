@@ -1,13 +1,114 @@
 package com.sesameware.data.remote
 
 import com.sesameware.data.BuildConfig
+import com.sesameware.domain.model.request.AccessRequest
+import com.sesameware.domain.model.request.ActionIssueRequest
+import com.sesameware.domain.model.request.ActionIssueRequestV2
+import com.sesameware.domain.model.request.AddLicensePlateNumberRequest
+import com.sesameware.domain.model.request.AddMyPhoneRequest
+import com.sesameware.domain.model.request.AppVersionRequest
+import com.sesameware.domain.model.request.CCTVAllRequest
+import com.sesameware.domain.model.request.CCTVRangesRequest
+import com.sesameware.domain.model.request.CCTVRecDownloadRequest
+import com.sesameware.domain.model.request.CCTVRecPrepareRequest
+import com.sesameware.domain.model.request.CCTVYoutubeRequest
+import com.sesameware.domain.model.request.CommentRequest
+import com.sesameware.domain.model.request.ConfirmCodeRecoveryRequest
+import com.sesameware.domain.model.request.ConfirmCodeRequest
+import com.sesameware.domain.model.request.CreateIssuesRequest
+import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.DeliveryChangeRequest
+import com.sesameware.domain.model.request.DisLikeRequest
+import com.sesameware.domain.model.request.ExtRequest
+import com.sesameware.domain.model.request.GetAddressRequest
+import com.sesameware.domain.model.request.GetCoderRequest
+import com.sesameware.domain.model.request.GetHousesRequest
+import com.sesameware.domain.model.request.GetIntercomRequest
+import com.sesameware.domain.model.request.GetServicesRequest
+import com.sesameware.domain.model.request.GetStreetsRequest
+import com.sesameware.domain.model.request.LikeRequest
+import com.sesameware.domain.model.request.ListFacesRequest
+import com.sesameware.domain.model.request.ListLicensePlateNumbersRequest
+import com.sesameware.domain.model.request.OpenDoorRequest
+import com.sesameware.domain.model.request.PayPrepareRequest
+import com.sesameware.domain.model.request.PayRegisterRequest
+import com.sesameware.domain.model.request.PlogDaysRequest
+import com.sesameware.domain.model.request.PlogRequest
+import com.sesameware.domain.model.request.PutIntercomRequest
+import com.sesameware.domain.model.request.QRRequest
+import com.sesameware.domain.model.request.RecoveryOptionsRequest
+import com.sesameware.domain.model.request.RegisterPushTokenRequest
+import com.sesameware.domain.model.request.RemoveLicensePlateNumberRequest
+import com.sesameware.domain.model.request.RequestCodeRequest
+import com.sesameware.domain.model.request.ResendRequest
+import com.sesameware.domain.model.request.ResetCodeRequest
+import com.sesameware.domain.model.request.SendNameRequest
+import com.sesameware.domain.model.request.SentCodeRecoveryRequest
+import com.sesameware.domain.model.request.UserNotificationRequest
+import com.sesameware.domain.model.response.AccessResponse
+import com.sesameware.domain.model.response.ActionIssueResponse
+import com.sesameware.domain.model.response.AddLicensePlateNumberResponse
+import com.sesameware.domain.model.response.AddMyPhoneResponse
+import com.sesameware.domain.model.response.ApiResult
+import com.sesameware.domain.model.response.AppVersionResponse
+import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
+import com.sesameware.domain.model.response.CCTVGetResponse
+import com.sesameware.domain.model.response.CCTVRangesResponse
+import com.sesameware.domain.model.response.CCTVRecDownloadResponse
+import com.sesameware.domain.model.response.CCTVRecPrepareResponse
+import com.sesameware.domain.model.response.CCTVTreeResponse
+import com.sesameware.domain.model.response.CCTVYoutubeResponse
+import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.CommentResponse
+import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
+import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.CreateIssuesResponse
+import com.sesameware.domain.model.response.DeliveryChangeResponse
+import com.sesameware.domain.model.response.DisLikeResponse
+import com.sesameware.domain.model.response.ExtListResponse
+import com.sesameware.domain.model.response.ExtResponse
+import com.sesameware.domain.model.response.GetAddressListResponse
+import com.sesameware.domain.model.response.GetAddressResponse
+import com.sesameware.domain.model.response.GetAllLocationsResponse
+import com.sesameware.domain.model.response.GetCoderResponse
+import com.sesameware.domain.model.response.GetHousesResponse
+import com.sesameware.domain.model.response.GetServicesResponse
+import com.sesameware.domain.model.response.GetSettingsListResponse
+import com.sesameware.domain.model.response.GetStreetsResponse
+import com.sesameware.domain.model.response.InboxResponse
+import com.sesameware.domain.model.response.IntercomResponse
+import com.sesameware.domain.model.response.LikeResponse
+import com.sesameware.domain.model.response.ListConnectIssueResponse
+import com.sesameware.domain.model.response.ListFacesResponse
+import com.sesameware.domain.model.response.ListLicensePlatesNumbersResponse
+import com.sesameware.domain.model.response.OfficesResponse
+import com.sesameware.domain.model.response.OpenDoorResponse
+import com.sesameware.domain.model.response.PayPrepareResponse
+import com.sesameware.domain.model.response.PayRegisterResponse
+import com.sesameware.domain.model.response.PaymentsListResponse
+import com.sesameware.domain.model.response.PlogDaysResponse
+import com.sesameware.domain.model.response.PlogResponse
+import com.sesameware.domain.model.response.ProviderConfigResponse
+import com.sesameware.domain.model.response.ProvidersListResponse
+import com.sesameware.domain.model.response.QRResponse
+import com.sesameware.domain.model.response.RangeObject
+import com.sesameware.domain.model.response.RecoveryOptionsResponse
+import com.sesameware.domain.model.response.RegisterPushTokenResponse
+import com.sesameware.domain.model.response.RemoveLicensePlateResponse
+import com.sesameware.domain.model.response.RequestCodeResponse
+import com.sesameware.domain.model.response.ResendResponse
+import com.sesameware.domain.model.response.ResetCodeResponse
+import com.sesameware.domain.model.response.RoommateResponse
+import com.sesameware.domain.model.response.SendNameResponse
+import com.sesameware.domain.model.response.SentCodeRecoveryResponse
+import com.sesameware.domain.model.response.SipHelpMeResponse
+import com.sesameware.domain.model.response.UnreadedResponse
+import com.sesameware.domain.model.response.UserNotificationResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Url
-import com.sesameware.domain.model.request.*
-import com.sesameware.domain.model.response.*
 
 interface TeledomApi {
     @GET(BuildConfig.PROVIDERS_URL)
@@ -280,6 +381,24 @@ interface TeledomApi {
     suspend fun listFaces(
         @Url url: String,
         @Body request: ListFacesRequest): Response<ListFacesResponse>
+
+    @POST
+    suspend fun addNumber(
+        @Url url: String,
+        @Body request: AddLicensePlateNumberRequest
+    ): Response<AddLicensePlateNumberResponse>
+
+    @POST
+    suspend fun listNumbers(
+        @Url url: String,
+        @Body request: ListLicensePlateNumbersRequest
+    ): Response<ListLicensePlatesNumbersResponse>
+
+    @POST
+    suspend fun removeNumber(
+        @Url url: String,
+        @Body request: RemoveLicensePlateNumberRequest
+    ): Response<RemoveLicensePlateResponse>
 
     @POST
     suspend fun camMap(@Url url: String): Response<CamMapResponse>

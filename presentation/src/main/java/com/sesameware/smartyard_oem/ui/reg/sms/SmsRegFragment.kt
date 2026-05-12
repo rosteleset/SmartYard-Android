@@ -179,8 +179,6 @@ class SmsRegFragment : Fragment() {
 
     companion object {
         const val KEY_PHONE_NUMBER = "phone_number"
-        const val KEY_NAME = "name"
-        const val KEY_PATRONYMIC = "patronymic"
         const val KEY_AUTH_METHOD = "method"
     }
 }

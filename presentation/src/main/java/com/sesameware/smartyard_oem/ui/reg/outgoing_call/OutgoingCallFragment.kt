@@ -14,6 +14,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentOutgoingCallBinding
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
@@ -91,12 +92,12 @@ class OutgoingCallFragment : Fragment() {
         jobCheckPhone = mViewModel.startRepeatingCheckPhone(androidId, phoneNumber, requireContext())
 
         mViewModel.phoneConfirmed.observe(viewLifecycleOwner) {
-            if (it.first) {
+            if (it) {
                 jobCheckPhone?.cancel()
-                findNavController().navigate(R.id.action_outgoingCallFragment_to_appealFragment,
-                    bundleOf(SmsRegFragment.KEY_NAME to it.second.name,
-                        SmsRegFragment.KEY_PATRONYMIC to it.second.patronymic)
-                )
+
+                val action = OutgoingCallFragmentDirections
+                    .actionOutgoingCallFragmentToAppealFragment()
+                findNavController().navigate(action)
             }
         }
     }

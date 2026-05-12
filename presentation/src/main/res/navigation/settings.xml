@@ -82,6 +82,33 @@
         <action
             android:id="@+id/action_accessAddressFragment_to_faceSettingsFragment"
             app:destination="@id/faceSettingsFragment" />
+        <action
+            android:id="@+id/action_accessAddressFragment_to_detailGateAccessFragment"
+            app:destination="@id/detailGateAccessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailGateAccessFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.accessAddress.detailGateAccess.DetailGateAccessFragment"
+        android:label="DetailGateAccessFragment">
+
+        <argument
+            android:name="flatId"
+            app:argType="integer" />
+        <argument
+            android:name="address"
+            app:argType="string" />
+        <argument
+            android:name="hasGates"
+            app:argType="boolean" />
+        <argument
+            android:name="initialTab"
+            app:argType="integer" />
+        <argument
+            android:name="initialPosition"
+            app:argType="integer" />
+        <argument
+            android:name="clientId"
+            app:argType="string" />
     </fragment>
     <activity
         android:id="@+id/registrationActivity"

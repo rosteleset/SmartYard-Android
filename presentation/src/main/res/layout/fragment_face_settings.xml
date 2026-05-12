@@ -27,7 +27,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
             android:text="@string/face_registration"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
@@ -47,6 +47,7 @@
             android:layout_marginTop="16dp"
             android:padding="16dp"
             android:src="@drawable/ic_back_arrow"
+            app:tint="@color/on_top_background"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

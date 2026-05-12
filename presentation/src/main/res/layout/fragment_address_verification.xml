@@ -50,7 +50,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:text="@string/address_verification_title"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeTextType="uniform"
@@ -68,6 +68,7 @@
             android:layout_marginTop="16dp"
             android:padding="16dp"
             android:src="@drawable/ic_back_arrow"
+            app:tint="@color/on_top_background"
             app:layout_constraintBottom_toTopOf="@+id/textView9"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -82,7 +83,7 @@
             android:layout_marginEnd="32dp"
             android:layout_marginBottom="8dp"
             android:text="@string/address_verification_descriptions"
-            android:textColor="@color/on_filled"
+            android:textColor="@color/on_top_background"
             app:layout_constraintBottom_toTopOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="@+id/imageView"
             app:layout_constraintStart_toStartOf="@+id/imageView"
@@ -105,7 +106,7 @@
                 android:layout_gravity="top"
                 app:tabIndicatorColor="@color/brand"
                 app:tabSelectedTextColor="@color/accent"
-                app:tabTextAppearance="@style/MyCustomTextAppearance"
+                app:tabTextAppearance="@style/TabTextAppearance"
                 app:tabTextColor="@color/no_accent" />
 
         </androidx.viewpager.widget.ViewPager>

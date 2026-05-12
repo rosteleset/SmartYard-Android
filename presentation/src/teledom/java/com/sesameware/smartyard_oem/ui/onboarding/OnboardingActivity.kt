@@ -28,12 +28,14 @@ class OnboardingActivity : CommonActivity() {
     override val mViewModel by viewModel<OnboardingViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
-        lightStatusBar = true
+
+        super.onCreate(savedInstanceState)
+
+        fragmentHasHeader = true
 
         binding = ActivityOnboardingBinding.inflate(layoutInflater)
 

@@ -23,15 +23,18 @@ class RegistrationActivity : CommonActivity() {
     private var messageId = ""
     private var messageType = TypeMessage.NO_DEFINE
     private var notificationId = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
+
         setTheme(R.style.AppTheme_NoActionBar)
-        super.onCreate(savedInstanceState)
 
         enableEdgeToEdge(
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
 
-        lightStatusBar = true
+        super.onCreate(savedInstanceState)
+
+        fragmentHasHeader = true
 
         binding = ActivityRegistrationBinding.inflate(layoutInflater)
 

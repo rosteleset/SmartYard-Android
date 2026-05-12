@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:visibility="gone"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:id="@+id/llGateAccess"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
+        android:paddingHorizontal="20dp"
+        android:orientation="horizontal">
+
+        <include layout="@layout/item_gate_access_by_phone" />
+
+        <include layout="@layout/item_gate_access_by_phone" />
+
+        <include layout="@layout/item_gate_access_by_phone" />
+
+        <include layout="@layout/item_gate_access_by_phone" />
+
+        <include layout="@layout/item_gate_access_by_phone" />
+
+        <include layout="@layout/item_gate_access_by_phone_show_all" />
+
+    </LinearLayout>
+
+</HorizontalScrollView>

@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem
 import android.view.View
 import androidx.lifecycle.MutableLiveData
 import com.sesameware.data.DataModule
+import com.sesameware.domain.model.DtmfProtocol
 import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.doDelayed
 import org.koin.core.component.KoinComponent
@@ -181,8 +182,9 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
 
     fun sendDtmf() {
         Timber.d("debug_dmm sending dtmf...")
-        core.useRfc2833ForDtmf = false
-        core.useInfoForDtmf = true
+        val dtmfProtocol = pushCallData?.dtmfProtocol ?: DtmfProtocol.INFO
+        core.useRfc2833ForDtmf = (dtmfProtocol == DtmfProtocol.RFC2833)
+        core.useInfoForDtmf = (dtmfProtocol == DtmfProtocol.INFO)
         core.currentCall?.run {
             sendDtmfs(pushCallData?.dtmf ?: "")
             doDelayed(

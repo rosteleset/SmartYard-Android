@@ -1,5 +1,11 @@
 ## History of major changes
 
+### Version 1.0.85
+* Added dtmfProtocol support in the incomming call data
+* Fixed edge-to-edge
+* Added License Plate Recognition support
+* Minor fixes and code refactoring
+
 ### Version 1.0.81
 
 * Added optional Support incoming call mode.

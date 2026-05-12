@@ -17,7 +17,7 @@ class ChatViewModel(
     }
 
     fun getJsClientInfo(): String {
-        return "{name: \"${mPreferenceStorage.sentName?.toString()}\", phone: \"${mPreferenceStorage.phone}\"}"
+        return "{name: \"${mPreferenceStorage.userName?.toString()}\", phone: \"${mPreferenceStorage.phone}\"}"
     }
 
     fun finishedLoading() {

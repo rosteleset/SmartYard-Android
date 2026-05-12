@@ -18,6 +18,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.webkit.ValueCallback
@@ -101,12 +102,14 @@ class MainActivity : CommonActivity() {
             installSplashScreen()
         }
 
-        super.onCreate(savedInstanceState)
-
         enableEdgeToEdge(
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
         )
-        lightStatusBar = true
+
+        super.onCreate(savedInstanceState)
+
+        fragmentHasHeader = true
+
         runBlocking {
             try {
                 mRegModel.getProviderConfig()
@@ -188,7 +191,7 @@ class MainActivity : CommonActivity() {
         if (isNightModeOn) return
 
         navController.addOnDestinationChangedListener { _, dest, _ ->
-            lightStatusBar = when (dest.id) {
+            fragmentHasHeader = when (dest.id) {
                 R.id.notificationFragment, R.id.customWebViewFragmentChat, R.id.payWebViewFragment,
                 R.id.burgerFragment, R.id.eventLogDetailFragment -> false
                 else -> true
@@ -197,16 +200,23 @@ class MainActivity : CommonActivity() {
     }
 
     private fun fixMorphBottomNavBarForEdgeToEdge() {
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
-            v.setOnApplyWindowInsetsListener(null)
+        val basePaddingBottom = binding.bottomNav.paddingBottom
 
+        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+
             v.setPadding(
                 v.paddingLeft, v.paddingTop, v.paddingRight,
-                v.paddingBottom + systemBars.bottom
+                basePaddingBottom + systemBars.bottom
             )
-            v.doOnLayout { v ->
-                v.layoutParams = v.layoutParams.apply { height = height + systemBars.bottom }
+
+            v.doOnLayout { view ->
+                val layoutParams = view.layoutParams
+                val baseHeight = resources.getDimension(R.dimen.design_bottom_navigation_height)
+                val morphOffset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                    11f, resources.displayMetrics)
+                layoutParams.height = (baseHeight + morphOffset + systemBars.bottom).toInt()
+                view.layoutParams = layoutParams
             }
 
             insets
@@ -225,6 +235,7 @@ class MainActivity : CommonActivity() {
 
     private fun setupBottomNavigationBar() {
         val bar = binding.bottomNav
+        bar.itemIconTintList = null
         bar.setupWithNavController(navController)
         bar.setupExitOnBackPressedWhenInRoot(navController, this@MainActivity)
         bar.setupPopToRootOnItemReselected(navController)

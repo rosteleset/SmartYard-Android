@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.sesameware.data.R
+import com.sesameware.domain.model.response.UserName
 import kotlinx.parcelize.Parcelize
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -17,7 +18,7 @@ interface PreferenceStorage {
     var authToken: String?
     var pushToken: String?
     var pushTokenRegistered: String?
-    var sentName: SentName?
+    var userName: UserName?
     var phone: String?
     var countryPhoneCode: String?
     var notificationData: NotificationData
@@ -77,11 +78,11 @@ class SharedPreferenceStorage constructor(
     override var authToken by StringPreference(prefs, PREF_AUTH_TOKEN, null)
     override var pushToken by StringPreference(prefs, PREF_PUSH_TOKEN, null)
     override var pushTokenRegistered by StringPreference(prefs, PREF_PUSH_TOKEN_REGISTERED, null)
-    override var sentName by SerializablePreferenceNullable(
+    override var userName by SerializablePreferenceNullable(
         prefs,
         PREF_SENT_NAME,
         null,
-        SentName::class.java
+        UserName::class.java
     )
     override var phone by StringPreference(prefs, PREF_PHONE, null)
     override var countryPhoneCode by StringPreference(prefs, PREF_COUNTRY_PHONE_CODE, null)
@@ -137,7 +138,7 @@ class SharedPreferenceStorage constructor(
         providerId = null
         providerBaseUrl = null
         authToken = null
-        sentName = null
+        userName = null
         phone = null
         countryPhoneCode = null
         pushTokenRegistered = null

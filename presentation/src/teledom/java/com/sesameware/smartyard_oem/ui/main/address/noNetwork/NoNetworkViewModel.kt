@@ -49,7 +49,7 @@ class NoNetworkViewModel(
     fun createIssueV1(address: String, services: List<String>) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName}\n Телефон: ${preferenceStorage.phone}\n Адрес, введённый пользователем: $address\n Список подключаемых услуг: ${services.joinToString { it -> "\'${it}\'" }}"
+            "ФИО: ${preferenceStorage.userName}\n Телефон: ${preferenceStorage.phone}\n Адрес, введённый пользователем: $address\n Список подключаемых услуг: ${services.joinToString { it -> "\'${it}\'" }}"
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
         val x12440 = "Приложение"
@@ -62,14 +62,14 @@ class NoNetworkViewModel(
                 x11841 = x11841,
                 x12440 = x12440
             ),
-            ACTION1
+            ACTION1,
         )
     }
 
     fun createIssueV2(address: String, services: List<String>) {
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.CONNECT_SERVICES_NO_NETWORK,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             inputAddress = address,
             services = services.joinToString { "\'${it}\'" }
         )

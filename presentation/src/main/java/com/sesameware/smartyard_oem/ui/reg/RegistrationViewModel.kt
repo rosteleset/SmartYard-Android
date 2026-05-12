@@ -10,10 +10,12 @@ import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.model.CommonErrorThrowable
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.MessagingService.TypeMessage
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersFragmentDirections
+import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragmentDirections
 import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 
@@ -64,9 +66,10 @@ class RegistrationViewModel(
                 }
             }
 
-            if (mPreferenceStorage.sentName == null) {
-                NavHostFragment.findNavController(fragment)
-                    .navigate(R.id.action_providersFragment_to_appealFragment)
+            if (mPreferenceStorage.userName == null) {
+                val action =
+                    ProvidersFragmentDirections.actionProvidersFragmentToAppealFragment()
+                fragment.findNavController().navigate(action)
             } else {
                 val action =
                     ProvidersFragmentDirections.actionProvidersFragmentToMainActivity(messageId)

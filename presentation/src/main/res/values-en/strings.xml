@@ -7,6 +7,7 @@
     <string name="app_message">Update app?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
     <string name="widget_title">Smart Yard</string>
+    <string name="privacy_policy"></string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Exit</string>
@@ -79,8 +80,8 @@
     <string name="dialog_title2">Turn off guest access?</string>
     <string name="dialog_message2" />
     <string name="dialog_turn_off">TURN OFF</string>
-    <string name="guest_access_open">Open</string>
-    <string name="guest_access_opened">Opened</string>
+    <string name="guest_access_enable">Enable</string>
+    <string name="guest_access_enabled">Enabled</string>
     <string name="addresses_empty_list">The list is empty</string>
 
     <!-- Qr code -->
@@ -147,7 +148,8 @@
 
     <!-- Диалог предоставление доступа -->
     <string name="dialog_share_access_title">Share Access</string>
-    <string name="dialog_share_access_caption">Enter the phone number of the person you want to grant access to, or select them from your contacts</string>
+    <string name="dialog_share_access_by_phone_caption">Enter the phone number of the person you want to grant access to, or select them from your contacts</string>
+    <string name="dialog_share_access_by_license_plate_caption">Enter the licence plate number of the person you want to grant access to</string>
     <string name="dialog_share_access_btn_ok">Share</string>
 
     <!-- Нет сети по адресу. -->
@@ -510,15 +512,27 @@
     <string name="manage_faces">  Configure  </string>
     <string name="temporary_barrier_access">Temporary barrier/gate access</string>
     <string name="barrier_add_contact">Add contact</string>
+    <string name="barrier_add_vehicle">Add vehicle</string>
     <string name="permanent_access_address">Permanent access to address</string>
+    <string name="title_gate_access">Access to the barrier/gate</string>
     <string name="permanent_add_contact">Add contact</string>
     <string name="title_delete_face">Delete this face?</string>
     <string name="delete_face">Delete</string>
     <string name="dialog_face_cancel">Cancel</string>
     <string name="title_add_face">Add this face?</string>
-    <string name="add_face">Add</string>
+    <string name="add_item">Add</string>
     <string name="text_no_image">No Image</string>
     <string name="phone_number_not_saved">Phone number is not saved</string>
     <string name="guest_access">Guest access for an hour</string>
     <string name="item_theme_system_default">System default</string>
+    <string name="all_phone_numbers">All phone numbers</string>
+    <string name="all_cars">All cars</string>
+    <string name="tab_title_by_license_plate">By license plate</string>
+    <string name="tab_title_by_phone_number">By phone number</string>
+
+    <string-array name="registered_number_or_car_types">
+        <item>All</item>
+        <item>Active only</item>
+        <item>Inactive only</item>
+    </string-array>
 </resources>

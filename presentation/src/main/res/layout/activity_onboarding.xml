@@ -41,7 +41,7 @@
         android:layout_marginEnd="8dp"
         android:padding="8dp"
         android:text="@string/onboarding_skip"
-        android:textColor="@android:color/white"
+        android:textColor="@color/on_top_background"
         android:textSize="14sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.data.prefs.SentName
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.model.Services
@@ -28,7 +28,7 @@ class SettingsViewModel(
 
     val progress = MutableLiveData<Boolean>()
 
-    val sentName = MutableLiveData<SentName>()
+    val userName = MutableLiveData<UserName>()
 
     val phone = MutableLiveData<String>()
 
@@ -90,8 +90,8 @@ class SettingsViewModel(
     }
 
     fun refreshSentName() {
-        sentName.postValue(
-            mPreferenceStorage.sentName ?: SentName("", "")
+        userName.postValue(
+            mPreferenceStorage.userName ?: UserName("", "")
         )
         phone.postValue(mPreferenceStorage.phone ?: "")
     }

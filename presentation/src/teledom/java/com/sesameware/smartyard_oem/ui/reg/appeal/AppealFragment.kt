@@ -54,7 +54,11 @@ class AppealFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        binding.mForm.initialize(viewLifecycleOwner, R.string.next, arguments) {
+        binding.mForm.initialize(
+            viewLifecycleOwner,
+            R.string.next,
+            true
+        ) {
             this.findNavController().navigate(R.id.action_appealFragment_to_mainActivity)
             val permissions = arrayListOf(
                 Manifest.permission.READ_EXTERNAL_STORAGE,

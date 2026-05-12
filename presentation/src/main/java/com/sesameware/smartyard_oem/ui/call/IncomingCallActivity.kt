@@ -343,6 +343,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        enableEdgeToEdge(
+            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        )
+
         super.onCreate(savedInstanceState)
 
         Timber.d("debug_dmm    onCreate")
@@ -400,10 +405,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun setupUi() {
-        enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
-        )
-        lightStatusBar = true
+
+        fragmentHasHeader = true
         lightNavBar = true
 
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)

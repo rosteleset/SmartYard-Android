@@ -29,7 +29,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
-        android:text="@string/dialog_share_access_caption"
+        tools:text="@string/dialog_share_access_by_phone_caption"
         android:textColor="@color/accent" />
 
     <LinearLayout

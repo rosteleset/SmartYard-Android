@@ -3,6 +3,8 @@ package com.sesameware.smartyard_oem
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import com.sesameware.domain.model.ErrorStatus
 import com.sesameware.smartyard_oem.ui.ProgressDialog
@@ -14,10 +16,12 @@ abstract class CommonActivity : AppCompatActivity() {
     private lateinit var progressDialog: ProgressDialog
     abstract val mViewModel: GenericViewModel
 
-    internal var lightStatusBar: Boolean = true
+    internal var fragmentHasHeader: Boolean = false
         set(value) {
+            val color = ContextCompat.getColor(this, R.color.on_top_background)
+            val lightHeaderContentColor = ColorUtils.calculateLuminance(color) > 0.5
             val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-            windowInsetsController.isAppearanceLightStatusBars = !value
+            windowInsetsController.isAppearanceLightStatusBars = !lightHeaderContentColor
             field = value
         }
 

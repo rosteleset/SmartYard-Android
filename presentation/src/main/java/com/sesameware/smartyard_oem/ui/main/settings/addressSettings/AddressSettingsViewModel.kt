@@ -125,7 +125,7 @@ class AddressSettingsViewModel(
     private fun createIssueV1(address: String, reasonText: String, reasonList: String) {
         val summary = "Авто: Заявка с сайта"
         val description =
-            "ФИО: ${preferenceStorage.sentName}\n Телефон: ${preferenceStorage.phone}\n Адрес, введённый пользователем: $address.\nУдаление адреса из приложения. Причина: $reasonText($reasonList)"
+            "ФИО: ${preferenceStorage.userName}\n Телефон: ${preferenceStorage.phone}\n Адрес, введённый пользователем: $address.\nУдаление адреса из приложения. Причина: $reasonText($reasonList)"
         val x10011 = "-1"
         val x11841 = preferenceStorage.phone
         val x12440 = "Приложение"
@@ -138,7 +138,7 @@ class AddressSettingsViewModel(
                 x11841 = x11841,
                 x12440 = x12440
             ),
-            ACTION1
+            ACTION1,
         )
     }
 
@@ -146,7 +146,7 @@ class AddressSettingsViewModel(
         val issue = CreateIssuesRequestV2(
             type = IssueTypeV2.REMOVE_ADDRESS,
             inputAddress = address,
-            userName = preferenceStorage.sentName.toString(),
+            userName = preferenceStorage.userName.toString(),
             comments = "$reasonText($reasonList)"
         )
         super.createIssueV2(issue)

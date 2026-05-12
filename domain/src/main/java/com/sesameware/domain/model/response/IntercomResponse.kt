@@ -29,7 +29,9 @@ data class Intercom(
     @Json(name = "hiddenPlog")
     val _hiddenPlog: String? = null,
     @Json(name = "FRSDisabled")
-    val _frsDisabled: String? = null
+    val _frsDisabled: String? = null,
+    @Json(name = "LPRSDisabled")
+    val _lprsDisabled: String? = null
 ) {
     val allowDoorCode: Boolean
         get() = _allowDoorCode == "t"
@@ -45,4 +47,6 @@ data class Intercom(
         get() = if (_hiddenPlog == null) null else _hiddenPlog == "t"
     val frsDisabled: Boolean?
         get() = if (_frsDisabled == null) null else _frsDisabled == "t"
+    val lprsDisabled: Boolean?
+        get() = if (_lprsDisabled == null) null else _lprsDisabled == "t"
 }

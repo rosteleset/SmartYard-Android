@@ -7,6 +7,7 @@
     <string name="app_message">Dastur yangilansinmi?</string>
     <string name="default_notification_channel_id">channel_inbox</string>
     <string name="widget_title">Aqlli ichki ko‘cha</string>
+    <string name="privacy_policy"></string>
 
     <!-- Настройки -->
     <string name="setting_dialog_exit_caption">Dasturdan chiqish</string>
@@ -77,8 +78,8 @@
     <string name="dialog_title2">Soatlik mehmon kirishini o‘chirish?</string>
     <string name="dialog_message2" />
     <string name="dialog_turn_off">O‘CHIRISH</string>
-    <string name="guest_access_open">Ochish</string>
-    <string name="guest_access_opened">Ochiq</string>
+    <string name="guest_access_enable">Ochish</string>
+    <string name="guest_access_enabled">Ochiq</string>
     <string name="addresses_empty_list">Ro‘yxat bo‘sh</string>
 
     <!-- Qr code -->
@@ -143,7 +144,8 @@
 
     <!-- Диалог предоставление доступа -->
     <string name="dialog_share_access_title">Dostlikni baham qilish</string>
-    <string name="dialog_share_access_caption">Dostlikni berishni istagan odamning telefon raqamini kiriting yoki uning kontaktdan tanlang</string>
+    <string name="dialog_share_access_by_phone_caption">Dostlikni berishni istagan odamning telefon raqamini kiriting yoki uning kontaktdan tanlang</string>
+    <string name="dialog_share_access_by_license_plate_caption">Kirishiga ruxsat bermoqchi bo‘lgan avtomobilning ro‘yxatga olish raqamini kiriting</string>
     <string name="dialog_share_access_btn_ok">Baham qilish</string>
 
     <!-- Скоро все заработает офис. -->
@@ -236,7 +238,7 @@
     <string name="address_choose_camera_title">Kamerani tanlang</string>
     <string name="cctv_detail_tab_online">Onlayn</string>
     <string name="cctv_detail_tab_archive">Arxiv</string>
-    <string name="cctv_detail_tab_archive_is_missing">Arxiv yo\'q</string>
+    <string name="cctv_detail_tab_archive_is_missing">Arxiv yo‘q</string>
     <string name="cctv_video_from_date">%s sanadan videolar</string>
     <string name="cctv_choose_fragment">Bo‘limni tanlash</string>
     <string name="cctv_download_and_get_link">Yuklab olish va havolani olish</string>
@@ -480,7 +482,7 @@
     <string name="title_notifications">Bildirishnomalar</string>
     <string name="title_theme">Mavzusi</string>
     <string name="item_theme_light">Engil</string>
-    <string name="item_theme_dark">Qorong\'i</string>
+    <string name="item_theme_dark">Qorong‘i</string>
     <string name="title_call_ringtone">Kiruvchi qo‘ng‘iroq ohangi</string>
     <string name="receive_notifications">Bildirishnomalarni olish</string>
     <string name="lack_funds_notifications">Mablag‘ yetarlichasini ogohlantirish</string>
@@ -506,15 +508,27 @@
     <string name="manage_faces"> Sozlash </string>
     <string name="temporary_barrier_access">Vaqti bilan qisqa vaqtli shlagmaum/garajga kirish</string>
     <string name="barrier_add_contact">Kontakt qo‘shish</string>
+    <string name="barrier_add_vehicle">Avtomobil qo‘shish</string>
     <string name="permanent_access_address">Manzilga doimiy kirish</string>
+    <string name="title_gate_access">To‘siq/darvozaga kirish</string>
     <string name="permanent_add_contact">Kontakt qo‘shish</string>
     <string name="title_delete_face">Bu yuzni o‘chirmoqchimisiz?</string>
     <string name="delete_face">O‘chirish</string>
     <string name="dialog_face_cancel">Bekor qilish</string>
     <string name="title_add_face">Bu yuzni qo‘shmoqchimisiz?</string>
-    <string name="add_face">Qo‘shish</string>
-    <string name="text_no_image">Rasm yo\'q</string>
+    <string name="add_item">Qo‘shish</string>
+    <string name="text_no_image">Rasm yo‘q</string>
     <string name="phone_number_not_saved">Telefon raqami saqlanmagan</string>
     <string name="guest_access">Bir soat davomida mehmonlar uchun kirish</string>
     <string name="item_theme_system_default">Tizim tomonidan belgilanadi</string>
+    <string name="all_phone_numbers">Barcha telefon raqamlari</string>
+    <string name="all_cars">Barcha mashinalar</string>
+    <string name="tab_title_by_license_plate">Avtomobil raqami bo‘yicha</string>
+    <string name="tab_title_by_phone_number">Telefon raqami bo‘yicha</string>
+
+    <string-array name="registered_number_or_car_types">
+        <item>Hammasi</item>
+        <item>Faqat faol</item>
+        <item>Faqat faol bo‘lmaganlar</item>
+    </string-array>
 </resources>

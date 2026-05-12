@@ -1,14 +1,11 @@
 package com.sesameware.smartyard_oem.ui.common
 
-import android.os.Bundle
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.prefs.PreferenceStorage
-import com.sesameware.data.prefs.SentName
 import com.sesameware.domain.interactors.AuthInteractor
+import com.sesameware.domain.model.response.UserName
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.GenericViewModel
-import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
 
 /**
  * @author Nail Shakurov
@@ -18,32 +15,18 @@ class AppealFormViewModel(
     override val mAuthInteractor: AuthInteractor,
     override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
-    val sentName = MutableLiveData<SentName>()
+    
+    val prefsUserName = mPreferenceStorage.userName
 
     fun sendName(
         name: String,
-        patronimic: String?,
+        patronymic: String,
         listenerEmpty: listenerEmpty
     ) {
         viewModelScope.withProgress({ false }) {
-            mAuthInteractor.sendName(name, patronimic)
-            mPreferenceStorage.sentName = SentName(name, patronimic)
+            mAuthInteractor.sendName(name, patronymic)
+            mPreferenceStorage.userName = UserName(name, patronymic)
             listenerEmpty()
-        }
-    }
-
-    fun loadName(bundle: Bundle?) {
-        mPreferenceStorage.sentName?.let {
-            sentName.postValue(it)
-        } ?: run {
-            bundle?.let {
-                sentName.postValue(
-                    SentName(
-                        it.getString(SmsRegFragment.KEY_NAME) ?: "",
-                        it.getString(SmsRegFragment.KEY_PATRONYMIC) ?: ""
-                    )
-                )
-            }
         }
     }
 }
