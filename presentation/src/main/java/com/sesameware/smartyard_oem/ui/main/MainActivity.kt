@@ -182,9 +182,21 @@ class MainActivity : CommonActivity() {
             }
         )
 
+        mViewModel.deepLinkQrCode.observe(
+            this
+        ) { message ->
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+            builder
+                .setMessage(message)
+                .setPositiveButton(resources.getString(R.string.qr_code_dialog_ok)) { _, _ -> }.show()
+            mViewModel.navigationToAddress()
+        }
+
         intent?.extras?.let {
             parseIntent(it)
         }
+
+        handleDeepLink(intent)
     }
 
     private fun setupStatusBarWithNavController() {
@@ -299,7 +311,7 @@ class MainActivity : CommonActivity() {
     }
 
     private fun parseIntent(bundle: Bundle) {
-        Timber.d("debug_dmm   call parseIntent    ${bundle.keySet().map { "$it=${bundle.getString(it)}" }}")
+        Timber.d("debug_dmm call parseIntent    ${bundle.keySet().map { "$it=${bundle.getString(it)}" }}")
         val notificationId = bundle.getInt(IncomingCallActivity.NOTIFICATION_ID, 0)
         val notificationManager =
             applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
@@ -307,6 +319,19 @@ class MainActivity : CommonActivity() {
         @Suppress("DEPRECATION") val messageType = bundle.getSerializable(NOTIFICATION_MESSAGE_TYPE) as? TypeMessage
         if (messageType != null) {
             routeTabMessage(messageType)
+        }
+    }
+
+    private fun handleDeepLink(intent: Intent) {
+        val data: Uri? = intent.data
+        data?.let { uri ->
+            val pathSegments = uri.pathSegments
+            if (pathSegments.isNotEmpty()) {
+                if (pathSegments[0] == "-") {
+                    mViewModel.bottomNavigate(R.id.address)
+                    mViewModel.registerQrCode(uri)
+                }
+            }
         }
     }
 
@@ -379,6 +404,7 @@ class MainActivity : CommonActivity() {
         intent.extras?.let {
             parseIntent(it)
         }
+        handleDeepLink(intent)
     }
 
     @Suppress("DEPRECATION")

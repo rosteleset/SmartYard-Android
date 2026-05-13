@@ -8,9 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
+import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.InboxInteractor
-import com.sesameware.domain.interactors.PayInteractor
 import com.sesameware.smartyard_oem.App
 import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.Event
@@ -18,12 +18,13 @@ import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.checkAndRegisterPushToken
 import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
+import timber.log.Timber
 
 class MainActivityViewModel(
     override val mAuthInteractor: AuthInteractor,
     override val mPreferenceStorage: PreferenceStorage,
     private val inboxInteractor: InboxInteractor,
-    private val payInteractor: PayInteractor
+    private val addressInteractor: AddressInteractor
 ) : GenericViewModel() {
 
     val bottomNavigateTo = MutableLiveData<Event<Int>>()
@@ -45,6 +46,8 @@ class MainActivityViewModel(
     private val _updateToAppNavigateDialog = MutableLiveData<Event<Update>>()
     val updateToAppNavigateDialog: LiveData<Event<Update>>
         get() = _updateToAppNavigateDialog
+
+    val deepLinkQrCode = MutableLiveData<String>()
 
     fun navigationToAddressAuthFragmentAction() {
         _navigationToAddressAuthFragmentAction.value = Event(Unit)
@@ -91,7 +94,7 @@ class MainActivityViewModel(
         bottomNavigate(R.id.chat)
         val serviceName = context.getString(data.service.nameId)
         val noContract = context.getString(R.string.chat_no_contract)
-        val contractName = if (data.contractName.isEmpty()) noContract else data.contractName
+        val contractName = data.contractName.ifEmpty { noContract }
         var msg = context.getString(data.dialog.chatMsg, serviceName, contractName)
         if (BuildConfig.BUILD_TYPE != App.release) {
             msg += " ${context.getString(R.string.chat_test_msg)}"
@@ -109,6 +112,14 @@ class MainActivityViewModel(
 
     private fun callJsSendMessage(string: String) {
         chatSendMsg.postValue(Event(string))
+    }
+
+    fun registerQrCode(uri: Uri) {
+        Timber.d("debug_dmm register QR code $uri")
+        viewModelScope.withProgress {
+            val res = addressInteractor.registerQR(uri.toString())
+            deepLinkQrCode.postValue(res.data ?: res.message)
+        }
     }
 
     fun appVersion(version: String) {

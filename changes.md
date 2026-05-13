@@ -1,6 +1,7 @@
 ## History of major changes
 
 ### Version 1.0.85
+* Added deep link processing for QR code registration
 * Added dtmfProtocol support in the incomming call data
 * Fixed edge-to-edge
 * Added License Plate Recognition support

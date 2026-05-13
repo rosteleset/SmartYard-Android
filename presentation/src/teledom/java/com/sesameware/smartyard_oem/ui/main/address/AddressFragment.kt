@@ -282,6 +282,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         mainActivityViewModel.reloadToAddress.observe(
             viewLifecycleOwner,
             EventObserver {
+                Timber.d("debug_dmm reloadToAddress")
                 NavHostFragment.findNavController(this)
                     .navigate(R.id.action_global_addressFragment2)
                 mViewModel.getDataList(true)
