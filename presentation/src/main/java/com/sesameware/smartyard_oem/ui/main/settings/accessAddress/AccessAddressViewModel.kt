@@ -85,9 +85,7 @@ class AccessAddressViewModel(
     }
 
     private suspend fun refreshLicensePlateList(flatId: Int) {
-        lprsInteractor.listLicensePlates(flatId)?.data?.let {
-            _licensePlates.postValue(it)
-        }
+        _licensePlates.postValue(lprsInteractor.listLicensePlates(flatId)?.data ?: listOf())
     }
 
     fun getLicensePlateList(flatId: Int) {
