@@ -46,6 +46,7 @@ class IncomingCallActivityViewModel(
     }
 
     fun setSlideShowEnabled(isEnabled: Boolean) {
+        Timber.d("debug_dmm    call setSlideShowEnabled isEnabled=$isEnabled")
         if (isEnabled) {
             if (mPushCallData.videoStream.isEmpty()) {
                 playSlideShow(mPushCallData.live)

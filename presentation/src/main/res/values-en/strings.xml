@@ -382,6 +382,8 @@
     <string name="event_log_all_flats">All apartments</string>
     <string name="event_log_opened">opened</string>
     <string name="event_log_not_opened">not opened</string>
+    <string name="event_log_track_such_event">Notify about such events</string>
+    <string name="event_log_enter_comments">Please enter a comment</string>
 
     <string name="event_door_phone_call_unanswered">Intercom call</string>
     <string name="event_door_phone_call_answered">Intercom call</string>
@@ -529,10 +531,17 @@
     <string name="all_cars">All cars</string>
     <string name="tab_title_by_license_plate">By license plate</string>
     <string name="tab_title_by_phone_number">By phone number</string>
+    <string name="entrance_camera_is_not_available">Camera is not available</string>
 
     <string-array name="registered_number_or_car_types">
         <item>All</item>
         <item>Active only</item>
         <item>Inactive only</item>
     </string-array>
+    <string name="tracked_events_title">Tracked events</string>
+    <string name="tracked_events_empty">No events tracked</string>
+    <string name="tracked_events_delete_confirm_title">Deleting an event</string>
+    <string name="tracked_events_delete_confirm_message">Are you sure you want to stop tracking the event \"%1$s\"?</string>
+    <string name="tracked_events_delete_confirm_positive">Delete</string>
+    <string name="tracked_events_delete_confirm_negative">Cancel</string>
 </resources>

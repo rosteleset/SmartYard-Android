@@ -38,11 +38,17 @@ class CustomWebInterface(private val callback: Callback? = null) : KoinComponent
         callback?.onPostRefreshParent(timeout)
     }
 
+    @JavascriptInterface
+    fun scanNfc(timeout: Long = 10_000L) {
+        callback?.scanNfc(timeout)
+    }
+
     interface Callback {
         fun onPostLoadingStarted()
         fun onPostLoadingFinished()
         fun onPostRefreshParent(timeout: Int)
         fun isAppInstalled(url: String): Boolean
+        fun scanNfc(timeout: Long = 10_000L)
     }
 
     companion object {

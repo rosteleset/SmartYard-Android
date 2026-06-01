@@ -3,13 +3,18 @@
 package com.sesameware.smartyard_oem.ui.main.address.event_log
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.graphics.Rect
 import android.os.Bundle
+import android.text.InputFilter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.EditText
+import android.widget.FrameLayout
 import androidx.annotation.Px
+import androidx.appcompat.app.AlertDialog
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -18,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.Plog
@@ -40,6 +47,8 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import com.sesameware.domain.utils.listenerGeneric
+import com.sesameware.smartyard_oem.EventObserver
 
 class EventLogDetailFragment : Fragment() {
     private var _binding: FragmentEventLogDetailBinding? = null
@@ -127,7 +136,7 @@ class EventLogDetailFragment : Fragment() {
             mPlayer?.let { currentViewHolder?.setPlayer(it) }
         }
     }
-    
+
     // released в onPause
 //    override fun onStop() {
 //        currentViewHolder?.hidePlayerView()
@@ -206,6 +215,10 @@ class EventLogDetailFragment : Fragment() {
             EventLogDetailItemAction.OnPlayOrPause -> onPlayOrPause()
             is EventLogDetailItemAction.OnRewind -> onRewind(action.forward)
             is EventLogDetailItemAction.OnShowOrHidePlayerView -> onShowOrHidePlayerView(action.show)
+            is EventLogDetailItemAction.OnTrackEvent ->
+                onTrackEvent(action.position, action.flatId, action.eventType, action.eventDetail)
+            is EventLogDetailItemAction.OnUntrackEvent ->
+                onUntrackEvent(action.position, action.watcherId, action.key)
         }
     }
 
@@ -267,6 +280,44 @@ class EventLogDetailFragment : Fragment() {
         mPlayer?.isMuted = isMuted
     }
 
+    private fun onTrackEvent(position: Int, flatId: Int, eventType: Int, eventDetail: String) {
+        Timber.d("debug_dmm onTrackEvent position=$position, flatId=$flatId, eventType=$eventType, eventDetail=$eventDetail")
+        showInputDialogForEventTracking { comments ->
+            mViewModel.trackEvent(position, flatId, eventType, eventDetail, comments)
+        }
+    }
+
+    private fun onUntrackEvent(position: Int, watcherId: Int, key: String) {
+        Timber.d("debug_dmm onUntrackEvent position=$position, watcherId=$watcherId, key=$key")
+        mViewModel.untrackEvent(position, watcherId, key)
+    }
+
+    private fun showInputDialogForEventTracking(callback: listenerGeneric<String>) {
+        val editText = EditText(requireContext()).apply {
+            setBackgroundResource(R.drawable.button_bg_no_flooded_rounded)
+            textSize = 16f
+            setPadding(24, 20, 24, 20)
+            maxLines = 1
+            filters = arrayOf(InputFilter.LengthFilter(30))
+        }
+        val container = FrameLayout(requireContext()).apply {
+            setPadding(48, 16, 48, 0)
+            addView(editText)
+        }
+
+        val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+        val dialog = builder
+            .setTitle(R.string.event_log_enter_comments)
+            .setView(container)
+            .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
+                val text = editText.text.toString()
+                callback.invoke(text)
+            }
+            .setCancelable(false)
+            .show()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.background_dialog_large)
+    }
+
     private fun onPlayOrPause() {
         val player = mPlayer
         if (player == null || !player.isReady()) return
@@ -318,7 +369,7 @@ class EventLogDetailFragment : Fragment() {
             val spacing = resources.getDimensionPixelSize(R.dimen.event_log_detail_spacing)
             addItemDecoration(LinearHorizontalSpacingDecoration(spacing))
             addItemDecoration(BoundsOffsetDecoration())
-            rvAdapter = EventLogDetailAdapter(listOf(), hashMapOf(), ::onEventLogDetailItemAction)
+            rvAdapter = EventLogDetailAdapter(listOf(), hashMapOf(), hashMapOf(), ::onEventLogDetailItemAction)
             adapter = rvAdapter
         }
 
@@ -383,6 +434,7 @@ class EventLogDetailFragment : Fragment() {
                 rvAdapter?.eventsDay =
                     mViewModel.eventDaysFilter.map { it.day }.subList(0, lastLoadedIndex + 1)
                 rvAdapter?.eventsByDays = mViewModel.eventsByDaysFilter
+                rvAdapter?.trackedEvents = mViewModel.trackedEvents
                 if (prevLoadedIndex < 0) {
                     rvAdapter?.notifyDataSetChanged()
                     mViewModel.currentEventItem?.let { currentItem ->
@@ -421,6 +473,21 @@ class EventLogDetailFragment : Fragment() {
         mViewModel.progress.observe(viewLifecycleOwner) {
             binding.pbEventLogDetail.isVisible = it
         }
+
+        mViewModel.newTrackedEvent.observe(viewLifecycleOwner, EventObserver { pair ->
+            val position = pair.first
+            val (watcherId, flatId, eventType, eventDetail, comments) = pair.second
+            val key = "${flatId}_${eventType}_${eventDetail}"
+            mViewModel.trackedEvents[key] = TrackedEventData(watcherId, flatId, eventType, eventDetail, comments)
+            rvAdapter?.notifyItemChanged(position)
+        })
+
+        mViewModel.removeTrackedEvent.observe(viewLifecycleOwner, EventObserver { pair ->
+            val position = pair.first
+            val key = pair.second
+            mViewModel.trackedEvents.remove(key)
+            rvAdapter?.notifyItemChanged(position)
+        })
     }
 
     override fun onDestroyView() {

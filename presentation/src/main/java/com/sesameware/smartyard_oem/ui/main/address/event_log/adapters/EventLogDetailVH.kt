@@ -13,13 +13,27 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemEventLogDetailBinding
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.event_log.TrackedEventData
 import org.threeten.bp.format.DateTimeFormatter
+import timber.log.Timber
+
+fun extractEventTrackingDetail(plog: Plog): String {
+    val detail = when(plog.eventType) {
+        Plog.EVENT_OPEN_BY_KEY -> plog.detailX?.key ?: ""
+        Plog.EVENT_OPEN_FROM_APP -> plog.detailX?.phone ?: ""
+        Plog.EVENT_OPEN_BY_CODE -> ""
+        Plog.EVENT_OPEN_GATES_BY_VEHICLE -> plog.detailX?.vehicle?.plateNumber ?: ""
+        else -> ""
+    }
+    return detail
+}
 
 class EventLogDetailVH(
     private val binding: ItemEventLogDetailBinding,
@@ -79,7 +93,8 @@ class EventLogDetailVH(
         }
     }
 
-    fun onBind(position: Int, plog: Plog) {
+    fun onBind(position: Int, plog: Plog, trackedEvent: TrackedEventData? = null) {
+        Timber.d("debug_dmm  onBind: flatId=${plog.flatId}; address=${plog.address}")
         isMuted = true
 
         with (binding) {
@@ -261,6 +276,27 @@ class EventLogDetailVH(
                 isMuted = !isMuted
                 ivEventMute.isSelected = isMuted
                 onAction(EventLogDetailItemAction.OnMuteClick(isMuted))
+            }
+
+            val canEventTracking = DataModule.providerConfig.hasEventsTracking && plog.flatId != null && plog.eventType in listOf(Plog.EVENT_OPEN_BY_CODE, Plog.EVENT_OPEN_FROM_APP, Plog.EVENT_OPEN_BY_KEY, Plog.EVENT_OPEN_GATES_BY_VEHICLE)
+            cvTrackEvent.visibility = if (canEventTracking) View.VISIBLE else View.GONE
+            Timber.d("debug_dmm canEventTracking=$canEventTracking")
+            if (canEventTracking) {
+                val eventDetail = extractEventTrackingDetail(plog)
+                tvTrackedEventComments.text = (trackedEvent?.comments ?: "")
+                switchTrackEvent.setOnCheckedChangeListener(null)
+                switchTrackEvent.isChecked = (trackedEvent != null)
+                switchTrackEvent.setOnCheckedChangeListener { _, isChecked ->
+                    Timber.d("debug_dmm switchTrackEvent call OnCheckedChangeListener isChecked=$isChecked")
+                    if (isChecked) {
+                        onAction(EventLogDetailItemAction.OnTrackEvent(position,plog.flatId!!, plog.eventType, eventDetail))
+                    } else {
+                        if (trackedEvent != null) {
+                            val key = "${plog.flatId!!}_${plog.eventType}_$eventDetail"
+                            onAction(EventLogDetailItemAction.OnUntrackEvent(position, trackedEvent.watcherId, key))
+                        }
+                    }
+                }
             }
         }
     }

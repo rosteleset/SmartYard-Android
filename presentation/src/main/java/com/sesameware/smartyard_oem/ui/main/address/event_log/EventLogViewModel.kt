@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem.ui.main.address.event_log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.threeten.bp.LocalDate
@@ -11,11 +12,12 @@ import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.FRSInteractor
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.Plog
+import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
-import org.threeten.bp.DateTimeUtils
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import timber.log.Timber
+import kotlin.math.log
 
 data class Flat(
     val flatId: Int,
@@ -26,6 +28,14 @@ data class Flat(
 data class EventDayData(
     val day: LocalDate,
     val eventCount: Int
+)
+
+data class TrackedEventData(
+    val watcherId: Int,
+    val flatId: Int,
+    val eventType: Int,
+    val eventDetail: String,
+    val comments: String
 )
 
 /**
@@ -91,6 +101,10 @@ class EventLogViewModel(
     var camMapDataByEntrance = hashMapOf<Int, DoorphoneData>()
 
     var faceIdToUrl = hashMapOf<Int, String>()
+    var trackedEvents = hashMapOf<String, TrackedEventData>()
+
+    var newTrackedEvent = MutableLiveData<Event<Pair<Int, TrackedEventData>>>()
+    var removeTrackedEvent = MutableLiveData<Event<Pair<Int, String>>>()
 
     init {
         camMap()
@@ -107,7 +121,7 @@ class EventLogViewModel(
             val dataByEntrance = hashMapOf<Int, DoorphoneData>()
             val result = addressInteractor.camMap()
             result?.data?.forEach {
-                data[it.id] = DoorphoneData(it.url, it.token, it.serverType)
+                data[it.domophoneId] = DoorphoneData(it.url, it.token, it.serverType)
                 it.entranceId?.let { entranceId ->
                     dataByEntrance[entranceId] = DoorphoneData(it.url, it.token, it.serverType)
                 }
@@ -134,6 +148,27 @@ class EventLogViewModel(
             }
             withContext(Dispatchers.Main) {
                 faceIdToUrl = HashMap(q)
+            }
+        }
+    }
+
+    fun getTrackedEvents() {
+        if (!DataModule.providerConfig.hasEventsTracking) {
+            trackedEvents = HashMap()
+            return
+        }
+
+        viewModelScope.withProgress(progress = null) {
+            val q = hashMapOf<String, TrackedEventData>()
+            flatsAll.forEach {
+                val res = addressInteractor.getTrackedEvents(it.flatId)
+                res?.data?.forEach { trackedEvent ->
+                    q["${trackedEvent.flatId}_${trackedEvent.eventType}_${trackedEvent.eventDetail ?: ""}"] =
+                        TrackedEventData(trackedEvent.watcherId, trackedEvent.flatId, trackedEvent.eventType, trackedEvent.eventDetail ?: "", trackedEvent.comments ?: "")
+                }
+            }
+            withContext(Dispatchers.Main) {
+                trackedEvents = HashMap(q)
             }
         }
     }
@@ -176,7 +211,7 @@ class EventLogViewModel(
         viewModelScope.withProgress(progress = null /* _progress */) {
             _eventDaysFilter.clear()
             _eventsByDaysFilter.clear()
-            
+
             val selectedFlats = getSelectedFlats()
 
             val allFlatsDayToEventCount = getAllFlatsDayToEventCount(selectedFlats)
@@ -327,6 +362,7 @@ class EventLogViewModel(
                 Timber.d("__Q__ from cache $cacheKey")
                 cacheEvents[cacheKey]?.let { logDataList ->
                     logDataList.forEach { logElement ->
+                        logElement.flatId = flat.flatId
                         if (filterEventType.contains(logElement.eventType)) {
                             _eventsByDaysFilter.getOrPut(day) { mutableListOf() }
                                 .add(logElement)
@@ -338,6 +374,7 @@ class EventLogViewModel(
                 cacheEvents[cacheKey] = mutableListOf()
                 addressInteractor.plog(flat.flatId, dayFormat)?.let { plogResponse ->
                     plogResponse.data.forEach { plog ->
+                        plog.flatId = flat.flatId
                         if (flat.flatNumber.isNotEmpty()) {
                             plog.address = address + ", ${flat.flatNumber}"
                         } else {
@@ -369,6 +406,22 @@ class EventLogViewModel(
     fun like(uuid: String) {
         viewModelScope.withProgress(progress = null) {
             frsInteractor.like(uuid, "")
+        }
+    }
+
+    fun trackEvent(position: Int, flatId: Int, eventType: Int, eventDetail: String, comments: String) {
+        viewModelScope.withProgress(progress = null) {
+            val watcherId = addressInteractor.trackEvent(flatId, eventType, eventDetail, comments)?.data?.watcherId
+            if (watcherId != null) {
+                newTrackedEvent.postValue(Event(Pair(position, TrackedEventData(watcherId, flatId, eventType, eventDetail, comments))))
+            }
+        }
+    }
+
+    fun untrackEvent(position: Int, watcherId: Int, key: String) {
+        viewModelScope.withProgress(progress = null) {
+            addressInteractor.untrackEvent(watcherId)
+            removeTrackedEvent.postValue(Event(Pair(position, key)))
         }
     }
 

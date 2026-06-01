@@ -377,6 +377,8 @@
     <string name="event_log_all_flats">Բոլոր բնակարանները</string>
     <string name="event_log_opened">բացվեց</string>
     <string name="event_log_not_opened">չի բացվել</string>
+    <string name="event_log_track_such_event">Տեղեկացրեք նման իրադարձությունների մասին</string>
+    <string name="event_log_enter_comments">Մուտքագրեք մեկնաբանություն</string>
 
     <string name="event_door_phone_call_unanswered">Տանը կալում դուրսավորված չէ</string>
     <string name="event_door_phone_call_answered">Տանը կալում դուրսավորված է</string>
@@ -523,10 +525,17 @@
     <string name="all_cars">Բոլոր մեքենաները</string>
     <string name="tab_title_by_license_plate">Ըստ մեքենայի համարի</string>
     <string name="tab_title_by_phone_number">Հեռախոսահամարով</string>
+    <string name="entrance_camera_is_not_available">Տեսախցիկը հասանելի չէ</string>
 
     <string-array name="registered_number_or_car_types">
         <item>Բոլորը</item>
         <item>Միայն ակտիվ</item>
         <item>Միայն անգործուն</item>
     </string-array>
+    <string name="tracked_events_title">Հետևված իրադարձություններ</string>
+    <string name="tracked_events_empty">Ոչ մի իրադարձություն չի հետևվել</string>
+    <string name="tracked_events_delete_confirm_title">Միջոցառման ջնջում</string>
+    <string name="tracked_events_delete_confirm_message">Վստա՞հ եք, որ ուզում եք դադարեցնել այս իրադարձության հետևումը։ \"%1$s\"</string>
+    <string name="tracked_events_delete_confirm_positive">Ջնջել</string>
+    <string name="tracked_events_delete_confirm_negative">Չեղարկել</string>
 </resources>

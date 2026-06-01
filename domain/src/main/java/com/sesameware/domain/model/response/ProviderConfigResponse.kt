@@ -48,6 +48,12 @@ data class ProviderConfig(
     @Json(name = ADDRESS_VERIFICATION_TAB_LAYOUT_VISIBLE) val _addressVerificationTabLayoutVisible: String = "t",
     @Json(name = ADDRESS_VERIFICATION_TAB_1_VISIBLE) val _addressVerificationTab1Visible: String = "t",
     @Json(name = ADDRESS_VERIFICATION_TAB_2_VISIBLE) val _addressVerificationTab2Visible: String = "t",
+
+    //events tracking
+    @Json(name = HAS_EVENTS_TRACKING) val _hasEventsTracking: String? = "f",
+
+    //stories
+    @Json(name = HAS_STORIES) val _hasStories: String? = "f"
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
@@ -75,6 +81,14 @@ data class ProviderConfig(
         get() = _addressVerificationTab1Visible == "t"
     val addressVerificationTab2Visible: Boolean
         get() = _addressVerificationTab2Visible == "t"
+
+    //events tracking
+    val hasEventsTracking: Boolean
+        get() = _hasEventsTracking == "t"
+
+    //stories
+    val hasStories: Boolean
+        get() = _hasStories == "t"
 
     companion object {
         //чат
@@ -133,6 +147,12 @@ data class ProviderConfig(
         const val ADDRESS_VERIFICATION_TAB_LAYOUT_VISIBLE = "addressVerificationTabLayoutVisible"
         const val ADDRESS_VERIFICATION_TAB_1_VISIBLE = "addressVerificationTab1Visible"
         const val ADDRESS_VERIFICATION_TAB_2_VISIBLE = "addressVerificationTab2Visible"
+
+        //events tracking
+        const val HAS_EVENTS_TRACKING = "eventsTracking"
+
+        //stories
+        const val HAS_STORIES = "stories"
     }
 }
 

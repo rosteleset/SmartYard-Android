@@ -9,6 +9,7 @@ import com.sesameware.domain.model.request.AccessRequest
 import com.sesameware.domain.model.request.AddMyPhoneRequest
 import com.sesameware.domain.model.request.ConfirmCodeRecoveryRequest
 import com.sesameware.domain.model.request.GetIntercomRequest
+import com.sesameware.domain.model.request.GetTrackedEventsRequest
 import com.sesameware.domain.model.request.PutIntercomRequest
 import com.sesameware.domain.model.request.QRRequest
 import com.sesameware.domain.model.request.RecoveryOptionsRequest
@@ -18,11 +19,14 @@ import com.sesameware.domain.model.request.SentCodeRecoveryRequest
 import com.sesameware.domain.model.request.Settings
 import com.sesameware.domain.model.request.PlogDaysRequest
 import com.sesameware.domain.model.request.PlogRequest
+import com.sesameware.domain.model.request.TrackEventRequest
+import com.sesameware.domain.model.request.UntrackEventRequest
 import com.sesameware.domain.model.response.AccessResponse
 import com.sesameware.domain.model.response.AddMyPhoneResponse
 import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
+import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.IntercomResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.QRResponse
@@ -34,6 +38,14 @@ import com.sesameware.domain.model.response.SentCodeRecoveryResponse
 import com.sesameware.domain.model.response.PlogDaysResponse
 import com.sesameware.domain.model.response.PlogResponse
 import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.GetTrackedEventsResponse
+import com.sesameware.domain.model.response.TrackEventResponse
+import com.sesameware.domain.model.response.UntrackEventResponse
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.Request
+import okhttp3.OkHttpClient
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Nail Shakurov
@@ -44,6 +56,11 @@ class AddressRepositoryImpl(
 
     override val moshi: Moshi
 ) : AddressRepository, BaseRepository(moshi) {
+
+    private val client = OkHttpClient.Builder()
+        .callTimeout(5, TimeUnit.SECONDS)
+        .build()
+
     override suspend fun getAddressList(): GetAddressListResponse {
         return safeApiCall {
             teledomApi.getAddressList(DataModule.BASE_URL + "address/getAddressList").getResponseBody()
@@ -216,6 +233,56 @@ class AddressRepositoryImpl(
     override suspend fun camMap(): CamMapResponse {
         return safeApiCall {
             teledomApi.camMap(DataModule.BASE_URL + "cctv/camMap").getResponseBody()
+        }
+    }
+
+    override suspend fun trackEvent(
+        flatId: Int,
+        eventType: Int,
+        eventDetail: String,
+        comments: String
+    ): TrackEventResponse {
+        return safeApiCall {
+            teledomApi.trackEvent(
+                DataModule.BASE_URL + "address/trackEvent",
+                TrackEventRequest(flatId, eventType, eventDetail, comments))
+                .getResponseBody()
+        }
+    }
+
+    override suspend fun untrackEvent(watcherId: Int): UntrackEventResponse {
+        return safeApiCall {
+            teledomApi.untrackEvent(
+                DataModule.BASE_URL + "address/untrackEvent",
+                UntrackEventRequest(watcherId))
+                .getResponseBody()
+        }
+    }
+
+    override suspend fun getTrackedEvents(flatId: Int): GetTrackedEventsResponse {
+        return safeApiCall {
+            teledomApi.getTrackedEvents(
+                DataModule.BASE_URL + "address/getTrackedEvents",
+                GetTrackedEventsRequest(flatId))
+                .getResponseBody()
+        }
+    }
+
+    override suspend fun isWhepAvailable(url: String): Boolean = withContext(Dispatchers.IO) {
+        if (url.isBlank()) return@withContext false
+
+        val request = Request.Builder().url(url).method("OPTIONS", null).build()
+
+        runCatching {
+            client.newCall(request).execute().use { it.isSuccessful || it.code == 405 }
+        }.getOrDefault(false)
+    }
+
+    override suspend fun getStories(): GetStoriesResponse {
+        return safeApiCall {
+            teledomApi.getStories(
+                DataModule.BASE_URL + "address/getStories"
+            ).getResponseBody()
         }
     }
 }

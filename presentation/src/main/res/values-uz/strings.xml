@@ -377,6 +377,8 @@
     <string name="event_log_all_flats">Barcha kvartiralar</string>
     <string name="event_log_opened">ochirdi</string>
     <string name="event_log_not_opened">ochirmadi</string>
+    <string name="event_log_track_such_event">Bunday hodisalar haqida xabar bering</string>
+    <string name="event_log_enter_comments">Iltimos, fikr bildiring</string>
 
     <string name="event_door_phone_call_unanswered">Domofon qo‘ng‘iroqi</string>
     <string name="event_door_phone_call_answered">Domofon qo‘ng‘iroqi</string>
@@ -525,10 +527,17 @@
     <string name="all_cars">Barcha mashinalar</string>
     <string name="tab_title_by_license_plate">Avtomobil raqami bo‘yicha</string>
     <string name="tab_title_by_phone_number">Telefon raqami bo‘yicha</string>
+    <string name="entrance_camera_is_not_available">Kamera mavjud emas</string>
 
     <string-array name="registered_number_or_car_types">
         <item>Hammasi</item>
         <item>Faqat faol</item>
         <item>Faqat faol bo‘lmaganlar</item>
     </string-array>
+    <string name="tracked_events_title">Kuzatilgan voqealar</string>
+    <string name="tracked_events_empty">Hech qanday hodisa kuzatilmadi</string>
+    <string name="tracked_events_delete_confirm_title">Tadbir o‘chirilmoqda</string>
+    <string name="tracked_events_delete_confirm_message">Haqiqatan ham bu hodisani kuzatishni to‘xtatmoqchimisiz \"%1$s\"?</string>
+    <string name="tracked_events_delete_confirm_positive">O‘chirish</string>
+    <string name="tracked_events_delete_confirm_negative">Bekor qilish</string>
 </resources>

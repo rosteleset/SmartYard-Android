@@ -12,4 +12,6 @@ sealed interface EventLogDetailItemAction {
     object OnPlayOrPause : EventLogDetailItemAction
     data class OnShowOrHidePlayerView(val show: Boolean) : EventLogDetailItemAction
     data class OnRewind(val forward: Boolean) : EventLogDetailItemAction
+    data class OnTrackEvent(val position: Int, val flatId: Int, val eventType: Int, val eventDetail: String) : EventLogDetailItemAction
+    data class OnUntrackEvent(val position: Int, val watcherId: Int, val key: String) : EventLogDetailItemAction
 }

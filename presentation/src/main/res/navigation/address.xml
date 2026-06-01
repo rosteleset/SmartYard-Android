@@ -35,6 +35,9 @@
         <action
             android:id="@+id/action_addressFragment_to_customWebViewFragmentAddress"
             app:destination="@id/customWebViewFragmentAddress" />
+        <action
+            android:id="@+id/action_addressFragment_to_entranceCameraFragment"
+            app:destination="@id/entranceCameraFragment" />
     </fragment>
     <fragment
         android:id="@+id/inputAddressFragment"
@@ -95,6 +98,18 @@
         <action
             android:id="@+id/action_authFragment_to_restoreAccessFragment"
             app:destination="@id/restoreAccessFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/entranceCameraFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.cctv_video.EntranceCameraFragment"
+        android:label="fragment_entrance_camera"
+        tools:layout="@layout/fragment_entrance_camera">
+        <argument
+            android:name="entranceCamera"
+            app:argType="com.sesameware.domain.model.response.EntranceCamera" />
+        <argument
+            android:name="lock"
+            app:argType="com.sesameware.smartyard_oem.ui.main.address.models.Lock" />
     </fragment>
     <fragment
         android:id="@+id/CCTVMapFragment"
@@ -282,4 +297,8 @@
             android:name="url"
             app:argType="string" />
     </dialog>
+    <action
+        android:id="@+id/action_global_customWebBottomFragmentAddress"
+        app:destination="@id/customWebBottomFragmentAddress"
+        app:popUpTo="@id/addressFragment" />
 </navigation>

@@ -31,14 +31,17 @@ data class CCTVData(
             MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
             MediaServerType.FORPOST -> "$url&$token"
-            else -> "$url/index.m3u8?token=$token"
+            MediaServerType.SESAMEWARE,
+            MediaServerType.FLUSSONIC -> "$url/index.m3u8?token=$token"
         }
 
     val preview: String get() =
         when (serverType) {
             MediaServerType.NIMBLE -> "$url/thumbnail.mp4?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP,
             MediaServerType.FORPOST -> "$url&$token"
-            else -> "$url/preview.mp4?token=$token"
+            MediaServerType.SESAMEWARE,
+            MediaServerType.FLUSSONIC -> "$url/preview.mp4?token=$token"
         }
 
     fun getHlsAt(time: LocalDateTime, durationSeconds: Long, timeZone: String): String {
@@ -48,7 +51,8 @@ data class CCTVData(
             MediaServerType.NIMBLE -> "$url/playlist_dvr_range-$timeStamp-$durationSeconds.m3u8?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "$url&$token"
             MediaServerType.FORPOST -> "$url&$token"
-            else -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
+            MediaServerType.SESAMEWARE,
+            MediaServerType.FLUSSONIC -> "$url/index-$timeStamp-$durationSeconds.m3u8?token=$token"
         }
     }
 
@@ -60,7 +64,8 @@ data class CCTVData(
             MediaServerType.NIMBLE -> "$url/dvr_thumbnail_${zoned.format(mPreviewFormatter)}.mp4?wmsAuthSign=$token"
             MediaServerType.MACROSCOP -> "${url.replace("/hls?", "/site?")}&$token&starttime=${zoned.format(mPreviewFormatterMacroscop)}&resolutionx=480&resolutiony=270&streamtype=mainvideo&withcontenttype=true&mode=archive"
             MediaServerType.FORPOST -> "$url&$token&TS=$ts&TZ=$tz"
-            else -> "$url/${zoned.format(mPreviewFormatter)}-preview.mp4?token=$token"
+            MediaServerType.SESAMEWARE,
+            MediaServerType.FLUSSONIC -> "$url/${zoned.format(mPreviewFormatter)}-preview.mp4?token=$token"
         }
     }
 
@@ -70,6 +75,7 @@ data class CCTVData(
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                MediaServerType.MEDIA_TYPE_SESAMEWARE -> MediaServerType.SESAMEWARE
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -89,7 +95,8 @@ data class CCTVCityCameraData(
         MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
         MediaServerType.MACROSCOP -> "$url&$token"
         MediaServerType.FORPOST -> "$url&$token"
-        else -> "$url/index.m3u8?token=$token"
+        MediaServerType.SESAMEWARE,
+        MediaServerType.FLUSSONIC -> "$url/index.m3u8?token=$token"
     }
 
     val serverType: MediaServerType
@@ -98,6 +105,7 @@ data class CCTVCityCameraData(
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                MediaServerType.MEDIA_TYPE_SESAMEWARE -> MediaServerType.SESAMEWARE
                 else -> MediaServerType.FLUSSONIC
             }
         }
@@ -119,13 +127,15 @@ enum class MediaServerType {
     FLUSSONIC,
     NIMBLE,
     MACROSCOP,
-    FORPOST;
+    FORPOST,
+    SESAMEWARE;
 
     companion object {
         const val MEDIA_TYPE_FLUSSONIC = "flussonic"
         const val MEDIA_TYPE_NIMBLE = "nimble"
         const val MEDIA_TYPE_MACROSCOP = "macroscop"
         const val MEDIA_TYPE_FORPOST = "forpost"
+        const val MEDIA_TYPE_SESAMEWARE = "sesameware"
     }
 }
 

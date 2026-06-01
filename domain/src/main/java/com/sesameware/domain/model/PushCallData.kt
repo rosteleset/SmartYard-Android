@@ -52,6 +52,7 @@ data class PushCallData(
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                MediaServerType.MEDIA_TYPE_SESAMEWARE -> MediaServerType.SESAMEWARE
                 else -> MediaServerType.FLUSSONIC
             }
         }

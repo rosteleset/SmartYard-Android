@@ -36,4 +36,9 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
     <dimen name="edit_text_corner_radius">8dp</dimen>
     <dimen name="tab_layout_corner_radius">8dp</dimen>
     <dimen name="dialog_large_corner_radius">20dp</dimen>
+    <dimen name="entrance_slider_spacing">8dp</dimen>
+
+    <dimen name="stories_top_padding">28dp</dimen>
+    <dimen name="stories_bottom_padding">4dp</dimen>
+    <dimen name="no_stories_padding">72dp</dimen>
 </resources>

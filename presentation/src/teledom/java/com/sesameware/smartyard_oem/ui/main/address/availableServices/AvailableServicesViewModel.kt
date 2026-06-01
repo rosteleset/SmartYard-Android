@@ -111,7 +111,7 @@ class AvailableServicesViewModel(
                 x11841 = x11841,
                 x12440 = x12440
             ),
-            ACTION1
+            ACTION1,
         )
     }
 
@@ -170,7 +170,7 @@ class AvailableServicesViewModel(
                 x12440 = x12440,
                 x10941 = x10941
             ),
-            ACTION1
+            ACTION1,
         )
     }
 

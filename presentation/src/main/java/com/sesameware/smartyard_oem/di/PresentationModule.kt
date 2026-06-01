@@ -1,9 +1,9 @@
 package com.sesameware.smartyard_oem.di
 
+import android.os.Build
 import androidx.lifecycle.SavedStateHandle
-import org.koin.androidx.viewmodel.dsl.viewModel
-import org.koin.dsl.module
 import com.sesameware.smartyard_oem.GlobalDataSource
+import com.sesameware.smartyard_oem.ui.SafeVideoDecoderFactory
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivityViewModel
 import com.sesameware.smartyard_oem.ui.common.AppealFormViewModel
 import com.sesameware.smartyard_oem.ui.launcher.LauncherViewModel
@@ -36,12 +36,21 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogDeleteR
 import com.sesameware.smartyard_oem.ui.main.settings.addressSettings.AddressSettingsViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.basicSettings.BasicSettingsViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.FaceSettingsViewModel
+import com.sesameware.smartyard_oem.ui.main.settings.trackedEvents.TrackedEventsViewModel
 import com.sesameware.smartyard_oem.ui.onboarding.OnboardingViewModel
 import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
 import com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallViewModel
+import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersViewModel
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegViewModel
 import com.sesameware.smartyard_oem.ui.reg.tel.NumberRegViewModel
-import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersViewModel
+import org.koin.android.ext.koin.androidContext
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+import org.webrtc.DefaultVideoEncoderFactory
+import org.webrtc.EglBase
+import org.webrtc.PeerConnectionFactory
+import org.webrtc.VideoDecoderFactory
+import org.webrtc.VideoEncoderFactory
 
 object PresentationModule {
     fun create() = module {
@@ -83,6 +92,49 @@ object PresentationModule {
         viewModel { PayAddressViewModel(get()) }
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }
+        viewModel { TrackedEventsViewModel(get()) }
         single { GlobalDataSource() }
+        single<EglBase> { EglBase.create() }
+        single<VideoDecoderFactory> {
+            val eglBase: EglBase = get()
+            val isBuggyDevice = shouldForceSoftwareDecoder()
+            SafeVideoDecoderFactory(eglBase.eglBaseContext, disableHighProfile = isBuggyDevice)
+        }
+        single<VideoEncoderFactory> {
+            val eglBase: EglBase = get()
+            DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
+        }
+        single<PeerConnectionFactory> {
+            val context = androidContext()
+
+            val options = PeerConnectionFactory.InitializationOptions.builder(context)
+                .setEnableInternalTracer(true)
+                .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
+                .createInitializationOptions()
+            PeerConnectionFactory.initialize(options)
+
+            PeerConnectionFactory.builder()
+                .setVideoDecoderFactory(get<VideoDecoderFactory>())
+                .setVideoEncoderFactory(get<VideoEncoderFactory>())
+                .setOptions(PeerConnectionFactory.Options().apply {
+                    disableNetworkMonitor = true
+                })
+                .createPeerConnectionFactory()
+        }
     }
+}
+
+private fun shouldForceSoftwareDecoder(): Boolean {
+    val is32Bit = Build.SUPPORTED_64_BIT_ABIS.isEmpty()
+
+    // Trouble devices
+    val manufacturer = Build.MANUFACTURER.orEmpty()
+    val model = Build.MODEL.orEmpty()
+    val isBuggyDevice = manufacturer.contains("samsung", ignoreCase = true) &&
+            (model.contains("A13", ignoreCase = true) ||
+                    model.contains("A12", ignoreCase = true) ||
+                    model.contains("A03", ignoreCase = true) ||
+                    model.contains("A04", ignoreCase = true))
+
+    return is32Bit || isBuggyDevice
 }

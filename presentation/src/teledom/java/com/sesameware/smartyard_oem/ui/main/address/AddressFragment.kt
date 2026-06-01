@@ -23,12 +23,14 @@ import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
+import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressListAdapter
+import com.sesameware.smartyard_oem.ui.main.address.adapters.StoriesAdapter
 import com.sesameware.smartyard_oem.ui.main.address.adapters.HouseViewHolder
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
@@ -37,7 +39,10 @@ import com.sesameware.smartyard_oem.ui.main.address.helpers.DragToSortCallback
 import com.sesameware.smartyard_oem.ui.main.address.models.HouseAction
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueAction
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
+import com.sesameware.smartyard_oem.ui.main.address.models.Lock
 import com.sesameware.smartyard_oem.ui.main.address.models.OnCameraClick
+import com.sesameware.smartyard_oem.ui.main.address.models.OnEntrancePageSelected
+import com.sesameware.smartyard_oem.ui.main.address.models.OnEntrancePreviewClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnEventLogClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnExpandClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnHouseAddressLongClick
@@ -51,6 +56,11 @@ import com.sesameware.smartyard_oem.ui.updateAllWidget
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
+import androidx.core.net.toUri
+import com.sesameware.domain.model.response.PRESENT_METHOD_OPEN_APP
+import com.sesameware.domain.model.response.PRESENT_METHOD_POPUP
+import com.sesameware.domain.model.response.PRESENT_METHOD_VIEW
+import com.sesameware.domain.model.response.Story
 
 class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListener {
     private var _binding: FragmentAddressBinding? = null
@@ -62,6 +72,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     private val mEventLog by sharedViewModel<EventLogViewModel>()
 
     private var adapter: AddressListAdapter? = null
+    private var storiesAdapter: StoriesAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var itemTouchHelper: ItemTouchHelper? = null
 
@@ -77,7 +88,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     private val showHideFabListener = object : OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            if (dy > 0 && binding.floatingActionButton.visibility == View.VISIBLE) {
+            if (dy > 0 && binding.floatingActionButton.isVisible) {
                 binding.floatingActionButton.hide()
             } else if (dy < 0 && binding.floatingActionButton.visibility != View.VISIBLE) {
                 binding.floatingActionButton.show()
@@ -121,6 +132,41 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             itemTouchHelper = ItemTouchHelper(callback)
             itemTouchHelper!!.attachToRecyclerView(it)
         }
+
+        storiesAdapter = StoriesAdapter { story ->
+            onStoryClick(story)
+        }
+        binding.rvStories.adapter = storiesAdapter
+    }
+
+    private fun onStoryClick(story: Story) {
+        when (story.presentMethod) {
+            PRESENT_METHOD_POPUP -> {
+                val action = AddressFragmentDirections.actionGlobalCustomWebBottomFragmentAddress(
+                    R.id.customWebViewFragmentAddress,
+                    R.id.customWebBottomFragmentAddress,
+                    story.url
+                )
+                this.findNavController().navigate(action)
+            }
+            PRESENT_METHOD_VIEW -> {
+                val action = AddressFragmentDirections.actionAddressFragmentToCustomWebViewFragmentAddress(
+                    R.id.customWebViewFragmentAddress,
+                    R.id.customWebBottomFragmentAddress,
+                    story.url,
+                    "",
+                    story.title)
+                this.findNavController().navigate(action)
+            }
+            PRESENT_METHOD_OPEN_APP -> {
+                try {
+                    val intent = Intent(Intent.ACTION_VIEW, story.url.toUri())
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    Timber.e(e, "Error opening app for story: ${story.url}")
+                }
+            }
+        }
     }
 
     private fun onItemDrag(viewHolder: RecyclerView.ViewHolder?) {
@@ -151,10 +197,12 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             is OnExpandClick -> {
                 mViewModel.setHouseItemExpanded(action.position, action.isExpanded)
             }
-            is OnOpenEntranceClick -> mViewModel.openDoor(action.entranceId)
+            is OnOpenEntranceClick -> mViewModel.openDoor(action.lock)
+            is OnEntrancePreviewClick -> navigateToEntranceCameraFragment(action.camera, action.lock)
             is OnItemFullyExpanded -> scrollUntilFullItemVisible(action.position)
             is OnHouseAddressLongClick -> startDrag(action.position)
             is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath, action.code)
+            is OnEntrancePageSelected -> mViewModel.setHouseItemEntranceIndex(action.houseId, action.page)
         }
     }
 
@@ -163,6 +211,12 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         (binding.addressList.findViewHolderForLayoutPosition(position) as? HouseViewHolder)?.let {
             helper.startDrag(it)
         }
+    }
+
+    private fun navigateToEntranceCameraFragment(camera: EntranceCamera, lock: Lock) {
+        val action = AddressFragmentDirections
+            .actionAddressFragmentToEntranceCameraFragment(camera, lock)
+        findNavController().navigate(action)
     }
 
     private fun scrollUntilFullItemVisible(position: Int) {
@@ -215,6 +269,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         mEventLog.lastLoadedDayFilterIndex.value = -1
         mEventLog.currentEventItem = null
         mEventLog.getAllFaces()
+        mEventLog.getTrackedEvents()
     }
 
     private fun navigateToEventLogFragment() {
@@ -302,6 +357,20 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
 
             if (binding.floatingActionButton.visibility != View.VISIBLE) {
                 binding.floatingActionButton.show()
+            }
+        }
+
+        mViewModel.stories.observe(viewLifecycleOwner) { stories ->
+            if (stories.isNullOrEmpty()) {
+                val topPadding = resources.getDimensionPixelSize(R.dimen.no_stories_padding)
+                binding.clStories.setPadding(0, topPadding, 0, 0)
+                binding.rvStories.visibility = View.GONE
+            } else {
+                val topPadding = resources.getDimensionPixelSize(R.dimen.stories_top_padding)
+                val bottomPadding = resources.getDimensionPixelSize(R.dimen.stories_bottom_padding)
+                binding.clStories.setPadding(0, topPadding, 0, bottomPadding)
+                binding.rvStories.visibility = View.VISIBLE
+                storiesAdapter?.submitList(stories)
             }
         }
 

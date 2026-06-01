@@ -1,7 +1,6 @@
 package com.sesameware.smartyard_oem.ui.call
 
 import android.Manifest
-import android.app.Application
 import android.app.NotificationManager
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -9,7 +8,6 @@ import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Color
-import android.graphics.drawable.Drawable
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -32,9 +30,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.target.Target
-import com.bumptech.glide.request.transition.Transition
 import com.sesameware.domain.model.PushCallData
 import com.sesameware.domain.utils.doDelayed
 import com.sesameware.domain.utils.listenerGeneric
@@ -63,11 +59,10 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.linphone.core.Call
 import org.linphone.core.RegistrationState
 import org.webrtc.DataChannel
-import org.webrtc.DefaultVideoDecoderFactory
-import org.webrtc.DefaultVideoEncoderFactory
 import org.webrtc.EglBase
 import org.webrtc.EglRenderer
 import org.webrtc.IceCandidate
@@ -87,7 +82,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private lateinit var binding: ActivityIncomingCallBinding
 
     // WebRTC staff
-    private val rootEglBase: EglBase = EglBase.create()
+    private val rootEglBase: EglBase by inject()
     private var webRtcFirstFrameRendered = false
     private var isWebRTCStopped = true
     private var peerConnection: PeerConnection? = null
@@ -98,36 +93,13 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         frameBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, false)
     }
 
-    private val peerConnectionFactory by lazy {
-        buildPeerConnectionFactory()
-    }
+    private val peerConnectionFactory: PeerConnectionFactory by inject()
 
-    private fun buildPeerConnectionFactory(): PeerConnectionFactory {
-        return PeerConnectionFactory
-            .builder()
-            .setVideoDecoderFactory(DefaultVideoDecoderFactory(rootEglBase.eglBaseContext))
-            .setVideoEncoderFactory(DefaultVideoEncoderFactory(rootEglBase.eglBaseContext, true, true))
-            .setOptions(PeerConnectionFactory.Options().apply {
-                disableNetworkMonitor = true
-            })
-            .createPeerConnectionFactory()
-    }
-
-    private fun buildPeerConnection(observer: PeerConnection.Observer) = peerConnectionFactory.createPeerConnection(
-        listOf(PeerConnection.IceServer.builder(mPushCallData.stun).createIceServer()),
-        observer
-    )
-
-    /**
-     * Loads and initializes WebRTC. This must be called at least once before creating a PeerConnectionFactory.
-     */
-    private fun initPeerConnectionFactory(context: Application) {
-        val options = PeerConnectionFactory.InitializationOptions.builder(context)
-            .setEnableInternalTracer(true)
-            .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
-            .createInitializationOptions()
-        PeerConnectionFactory.initialize(options)
-    }
+    private fun buildPeerConnection(observer: PeerConnection.Observer) =
+        peerConnectionFactory.createPeerConnection(
+            listOf(PeerConnection.IceServer.builder(mPushCallData.stun).createIceServer()),
+            observer
+        )
 
     fun addIceCandidate(iceCandidate: IceCandidate?) {
         peerConnection?.addIceCandidate(iceCandidate)
@@ -162,12 +134,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
             override fun onAddStream(p0: MediaStream?) {
                 Timber.d("debug_webrtc onAddStream: $p0")
-                p0?.videoTracks?.get(0)?.addSink(binding.mWebRTCView)
+                p0?.videoTracks?.firstOrNull()?.addSink(binding.mWebRTCView)
             }
 
             override fun onRemoveStream(p0: MediaStream?) {
                 Timber.d("debug_webrtc onRemoveStream: $p0")
-                p0?.videoTracks?.get(0)?.removeSink(binding.mWebRTCView)
+                p0?.videoTracks?.firstOrNull()?.removeSink(binding.mWebRTCView)
             }
 
             override fun onDataChannel(p0: DataChannel?) {
@@ -190,22 +162,18 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             mandatory.add(MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"))
         }
 
-        createOffer(object : SdpObserver {
+        createOffer(object : SimpleSdpObserver() {
             override fun onCreateSuccess(desc: SessionDescription?) {
                 Timber.d("debug_webrtc    onCreateSuccess    ${desc?.description}")
 
-                setLocalDescription(object : SdpObserver {
-                    override fun onSetFailure(p0: String?) {
-                        Timber.e("debug_webrtc onSetFailure: $p0")
-                    }
-
+                setLocalDescription(object : SimpleSdpObserver() {
                     override fun onSetSuccess() {
                         val body = RequestBody.create("application/sdp".toMediaTypeOrNull(), desc?.description ?: "")
                         Timber.d("debug_webrtc    server URL ${mPushCallData.webRtcVideoUrl}")
                         Timber.d("debug_webrtc    ${body.contentType()}    ${body.contentLength()}")
                         val request = Request.Builder()
                             .url(mPushCallData.webRtcVideoUrl)
-                            .method("POST", body)
+                            .post(body)
                             .build()
                         val httpClient = OkHttpClient.Builder()
                             .callTimeout(5, TimeUnit.SECONDS)
@@ -215,55 +183,32 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                                 Timber.d("debug_webrtc    response code ${response.code}")
                                 if (response.isSuccessful) {
                                     val sdpAnswer = SessionDescription(SessionDescription.Type.ANSWER, response.body!!.string())
-                                    peerConnection?.setRemoteDescription(object : SdpObserver {
-                                        override fun onCreateSuccess(p0: SessionDescription?) {
-                                            Timber.d("debug_webrtc onCreateSuccessRemoteSession: Description $p0")
-                                        }
-
+                                    setRemoteDescription(object : SimpleSdpObserver() {
                                         override fun onSetSuccess() {
                                             Timber.d("debug_webrtc onSetSuccessRemoteSession")
                                         }
-
-                                        override fun onCreateFailure(p0: String?) {
-                                            Timber.d("debug_webrtc onCreateFailure")
-                                        }
-
-                                        override fun onSetFailure(p0: String?) {
-                                            Timber.e("debug_webrtc onSetFailure: $p0")
-                                        }
-
                                     }, sdpAnswer)
                                 }
                             }
                         } catch (e: Exception) {
                             Timber.d("debug_webrtc $e")
                         }
-
                         Timber.d("debug_webrtc onSetSuccess")
-                    }
-
-                    override fun onCreateSuccess(p0: SessionDescription?) {
-                        Timber.d("debug_webrtc    onCreateSuccess: Description $p0")
-                    }
-
-                    override fun onCreateFailure(p0: String?) {
-                        Timber.e("debug_webrtc onCreateFailure: $p0")
                     }
                 }, desc)
             }
-
-            override fun onSetSuccess() {
-                Timber.d("debug_webrtc onSetSuccess")
-            }
-
-            override fun onSetFailure(p0: String?) {
-                Timber.e("debug_webrtc onSetFailure: $p0")
-            }
-
-            override fun onCreateFailure(p0: String?) {
-                Timber.e("debug_webrtc onCreateFailure: $p0")
-            }
         }, constraints)
+    }
+
+    private open class SimpleSdpObserver : SdpObserver {
+        override fun onCreateSuccess(p0: SessionDescription?) {}
+        override fun onSetSuccess() {}
+        override fun onCreateFailure(p0: String?) {
+            Timber.e("debug_webrtc onCreateFailure: $p0")
+        }
+        override fun onSetFailure(p0: String?) {
+            Timber.e("debug_webrtc onSetFailure: $p0")
+        }
     }
 
     private var mLinphone: LinphoneProvider? = null
@@ -277,16 +222,18 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private var mProximity: Sensor? = null
     private var useSpeaker = false
 
-    private fun initWebRTC() {
-        initPeerConnectionFactory(application)
-    }
-
     private fun startWebRTC() {
         if (!isWebRTCStopped) {
             return
         }
 
-        // Initialize WebRTC View
+        setupWebRtcView()
+        binding.mWebRTCView.addFrameListener(webRTCListener, 1f)
+        createConnection()
+        isWebRTCStopped = false
+    }
+
+    private fun setupWebRtcView() {
         binding.mWebRTCView.run {
             setEnableHardwareScaler(true)
             init(rootEglBase.eglBaseContext, object : RendererEvents {
@@ -306,7 +253,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     if (w > 0 && h > 0 && videoWidth > 0 && videoHeight > 0) {
                         lifecycleScope.launch(Dispatchers.Main) {
                             val scale = min(h.toFloat() / videoHeight.toFloat(), w.toFloat() / videoWidth.toFloat())
-                            binding.mWebRTCView.layoutParams?.let { lp ->
+                            layoutParams?.let { lp ->
                                 lp.width = (scale * videoWidth).toInt()
                                 lp.height = (scale * videoHeight).toInt()
                             }
@@ -314,14 +261,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     }
                 }
             })
-            Timber.d("debug_webrtc    make mWebRTCView invisible on initWebRTC")
             alpha = 0.0f
             visibility = View.VISIBLE
             bringToFront()
         }
-        binding.mWebRTCView.addFrameListener(webRTCListener, 1f)
-        createConnection()
-        isWebRTCStopped = false
+        Timber.d("debug_webrtc    make mWebRTCView invisible on initWebRTC")
     }
 
     private fun stopWebRTC() {
@@ -332,13 +276,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             }
             Timber.d("debug_webrtc    make mWebRTCView invisible stopWebRtcConnection")
             binding.mWebRTCView.alpha = 0.0f
+            binding.mWebRTCView.removeFrameListener(webRTCListener)
+            binding.mWebRTCView.release()
+
             peerConnection?.close()
             peerConnection?.dispose()
             peerConnection = null
+
             isWebRTCStopped = true
+
             webRtcFirstFrameRendered = false
-            binding.mWebRTCView.removeFrameListener(webRTCListener)
-            binding.mWebRTCView.release()
+
         }
     }
 
@@ -355,6 +303,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mSensorManager = this.getSystemService(SENSOR_SERVICE) as SensorManager
         mProximity = mSensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         setupUi()
+        initClickListeners()
         enableCallButtons(false)
 
         @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
@@ -397,10 +346,6 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     }
                 }
             }
-
-            if (hasWebRTC) {
-                initWebRTC()
-            }
         }
     }
 
@@ -420,18 +365,29 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     }
 
     private fun enableCallButtons(isEnabled: Boolean) {
-        binding.mPeepholeButton.isEnabled = isEnabled
-        binding.mAnswerButton.isEnabled = isEnabled
-        binding.mAnswerButtonSupport?.isEnabled = isEnabled
-        binding.mSpeakerButton.isEnabled = isEnabled
-        binding.mHangUpButton.isEnabled = isEnabled
-        binding.mHangUpButtonSupport?.isEnabled = isEnabled
-        binding.mOpenedButton.isEnabled = isEnabled
-        binding.mOpenButton.isEnabled = isEnabled
-        binding.pbIncomingCall.isVisible = !isEnabled
+        with(binding) {
+            mPeepholeButton.isEnabled = isEnabled
+            mAnswerButton.isEnabled = isEnabled
+            mAnswerButtonSupport.isEnabled = isEnabled
+            mSpeakerButton.isEnabled = isEnabled
+            mHangUpButton.isEnabled = isEnabled
+            mHangUpButtonSupport.isEnabled = isEnabled
+            mOpenedButton.isEnabled = isEnabled
+            mOpenButton.isEnabled = isEnabled
+            pbIncomingCall.isVisible = !isEnabled
+        }
 
         if (isEnabled) {
-            binding.ivFullscreenMinimalize.setOnClickListener {
+            val ff = hasWebRTC && (mLinphone?.isVideoCall() == false || mPushCallData.image.isEmpty())
+            Timber.d("debug_dmm  enableCallButtons set eyeState = $ff")
+            LinphoneService.instance?.provider?.pushCallData?.eyeState = ff
+            mViewModel.eyeState.value = ff
+        }
+    }
+
+    private fun initClickListeners() {
+        with(binding) {
+            ivFullscreenMinimalize.setOnClickListener {
                 cancelNotification()
                 requestedOrientation =
                     if (requestedOrientation == ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE) {
@@ -441,32 +397,36 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     }
             }
 
-            binding.mSpeakerButton.setOnClickListener {
+            mSpeakerButton.setOnClickListener {
                 cancelNotification()
-                mViewModel.routeAudioToValue(!binding.mSpeakerButton.isSelected)
+                mViewModel.routeAudioToValue(!mSpeakerButton.isSelected)
             }
 
-            binding.mOpenButton.setOnClickListener {
+            mOpenButton.setOnClickListener {
                 cancelNotification()
                 openDoor()
             }
+
             val onAnswerClick = View.OnClickListener {
                 cancelNotification()
                 answerCall()
             }
-            binding.mAnswerButton.setOnClickListener(onAnswerClick)
-            binding.mAnswerButtonSupport?.setOnClickListener(onAnswerClick)
-            mViewModel.eyeState.value = LinphoneService.instance?.provider?.pushCallData?.eyeState == true
-            binding.mPeepholeButton.setOnClickListener {
-                cancelNotification()
-                mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
+            mAnswerButton.setOnClickListener(onAnswerClick)
+            mAnswerButtonSupport.setOnClickListener(onAnswerClick)
+
+            mPeepholeButton.setOnClickListener {
+                if (mLinphone?.isConnected() == false) {
+                    cancelNotification()
+                    mViewModel.eyeState.value = !mPeepholeButton.isChecked
+                }
             }
+
             val onHangUpClick = View.OnClickListener {
                 cancelNotification()
                 hangUp()
             }
-            binding.mHangUpButton.setOnClickListener(onHangUpClick)
-            binding.mHangUpButtonSupport?.setOnClickListener(onHangUpClick)
+            mHangUpButton.setOnClickListener(onHangUpClick)
+            mHangUpButtonSupport.setOnClickListener(onHangUpClick)
         }
     }
 
@@ -488,13 +448,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             }
             val timestamp = System.currentTimeMillis()
             var failed = false
-            while (!LinphoneService.isReady() && !failed) {
-                delay(30L)
-
-                // If the Linphone service does not start within WAIT_FOR_LINPHONE milliseconds, then interrupt the call
+            while (!LinphoneService.isReady()) {
                 if (System.currentTimeMillis() - timestamp > WAIT_FOR_LINPHONE) {
                     failed = true
+                    break
                 }
+                delay(30L)
             }
             withContext(Dispatchers.Main) {
                 if (failed) {
@@ -517,8 +476,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     private fun openDoor() {
         if (mLinphone?.isConnected() == true) {
-            binding.mAnswerButton.setText(R.string.connecting)
-            binding.mAnswerButtonSupport?.setText(R.string.connecting)
+            updateAnswerButtonsText(R.string.connecting)
             mLinphone?.sendDtmf()
         } else {
             mTryingToOpenDoor = true
@@ -555,11 +513,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 if (string.isEmpty() || !hasSnapshot) {
                     return@EventObserver
                 }
-
-                Glide.with(binding.mPeekImageView)
+                Timber.d("debug_dmm  observe imageStringData url=$string")
+                Glide.with(this)
                     .asBitmap()
                     .load(string)
-                    .timeout(5_000)
+                    .timeout(GLIDE_TIMEOUT_MS.toInt())
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .listener(object : RequestListener<Bitmap> {
@@ -571,7 +529,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         ): Boolean {
                             Timber.d("debug_webrtc    snapshot failed")
                             Timber.d("debug_webrtc    make mPeekImageView invisible imageStringData")
-                            binding.mPeekImageView.visibility = View.INVISIBLE
+                            binding.mPeekImageView.isVisible = false
                             if (hasWebRTC) {
                                 hasSnapshot = false
                                 Timber.d("debug_dmm  imageStringData.observe set eyeState = true")
@@ -584,24 +542,16 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                         override fun onResourceReady(
                             resource: Bitmap,
                             model: Any,
-                            target: Target<Bitmap?>?,
+                            target: Target<Bitmap?>,
                             dataSource: DataSource,
                             isFirstResource: Boolean
                         ): Boolean {
                             Timber.d("debug_webrtc    make mPeekImageView visible onResourceReady")
-                            binding.mPeekImageView.visibility = View.VISIBLE
+                            binding.mPeekImageView.isVisible = true
                             return false
                         }
-
                     })
-                    .into(object : CustomTarget<Bitmap>() {
-                        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-                            binding.mPeekImageView.setImageBitmap(resource)
-                        }
-
-                        override fun onLoadCleared(placeholder: Drawable?) {
-                        }
-                    })
+                    .into(binding.mPeekImageView)
             }
         )
 
@@ -609,7 +559,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             this,
             EventObserver {
                 binding.mAnswerButton.isVisible = false
-                binding.mAnswerButtonSupport?.isVisible = false
+                binding.mAnswerButtonSupport.isVisible = false
                 binding.mSpeakerButton.isVisible = true
             }
         )
@@ -667,30 +617,44 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     mLinphone?.disconnect()
                     hangUp()
                 },
-                3000
+                DOOR_OPEN_DELAY_MS
             )
         }
         binding.mOpenedButton.show(opened, true)
         binding.mHangUpButton.show(!opened)
-        binding.mHangUpButtonSupport?.show(!opened)
+        binding.mHangUpButtonSupport.show(!opened)
         if (this::mPushCallData.isInitialized && mPushCallData.dtmf.isNotEmpty()) {
             binding.mOpenButton.show(!opened)
         }
     }
 
+    private fun updateAnswerButtonsText(resId: Int) {
+        binding.mAnswerButton.setText(resId)
+        binding.mAnswerButtonSupport.setText(resId)
+    }
+
+    private fun updateHangUpButtonsText(resId: Int) {
+        binding.mHangUpButton.setText(resId)
+        binding.mHangUpButtonSupport.setText(resId)
+    }
+
+    private fun setAnswerButtonsSelected(isSelected: Boolean) {
+        binding.mAnswerButton.isSelected = isSelected
+        binding.mAnswerButtonSupport.isSelected = isSelected
+    }
+
     private fun answerCall() {
         Timber.d("debug_dmm    answerCall")
         if (!binding.mAnswerButton.isSelected && mLinphone?.dtmfIsSent?.value == false) {
-            binding.mAnswerButton.isSelected = true
-            binding.mAnswerButtonSupport?.isSelected = true
+            setAnswerButtonsSelected(true)
             mLinphone?.acceptCall()
         }
     }
 
     private fun setConnectedState(connected: Boolean) {
+        Timber.d("debug_dmm    call setConnectedState connected=$connected")
         if (connected) {
-            binding.mPeepholeButton.setOnClickListener(null)
-            val ff = (hasWebRTC && mLinphone?.isVideoCall() == false)
+            val ff = hasWebRTC && (mLinphone?.isVideoCall() == false)
             Timber.d("debug_dmm  setConnectedState set eyeState = $ff")
             LinphoneService.instance?.provider?.pushCallData?.eyeState = ff
             mViewModel.eyeState.value = ff
@@ -701,27 +665,20 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             } else if (hasWebRTC) {
                 Timber.d("debug_webrtc    answer the call with WebRTC video")
             }
-            mViewModel.connectedChangeStateUiAudioToSpeaker()
-        } else if (mPushCallData.image.isNotEmpty()) {
-            binding.mPeepholeButton.setOnClickListener {
-                cancelNotification()
-                mViewModel.eyeState.value = !binding.mPeepholeButton.isChecked
-            }
         }
 
         switchCallClock(connected)
-        binding.mHangUpButton.setText(if (connected) R.string.reject else R.string.ignore)
-        binding.mHangUpButtonSupport?.setText(if (connected) R.string.reject else R.string.ignore)
-        binding.mAnswerButton.setText(if (connected) R.string.connected else R.string.answer)
-        binding.mAnswerButtonSupport?.setText(if (connected) R.string.connected else R.string.answer)
-        binding.mAnswerButton.isSelected = connected
-        binding.mAnswerButtonSupport?.isSelected = connected
+        updateHangUpButtonsText(if (connected) R.string.reject else R.string.ignore)
+        updateAnswerButtonsText(if (connected) R.string.connected else R.string.answer)
+        setAnswerButtonsSelected(connected)
+
         if (connected) {
             mViewModel.connectedChangeStateUiAudioToSpeaker()
         }
     }
 
     private fun enablePeepholeVideo(isEnabled: Boolean) {
+        Timber.d("debug_dmm    call enablePeepholeVideo isEnabled=$isEnabled")
         val text = when {
             mLinphone?.isConnected() == true -> getString(R.string.call_talk)
             isEnabled -> getString(R.string.call_peek_on)
@@ -759,17 +716,15 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     private fun observeRegistrationState(it: CRegistrationState) {
         it.run {
-            val text = when (state) {
+            val textResId = when (state) {
                 RegistrationState.Ok -> R.string.answer
                 RegistrationState.Failed -> R.string.error
                 RegistrationState.Progress -> R.string.connecting
                 else -> R.string.answer
             }
-            binding.mAnswerButton.setText(text)
-            binding.mAnswerButtonSupport?.setText(text)
+            updateAnswerButtonsText(textResId)
             if (state == RegistrationState.None) {
-                binding.mAnswerButton.isSelected = false
-                binding.mAnswerButtonSupport?.isSelected = false
+                setAnswerButtonsSelected(false)
             }
             if (it.state == RegistrationState.Failed) {
                 processFailedCall()
@@ -792,12 +747,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 CallStateSimple.CONNECTED -> {
                 }
                 CallStateSimple.CONNECTING -> {
-                    binding.mAnswerButton.setText(R.string.connecting)
-                    binding.mAnswerButtonSupport?.setText(R.string.connecting)
+                    updateAnswerButtonsText(R.string.connecting)
                 }
                 CallStateSimple.ERROR -> {
-                    binding.mAnswerButton.setText(R.string.error)
-                    binding.mAnswerButtonSupport?.setText(R.string.error)
+                    updateAnswerButtonsText(R.string.error)
                     processFailedCall()
                 }
                 CallStateSimple.END -> {
@@ -808,8 +761,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
                 CallStateSimple.STREAMS_RUNNING -> {
                     if (mTryingToOpenDoor) {
-                        binding.mAnswerButton.setText(R.string.connecting)
-                        binding.mAnswerButtonSupport?.setText(R.string.connecting)
+                        updateAnswerButtonsText(R.string.connecting)
                         mLinphone?.sendDtmf()
                     } else {
                         setConnectedState(true)
@@ -898,5 +850,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         const val PUSH_DATA = "PUSH_DATA"
         const val WAIT_FOR_LINPHONE = 10_000
         const val SENSOR_SENSITIVITY = 4
+        private const val GLIDE_TIMEOUT_MS = 5_000L
+        private const val DOOR_OPEN_DELAY_MS = 3_000L
     }
 }

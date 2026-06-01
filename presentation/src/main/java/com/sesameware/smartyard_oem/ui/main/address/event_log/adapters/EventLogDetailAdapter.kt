@@ -6,11 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import org.threeten.bp.LocalDate
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.databinding.ItemEventLogDetailBinding
+import com.sesameware.smartyard_oem.ui.main.address.event_log.TrackedEventData
+import timber.log.Timber
 import kotlin.math.roundToInt
 
 class EventLogDetailAdapter(
     var eventsDay: List<LocalDate>,
     var eventsByDays: HashMap<LocalDate, MutableList<Plog>>,
+    var trackedEvents: HashMap<String, TrackedEventData>,
     private val onAction: (EventLogDetailItemAction) -> Unit
 ) : RecyclerView.Adapter<EventLogDetailVH>() {
 
@@ -26,7 +29,16 @@ class EventLogDetailAdapter(
         val (day, index) = getPlog(position)
         if (day == null || index == null) return
         val plog = eventsByDays[day]?.get(index)
-        holder.onBind(position, plog!!)
+        var trackedEvent: TrackedEventData? = null
+        if (plog != null) {
+            val eventDetail = extractEventTrackingDetail(plog)
+            val key = "${plog.flatId}_${plog.eventType}_$eventDetail"
+            if (trackedEvents.containsKey(key)) {
+                trackedEvent = trackedEvents[key]
+                Timber.d("debug_dmm  trackedEvent=$trackedEvents")
+            }
+        }
+        holder.onBind(position, plog!!, trackedEvent)
     }
 
     override fun getItemCount(): Int {

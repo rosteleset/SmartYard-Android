@@ -379,6 +379,8 @@
     <string name="event_log_all_flats">Барлық пәтерлер</string>
     <string name="event_log_opened">Ашылды</string>
     <string name="event_log_not_opened">ашылған жоқ</string>
+    <string name="event_log_track_such_event">Мұндай оқиғалар туралы хабарлау</string>
+    <string name="event_log_enter_comments">Пікір қалдырыңыз</string>
 
     <string name="event_door_phone_call_unanswered">Интеркомға қоңырау шалу</string>
     <string name="event_door_phone_call_answered">Интеркомға қоңырау шалу</string>
@@ -525,10 +527,17 @@
     <string name="all_cars">Барлық автомобильдер</string>
     <string name="tab_title_by_license_plate">Нөмір бойынша</string>
     <string name="tab_title_by_phone_number">Телефон нөмірі бойынша</string>
+    <string name="entrance_camera_is_not_available">Камера қолжетімді емес</string>
 
     <string-array name="registered_number_or_car_types">
         <item>Барлығы</item>
         <item>Тек белсенді</item>
         <item>Тек белсенді емес</item>
     </string-array>
+    <string name="tracked_events_title">Бақыланатын оқиғалар</string>
+    <string name="tracked_events_empty">Ешбір оқиға бақыланбады</string>
+    <string name="tracked_events_delete_confirm_title">Оқиға жойылуда</string>
+    <string name="tracked_events_delete_confirm_message">Бұл оқиғаны бақылауды шынымен тоқтатқыңыз келе ме \"%1$s\"?</string>
+    <string name="tracked_events_delete_confirm_positive">Жою</string>
+    <string name="tracked_events_delete_confirm_negative">Болдырмау</string>
 </resources>

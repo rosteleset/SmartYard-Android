@@ -1,5 +1,12 @@
 ## History of major changes
 
+### Version 1.0.88
+* Added stories to the address tab
+* The UI for displaying address list entries has been slightly modified: you can now view live WebRTC streams from CCTV cameras at the entrances
+* Added tracking of intercom opening events from the app, by key, by code, and by license plate number
+* Added NFC bridge to the custom web views
+* Minor fixes and code refactoring
+
 ### Version 1.0.85
 * Added deep link processing for QR code registration
 * Added dtmfProtocol support in the incomming call data

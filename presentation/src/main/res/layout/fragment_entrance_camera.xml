@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context=".ui.main.address.cctv_video.EntranceCameraFragment">
+
+    <com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout
+        android:id="@+id/zlEntranceCamera"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/videoSurfaceWrap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/playerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0"
+                app:resize_mode="fit" />
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/webRtcView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0" />
+
+            <ImageView
+                android:id="@+id/ivPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="fitCenter"
+                tools:ignore="ContentDescription"
+                tools:src="@drawable/ic_placeholder_image" />
+
+        </FrameLayout>
+
+    </com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/progressBar"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="#66000000"
+        app:cardCornerRadius="120dp"
+        app:cardElevation="0dp">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/on_filled" />
+
+    </androidx.cardview.widget.CardView>
+
+    <ImageView
+        android:id="@+id/ivNoStream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="invisible"
+        app:srcCompat="@drawable/ic_no_photography_24"
+        app:tint="@color/on_filled"
+        tools:ignore="ContentDescription"
+        tools:visibility="visible"/>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ivBack"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#66000000"
+        app:cardCornerRadius="50dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="@color/on_top_background"
+            tools:ignore="ContentDescription" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_gravity="bottom|center_horizontal"
+        app:cardElevation="0dp"
+        app:contentPadding="4dp"
+        app:cardBackgroundColor="#66000000"
+        app:cardCornerRadius="12dp">
+
+        <ToggleButton
+            android:id="@+id/tbOpen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/tooglebutton_selector2"
+            android:paddingStart="18dp"
+            android:paddingEnd="18dp"
+            android:text="@string/opened"
+            android:textAllCaps="false"
+            android:textColor="@color/on_filled"
+            android:textOff="@string/open"
+            android:textOn="@string/opened" />
+
+    </androidx.cardview.widget.CardView>
+
+</FrameLayout>

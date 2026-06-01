@@ -26,6 +26,7 @@ import com.sesameware.domain.model.request.GetHousesRequest
 import com.sesameware.domain.model.request.GetIntercomRequest
 import com.sesameware.domain.model.request.GetServicesRequest
 import com.sesameware.domain.model.request.GetStreetsRequest
+import com.sesameware.domain.model.request.GetTrackedEventsRequest
 import com.sesameware.domain.model.request.LikeRequest
 import com.sesameware.domain.model.request.ListFacesRequest
 import com.sesameware.domain.model.request.ListLicensePlateNumbersRequest
@@ -44,6 +45,8 @@ import com.sesameware.domain.model.request.ResendRequest
 import com.sesameware.domain.model.request.ResetCodeRequest
 import com.sesameware.domain.model.request.SendNameRequest
 import com.sesameware.domain.model.request.SentCodeRecoveryRequest
+import com.sesameware.domain.model.request.TrackEventRequest
+import com.sesameware.domain.model.request.UntrackEventRequest
 import com.sesameware.domain.model.request.UserNotificationRequest
 import com.sesameware.domain.model.response.AccessResponse
 import com.sesameware.domain.model.response.ActionIssueResponse
@@ -74,7 +77,9 @@ import com.sesameware.domain.model.response.GetCoderResponse
 import com.sesameware.domain.model.response.GetHousesResponse
 import com.sesameware.domain.model.response.GetServicesResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
+import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.GetStreetsResponse
+import com.sesameware.domain.model.response.GetTrackedEventsResponse
 import com.sesameware.domain.model.response.InboxResponse
 import com.sesameware.domain.model.response.IntercomResponse
 import com.sesameware.domain.model.response.LikeResponse
@@ -102,7 +107,9 @@ import com.sesameware.domain.model.response.RoommateResponse
 import com.sesameware.domain.model.response.SendNameResponse
 import com.sesameware.domain.model.response.SentCodeRecoveryResponse
 import com.sesameware.domain.model.response.SipHelpMeResponse
+import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UnreadedResponse
+import com.sesameware.domain.model.response.UntrackEventResponse
 import com.sesameware.domain.model.response.UserNotificationResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -416,4 +423,27 @@ interface TeledomApi {
 
     @POST
     suspend fun phonePattern(@Url url: String): ApiResult<String>?
+
+    @POST
+    suspend fun trackEvent(
+        @Url url: String,
+        @Body request: TrackEventRequest
+    ): Response<TrackEventResponse>
+
+    @POST
+    suspend fun untrackEvent(
+        @Url url: String,
+        @Body request: UntrackEventRequest,
+    ): Response<UntrackEventResponse>
+
+    @POST
+    suspend fun getTrackedEvents(
+        @Url url: String,
+        @Body request: GetTrackedEventsRequest
+    ): Response<GetTrackedEventsResponse>
+
+    @POST
+    suspend fun getStories(
+        @Url url: String
+    ): Response<GetStoriesResponse>
 }

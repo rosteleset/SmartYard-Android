@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.tasks.MergeStartupProfileTask
+
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.compose'
@@ -28,8 +30,8 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdk = rootProject.minSdk
         targetSdk = rootProject.targetSdk
-        versionCode = 85
-        versionName = '1.0.85'
+        versionCode = 88
+        versionName = '1.0.88'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
         vectorDrawables.useSupportLibrary = true
@@ -95,10 +97,6 @@ if (project.file('signing.gradle').exists()) {
 if (project.file('src/teledom/ok-tracer.gradle').exists()) {
     apply from: 'src/teledom/ok-tracer.gradle'
 }
-
-//project.afterEvaluate {
-    //preSesamewareDebugBuild.dependsOn ktlint
-//}
 
 dependencies {
     implementation project(':domain')

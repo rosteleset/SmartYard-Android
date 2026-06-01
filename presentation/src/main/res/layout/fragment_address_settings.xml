@@ -406,6 +406,18 @@
                 </net.cachapa.expandablelayout.ExpandableLayout>
 
             </LinearLayout>
+            <TextView
+                android:id="@+id/tvTrackedEvents"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:layout_marginTop="24dp"
+                android:padding="24dp"
+                android:background="@drawable/background_card"
+                android:text="@string/tracked_events_title"
+                android:textColor="@color/accent"
+                android:textSize="18sp"
+                app:drawableEndCompat="@drawable/ic_arrow_right" />
 
             <TextView
                 android:id="@+id/cvDeleteAddress"

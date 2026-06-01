@@ -4,6 +4,7 @@ import retrofit2.http.Field
 import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
+import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.IntercomResponse
 import com.sesameware.domain.model.response.ResetCodeResponse
 import com.sesameware.domain.model.response.AddMyPhoneResponse
@@ -18,6 +19,9 @@ import com.sesameware.domain.model.response.ResendResponse
 import com.sesameware.domain.model.response.PlogDaysResponse
 import com.sesameware.domain.model.response.PlogResponse
 import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.GetTrackedEventsResponse
+import com.sesameware.domain.model.response.TrackEventResponse
+import com.sesameware.domain.model.response.UntrackEventResponse
 
 /**
  * @author Nail Shakurov
@@ -100,4 +104,23 @@ interface AddressRepository {
     ): PlogResponse
 
     suspend fun camMap(): CamMapResponse
+
+    suspend fun trackEvent(
+        flatId: Int,
+        eventType: Int,
+        eventDetail: String,
+        comments: String
+    ): TrackEventResponse
+
+    suspend fun untrackEvent(
+        watcherId: Int
+    ): UntrackEventResponse
+
+    suspend fun getTrackedEvents(
+        flatId: Int
+    ): GetTrackedEventsResponse
+
+    suspend fun isWhepAvailable(url: String): Boolean
+
+    suspend fun getStories(): GetStoriesResponse
 }

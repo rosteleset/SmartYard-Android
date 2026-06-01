@@ -75,6 +75,14 @@ class AddressSettingsFragment : Fragment() {
             }
         }
 
+        binding.tvTrackedEvents.setOnClickListener {
+            val action = AddressSettingsFragmentDirections.actionAddressSettingsFragmentToTrackedEventsFragment(
+                flatId,
+                mSetting.address
+            )
+            findNavController().navigate(action)
+        }
+
         binding.tvTitleDomophone.setOnClickListener {
             if (binding.expandableLayoutNotif.isExpanded) {
                 binding.expandableLayoutNotif.collapse()

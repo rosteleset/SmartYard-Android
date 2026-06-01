@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <declare-styleable name="item_incoming_call_button_attributes">
         <attr name="buttonBG" format="reference" />
         <attr name="buttonCheckable" format="boolean" />
@@ -18,4 +19,14 @@
         <attr name="tools_listItem" format="reference" />
         <attr name="tools_itemCount" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="FixedAspectRatioFrameLayout">
+        <attr name="aspectRatio" format="string" />
+        <attr name="dominantDimension" format="enum">
+            <enum name="width" value="0" />
+            <enum name="height" value="1" />
+            <enum name="auto" value="2" />
+        </attr>
+    </declare-styleable>
+
 </resources>

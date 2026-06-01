@@ -55,6 +55,20 @@
         <argument
             android:name="clientId"
             app:argType="string" />
+        <action
+            android:id="@+id/action_addressSettingsFragment_to_trackedEventsFragment"
+            app:destination="@id/trackedEventsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/trackedEventsFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.settings.trackedEvents.TrackedEventsFragment"
+        android:label="TrackedEventsFragment">
+        <argument
+            android:name="flatId"
+            app:argType="integer" />
+        <argument
+            android:name="address"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/accessAddressFragment"

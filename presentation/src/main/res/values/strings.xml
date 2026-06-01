@@ -383,6 +383,8 @@
     <string name="event_log_all_flats">Все квартиры</string>
     <string name="event_log_opened">открыли</string>
     <string name="event_log_not_opened">не открыли</string>
+    <string name="event_log_track_such_event">Уведомлять о таких событиях</string>
+    <string name="event_log_enter_comments">Укажите комментарий</string>
 
     <string name="event_door_phone_call_unanswered">Звонок в домофон</string>
     <string name="event_door_phone_call_answered">Звонок в домофон</string>
@@ -530,10 +532,17 @@
     <string name="all_cars">Все авто</string>
     <string name="tab_title_by_license_plate">По номеру авто</string>
     <string name="tab_title_by_phone_number">По телефону</string>
+    <string name="entrance_camera_is_not_available">Камера не доступна</string>
 
     <string-array name="registered_number_or_car_types">
         <item>Все</item>
         <item>Только активные</item>
         <item>Только неактивные</item>
     </string-array>
+    <string name="tracked_events_title">Отслеживаемые события</string>
+    <string name="tracked_events_empty">Нет отслеживаемых событий</string>
+    <string name="tracked_events_delete_confirm_title">Удаление события</string>
+    <string name="tracked_events_delete_confirm_message">Вы действительно хотите прекратить отслеживание события «%1$s»?</string>
+    <string name="tracked_events_delete_confirm_positive">Удалить</string>
+    <string name="tracked_events_delete_confirm_negative">Отмена</string>
 </resources>

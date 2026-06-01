@@ -2,22 +2,26 @@ package com.sesameware.domain.interactors
 
 import com.sesameware.domain.interfaces.AddressRepository
 import com.sesameware.domain.model.TF
+import com.sesameware.domain.model.response.AccessResponse
+import com.sesameware.domain.model.response.AddMyPhoneResponse
+import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
+import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.IntercomResponse
 import com.sesameware.domain.model.response.ResetCodeResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.RecoveryOptionsResponse
 import com.sesameware.domain.model.response.SentCodeRecoveryResponse
-import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
-import com.sesameware.domain.model.response.AddMyPhoneResponse
 import com.sesameware.domain.model.response.QRResponse
 import com.sesameware.domain.model.response.RoommateResponse
-import com.sesameware.domain.model.response.AccessResponse
 import com.sesameware.domain.model.response.ResendResponse
 import com.sesameware.domain.model.response.PlogDaysResponse
 import com.sesameware.domain.model.response.PlogResponse
-import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.GetTrackedEventsResponse
+import com.sesameware.domain.model.response.TrackEventResponse
+import com.sesameware.domain.model.response.UntrackEventResponse
 
 /**
  * @author Nail Shakurov
@@ -143,5 +147,34 @@ class AddressInteractor(
 
     suspend fun camMap(): CamMapResponse {
         return repository.camMap()
+    }
+
+    suspend fun trackEvent(
+        flatId: Int,
+        eventType: Int,
+        eventDetail: String,
+        comments: String
+    ): TrackEventResponse {
+        return repository.trackEvent(flatId, eventType, eventDetail, comments)
+    }
+
+    suspend fun untrackEvent(
+        watcherId: Int
+    ): UntrackEventResponse {
+        return repository.untrackEvent(watcherId)
+    }
+
+    suspend fun getTrackedEvents(
+        flatId: Int
+    ): GetTrackedEventsResponse {
+        return repository.getTrackedEvents(flatId)
+    }
+
+    suspend fun isWhepAvailable(url: String): Boolean {
+        return repository.isWhepAvailable(url)
+    }
+
+    suspend fun getStories(): GetStoriesResponse {
+        return repository.getStories()
     }
 }

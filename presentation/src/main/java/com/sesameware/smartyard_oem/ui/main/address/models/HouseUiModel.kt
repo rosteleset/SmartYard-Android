@@ -8,4 +8,5 @@ data class HouseUiModel(
     val hasEventLog: Boolean,
     val isExpanded: Boolean = false,
     val extList: List<ExtItemModel> = listOf(),
+    val selectedEntranceIndex: Int = 0,
 ) : AddressUiModel

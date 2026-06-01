@@ -15,7 +15,7 @@ data class Plog(
     @Json(name = "date") val _date: String, // дата и время события
     @Json(name = "uuid") val uuid: String,
     @Json(name = "image") val image: String?,
-    @Json(name = "flatId") val flatId: Int? = null, // идентификатор квартиры
+    @Json(name = "flatId") var flatId: Int? = null, // идентификатор квартиры
     @Json(name = "objectId") val objectId: Int, // идентификатор объекта (домофона)
     @Json(name = "objectType") val objectType: Int, // тип объекта (0 - домофон)
     @Json(name = "objectMechanizma") val objectMechanizma: Int, // идентификатор нагрузки (двери)

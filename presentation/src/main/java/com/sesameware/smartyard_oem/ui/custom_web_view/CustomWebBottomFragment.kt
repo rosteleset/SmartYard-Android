@@ -3,18 +3,30 @@ package com.sesameware.smartyard_oem.ui.custom_web_view
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
+import android.nfc.NfcAdapter
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.*
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebBottomBinding
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import timber.log.Timber
 
 class CustomWebBottomFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCustomWebBottomBinding? = null
     val binding get() = _binding!!
+
+    private val viewModel: NfcViewModel by viewModels()
+
+    var nfcManager: NfcManager? = null
 
     private var fragmentId: Int = 0
     private var popupId: Int = 0
@@ -86,6 +98,11 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
                 val appIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                 return appIntent.resolveActivity(requireActivity().packageManager) != null
             }
+
+            override fun scanNfc(timeout: Long) {
+                Timber.d("debug_nfc call scanNfc from WebView $timeout")
+                startNfcScan(timeout)
+            }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
 
         //костыль для подгона высоты
@@ -111,7 +128,6 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
             }
         }*/
 
-
         if (stateBundle != null) {
             binding.wvExtBottom.restoreState(stateBundle!!)
         } else {
@@ -120,6 +136,91 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
 
         binding.wvExtBottom.clearCache(true)
         disableSomeEvents()
+
+        observeState()
+    }
+
+    private fun startNfcScan(timeout: Long) {
+        val nfcAdapter = NfcAdapter.getDefaultAdapter(requireContext())
+        if (nfcAdapter != null) {
+            if (nfcManager == null) {
+                nfcManager = NfcManager(nfcAdapter)
+            }
+        } else {
+            viewModel.notSupported()
+            return
+        }
+        if (viewModel.state.value != NfcViewModel.State.Idle)
+        {
+            Timber.d("debug_nfc state is not idle")
+            return
+        }
+        Timber.d("debug_nfc start scan")
+        viewModel.startScan(timeout)
+        nfcManager?.enableReader(requireActivity()) { tag ->
+            val uid = tag.id.joinToString(":") {
+                String.format("%02X", it)
+            }
+            Timber.d("debug_nfc success uid=$uid")
+
+            viewModel.onTagScanned(uid)
+            stopNfcScan()
+        }
+    }
+
+    private fun stopNfcScan() {
+        nfcManager?.disableReader(requireActivity())
+        viewModel.stopScan()
+        if (nfcManager != null) {
+            Timber.d("debug_nfc stop scan")
+        }
+    }
+
+    private fun observeState() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.state.collect { state ->
+                    when (state) {
+                        is NfcViewModel.State.Success -> {
+                            val uid = state.uid
+                            sendToWebView(uid)
+                        }
+
+                        is NfcViewModel.State.Timeout -> {
+                            Timber.d("debug_nfc timeout")
+                            stopNfcScan()
+                            sendToWebView("timeout")
+                        }
+
+                        is NfcViewModel.State.Error -> {
+                            Timber.d("debug_nfc error")
+                            stopNfcScan()
+                            sendToWebView("error")
+                        }
+
+                        is NfcViewModel.State.NotSupported -> {
+                            Timber.d("debug_nfc not supported")
+                            stopNfcScan()
+                            sendToWebView("not supported")
+                        }
+
+                        else -> {}
+                    }
+                }
+            }
+        }
+    }
+
+    private fun sendToWebView(uid: String) {
+        val data = JSONObject.quote(uid)
+        Timber.d("debug_nfc send callback with value=$data")
+        val js = """
+            window.onNfcResult($data);
+        """.trimIndent()
+
+        binding.wvExtBottom.post {
+            binding.wvExtBottom.evaluateJavascript(js, null)
+        }
     }
 
     override fun onPause() {
@@ -173,6 +274,11 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         binding.wvExtBottom.setOnDragListener { _, _ ->
             true
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        stopNfcScan()
     }
 
     companion object {

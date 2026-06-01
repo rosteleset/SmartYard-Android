@@ -1,11 +1,24 @@
 package com.sesameware.domain.model.response
 
+import android.os.Parcelable
+import com.sesameware.domain.utils.concatIfNotBlank
 import com.squareup.moshi.Json
+import kotlinx.parcelize.Parcelize
 
 typealias CamMapResponse = ApiResult<List<CamMap>>?
 
+@Parcelize
+data class EntranceCamera(
+    val previewUrl: String,
+    val whepUrl: String = "",
+    val hlsUrl: String
+) : Parcelable {
+    val isValid: Boolean
+        get() = previewUrl.isNotBlank() || hlsUrl.isNotBlank() || hlsUrl.isNotBlank()
+}
+
 data class CamMap(
-    @Json(name = "id") val id: Int,
+    @Json(name = "id") val domophoneId: Int,
     @Json(name = "entranceId") val entranceId: Int? = null,
     @Json(name = "url") val url: String,
     @Json(name = "token") val token: String,
@@ -18,9 +31,61 @@ data class CamMap(
                 MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                 MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                 MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                MediaServerType.MEDIA_TYPE_SESAMEWARE -> MediaServerType.SESAMEWARE
                 else -> MediaServerType.FLUSSONIC
             }
         }
+
+    val entranceCamera: EntranceCamera
+        get() = EntranceCamera(
+            previewUrl = when (serverType) {
+                MediaServerType.NIMBLE -> url concatIfNotBlank "/thumbnail.mp4?wmsAuthSign=$token"
+                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.MACROSCOP,
+                MediaServerType.SESAMEWARE,
+                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/preview.mp4?token=$token"
+            },
+            hlsUrl = when (serverType) {
+                MediaServerType.NIMBLE -> url concatIfNotBlank "/playlist.m3u8?wmsAuthSign=$token"
+                MediaServerType.MACROSCOP,
+                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.SESAMEWARE,
+                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/index.m3u8?token=$token"
+            },
+            whepUrl = when (serverType) {
+                MediaServerType.SESAMEWARE,
+                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep/?token=$token"
+                MediaServerType.NIMBLE,
+                MediaServerType.MACROSCOP,
+                MediaServerType.FORPOST -> ""
+            }
+        )
+
+    val additionalCameras: List<EntranceCamera>? = altCameras?.map { altCam ->
+        EntranceCamera(
+            previewUrl = when (altCam.serverType) {
+                MediaServerType.NIMBLE -> url concatIfNotBlank "/thumbnail.mp4?wmsAuthSign=$token"
+                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.MACROSCOP,
+                MediaServerType.SESAMEWARE,
+                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/preview.mp4?token=$token"
+            },
+            hlsUrl = when (altCam.serverType) {
+                MediaServerType.NIMBLE -> url concatIfNotBlank "/playlist.m3u8?wmsAuthSign=$token"
+                MediaServerType.MACROSCOP,
+                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.SESAMEWARE,
+                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/index.m3u8?token=$token"
+            },
+            whepUrl = when (altCam.serverType) {
+                MediaServerType.SESAMEWARE,
+                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep/?token=$token"
+                MediaServerType.NIMBLE,
+                MediaServerType.MACROSCOP,
+                MediaServerType.FORPOST -> ""
+            }
+        )
+    }
 
     data class AltCameras(
         @Json(name = "cameraId") val cameraId: Int,
@@ -34,6 +99,7 @@ data class CamMap(
                     MediaServerType.MEDIA_TYPE_NIMBLE -> MediaServerType.NIMBLE
                     MediaServerType.MEDIA_TYPE_MACROSCOP -> MediaServerType.MACROSCOP
                     MediaServerType.MEDIA_TYPE_FORPOST -> MediaServerType.FORPOST
+                    MediaServerType.MEDIA_TYPE_SESAMEWARE -> MediaServerType.SESAMEWARE
                     else -> MediaServerType.FLUSSONIC
                 }
             }
