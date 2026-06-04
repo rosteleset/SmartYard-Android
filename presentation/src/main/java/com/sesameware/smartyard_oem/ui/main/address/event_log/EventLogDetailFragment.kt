@@ -230,16 +230,7 @@ class EventLogDetailFragment : Fragment() {
                     val faceId = plog.detailX?.faceId?.toInt() ?: 0
                     val photoUrl = mViewModel.faceIdToUrl[faceId] ?: plog.preview
                     val dialogRemovePhoto = DialogRemovePhotoFragment(photoUrl ?: "") {
-                        mViewModel.dislike(plog.uuid)
-                        flags.remove(Plog.FLAG_CAN_DISLIKE)
-                        flags.add(Plog.FLAG_CAN_LIKE)
-                        if (faceId > 0) {
-                            mViewModel.faceIdToUrl.remove(faceId)
-                        }
-
-//                        rvAdapter?.eventsByDays?.get(day)?.set(index, plog)
-                        Timber.d("__Q__ plog: $plog")
-                        rvAdapter?.notifyItemChanged(position)
+                        mViewModel.dislike(position, plog)
                     }
                     dialogRemovePhoto.show(requireActivity().supportFragmentManager, "")
                 } else {
@@ -253,16 +244,7 @@ class EventLogDetailFragment : Fragment() {
                             plog.detailX?.face?.height ?: -1,
                             plog.eventType == Plog.EVENT_OPEN_BY_FACE
                         ) {
-                            mViewModel.like(plog.uuid)
-                            flags.remove(Plog.FLAG_CAN_LIKE)
-                            val faceId = plog.detailX?.faceId?.toInt() ?: 0
-                            if (faceId > 0) {
-                                flags.add(Plog.FLAG_CAN_DISLIKE)
-                            }
-                            flags.add(Plog.FLAG_LIKED)
-//                            rvAdapter?.eventsByDays?.get(day)?.set(index, plog)
-                            Timber.d("__Q__ plog: $plog")
-                            rvAdapter?.notifyItemChanged(position)
+                            mViewModel.like(position, plog)
                         }
                         dialogAddPhoto.show(requireActivity().supportFragmentManager, "")
                     }
@@ -473,6 +455,35 @@ class EventLogDetailFragment : Fragment() {
         mViewModel.progress.observe(viewLifecycleOwner) {
             binding.pbEventLogDetail.isVisible = it
         }
+
+        mViewModel.newFaceId.observe(viewLifecycleOwner, EventObserver { pair ->
+            val position = pair.first
+            val plog = pair.second
+
+            plog.detailX?.flags?.clear()
+            val faceId = plog.detailX?.faceId?.toInt() ?: 0
+            if (faceId > 0) {
+                plog.detailX?.flags?.add(Plog.FLAG_CAN_DISLIKE)
+            }
+            plog.detailX?.flags?.add(Plog.FLAG_LIKED)
+
+            Timber.d("debug_dmm new face id; plog: $plog")
+            rvAdapter?.notifyItemChanged(position)
+        })
+
+        mViewModel.removeFaceId.observe(viewLifecycleOwner, EventObserver { pair ->
+            val position = pair.first
+            val plog = pair.second
+            plog.detailX?.flags?.clear()
+            plog.detailX?.flags?.add(Plog.FLAG_CAN_LIKE)
+            val faceId = plog.detailX?.faceId?.toInt() ?: 0
+            if (faceId > 0) {
+                mViewModel.faceIdToUrl.remove(faceId)
+            }
+
+            Timber.d("debug_dmm remove face id; plog: $plog")
+            rvAdapter?.notifyItemChanged(position)
+        })
 
         mViewModel.newTrackedEvent.observe(viewLifecycleOwner, EventObserver { pair ->
             val position = pair.first

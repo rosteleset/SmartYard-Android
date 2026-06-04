@@ -88,12 +88,6 @@ class AccessAddressViewModel(
         _licensePlates.postValue(lprsInteractor.listLicensePlates(flatId)?.data ?: listOf())
     }
 
-    fun getLicensePlateList(flatId: Int) {
-        viewModelScope.withProgress {
-            refreshLicensePlateList(flatId)
-        }
-    }
-
     fun removeLicensePlate(flatId: Int, licensePlate: LicensePlateValue) {
         viewModelScope.withProgress {
             lprsInteractor.removeLicensePlate(flatId, LicensePlate(licensePlate.value))
@@ -115,6 +109,9 @@ class AccessAddressViewModel(
         mPreferenceStorage.xDmApiRefresh = true
         val dataIntercom = addressInteractor.getIntercom(flatId)
         _intercom.postValue(dataIntercom.data)
+        if (dataIntercom.data.lprsDisabled == false) {
+            refreshLicensePlateList(flatId)
+        }
     }
 
     fun addRoommate(flatId: Int, number: String, type: String) {

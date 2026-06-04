@@ -103,6 +103,8 @@ class EventLogViewModel(
     var faceIdToUrl = hashMapOf<Int, String>()
     var trackedEvents = hashMapOf<String, TrackedEventData>()
 
+    var newFaceId = MutableLiveData<Event<Pair<Int, Plog>>>()
+    var removeFaceId = MutableLiveData<Event<Pair<Int, Plog>>>()
     var newTrackedEvent = MutableLiveData<Event<Pair<Int, TrackedEventData>>>()
     var removeTrackedEvent = MutableLiveData<Event<Pair<Int, String>>>()
 
@@ -397,15 +399,19 @@ class EventLogViewModel(
         }
     }
 
-    fun dislike(uuid: String) {
+    fun dislike(position: Int, plog: Plog) {
         viewModelScope.withProgress(progress = null) {
-            frsInteractor.disLike(uuid, null, null)
+            frsInteractor.disLike(plog.uuid, null, null)
+            removeFaceId.postValue(Event(Pair(position, plog)))
         }
     }
 
-    fun like(uuid: String) {
+    fun like(position: Int, plog: Plog) {
         viewModelScope.withProgress(progress = null) {
-            frsInteractor.like(uuid, "")
+            frsInteractor.like(plog.uuid, "")?.data?.faceId?.let { faceId ->
+                plog.detailX?.faceId = faceId
+            }
+            newFaceId.postValue(Event(Pair(position, plog)))
         }
     }
 

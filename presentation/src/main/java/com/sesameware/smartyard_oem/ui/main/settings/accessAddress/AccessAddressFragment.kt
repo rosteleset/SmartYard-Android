@@ -86,7 +86,6 @@ class AccessAddressFragment : Fragment() {
         initObservable()
 
         mViewModel.getRoommateAndIntercom(flatId)
-        mViewModel.getLicensePlateList(flatId)
 
         binding.tvShareAccess.setOnClickListener {
             WebViewDialogFragment(R.string.help_share_access)
@@ -414,15 +413,15 @@ class AccessAddressFragment : Fragment() {
                 returnTransition
             }.show()
     }
-    
+
     private fun onGateAccessByPhoneMenuClick(anchorView: View, contact: ContactModel) {
         showGateAccessDropdownMenu(anchorView, contact = contact)
     }
-    
+
     private fun onGateAccessByLicensePlateMenuClick(anchorView: View, lpValue: LicensePlateValue) {
         showGateAccessDropdownMenu(anchorView, lpValue = lpValue)
     }
-    
+
     private fun showGateAccessDropdownMenu(
         anchorView: View,
         lpValue: LicensePlateValue? = null,

@@ -39,7 +39,7 @@ data class Plog(
         @Json(name = "opened") val _opened: String? = null, // была ли открыта дверь
         @Json(name = "key") val key: String? = null, // ключ, которым открыли дверь
         @Json(name = "phone") val phone: String? = null, // телефон
-        @Json(name = "faceId") val faceId: String?, // идентификатор дескриптора лица
+        @Json(name = "faceId") var faceId: String?, // идентификатор дескриптора лица
         @Json(name = "code") val code: String? = null, // код, которым открыли дверь
         @Json(name = "phone_from") val phoneFrom: String? = null, // телефон
         @Json(name = "phone_to") val phoneTo: String? = null, // телефон
