@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".ui.reg.tel.NumberRegFragment">
+    android:clipToPadding="false"
+    tools:context=".ui.main.address.auth.restoreAccess.RestoreAccessFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/imageView"
@@ -91,7 +92,7 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="42dp"
+            android:layout_marginBottom="24dp"
             android:enabled="false"
             android:paddingTop="18dp"
             android:paddingBottom="18dp"
@@ -108,11 +109,12 @@
             android:layout_height="61dp"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="32dp"
+            android:layout_marginBottom="24dp"
             android:paddingTop="18dp"
             android:paddingBottom="18dp"
             android:text="@string/restore_access_edit_btn_get_code"
             android:visibility="gone"
+            tools:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/imageView2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />

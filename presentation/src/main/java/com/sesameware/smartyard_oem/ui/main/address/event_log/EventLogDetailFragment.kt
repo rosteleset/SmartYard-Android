@@ -23,13 +23,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ui.PlayerView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.Plog
+import com.sesameware.domain.utils.listenerGeneric
+import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogDetailBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
@@ -47,8 +48,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
-import com.sesameware.domain.utils.listenerGeneric
-import com.sesameware.smartyard_oem.EventObserver
 
 class EventLogDetailFragment : Fragment() {
     private var _binding: FragmentEventLogDetailBinding? = null
@@ -70,6 +69,7 @@ class EventLogDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         _binding = FragmentEventLogDetailBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

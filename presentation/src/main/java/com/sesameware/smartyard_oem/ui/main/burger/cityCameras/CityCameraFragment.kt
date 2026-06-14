@@ -33,6 +33,7 @@ import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.lib.dpToPx
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCityCameraBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
@@ -79,6 +80,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         binding.ivCityCameraBack.setOnClickListener {
             this.findNavController().popBackStack()
         }
+
+        binding.llCityCameraMain.applyBottomNavInsetsToPadding()
 
         binding.btnCityCameraEvents.setOnClickListener {
             (binding.btnCityCameraEvents.parent as ViewGroup).removeView(binding.btnCityCameraEvents)

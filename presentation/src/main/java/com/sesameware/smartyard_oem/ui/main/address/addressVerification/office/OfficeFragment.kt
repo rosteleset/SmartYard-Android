@@ -9,17 +9,18 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.sesameware.domain.model.response.Office
+import com.sesameware.smartyard_oem.EventObserver
+import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.databinding.FragmentOfficeBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.main.MainActivity
+import com.sesameware.smartyard_oem.ui.main.address.addressVerification.courier.CourierFragment
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.osmdroid.config.Configuration
 import org.osmdroid.util.BoundingBox
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import com.sesameware.smartyard_oem.EventObserver
-import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.databinding.FragmentOfficeBinding
-import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.addressVerification.courier.CourierFragment
-import org.osmdroid.config.Configuration
 import java.io.File
 
 class OfficeFragment : Fragment() {
@@ -35,6 +36,7 @@ class OfficeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentOfficeBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -17,21 +18,25 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.domain.model.response.EntranceCamera
+import com.sesameware.domain.model.response.PRESENT_METHOD_OPEN_APP
+import com.sesameware.domain.model.response.PRESENT_METHOD_POPUP
+import com.sesameware.domain.model.response.PRESENT_METHOD_VIEW
+import com.sesameware.domain.model.response.Story
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressListAdapter
-import com.sesameware.smartyard_oem.ui.main.address.adapters.StoriesAdapter
 import com.sesameware.smartyard_oem.ui.main.address.adapters.HouseViewHolder
+import com.sesameware.smartyard_oem.ui.main.address.adapters.StoriesAdapter
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 import com.sesameware.smartyard_oem.ui.main.address.guestAccessDialog.GuestAccessDialogFragment
@@ -56,11 +61,6 @@ import com.sesameware.smartyard_oem.ui.updateAllWidget
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
-import androidx.core.net.toUri
-import com.sesameware.domain.model.response.PRESENT_METHOD_OPEN_APP
-import com.sesameware.domain.model.response.PRESENT_METHOD_POPUP
-import com.sesameware.domain.model.response.PRESENT_METHOD_VIEW
-import com.sesameware.domain.model.response.Story
 
 class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListener {
     private var _binding: FragmentAddressBinding? = null
@@ -85,22 +85,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         }
     }
 
-    private val showHideFabListener = object : OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            if (dy > 0 && binding.floatingActionButton.isVisible) {
-                binding.floatingActionButton.hide()
-            } else if (dy < 0 && binding.floatingActionButton.visibility != View.VISIBLE) {
-                binding.floatingActionButton.show()
-            }
-
-            if (!recyclerView.canScrollVertically(-1)
-                && binding.floatingActionButton.visibility != View.VISIBLE) {
-                binding.floatingActionButton.show()
-            }
-        }
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -119,11 +103,15 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
 
     private fun initAddressList() {
         layoutManager = LinearLayoutManager(requireContext())
-        adapter = AddressListAdapter(::onAddressAction, ::onIssueAction)
+        adapter = AddressListAdapter(
+            ::onAddressAction,
+            ::onIssueAction,
+            mViewModel.entranceView
+        )
         binding.addressList.let {
             it.layoutManager = layoutManager
             it.adapter = adapter
-            it.addOnScrollListener(showHideFabListener)
+            it.applyBottomNavInsetsToPadding()
             val callback = DragToSortCallback(
                 mViewModel::setHouseItemSavedPosition,
                 ::onItemDrag,
@@ -316,10 +304,11 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     private fun bindViews() {
-        binding.floatingActionButton.setOnClickListener {
-            NavHostFragment.findNavController(this)
-                .navigate(R.id.action_addressFragment_to_authFragment)
-        }
+       binding.imageView5.setOnClickListener {
+                NavHostFragment.findNavController(this@AddressFragment)
+                    .navigate(R.id.action_addressFragment_to_authFragment)
+            }
+
         binding.swipeContainer.setOnRefreshListener {
             mViewModel.getDataList(true)
         }
@@ -354,10 +343,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             adapter.submitList(addressList)
             binding.swipeContainer.isRefreshing = false
             updateAllWidget(requireContext())
-
-            if (binding.floatingActionButton.visibility != View.VISIBLE) {
-                binding.floatingActionButton.show()
-            }
         }
 
         mViewModel.stories.observe(viewLifecycleOwner) { stories ->

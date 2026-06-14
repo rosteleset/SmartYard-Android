@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewpager.widget.ViewPager.SimpleOnPageChangeListener
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.TabAdapter
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CCTVOnlineTabFragment
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment
@@ -42,7 +43,7 @@ class CCTVDetailFragment : Fragment() {
 
     private fun setupUi(fm: FragmentManager
     ) {
-        binding.contentWrap.clipToOutline = true
+        binding.contentWrap.applyBottomNavInsetsToPadding()
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }

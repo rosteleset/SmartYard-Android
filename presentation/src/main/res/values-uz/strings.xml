@@ -169,12 +169,15 @@
 
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Ism bo‘sh bo‘lishi mumkin emas</string>
+    <string name="appeal_empty_last_error">Familiya bo‘sh qoldirilmasligi kerak</string>
     <string name="appeal_validation_name_error">Ism bo‘sh bo‘lishi mumkin emas</string>
     <string name="appeal_validation_patronymic_error">Otasining ismi bo‘sh bo‘lmasligi kerak</string>
+    <string name="appeal_validation_last_error">Familiya bo‘sh qoldirilmasligi kerak</string>
     <string name="appeal_title">Sizga\nqanday murojaat qilish kerak?</string>
-    <string name="appeal_title_patronymic">Otasining ismi</string>
+    <string name="appeal_hint_patronymic">Otasining ismi</string>
 
     <!-- Temp -->
+    <string name="appeal_hint_last">Familiya*</string>
     <string name="terminate">To‘xtatish</string>
     <string name="enter_sip_address">Qo‘ng‘iroq uchun raqamni kiriting</string>
     <string name="sip_address">Raqam</string>
@@ -420,7 +423,7 @@
 
     <string name="payment_done">Tayyor!</string>
     <string name="payment_being_processed">Kuting, to‘lov ishlab chiqilmoqda</string>
-    <string name="appeal_title_first_name">Ism*</string>
+    <string name="appeal_hint_first_name">Ism*</string>
     <string name="dialog_add_contact">+ Kontakt qo‘shish</string>
     <string name="dialog_close">Yopish</string>
     <string name="event_sample">01.03.2021, 17:06</string>

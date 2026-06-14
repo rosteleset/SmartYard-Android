@@ -170,12 +170,15 @@
 
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Անունը չի կարող լրացնել դատարկ լինի</string>
+    <string name="appeal_empty_last_error">Ազգանունը չի կարող լրացվել դատարկ</string>
     <string name="appeal_validation_name_error">Անունը չի կարող լրացնել դատարկ լինի</string>
     <string name="appeal_validation_patronymic_error">Հայրանունը չպետք է դատարկ լինի</string>
+    <string name="appeal_validation_last_error">Ազգանունը չի կարող լրացվել դատարկ</string>
     <string name="appeal_title">Ինչպես\nկարելի է Ձեզ\nկանչել?</string>
-    <string name="appeal_title_patronymic">Հայրանուն</string>
+    <string name="appeal_hint_patronymic">Հայրանուն</string>
 
     <!-- Temp -->
+    <string name="appeal_hint_last">Ազգանուն*</string>
     <string name="terminate">Անջատել</string>
     <string name="enter_sip_address">Մուտքագրեք զանգերի համարը</string>
     <string name="sip_address">Հեռախոսահամար</string>
@@ -419,7 +422,7 @@
     <string name="reg_sms_code_resend">Ուղարկել կոդը կրկնել</string>
     <string name="payment_done">Գումարը վճարված է!</string>
     <string name="payment_being_processed">Սպասեք, վճարումը մշակվում է</string>
-    <string name="appeal_title_first_name">Անուն*</string>
+    <string name="appeal_hint_first_name">Անուն*</string>
     <string name="dialog_add_contact">+ Ավելացնել կոնտակտ</string>
     <string name="dialog_close">Փակել</string>
     <string name="event_sample">01.03.2021, 17:06</string>

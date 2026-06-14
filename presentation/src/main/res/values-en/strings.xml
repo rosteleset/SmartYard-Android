@@ -173,12 +173,15 @@
 
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Name cannot be empty</string>
-    <string name="appeal_validation_name_error">Name cannot be empty</string>
-    <string name="appeal_validation_patronymic_error">Patronymic should not be empty</string>
+    <string name="appeal_empty_last_error">Last name field cannot be empty</string>
+    <string name="appeal_validation_name_error">First name field cannot be empty</string>
+    <string name="appeal_validation_patronymic_error">Patronymic field cannot be empty</string>
+    <string name="appeal_validation_last_error">Last name field cannot be empty</string>
     <string name="appeal_title">How can\nwe address you?</string>
-    <string name="appeal_title_patronymic">Patronymic</string>
+    <string name="appeal_hint_patronymic">Patronymic</string>
 
     <!-- Temp -->
+    <string name="appeal_hint_last">Last name*</string>
     <string name="terminate">Terminate</string>
     <string name="enter_sip_address">Enter the number to call</string>
     <string name="sip_address">number</string>
@@ -424,7 +427,7 @@
     <string name="reg_sms_code_resend">Resend code</string>
     <string name="payment_done">Done!</string>
     <string name="payment_being_processed">Please wait, payment is being processed</string>
-    <string name="appeal_title_first_name">First name*</string>
+    <string name="appeal_hint_first_name">First name*</string>
     <string name="dialog_add_contact">+ Add contact</string>
     <string name="dialog_close">Close</string>
     <string name="event_sample">March 1, 2021, at 17:06</string>

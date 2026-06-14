@@ -120,7 +120,5 @@ interface AddressRepository {
         flatId: Int
     ): GetTrackedEventsResponse
 
-    suspend fun isWhepAvailable(url: String): Boolean
-
     suspend fun getStories(): GetStoriesResponse
 }

@@ -11,7 +11,8 @@ typealias CamMapResponse = ApiResult<List<CamMap>>?
 data class EntranceCamera(
     val previewUrl: String,
     val whepUrl: String = "",
-    val hlsUrl: String
+    val hlsUrl: String,
+    val isTrickleIceSupported: Boolean
 ) : Parcelable {
     val isValid: Boolean
         get() = previewUrl.isNotBlank() || hlsUrl.isNotBlank() || hlsUrl.isNotBlank()
@@ -36,6 +37,13 @@ data class CamMap(
             }
         }
 
+    val isTrickleIceSupported: Boolean
+        get() = serverType in listOf(
+            MediaServerType.FLUSSONIC,
+            MediaServerType.SESAMEWARE,
+            MediaServerType.NIMBLE
+        )
+
     val entranceCamera: EntranceCamera
         get() = EntranceCamera(
             previewUrl = when (serverType) {
@@ -54,11 +62,12 @@ data class CamMap(
             },
             whepUrl = when (serverType) {
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep/?token=$token"
+                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep?token=$token"
                 MediaServerType.NIMBLE,
                 MediaServerType.MACROSCOP,
                 MediaServerType.FORPOST -> ""
-            }
+            },
+            isTrickleIceSupported = isTrickleIceSupported
         )
 
     val additionalCameras: List<EntranceCamera>? = altCameras?.map { altCam ->
@@ -79,11 +88,12 @@ data class CamMap(
             },
             whepUrl = when (altCam.serverType) {
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep/?token=$token"
+                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep?token=$token"
                 MediaServerType.NIMBLE,
                 MediaServerType.MACROSCOP,
                 MediaServerType.FORPOST -> ""
-            }
+            },
+            isTrickleIceSupported = altCam.isTrickleIceSupported
         )
     }
 
@@ -103,5 +113,12 @@ data class CamMap(
                     else -> MediaServerType.FLUSSONIC
                 }
             }
+
+        val isTrickleIceSupported: Boolean
+            get() = serverType in listOf(
+                MediaServerType.FLUSSONIC,
+                MediaServerType.SESAMEWARE,
+                MediaServerType.NIMBLE
+            )
     }
 }

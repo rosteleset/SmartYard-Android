@@ -6,12 +6,12 @@ import com.sesameware.domain.model.response.AppVersionResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
 import com.sesameware.domain.model.response.GetServicesResponse
 import com.sesameware.domain.model.response.OpenDoorResponse
+import com.sesameware.domain.model.response.ProviderConfigResponse
+import com.sesameware.domain.model.response.ProvidersListResponse
 import com.sesameware.domain.model.response.RegisterPushTokenResponse
 import com.sesameware.domain.model.response.RequestCodeResponse
 import com.sesameware.domain.model.response.SendNameResponse
 import com.sesameware.domain.model.response.UserNotificationResponse
-import com.sesameware.domain.model.response.ProvidersListResponse
-import com.sesameware.domain.model.response.ProviderConfigResponse
 
 interface AuthRepository {
     suspend fun providers(): ProvidersListResponse
@@ -19,7 +19,7 @@ interface AuthRepository {
     suspend fun requestCode(userPhone: String, deviceToken: String): RequestCodeResponse
     suspend fun confirmCode(userPhone: String, smsCode: String, deviceToken: String): ConfirmCodeResponse
     suspend fun checkPhone(userPhone: String, deviceToken: String): ConfirmCodeResponse
-    suspend fun sendName(name: String, patronymic: String?): SendNameResponse
+    suspend fun sendName(name: String, patronymic: String?, last: String?): SendNameResponse
     suspend fun openDoor(domophoneId: Int, doorId: Int?): OpenDoorResponse
     suspend fun getServices(id: Int): GetServicesResponse
     suspend fun appVersion(version: String): AppVersionResponse

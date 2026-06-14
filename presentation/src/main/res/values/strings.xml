@@ -173,10 +173,13 @@
 
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Имя не должно быть пустым</string>
+    <string name="appeal_empty_last_error">Фамилия не должна быть пустой</string>
     <string name="appeal_validation_name_error">Имя не должно быть пустым</string>
     <string name="appeal_validation_patronymic_error">Отчество не должно быть пустым</string>
+    <string name="appeal_validation_last_error">Фамилия не должна быть пустой</string>
     <string name="appeal_title">Как к вам\nобращаться?</string>
-    <string name="appeal_title_patronymic">Отчество</string>
+    <string name="appeal_hint_patronymic">Отчество</string>
+    <string name="appeal_hint_last">Фамилия*</string>
 
     <!-- Temp -->
     <string name="terminate">Прервать</string>
@@ -426,7 +429,7 @@
     <string name="reg_sms_code_resend">Отправить код повторно</string>
     <string name="payment_done">Готово!</string>
     <string name="payment_being_processed">Ожидайте, платеж обрабатывается</string>
-    <string name="appeal_title_first_name">Имя*</string>
+    <string name="appeal_hint_first_name">Имя*</string>
     <string name="dialog_add_contact">+ Добавить контакт</string>
     <string name="dialog_close">Закрыть</string>
     <string name="event_sample">1.03.2021, в 17:06</string>

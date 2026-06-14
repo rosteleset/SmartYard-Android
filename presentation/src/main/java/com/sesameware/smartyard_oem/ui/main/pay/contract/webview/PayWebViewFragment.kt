@@ -11,9 +11,10 @@ import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentPayWebViewBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PayWebViewFragment : Fragment() {
     private var _binding: FragmentPayWebViewBinding? = null
@@ -25,6 +26,7 @@ class PayWebViewFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPayWebViewBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

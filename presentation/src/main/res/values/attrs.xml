@@ -29,4 +29,10 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="FloatingBottomNavView">
+        <attr name="menu" format="reference" />
+        <attr name="activeColor" format="color" />
+        <attr name="inactiveColor" format="color" />
+    </declare-styleable>
+
 </resources>

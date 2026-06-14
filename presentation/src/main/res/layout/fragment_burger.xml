@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/shaded_background"
+    android:clipToPadding="false"
     tools:context=".ui.main.burger.BurgerFragment">
 
     <TextView
@@ -45,7 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="32dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/rounded_corner"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"

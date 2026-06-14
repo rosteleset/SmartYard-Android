@@ -13,36 +13,28 @@ import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.TypedValue
-import android.view.LayoutInflater
-import android.view.View
+import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
-import android.widget.TextView
-import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.IdRes
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.Insets
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
-import androidx.core.view.doOnLayout
 import androidx.core.view.isVisible
+import androidx.core.view.marginBottom
+import androidx.core.view.updateMargins
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
-import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationItemView
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.domain.model.response.ProviderConfig
@@ -61,6 +53,7 @@ import com.sesameware.smartyard_oem.ui.main.notification.NotificationFragment
 import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
 import com.sesameware.smartyard_oem.ui.setupExitOnBackPressedWhenInRoot
 import com.sesameware.smartyard_oem.ui.setupPopToRootOnItemReselected
+import com.sesameware.smartyard_oem.ui.setupWithNavController
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
@@ -102,9 +95,7 @@ class MainActivity : CommonActivity() {
             installSplashScreen()
         }
 
-        enableEdgeToEdge(
-            navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
-        )
+        enableEdgeToEdge()
 
         super.onCreate(savedInstanceState)
 
@@ -130,40 +121,26 @@ class MainActivity : CommonActivity() {
         val view = binding.root
         setContentView(view)
 
-        fixMorphBottomNavBarForEdgeToEdge()
-
         navController = getNavController()
-        savedInstanceState?.getBundle(NAV_CONTROLLER_STATE_KEY)?.let { bundle ->
-            navController.restoreState(bundle)
-        }
 
         setupStatusBarWithNavController()
+        setupBottomNavigationView()
+        setupInsets()
 
         appVersion()
 
-        setupBottomNavigationBar()
-
-        showBadge(this, binding.bottomNav, R.id.notification, "")
         mViewModel.onCreate(this)
 
         mViewModel.isNotificationBadgeShowed.observe(
             this
         ) { badge ->
-            if (badge) {
-                showBadge(this, binding.bottomNav, R.id.notification, "")
-            } else {
-                removeBadge(R.id.notification)
-            }
+            handleBadge(badge, R.id.notification)
         }
 
         mViewModel.isChatBadgeShowed.observe(
             this
         ) { chat ->
-            if (chat) {
-                showBadge(this, binding.bottomNav, R.id.chat, "")
-            } else {
-                removeBadge(R.id.chat)
-            }
+            handleBadge(chat, R.id.chat)
         }
 
         mViewModel.updateToAppNavigateDialog.observe(
@@ -199,39 +176,24 @@ class MainActivity : CommonActivity() {
         handleDeepLink(intent)
     }
 
-    private fun setupStatusBarWithNavController() {
-        if (isNightModeOn) return
-
-        navController.addOnDestinationChangedListener { _, dest, _ ->
-            fragmentHasHeader = when (dest.id) {
-                R.id.notificationFragment, R.id.customWebViewFragmentChat, R.id.payWebViewFragment,
-                R.id.burgerFragment, R.id.eventLogDetailFragment -> false
-                else -> true
+    private fun handleBadge(badge: Boolean, itemId: Int) {
+        with(binding.bottomNav) {
+            if (badge) {
+                showDotBadge(itemId)
+            } else {
+                clearBadge(itemId)
             }
         }
     }
 
-    private fun fixMorphBottomNavBarForEdgeToEdge() {
-        val basePaddingBottom = binding.bottomNav.paddingBottom
+    private fun setupStatusBarWithNavController() {
+        if (isNightModeOn) return
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.bottomNav) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-
-            v.setPadding(
-                v.paddingLeft, v.paddingTop, v.paddingRight,
-                basePaddingBottom + systemBars.bottom
+        navController.addOnDestinationChangedListener { _, dest, _ ->
+            fragmentHasHeader = dest.id !in listOf(
+                R.id.notificationFragment, R.id.customWebViewFragmentChat, R.id.payWebViewFragment,
+                R.id.burgerFragment, R.id.eventLogDetailFragment
             )
-
-            v.doOnLayout { view ->
-                val layoutParams = view.layoutParams
-                val baseHeight = resources.getDimension(R.dimen.design_bottom_navigation_height)
-                val morphOffset = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                    11f, resources.displayMetrics)
-                layoutParams.height = (baseHeight + morphOffset + systemBars.bottom).toInt()
-                view.layoutParams = layoutParams
-            }
-
-            insets
         }
     }
 
@@ -245,39 +207,23 @@ class MainActivity : CommonActivity() {
         }
     }
 
-    private fun setupBottomNavigationBar() {
+    private fun setupBottomNavigationView() {
         val bar = binding.bottomNav
-        bar.itemIconTintList = null
         bar.setupWithNavController(navController)
-        bar.setupExitOnBackPressedWhenInRoot(navController, this@MainActivity)
         bar.setupPopToRootOnItemReselected(navController)
-        bar.setOnItemSelectedListener { item ->
-            // Be sure to specify this block when redefining setOnItemSelectedListener,
-            // otherwise navigation using BottomNavigationView will not work.
-            NavigationUI.onNavDestinationSelected(
-                item,
-                navController
-            )
-            when (item.itemId) {
-                R.id.notification -> mViewModel.isNotificationBadgeShowed.postValue(false)
-                R.id.chat -> mViewModel.isChatBadgeShowed.postValue(false)
-                else -> {}
-            }
-
-            true
-        }
+        bar.setupExitOnBackPressedWhenInRoot(navController, this)
 
         if (!DataModule.providerConfig.hasChat) {
-            bar.menu.removeItem(R.id.chat)
+            bar.removeItem(R.id.chat)
         }
         if (!DataModule.providerConfig.hasPayments) {
-            bar.menu.removeItem(R.id.pay)
+            bar.removeItem(R.id.pay)
         }
 
         mViewModel.bottomNavigateTo.observe(
             this,
-            EventObserver { id: Int ->
-                if (bar.selectedItemId != id) bar.selectedItemId = id
+            EventObserver { itemId ->
+                bar.selectedItemId = itemId
             }
         )
     }
@@ -355,7 +301,7 @@ class MainActivity : CommonActivity() {
         mViewModel.bottomNavigate(tabId)
     }
 
-    private fun isTabExists(tabId: Int) = binding.bottomNav.menu.findItem(tabId) != null
+    private fun isTabExists(tabId: Int) = binding.bottomNav.hasItem(tabId)
 
     private fun checkLockedScreenPermission() {
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
@@ -414,7 +360,9 @@ class MainActivity : CommonActivity() {
         windowInsetsController.systemBarsBehavior =
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         binding.bottomNav.isVisible = false
+        binding.bottomGradient.isVisible = false
         lightNavBar = true
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     @Suppress("DEPRECATION")
@@ -422,7 +370,9 @@ class MainActivity : CommonActivity() {
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         binding.bottomNav.isVisible = true
+        binding.bottomGradient.isVisible = true
         lightNavBar = false
+        ViewCompat.requestApplyInsets(binding.root)
     }
 
     fun navigateToAddressAuthFragment() {
@@ -437,27 +387,16 @@ class MainActivity : CommonActivity() {
         }
     }
 
-    @SuppressLint("RestrictedApi")
-    fun removeBadge(id: Int) {
-        (binding.bottomNav.findViewById(id) as? BottomNavigationItemView)?.let { itemView ->
-            if (itemView.childCount == 3) {
-                itemView.removeViewAt(2)
-            }
-        }
-    }
-
     private var receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Timber.d("debug_dmm    onReceive")
-            intent?.let {
-                it.extras?.let {
-                    val isChat = it.getBoolean(NOTIFICATION_CHAT, false)
-                    if (isChat) {
-                        mViewModel.isChatBadgeShowed.postValue(true)
-                    } else {
-                        val badge = it.getInt(NOTIFICATION_BADGE, 0)
-                        mViewModel.badgeParse(badge)
-                    }
+            intent?.extras?.let {
+                val isChat = it.getBoolean(NOTIFICATION_CHAT, false)
+                if (isChat) {
+                    mViewModel.isChatBadgeShowed.postValue(true)
+                } else {
+                    val badge = it.getInt(NOTIFICATION_BADGE, 0)
+                    mViewModel.badgeParse(badge)
                 }
             }
         }
@@ -472,23 +411,6 @@ class MainActivity : CommonActivity() {
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun showBadge(
-        context: Context?,
-        bottomNavigationView: BottomNavigationView,
-        @IdRes itemId: Int,
-        value: String?
-    ) {
-        val itemView: BottomNavigationItemView = bottomNavigationView.findViewById(itemId)
-        if (itemView.childCount <= 2) {
-            val badge: View = LayoutInflater.from(context)
-                .inflate(R.layout.notification_badge, bottomNavigationView, false)
-            val text = badge.findViewById<TextView>(R.id.tvBadge)
-            text.text = value
-            itemView.addView(badge)
-        }
     }
 
     @Deprecated("Deprecated in Java")
@@ -574,6 +496,51 @@ class MainActivity : CommonActivity() {
 
     fun setExitFullscreenListener(exitFullscreenListener: ExitFullscreenListener?) {
         this.exitFullscreenListener = exitFullscreenListener
+    }
+
+    private fun setupInsets() {
+        val initialNavMarginBottom = binding.bottomNav.marginBottom
+        val initialGradientMarginBottom = binding.bottomGradient.marginBottom
+
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+
+            val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
+
+            val bottomNav = binding.bottomNav
+            val bottomGradient = binding.bottomGradient
+            val container = binding.navHostContainer
+            if (bottomNav.isVisible) {
+                val targetNavMargin = initialNavMarginBottom + navBarInsets.bottom
+                val bnLayoutParams = bottomNav.layoutParams as ViewGroup.MarginLayoutParams
+                if (bnLayoutParams.bottomMargin != targetNavMargin) {
+                    bnLayoutParams.updateMargins(bottom = targetNavMargin)
+                }
+
+                val targetGradientMargin = initialGradientMarginBottom + navBarInsets.bottom
+                val bgLayoutParams = bottomGradient.layoutParams as ViewGroup.MarginLayoutParams
+                if (bgLayoutParams.bottomMargin != targetGradientMargin) {
+                    bgLayoutParams.updateMargins(bottom = targetGradientMargin)
+                }
+
+                bottomNav.post {
+                    val totalHeight = bottomNav.height + bnLayoutParams.bottomMargin +
+                            bnLayoutParams.topMargin
+
+                    val customInsets = WindowInsetsCompat.Builder(insets)
+                        .setInsets(
+                            WindowInsetsCompat.Type.navigationBars(),
+                            Insets.of(0, 0, 0, totalHeight)
+                        )
+                        .build()
+
+                    ViewCompat.dispatchApplyWindowInsets(container, customInsets)
+                }
+            } else {
+                ViewCompat.dispatchApplyWindowInsets(container, insets)
+            }
+
+            insets
+        }
     }
 
     companion object {

@@ -18,10 +18,14 @@ package com.sesameware.smartyard_oem.ui
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavOptions
+import com.sesameware.smartyard_oem.ui.main.FloatingBottomNavView
+import timber.log.Timber
 
-fun BottomNavigationView.setupExitOnBackPressedWhenInRoot(
+fun FloatingBottomNavView.setupExitOnBackPressedWhenInRoot(
     navController: NavController,
     activity: ComponentActivity
 ) {
@@ -51,19 +55,50 @@ fun BottomNavigationView.setupExitOnBackPressedWhenInRoot(
     )
 }
 
-fun BottomNavigationView.setupPopToRootOnItemReselected(
-    navController: NavController,
-) {
-    setOnItemReselectedListener { item ->
-        val rootDestination = navController.graph
-            .findNode(item.itemId) ?: return@setOnItemReselectedListener
+fun FloatingBottomNavView.setupPopToRootOnItemReselected(navController: NavController) {
+    addOnItemReselectedListener { itemId ->
+        navController.graph.findNode(itemId)?.let { rootDest ->
+            val destinationIdToPop = if (rootDest is NavGraph) {
+                rootDest.startDestinationId
+            } else {
+                rootDest.id
+            }
 
-        val destinationIdToPop = if (rootDestination is NavGraph) {
-            rootDestination.startDestinationId
-        } else {
-            rootDestination.id
+            navController.popBackStack(destinationIdToPop, false)
         }
+    }
+}
 
-        navController.popBackStack(destinationIdToPop, false)
+fun FloatingBottomNavView.setupWithNavController(navController: NavController) {
+    addOnItemSelectedListener { itemId ->
+        clearBadge(itemId)
+
+        val startDestinationId = navController.graph.findStartDestination().id
+
+        val options = NavOptions.Builder()
+            .setLaunchSingleTop(true)
+            .setRestoreState(true)
+            .setPopUpTo(
+                destinationId = startDestinationId,
+                inclusive = false,
+                saveState = true
+            )
+            .build()
+
+        try {
+            navController.navigate(itemId, null, options)
+        } catch (e: IllegalArgumentException) {
+            Timber.d("debug_dmm Bottom nav item with id $itemId was not found in nav graph")
+        } catch (e: Exception) {
+            Timber.e(e, "debug_dmm Navigation error on item $itemId")
+        }
+    }
+
+    navController.addOnDestinationChangedListener { _, destination, _ ->
+        val matchedId = destination.hierarchy.firstOrNull { this.hasItem(it.id) }?.id
+
+        if (matchedId != null && this.selectedItemId != matchedId) {
+            this.setSelection(matchedId, animate = true, notify = false)
+        }
     }
 }

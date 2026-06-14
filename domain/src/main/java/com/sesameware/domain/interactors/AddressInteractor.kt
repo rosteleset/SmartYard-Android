@@ -170,10 +170,6 @@ class AddressInteractor(
         return repository.getTrackedEvents(flatId)
     }
 
-    suspend fun isWhepAvailable(url: String): Boolean {
-        return repository.isWhepAvailable(url)
-    }
-
     suspend fun getStories(): GetStoriesResponse {
         return repository.getStories()
     }

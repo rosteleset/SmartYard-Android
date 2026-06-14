@@ -10,11 +10,13 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
+import com.sesameware.data.DataModule
 import com.sesameware.domain.model.TF
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.string
 import com.sesameware.smartyard_oem.databinding.FragmentAddressSettingsBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogDeleteReason.DialogDeleteReasonFragment
@@ -54,6 +56,7 @@ class AddressSettingsFragment : Fragment() {
         requireNotNull(arguments).let {
             mSetting = AddressSettingsFragmentArgs.fromBundle(it)
         }
+        binding.scrollView2.applyBottomNavInsetsToPadding()
         binding.cvDeleteAddress.setOnClickListener {
             if (flatOwner) {
                 val dialog = DialogDeleteReasonFragment()
@@ -75,12 +78,18 @@ class AddressSettingsFragment : Fragment() {
             }
         }
 
-        binding.tvTrackedEvents.setOnClickListener {
-            val action = AddressSettingsFragmentDirections.actionAddressSettingsFragmentToTrackedEventsFragment(
-                flatId,
-                mSetting.address
-            )
-            findNavController().navigate(action)
+        if (DataModule.providerConfig.hasEventsTracking) {
+            binding.tvTrackedEvents.isVisible = true
+            binding.tvTrackedEvents.setOnClickListener {
+                val action = AddressSettingsFragmentDirections.actionAddressSettingsFragmentToTrackedEventsFragment(
+                    flatId,
+                    mSetting.address
+                )
+                findNavController().navigate(action)
+            }
+        } else {
+            binding.tvTrackedEvents.visibility = View.GONE
+            binding.tvTrackedEvents.setOnClickListener(null)
         }
 
         binding.tvTitleDomophone.setOnClickListener {

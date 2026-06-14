@@ -1,6 +1,5 @@
 package com.sesameware.data.repository
 
-import com.squareup.moshi.Moshi
 import com.sesameware.data.DataModule
 import com.sesameware.data.remote.TeledomApi
 import com.sesameware.domain.interfaces.AuthRepository
@@ -13,7 +12,18 @@ import com.sesameware.domain.model.request.RegisterPushTokenRequest
 import com.sesameware.domain.model.request.RequestCodeRequest
 import com.sesameware.domain.model.request.SendNameRequest
 import com.sesameware.domain.model.request.UserNotificationRequest
-import com.sesameware.domain.model.response.*
+import com.sesameware.domain.model.response.ApiResult
+import com.sesameware.domain.model.response.AppVersionResponse
+import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.GetServicesResponse
+import com.sesameware.domain.model.response.OpenDoorResponse
+import com.sesameware.domain.model.response.ProviderConfigResponse
+import com.sesameware.domain.model.response.ProvidersListResponse
+import com.sesameware.domain.model.response.RegisterPushTokenResponse
+import com.sesameware.domain.model.response.RequestCodeResponse
+import com.sesameware.domain.model.response.SendNameResponse
+import com.sesameware.domain.model.response.UserNotificationResponse
+import com.squareup.moshi.Moshi
 
 class AuthRepositoryImpl(
     private val teledomApi: TeledomApi,
@@ -72,7 +82,8 @@ class AuthRepositoryImpl(
 
     override suspend fun sendName(
         name: String,
-        patronymic: String?
+        patronymic: String?,
+        last: String?
     ): SendNameResponse {
         return safeApiCall {
 //            TODO: Simulate errorBody
@@ -86,7 +97,7 @@ class AuthRepositoryImpl(
 
             teledomApi.sendName(
                 DataModule.BASE_URL + "user/sendName",
-                SendNameRequest(name, patronymic)).getResponseBody()
+                SendNameRequest(name, patronymic, last)).getResponseBody()
         }
     }
 

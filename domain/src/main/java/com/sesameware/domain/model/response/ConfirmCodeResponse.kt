@@ -16,9 +16,13 @@ data class UserName(
     val firstName: String = "",
 
     @Json(name = "patronymic")
-    val patronymic: String = ""
+    val patronymic: String = "",
+
+    @Json(name = "last")
+    @SerializedName(value = "lastName", alternate = ["last"])
+    val lastName: String = ""
 ) {
     override fun toString(): String {
-        return "$firstName $patronymic"
+        return "$firstName $patronymic $lastName".trim()
     }
 }

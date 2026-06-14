@@ -10,6 +10,7 @@ import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sofit.onlinechatsdk.ChatView
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -49,6 +50,7 @@ class ChatFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val root = inflater.inflate(R.layout.fragment_chat, container, false)
+        root.applyBottomNavInsetsToPadding()
         mChatView = root.findViewById(R.id.chatView)
         return root
     }

@@ -4,8 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.reg.tel.NumberRegFragment"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    tools:context=".ui.main.address.workSoon.courier.WorkSoonCourierFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -43,16 +43,15 @@
 
     <ImageView
         android:id="@+id/imageView5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="32dp"
-        android:visibility="invisible"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="20dp"
+        android:scaleType="centerInside"
         android:src="@drawable/ic_addd"
         app:tint="@color/on_top_background"
         app:layout_constraintBottom_toBottomOf="@+id/tvTitle"
         app:layout_constraintEnd_toEndOf="@+id/imageView"
         app:layout_constraintTop_toTopOf="@+id/tvTitle"
-        tools:visibility="visible"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -63,7 +62,6 @@
         android:layout_marginBottom="36dp"
         android:paddingTop="0dp"
         android:paddingBottom="8dp"
-
         android:ellipsize="end"
         android:maxLines="2"
         android:text="@string/title_my_addresses"
@@ -99,18 +97,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
-        style="@style/floatingActionButtonBranded"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:ignore="ContentDescription" />
-
-
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
         android:layout_width="0dp"
@@ -134,8 +120,9 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/addressList"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false"
                     app:layout_constraintTop_toTopOf="parent"
                     tools:itemCount="10"
                     tools:listitem="@layout/item_house" />

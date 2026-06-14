@@ -17,10 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.sesameware.data.DataModule
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentPayBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 
 class PayAddressFragment : Fragment() {
     private var _binding: FragmentPayBinding? = null
@@ -56,6 +57,7 @@ class PayAddressFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPayBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         val root = binding.root
         payViewModel.addressList.observe(
             viewLifecycleOwner,

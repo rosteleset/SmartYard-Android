@@ -20,6 +20,7 @@ import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.sesameware.domain.utils.doDelayed
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.getStatusBarHeight
 import kotlinx.coroutines.launch
 import org.json.JSONObject
@@ -62,6 +63,7 @@ class CustomWebViewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCustomWebViewBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

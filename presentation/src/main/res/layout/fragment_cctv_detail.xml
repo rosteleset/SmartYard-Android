@@ -72,8 +72,9 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:background="@drawable/background_dialog"
+            android:background="@drawable/background_surface"
             android:layout_marginTop="28dp"
+            android:clipToPadding="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvTitleSub">
 

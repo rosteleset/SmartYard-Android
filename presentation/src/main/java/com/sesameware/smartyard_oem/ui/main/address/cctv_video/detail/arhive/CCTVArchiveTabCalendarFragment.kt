@@ -18,6 +18,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvArchiveTabCalendarBinding
 import com.sesameware.smartyard_oem.daysOfWeekFromLocale
 import com.sesameware.smartyard_oem.setTextColorRes
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVDetailFragmentDirections
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CalendarDayBinder
@@ -27,7 +28,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.YearMonth
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 class CCTVArchiveTabCalendarFragment : Fragment() {
     private var _binding: FragmentCctvArchiveTabCalendarBinding? = null
@@ -62,6 +63,7 @@ class CCTVArchiveTabCalendarFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.root.applyBottomNavInsetsToPadding()
         Timber.d("debug_dmm __onViewCreated")
         mCCTVViewModel.closedRangeCalendar.observe(
             viewLifecycleOwner,

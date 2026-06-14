@@ -10,13 +10,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.string
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentAuthBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.showStandardAlert
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AuthFragment : Fragment() {
     private var _binding: FragmentAuthBinding? = null
@@ -81,6 +82,7 @@ class AuthFragment : Fragment() {
         binding.ivShowHide.setOnClickListener {
             showHidePass()
         }
+        binding.root.applyBottomNavInsetsToPadding()
         binding.btnNoContract.setOnClickListener {
             viewModel.seenWarning()
             NavHostFragment.findNavController(this)

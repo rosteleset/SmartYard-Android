@@ -39,16 +39,14 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:layout_marginBottom="56dp"
             android:textAlignment="textStart"
             android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
             app:autoSizeMinTextSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivBack"
             tools:text="cameraDate" />
@@ -78,8 +76,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/dialog_background"
-                    android:orientation="vertical"
-                    android:paddingBottom="40dp">
+                    android:orientation="vertical">
 
                     <FrameLayout
                         android:id="@+id/videoWrap"
@@ -319,7 +316,7 @@
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginTop="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
-                        android:layout_marginBottom="24dp"
+                        android:layout_marginBottom="16dp"
                         android:enabled="true"
                         android:paddingTop="18dp"
                         android:paddingBottom="18dp"

@@ -9,7 +9,6 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.domain.model.response.HousesData
 import com.sesameware.domain.model.response.LocationData
 import com.sesameware.domain.model.response.StreetsData
@@ -18,6 +17,8 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentInputAddressBinding
 import com.sesameware.smartyard_oem.hideKeyboard
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class InputAddressFragment : Fragment() {
     private var _binding: FragmentInputAddressBinding? = null
@@ -39,6 +40,7 @@ class InputAddressFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInputAddressBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

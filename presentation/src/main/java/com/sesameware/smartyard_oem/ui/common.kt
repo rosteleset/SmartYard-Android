@@ -53,6 +53,11 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.createBitmap
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.updateMargins
+import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.karumi.dexter.Dexter
@@ -657,3 +662,40 @@ fun String.formatPhoneWith(pattern: String): String {
         }
     }
 }
+
+fun View.applyBottomNavInsetsToMargin() {
+    val initialMarginBottom = marginBottom
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val bottomInset = insets
+            .getInsets(WindowInsetsCompat.Type.navigationBars())
+            .bottom
+
+        val targetMargin = initialMarginBottom + bottomInset
+        val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+        if (layoutParams.bottomMargin != targetMargin) {
+            layoutParams.updateMargins(bottom = targetMargin)
+        }
+
+        insets
+    }
+}
+
+fun View.applyBottomNavInsetsToPadding() {
+    val initialPaddingBottom = paddingBottom
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
+        val bottomInset = insets
+            .getInsets(WindowInsetsCompat.Type.navigationBars())
+            .bottom
+
+        val targetPadding = initialPaddingBottom + bottomInset
+        if (view.paddingBottom != targetPadding) {
+            view.updatePadding(bottom = targetPadding)
+        }
+
+        insets
+    }
+}
+
+fun String.toRegexOrNull() = takeIf { it.isNotBlank() }?.toRegex()
+
+fun String.takeIfNotBlank() = takeIf { it.isNotBlank() }

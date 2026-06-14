@@ -26,6 +26,7 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAccessAddressBinding
 import com.sesameware.smartyard_oem.ui.Type
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByLicensePlateBinder
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByLicensePlateShowAllBinder
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByPhoneBinder
@@ -80,6 +81,7 @@ class AccessAddressFragment : Fragment() {
 
         requestCameraPermission()
 
+        binding.scrollView.applyBottomNavInsetsToPadding()
         initGateAccess()
         initPermanentAddressAccess()
         initAddContact()

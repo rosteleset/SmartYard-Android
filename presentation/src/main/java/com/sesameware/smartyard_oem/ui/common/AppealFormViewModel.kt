@@ -21,11 +21,12 @@ class AppealFormViewModel(
     fun sendName(
         name: String,
         patronymic: String,
+        last: String,
         listenerEmpty: listenerEmpty
     ) {
         viewModelScope.withProgress({ false }) {
-            mAuthInteractor.sendName(name, patronymic)
-            mPreferenceStorage.userName = UserName(name, patronymic)
+            mAuthInteractor.sendName(name, patronymic, last)
+            mPreferenceStorage.userName = UserName(name, patronymic, last)
             listenerEmpty()
         }
     }

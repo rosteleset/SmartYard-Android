@@ -175,12 +175,15 @@
 
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Аты бос болмауы керек</string>
+    <string name="appeal_empty_last_error">Аты бос болмауы керек</string>
     <string name="appeal_validation_name_error">Аты бос болмауы керек</string>
     <string name="appeal_validation_patronymic_error">Әкесінің аты бос болмауы керек</string>
+    <string name="appeal_validation_last_error">Аты бос болмауы керек</string>
     <string name="appeal_title">Сізге қалай хабарласуға болады</string>
-    <string name="appeal_title_patronymic">Әкеніздің аты</string>
+    <string name="appeal_hint_patronymic">Әкеніздің аты</string>
 
     <!-- Temp -->
+    <string name="appeal_hint_last">Тегі*</string>
     <string name="terminate">Үзу</string>
     <string name="enter_sip_address">Қоңырау нөмірін енгізіңіз</string>
     <string name="sip_address">Нөмірі</string>
@@ -421,7 +424,7 @@
     <string name="reg_sms_code_resend">Кодты қайта жіберіңіз</string>
     <string name="payment_done">Дайын!</string>
     <string name="payment_being_processed">Төлем өңделеді; күтіңіз</string>
-    <string name="appeal_title_first_name">Аты*</string>
+    <string name="appeal_hint_first_name">Аты*</string>
     <string name="dialog_add_contact">+ Контактіні қосыңыз</string>
     <string name="dialog_close">Жабу</string>
     <string name="event_sample">1.03.2021, в 17:06</string>

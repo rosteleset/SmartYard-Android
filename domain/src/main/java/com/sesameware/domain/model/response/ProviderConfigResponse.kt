@@ -53,7 +53,16 @@ data class ProviderConfig(
     @Json(name = HAS_EVENTS_TRACKING) val _hasEventsTracking: String? = "f",
 
     //stories
-    @Json(name = HAS_STORIES) val _hasStories: String? = "f"
+    @Json(name = HAS_STORIES) val _hasStories: String? = "f",
+
+    //entrances view
+    @Json(name = ENTRANCES_VIEW) val _entrancesView: String? = null,
+
+    //last name
+    @Json(name = USER_HAS_LAST_NAME) val _userHasLastName: String? = "f",
+
+    //privacy policy
+    @Json(name = PRIVACY_POLICY) val privacyPolicy: String? = null,
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
@@ -89,6 +98,12 @@ data class ProviderConfig(
     //stories
     val hasStories: Boolean
         get() = _hasStories == "t"
+
+    val entrancesView: EntrancesView
+        get() = EntrancesView.from(_entrancesView)
+
+    val userHasLastName: Boolean
+        get() = _userHasLastName == "t"
 
     companion object {
         //чат
@@ -153,6 +168,15 @@ data class ProviderConfig(
 
         //stories
         const val HAS_STORIES = "stories"
+
+        //entrances view
+        const val ENTRANCES_VIEW = "entrancesView"
+
+        //last name
+        const val USER_HAS_LAST_NAME = "userHasLastName"
+
+        //privacy policy
+        const val PRIVACY_POLICY = "privacyPolicy"
     }
 }
 
@@ -183,5 +207,15 @@ enum class CCTVViewTypeType {
                 else -> LIST
             }
         }
+    }
+}
+
+enum class EntrancesView(val value: String) {
+    LIST("list"),
+    PREVIEW("preview");
+
+    companion object {
+        fun from(value: String?): EntrancesView =
+            entries.find { it.value == value } ?: LIST
     }
 }

@@ -14,12 +14,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.sesameware.data.DataModule
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.smartyard_oem.databinding.FragmentPayContractBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressFragment
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressModel
 import com.sesameware.smartyard_oem.ui.main.pay.PayAddressViewModel
 import com.sesameware.smartyard_oem.ui.viewPager2.DepthPageTransformer
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 
 class PayContractFragment : Fragment() {
     private var _binding: FragmentPayContractBinding? = null
@@ -35,6 +36,7 @@ class PayContractFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentPayContractBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

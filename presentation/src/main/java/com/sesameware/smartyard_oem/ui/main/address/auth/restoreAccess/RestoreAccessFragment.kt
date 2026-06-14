@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentRestoreAccessBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RestoreAccessFragment : Fragment() {
@@ -125,6 +126,7 @@ class RestoreAccessFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentRestoreAccessBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 }

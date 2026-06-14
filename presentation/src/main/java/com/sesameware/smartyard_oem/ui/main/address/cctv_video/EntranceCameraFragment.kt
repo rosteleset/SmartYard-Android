@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.annotation.SuppressLint
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +17,11 @@ import com.bumptech.glide.Glide
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ui.PlayerView
 import com.sesameware.smartyard_oem.databinding.FragmentEntranceCameraBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -62,25 +63,7 @@ class EntranceCameraFragment : Fragment() {
     private var webRtcStarted = false
     private var currentWhepUrl: String? = null
     private var isOfferSent = false
-
-    /**
-     * Проверка на проблемные бюджетные устройства и 32-битные системы (архитектура arm-v7).
-     * На таких девайсах аппаратный H264 декодер в WebRTC вызывает SIGILL в драйверах GPU.
-     */
-    private fun shouldForceSoftwareDecoder(): Boolean {
-        val is32Bit = Build.SUPPORTED_64_BIT_ABIS.isEmpty()
-
-        // Trouble devices
-        val manufacturer = Build.MANUFACTURER.orEmpty()
-        val model = Build.MODEL.orEmpty()
-        val isBuggyDevice = manufacturer.contains("samsung", ignoreCase = true) &&
-                (model.contains("A13", ignoreCase = true) ||
-                        model.contains("A12", ignoreCase = true) ||
-                        model.contains("A03", ignoreCase = true) ||
-                        model.contains("A04", ignoreCase = true))
-
-        return is32Bit || isBuggyDevice
-    }
+    private var iceGatheringJob: kotlinx.coroutines.Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -88,6 +71,7 @@ class EntranceCameraFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentEntranceCameraBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 
@@ -95,7 +79,7 @@ class EntranceCameraFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         enterFullscreen()
         bindViews()
-        startPlayback()
+        startWebRtc(args.entranceCamera.whepUrl)
     }
 
     private fun bindViews() {
@@ -117,24 +101,12 @@ class EntranceCameraFragment : Fragment() {
             .into(binding.ivPreview)
     }
 
-    private fun startPlayback() {
-        binding.progressBar.isVisible = true
-        lifecycleScope.launch {
-            val isWhepAvailable = args.entranceCamera.whepUrl.isNotBlank() &&
-                    viewModel.isWhepAvailable(args.entranceCamera.whepUrl)
-            if (isWhepAvailable) {
-                startWebRtc(args.entranceCamera.whepUrl)
-            } else {
-                startHls(args.entranceCamera.hlsUrl)
-            }
-        }
-    }
-
     private var webRtcVideoWidth: Int = 0
     private var webRtcVideoHeight: Int = 0
     private fun startWebRtc(whepUrl: String) {
         currentWhepUrl = whepUrl
 
+        binding.progressBar.isVisible = true
         binding.webRtcView.run {
             setEnableHardwareScaler(true)
 
@@ -181,6 +153,7 @@ class EntranceCameraFragment : Fragment() {
                 override fun onIceGatheringChange(state: PeerConnection.IceGatheringState?) {
                     Timber.d("debug_webrtc onIceGatheringChange: $state")
                     if (state == PeerConnection.IceGatheringState.COMPLETE) {
+                        iceGatheringJob?.cancel()
                         lifecycleScope.launch(Dispatchers.Main) {
                             checkAndSendOffer()
                         }
@@ -188,6 +161,15 @@ class EntranceCameraFragment : Fragment() {
                 }
                 override fun onIceCandidate(candidate: IceCandidate?) {
                     Timber.d("debug_webrtc onIceCandidate: $candidate")
+
+                    val sdp = candidate?.sdp ?: return
+
+                    if (sdp.contains("typ srflx") || sdp.contains("typ relay")) {
+                        iceGatheringJob?.cancel()
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            checkAndSendOffer()
+                        }
+                    }
                 }
                 override fun onIceCandidatesRemoved(candidates: Array<out IceCandidate>?) = Unit
                 override fun onAddStream(stream: MediaStream?) {
@@ -232,13 +214,16 @@ class EntranceCameraFragment : Fragment() {
         Timber.d("debug_webrtc creating offer")
         peerConnection?.createOffer(object : SdpObserverAdapter() {
             override fun onCreateSuccess(desc: SessionDescription?) {
-                Timber.d("debug_webrtc offer created")
+                Timber.d("debug_webrtc offer: ${desc?.description} created")
                 peerConnection?.setLocalDescription(object : SdpObserverAdapter() {
                     override fun onSetSuccess() {
                         Timber.d("debug_webrtc local description set, waiting for ICE gathering")
-                        view?.postDelayed({
+                        val gatheringDelay =
+                            if (args.entranceCamera.isTrickleIceSupported) 500L else 2000L
+                        iceGatheringJob = lifecycleScope.launch {
+                            delay(gatheringDelay)
                             checkAndSendOffer()
-                        }, 2000)
+                        }
                     }
                 }, desc)
             }
@@ -393,6 +378,8 @@ class EntranceCameraFragment : Fragment() {
     }
 
     private fun fitWebRtcView(videoWidth: Int, videoHeight: Int) {
+        if (_binding == null) return
+
         val w = binding.videoSurfaceWrap.width
         val h = binding.videoSurfaceWrap.height
         if (w > 0 && h > 0 && videoWidth > 0 && videoHeight > 0) {

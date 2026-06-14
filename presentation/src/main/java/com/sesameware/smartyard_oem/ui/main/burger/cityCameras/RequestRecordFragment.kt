@@ -1,23 +1,27 @@
 package com.sesameware.smartyard_oem.ui.main.burger.cityCameras
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.AdapterView
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
-import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
-import org.threeten.bp.*
-import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentRequestRecordBinding
 import com.sesameware.smartyard_oem.ui.DatePickerFragment
 import com.sesameware.smartyard_oem.ui.TimePickerFragment
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.showStandardAlert
+import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.threeten.bp.LocalDate
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
+import org.threeten.bp.ZoneId
+import org.threeten.bp.format.DateTimeFormatter
 
 class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var _binding: FragmentRequestRecordBinding? = null
@@ -32,6 +36,7 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         _binding = FragmentRequestRecordBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

@@ -8,6 +8,7 @@ import androidx.navigation.fragment.navArgs
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentErrorBottomSheetDialogBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 
 class ErrorBottomSheetDialogFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentErrorBottomSheetDialogBinding? = null
@@ -21,6 +22,7 @@ class ErrorBottomSheetDialogFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentErrorBottomSheetDialogBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
 
     }

@@ -15,11 +15,11 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.databinding.FragmentSettingsBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.dialog.DialogServiceFragment
@@ -49,7 +49,7 @@ class SettingsFragment : Fragment() {
         binding.ivBackAddressSettings.setOnClickListener {
             this.findNavController().popBackStack()
         }
-        binding.floatingActionButton.setOnClickListener() {
+        binding.imageView15.setOnClickListener {
             (activity as MainActivity?)?.navigateToAddressAuthFragment()
         }
     }
@@ -87,10 +87,6 @@ class SettingsFragment : Fragment() {
             adapter.items = it
             adapter.notifyDataSetChanged()
             binding.swipeContainer.isRefreshing = false
-
-            if (binding.floatingActionButton.visibility != View.VISIBLE) {
-                binding.floatingActionButton.show()
-            }
         }
 
         mViewModel.progress.observe(
@@ -115,6 +111,7 @@ class SettingsFragment : Fragment() {
     private fun initRecycler() {
         binding.rvSettings.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            applyBottomNavInsetsToPadding()
         }
         adapter = ListDelegationAdapter(
             SettingsAddressDelegate(
@@ -167,21 +164,6 @@ class SettingsFragment : Fragment() {
         )
         adapter.items = emptyList()
         binding.rvSettings.adapter = adapter
-        binding.rvSettings.addOnScrollListener(object : OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (dy > 0 && binding.floatingActionButton.visibility == View.VISIBLE) {
-                    binding.floatingActionButton.hide()
-                } else if (dy < 0 && binding.floatingActionButton.visibility != View.VISIBLE) {
-                    binding.floatingActionButton.show()
-                }
-
-                if (!binding.rvSettings.canScrollVertically(-1)
-                    && binding.floatingActionButton.visibility != View.VISIBLE) {
-                    binding.floatingActionButton.show()
-                }
-            }
-        })
     }
 
     private var receiver = object : BroadcastReceiver() {

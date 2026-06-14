@@ -14,9 +14,10 @@ import com.sesameware.domain.model.AddressItem
 import com.sesameware.domain.model.StateButton
 import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.domain.model.response.Address
-import com.sesameware.domain.model.response.Story
 import com.sesameware.domain.model.response.CamMap
 import com.sesameware.domain.model.response.EntranceCamera
+import com.sesameware.domain.model.response.EntrancesView
+import com.sesameware.domain.model.response.Story
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
@@ -41,6 +42,8 @@ class AddressViewModel(
     private val extInteractor: ExtInteractor
 ) : GenericViewModel() {
 
+    val entranceView: EntrancesView
+        get() = DataModule.providerConfig.entrancesView
     private val houseUiState = MutableLiveData<List<HouseUiModel>>()
     private val issueUiState = MutableLiveData<List<IssueModel>>()
     private val storiesUiState = MutableLiveData<List<Story>>()
@@ -62,8 +65,6 @@ class AddressViewModel(
         private set
 
     private var entranceStateById: Map<Int, EntranceState> = emptyMap()
-
-    suspend fun isWhepAvailable(url: String): Boolean = addressInteractor.isWhepAvailable(url)
 
     fun openDoor(id: Lock) {
         viewModelScope.withProgress {

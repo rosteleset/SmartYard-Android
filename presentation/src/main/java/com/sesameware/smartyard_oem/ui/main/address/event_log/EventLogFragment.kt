@@ -2,7 +2,6 @@ package com.sesameware.smartyard_oem.ui.main.address.event_log
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,20 +9,22 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.data.DataModule
-import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.threeten.bp.LocalDate
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.lib.dpToPx
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogBinding
 import com.sesameware.smartyard_oem.ui.DatePickerFragment
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogParentAdapter
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.threeten.bp.LocalDate
 import timber.log.Timber
 
 class EventLogFragment : Fragment() {
@@ -46,6 +47,8 @@ class EventLogFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         @Suppress("DEPRECATION")
         super.onActivityCreated(savedInstanceState)
+
+        binding.surfaceRoot.applyBottomNavInsetsToPadding()
 
         binding.spinnerEventLogType.adapter = ArrayAdapter.createFromResource(requireContext(),
             R.array.event_log_types, R.layout.item_event_log_type_spinner).apply {

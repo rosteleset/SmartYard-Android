@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/dialog_background"
     android:fillViewport="true"
+    android:clipToPadding="false"
     tools:context=".ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment">
 
     <LinearLayout

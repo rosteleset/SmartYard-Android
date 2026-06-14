@@ -9,13 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.domain.model.TF
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAvailableServicesBinding
 import com.sesameware.smartyard_oem.ui.DividerItemDecorator
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class AvailableServicesFragment : Fragment() {
     private var _binding: FragmentAvailableServicesBinding? = null
@@ -54,6 +55,7 @@ class AvailableServicesFragment : Fragment() {
             adapter.items = servicesList
             address = AvailableServicesFragmentArgs.fromBundle(it).address
         }
+        binding.root.applyBottomNavInsetsToPadding()
         binding.tvAddress.text = address
         binding.btnNext.setOnClickListener {
             viewModel.checkServices(servicesList, address)

@@ -2,7 +2,17 @@ package com.sesameware.domain.interactors
 
 import com.sesameware.domain.interfaces.AuthRepository
 import com.sesameware.domain.model.TF
-import com.sesameware.domain.model.response.*
+import com.sesameware.domain.model.response.ApiResult
+import com.sesameware.domain.model.response.AppVersionResponse
+import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.GetServicesResponse
+import com.sesameware.domain.model.response.OpenDoorResponse
+import com.sesameware.domain.model.response.ProviderConfigResponse
+import com.sesameware.domain.model.response.ProvidersListResponse
+import com.sesameware.domain.model.response.RegisterPushTokenResponse
+import com.sesameware.domain.model.response.RequestCodeResponse
+import com.sesameware.domain.model.response.SendNameResponse
+import com.sesameware.domain.model.response.UserNotificationResponse
 
 class AuthInteractor(
     private val repository: AuthRepository
@@ -31,8 +41,8 @@ class AuthInteractor(
         return repository.checkPhone(userPhone, deviceToken)
     }
 
-    suspend fun sendName(name: String, patronymic: String?): SendNameResponse {
-        return repository.sendName(name, patronymic)
+    suspend fun sendName(name: String, patronymic: String?, last: String?): SendNameResponse {
+        return repository.sendName(name, patronymic, last)
     }
 
     suspend fun openDoor(domophoneId: Int, doorId: Int? = null): OpenDoorResponse {

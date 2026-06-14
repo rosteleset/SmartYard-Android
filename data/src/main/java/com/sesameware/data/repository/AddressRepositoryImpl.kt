@@ -268,16 +268,6 @@ class AddressRepositoryImpl(
         }
     }
 
-    override suspend fun isWhepAvailable(url: String): Boolean = withContext(Dispatchers.IO) {
-        if (url.isBlank()) return@withContext false
-
-        val request = Request.Builder().url(url).method("OPTIONS", null).build()
-
-        runCatching {
-            client.newCall(request).execute().use { it.isSuccessful || it.code == 405 }
-        }.getOrDefault(false)
-    }
-
     override suspend fun getStories(): GetStoriesResponse {
         return safeApiCall {
             teledomApi.getStories(

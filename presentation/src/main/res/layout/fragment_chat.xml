@@ -3,16 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:fitsSystemWindows="true"
     android:id="@+id/wrapChatView"
-    android:background="#F3F4FA">
+    android:clipToPadding="false"
+    android:background="#F3F4FA"
+    tools:context=".ui.main.chat.ChatFragment">
 
     <com.sofit.onlinechatsdk.ChatView
         android:id="@+id/chatView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="10dp"
-        app:autoLoad="false"
-    />
+        app:autoLoad="false" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

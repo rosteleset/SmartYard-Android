@@ -23,6 +23,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.sesameware.domain.model.response.EntranceCamera
+import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemEntranceBinding
 import com.sesameware.smartyard_oem.databinding.ItemEntrancesSliderBinding
@@ -31,6 +32,7 @@ import com.sesameware.smartyard_oem.databinding.ItemHouseBinding
 import com.sesameware.smartyard_oem.databinding.ItemIssueBinding
 import com.sesameware.smartyard_oem.databinding.ItemVideoCameraBinding
 import com.sesameware.smartyard_oem.databinding.ItemWebExtBinding
+import com.sesameware.smartyard_oem.databinding.ItemYardBinding
 import com.sesameware.smartyard_oem.ui.main.address.models.AddressUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.EntranceState
 import com.sesameware.smartyard_oem.ui.main.address.models.ExtItemModel
@@ -57,7 +59,8 @@ typealias IssueCallback = (IssueAction) -> Unit
 
 class AddressListAdapter(
     private val houseCallback: HouseCallback,
-    private val issueCallback: IssueCallback
+    private val issueCallback: IssueCallback,
+    private val entranceView: EntrancesView
 ) : ListAdapter<AddressUiModel, RecyclerView.ViewHolder>(DiffCallback) {
 
     private var isViewDragged = false
@@ -80,7 +83,7 @@ class AddressListAdapter(
         when (holder) {
             is HouseViewHolder -> {
                 val state = getItem(position) as HouseUiModel
-                holder.bind(state, houseCallback)
+                holder.bind(state, houseCallback, entranceView)
             }
             is IssueViewHolder -> {
                 val state = getItem(position) as IssueModel
@@ -197,7 +200,7 @@ class HouseViewHolder private constructor(
         binding.houseContent.removeAllViews()
     }
 
-    fun bind(state: HouseUiModel, callback: HouseCallback) {
+    fun bind(state: HouseUiModel, callback: HouseCallback, entranceView: EntrancesView) {
         binding.houseContent.removeAllViews()
         with (binding) {
             houseAddress.text = state.address
@@ -226,7 +229,14 @@ class HouseViewHolder private constructor(
             expandHouse.setOnClickListener(onHeaderClickListener)
             expandHouse.isSelected = state.isExpanded
 
-            addEntrances(houseContent, state.houseId, state.entranceList, state.selectedEntranceIndex, callback)
+            when (entranceView) {
+                EntrancesView.LIST ->
+                    addEntranceList(houseContent, state.entranceList, callback)
+                EntrancesView.PREVIEW ->
+                    addEntranceSlider(houseContent, state.houseId,
+                        state.entranceList, state.selectedEntranceIndex, callback)
+            }
+
             val model = VideoCameraModelP(state.houseId, state.address)
             addCameras(houseContent, model, state.cameraCount, callback)
             addEventLog(houseContent, state.hasEventLog,
@@ -235,7 +245,35 @@ class HouseViewHolder private constructor(
         }
     }
 
-    private fun addEntrances(
+    private fun addEntranceList(
+        layout: LinearLayout,
+        states: List<EntranceState>,
+        callback: HouseCallback
+    ) {
+        states.forEach { state ->
+            val binding = ItemYardBinding.inflate(LayoutInflater.from(layout.context),
+                layout, true)
+            with (binding){
+                ivImage.setImageResource(state.iconRes)
+                tvName.text = state.name
+                tbOpen.isChecked = false
+                tbOpen.setOnClickListener {
+                    callback(OnOpenEntranceClick(state.lock))
+                    tbOpen.isClickable = false
+                    val handler = Handler(Looper.getMainLooper())
+                    handler.postDelayed(
+                        {
+                            tbOpen.isChecked = false
+                            tbOpen.isClickable = true
+                        },
+                        3000
+                    )
+                }
+            }
+        }
+    }
+
+    private fun addEntranceSlider(
         layout: LinearLayout,
         houseId: Int,
         states: List<EntranceState>,
@@ -273,7 +311,7 @@ class HouseViewHolder private constructor(
         states.flatMap { state ->
             state.cameras.map { camera ->
                 state.copy(cameras = listOf(camera))
-            }
+            }.ifEmpty { listOf(state) }
         }
 
     private fun addCameras(
@@ -373,8 +411,6 @@ private class EntranceSliderAdapter(
         private val binding: ItemEntranceBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        private var previewLoadSuccessfull = false
-
         fun bind(state: EntranceState, callback: HouseCallback) {
             val camera: EntranceCamera? = state.cameras.firstOrNull()
 
@@ -398,7 +434,6 @@ private class EntranceSliderAdapter(
                         ): Boolean {
                             ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
                             ivPreview.setColorFilter(color)
-                            previewLoadSuccessfull = false
                             return false
                         }
 
@@ -411,14 +446,13 @@ private class EntranceSliderAdapter(
                         ): Boolean {
                             ivPreview.clearColorFilter()
                             ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
-                            previewLoadSuccessfull = true
                             return false
                         }
                     })
                     .into(ivPreview)
 
                 root.setOnClickListener {
-                    if (camera != null && camera.isValid && previewLoadSuccessfull) {
+                    if (camera != null && camera.isValid) {
                         callback(OnEntrancePreviewClick(camera, state.lock))
                     } else {
                         val caption = root.context

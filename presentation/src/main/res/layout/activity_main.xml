@@ -1,28 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/llMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/shaded_background"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:orientation="vertical">
+    android:background="@color/shaded_background">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_container"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
         app:defaultNavHost="true"
         app:navGraph="@navigation/root" />
 
-    <com.sesameware.smartyard_oem.ui.main.MorphBottomNavigationView
-        android:id="@+id/bottom_nav"
-        style="@style/BottomNavigationView"
+    <com.sesameware.smartyard_oem.ui.main.FloatingBottomNavView
+        android:id="@+id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="-16dp" />
+        android:layout_height="64dp"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="8dp"
+        app:menu="@menu/bottom_nav_menu"
+        app:activeColor="#007AFF"
+        app:inactiveColor="#8E8E93" />
 
-</LinearLayout>
+    <View
+        android:id="@+id/bottomGradient"
+        android:layout_width="match_parent"
+        android:layout_height="64dp"
+        android:layout_gravity="bottom"
+        android:background="@drawable/background_main_activity_bottom_gradient" />
+
+</FrameLayout>

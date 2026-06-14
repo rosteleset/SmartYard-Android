@@ -11,12 +11,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNoNetworkBinding
 import com.sesameware.smartyard_oem.ui.DividerItemDecorator
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class NoNetworkFragment : Fragment() {
     private var _binding: FragmentNoNetworkBinding? = null
@@ -61,6 +62,7 @@ class NoNetworkFragment : Fragment() {
     }
 
     private fun setupUi() {
+        binding.root.applyBottomNavInsetsToPadding()
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
         }

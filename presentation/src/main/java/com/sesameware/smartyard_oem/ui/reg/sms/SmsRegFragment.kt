@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.annotation.StringRes
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
@@ -23,6 +21,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentSmsRegBinding
 import com.sesameware.smartyard_oem.eventHandler
 import com.sesameware.smartyard_oem.getColorCompat
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 /**
@@ -44,13 +43,7 @@ class SmsRegFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentSmsRegBinding.inflate(inflater, container, false)
-
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
-            insets
-        }
-
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

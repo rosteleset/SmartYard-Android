@@ -81,6 +81,7 @@
         android:layout_height="0dp"
         android:layout_marginBottom="16dp"
         android:fillViewport="true"
+        android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

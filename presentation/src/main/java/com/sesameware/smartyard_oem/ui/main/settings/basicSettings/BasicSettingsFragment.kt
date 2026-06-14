@@ -25,6 +25,7 @@ import com.sesameware.smartyard_oem.MessagingService
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentBasicSettingsBinding
 import com.sesameware.smartyard_oem.ui.SoundChooser
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.firstCharacter
 import com.sesameware.smartyard_oem.ui.main.settings.dialog.DialogChangeName
 import com.sesameware.smartyard_oem.ui.main.settings.dialog.SelectThemeBottomSheetFragment
@@ -71,6 +72,8 @@ class BasicSettingsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         isRtl = resources.configuration.layoutDirection == View.LAYOUT_DIRECTION_RTL
+
+        binding.scrollRoot.applyBottomNavInsetsToPadding()
 
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
@@ -181,7 +184,13 @@ class BasicSettingsFragment : Fragment() {
         mViewModel.userName.observe(
             viewLifecycleOwner
         ) {
-            binding.tvUserName.text = "${it.firstName} ${firstCharacter(it.patronymic)}"
+            val text = if (DataModule.providerConfig.userHasLastName) {
+                val patronymic = if (it.patronymic.isNotBlank()) "${it.patronymic}\n" else ""
+                "${it.firstName}\n$patronymic${it.lastName}"
+            } else {
+                "${it.firstName} ${firstCharacter(it.patronymic)}"
+            }
+            binding.tvUserName.text = text
         }
 
         mViewModel.userPhone.observe(

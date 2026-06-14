@@ -27,8 +27,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNotificationBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.getStatusBarHeight
-import com.sesameware.smartyard_oem.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -45,6 +45,7 @@ class NotificationFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNotificationBinding.inflate(inflater, container, false)
+        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 
@@ -143,7 +144,6 @@ class NotificationFragment : Fragment() {
                     it.code,
                     "text/html", "UTF-8", null
                 )
-                (activity as MainActivity).removeBadge(R.id.notification)
             }
         )
         mViewModel.progress.observe(
