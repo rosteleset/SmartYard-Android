@@ -30,7 +30,15 @@
         android:id="@+id/bottomGradient"
         android:layout_width="match_parent"
         android:layout_height="64dp"
+        android:layout_marginBottom="8dp"
         android:layout_gravity="bottom"
         android:background="@drawable/background_main_activity_bottom_gradient" />
+
+    <View
+        android:id="@+id/bottomGradient2"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:layout_gravity="bottom"
+        android:background="@color/bottom_nav_grad_start" />
 
 </FrameLayout>

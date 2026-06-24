@@ -174,9 +174,9 @@
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Имя не должно быть пустым</string>
     <string name="appeal_empty_last_error">Фамилия не должна быть пустой</string>
-    <string name="appeal_validation_name_error">Имя не должно быть пустым</string>
-    <string name="appeal_validation_patronymic_error">Отчество не должно быть пустым</string>
-    <string name="appeal_validation_last_error">Фамилия не должна быть пустой</string>
+    <string name="appeal_validation_name_error">Некорректно указано имя</string>
+    <string name="appeal_validation_patronymic_error">Некорректно указано отчество</string>
+    <string name="appeal_validation_last_error">Некорректно указана фамилия</string>
     <string name="appeal_title">Как к вам\nобращаться?</string>
     <string name="appeal_hint_patronymic">Отчество</string>
     <string name="appeal_hint_last">Фамилия*</string>
@@ -410,7 +410,7 @@
     <string name="share_access">Поделиться</string>
     <string name="service_name_sample">Умный домофон</string>
     <string name="address_setup">Настройки адреса</string>
-    <string name="address_sample">г. Тамбов, ул. Советская, 16, кв.4</string>
+    <string name="address_sample">г. Тамбов, ул. Интернациональная, д. 166, кв.451</string>
     <string name="domophone_notif_title">Домофон</string>
     <string name="get_paper_bill">Получать бумажную квитанцию</string>
     <string name="switch_intercom">Включить трубку (интерком)</string>

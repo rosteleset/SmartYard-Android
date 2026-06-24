@@ -1,5 +1,10 @@
 ## History of major changes
 
+### Version 1.0.92
+* Added switching entrance view mode via ProviderConfig
+* Replaced bottom navigation menu
+* Minor fixes and code refactoring
+
 ### Version 1.0.88
 * Added stories to the address tab
 * The UI for displaying address list entries has been slightly modified: you can now view live WebRTC streams from CCTV cameras at the entrances

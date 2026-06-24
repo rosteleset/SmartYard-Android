@@ -9,8 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
+import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -19,11 +21,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SmoothScroller
+import com.bumptech.glide.Glide
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.domain.model.response.EntranceCamera
+import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.domain.model.response.PRESENT_METHOD_OPEN_APP
 import com.sesameware.domain.model.response.PRESENT_METHOD_POPUP
 import com.sesameware.domain.model.response.PRESENT_METHOD_VIEW
@@ -31,7 +35,6 @@ import com.sesameware.domain.model.response.Story
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressListAdapter
@@ -58,6 +61,8 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
 import com.sesameware.smartyard_oem.ui.updateAllWidget
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import timber.log.Timber
@@ -75,6 +80,8 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     private var storiesAdapter: StoriesAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var itemTouchHelper: ItemTouchHelper? = null
+
+    private var navigatingToEntranceCameraFragment = false
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -95,6 +102,10 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
+            Glide.get(requireContext())
+        }
+        navigatingToEntranceCameraFragment = false
         initAddressList()
         bindViews()
         initActivityObservers()
@@ -110,8 +121,9 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         )
         binding.addressList.let {
             it.layoutManager = layoutManager
+
             it.adapter = adapter
-            it.applyBottomNavInsetsToPadding()
+
             val callback = DragToSortCallback(
                 mViewModel::setHouseItemSavedPosition,
                 ::onItemDrag,
@@ -119,12 +131,32 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             )
             itemTouchHelper = ItemTouchHelper(callback)
             itemTouchHelper!!.attachToRecyclerView(it)
+
+            it.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+
+                    if (mViewModel.entranceView == EntrancesView.LIST) return
+
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        setWebRtcForTopmostExpandedItem()
+                    }
+                }
+            })
         }
 
         storiesAdapter = StoriesAdapter { story ->
             onStoryClick(story)
         }
         binding.rvStories.adapter = storiesAdapter
+    }
+
+    private fun setWebRtcForTopmostExpandedItem() {
+        val first = layoutManager?.findFirstVisibleItemPosition()!!
+        val last = layoutManager?.findLastVisibleItemPosition()!!
+        if (first == -1 || last == -1 || last < first) return
+
+        mViewModel.setWebRtcUrlForTopmostExpandedItemInRange(first..last)
     }
 
     private fun onStoryClick(story: Story) {
@@ -190,8 +222,13 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             is OnItemFullyExpanded -> scrollUntilFullItemVisible(action.position)
             is OnHouseAddressLongClick -> startDrag(action.position)
             is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath, action.code)
-            is OnEntrancePageSelected -> mViewModel.setHouseItemEntranceIndex(action.houseId, action.page)
+            is OnEntrancePageSelected -> onEntrancePageSelected(action)
         }
+    }
+
+    private fun onEntrancePageSelected(action: OnEntrancePageSelected) {
+        mViewModel.setEntranceInitialPosition(action.houseId, action.page)
+        mViewModel.setWebRtcUrl(action.entranceCamera?.whepUrl)
     }
 
     private fun startDrag(position: Int) {
@@ -202,6 +239,8 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     private fun navigateToEntranceCameraFragment(camera: EntranceCamera, lock: Lock) {
+        navigatingToEntranceCameraFragment = true
+        mViewModel.setWebRtcUrl(camera.whepUrl)
         val action = AddressFragmentDirections
             .actionAddressFragmentToEntranceCameraFragment(camera, lock)
         findNavController().navigate(action)
@@ -340,7 +379,13 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             viewLifecycleOwner
         ) { addressList ->
             binding.tvEmptyList.isVisible = addressList.isEmpty()
-            adapter.submitList(addressList)
+            adapter.submitList(addressList) {
+                if (mViewModel.entranceView == EntrancesView.PREVIEW) {
+                    binding.addressList.doOnNextLayout {
+                        setWebRtcForTopmostExpandedItem()
+                    }
+                }
+            }
             binding.swipeContainer.isRefreshing = false
             updateAllWidget(requireContext())
         }
@@ -411,6 +456,10 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         adapter = null
         layoutManager = null
         _binding = null
+        if (!navigatingToEntranceCameraFragment) {
+            mViewModel.setWebRtcUrl(null)
+            Timber.d("debug_webrtc webrtc is cleansed")
+        }
     }
 
     private fun <T> requireInitialized(value: T?): T =

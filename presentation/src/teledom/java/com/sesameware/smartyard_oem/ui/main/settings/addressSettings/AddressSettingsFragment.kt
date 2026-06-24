@@ -144,8 +144,29 @@ class AddressSettingsFragment : Fragment() {
         viewModel.intercom.observe(
             viewLifecycleOwner
         ) {
-            binding.switchIntercom.isChecked = it.cMS
-            binding.switchVoip.isChecked = it.voIP
+            val cMS = it.cMS
+            if (cMS == null) {
+                binding.tvIntercom.isVisible = false
+                binding.switchIntercom.isVisible = false
+                binding.vIntercom.isVisible = false
+            } else {
+                binding.tvIntercom.isVisible = true
+                binding.switchIntercom.isChecked = cMS
+                binding.switchIntercom.isVisible = true
+                binding.vIntercom.isVisible = true
+            }
+
+            val voIP = it.voIP
+            if (voIP == null) {
+                binding.tvVoip.isVisible = false
+                binding.switchVoip.isVisible = false
+                binding.vVoip.isVisible = false
+            } else {
+                binding.tvVoip.isVisible = true
+                binding.switchVoip.isChecked = voIP
+                binding.switchVoip.isVisible = true
+                binding.vVoip.isVisible = true
+            }
 
             val paperBill = it.paperBill
             if (paperBill == null) {
@@ -222,7 +243,18 @@ class AddressSettingsFragment : Fragment() {
                 binding.vUseFRS.isVisible = true
             }*/
 
-            binding.switchWhiteRabbit.isChecked = (it.whiteRabbit > 0)
+            val whiteRabbit = it.whiteRabbit
+            if (whiteRabbit == null) {
+                binding.tvWhiteRabbit.isVisible = false
+                binding.switchWhiteRabbit.isVisible = false
+                binding.vWhiteRabbit.isVisible = false
+            } else {
+                binding.tvWhiteRabbit.isVisible = true
+                binding.switchWhiteRabbit.isVisible = true
+                binding.switchWhiteRabbit.isChecked = (whiteRabbit > 0)
+                binding.vWhiteRabbit.isVisible = true
+            }
+
             manageControls(true)
         }
 

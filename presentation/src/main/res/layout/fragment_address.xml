@@ -99,36 +99,21 @@
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="11dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvTitle">
 
-        <androidx.core.widget.NestedScrollView
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/addressList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:fillViewport="true">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingVertical="16dp"
-                android:paddingHorizontal="11dp">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/addressList"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:nestedScrollingEnabled="false"
-                    android:clipToPadding="false"
-                    app:layout_constraintTop_toTopOf="parent"
-                    tools:itemCount="10"
-                    tools:listitem="@layout/item_house" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </androidx.core.widget.NestedScrollView>
+            android:nestedScrollingEnabled="false"
+            android:clipToPadding="false"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_house" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

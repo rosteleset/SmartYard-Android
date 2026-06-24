@@ -19,6 +19,10 @@ class DatabaseInteractor(
         repository.create(item)
     }
 
+    suspend fun insertItems(items: List<AddressItem>) {
+        repository.insertAll(items)
+    }
+
     suspend fun deleteAll(): Int {
         return repository.deleteAll()
     }

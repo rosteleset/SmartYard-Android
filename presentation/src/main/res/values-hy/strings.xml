@@ -171,9 +171,9 @@
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Անունը չի կարող լրացնել դատարկ լինի</string>
     <string name="appeal_empty_last_error">Ազգանունը չի կարող լրացվել դատարկ</string>
-    <string name="appeal_validation_name_error">Անունը չի կարող լրացնել դատարկ լինի</string>
-    <string name="appeal_validation_patronymic_error">Հայրանունը չպետք է դատարկ լինի</string>
-    <string name="appeal_validation_last_error">Ազգանունը չի կարող լրացվել դատարկ</string>
+    <string name="appeal_validation_name_error">Անունը սխալ է նշված</string>
+    <string name="appeal_validation_patronymic_error">Հայրանունը սխալ է նշված</string>
+    <string name="appeal_validation_last_error">Ազգանունը սխալ է նշված</string>
     <string name="appeal_title">Ինչպես\nկարելի է Ձեզ\nկանչել?</string>
     <string name="appeal_hint_patronymic">Հայրանուն</string>
 

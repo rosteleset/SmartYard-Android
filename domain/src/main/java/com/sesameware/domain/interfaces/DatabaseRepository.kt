@@ -13,6 +13,8 @@ interface DatabaseRepository {
 
     suspend fun create(addressItem: AddressItem): Long
 
+    suspend fun insertAll(items: List<AddressItem>): List<Long>
+
     suspend fun delete(itemId: Long): Boolean
 
     suspend fun deleteAll(): Int

@@ -16,6 +16,10 @@ class DatabaseRepositoryImpl(private val dao: AddressDao) : DatabaseRepository {
         return dao.insert(addressItem.toItemEntity())
     }
 
+    override suspend fun insertAll(items: List<AddressItem>): List<Long> {
+        return dao.insertAll(items.map { it.toItemEntity() })
+    }
+
     override suspend fun delete(itemId: Long): Boolean {
         return dao.deleteById(itemId) > 0
     }

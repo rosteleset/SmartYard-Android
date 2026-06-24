@@ -354,13 +354,17 @@ class MainActivity : CommonActivity() {
     }
 
     @Suppress("DEPRECATION")
-    fun hideSystemUI() {
+    fun hideSystemUI(barsIsTransient: Boolean = true) {
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-        windowInsetsController.systemBarsBehavior =
+        windowInsetsController.systemBarsBehavior = if (barsIsTransient) {
             WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+        } else {
+            WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE
+        }
         binding.bottomNav.isVisible = false
         binding.bottomGradient.isVisible = false
+        binding.bottomGradient2.isVisible = false
         lightNavBar = true
         ViewCompat.requestApplyInsets(binding.root)
     }
@@ -371,6 +375,7 @@ class MainActivity : CommonActivity() {
         windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         binding.bottomNav.isVisible = true
         binding.bottomGradient.isVisible = true
+        binding.bottomGradient2.isVisible = true
         lightNavBar = false
         ViewCompat.requestApplyInsets(binding.root)
     }
@@ -500,14 +505,15 @@ class MainActivity : CommonActivity() {
 
     private fun setupInsets() {
         val initialNavMarginBottom = binding.bottomNav.marginBottom
-        val initialGradientMarginBottom = binding.bottomGradient.marginBottom
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
 
+            val isGestureNavigation = detectGestureNavigation(insets)
             val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
             val bottomNav = binding.bottomNav
             val bottomGradient = binding.bottomGradient
+            val bottomGradient2 = binding.bottomGradient2
             val container = binding.navHostContainer
             if (bottomNav.isVisible) {
                 val targetNavMargin = initialNavMarginBottom + navBarInsets.bottom
@@ -516,10 +522,22 @@ class MainActivity : CommonActivity() {
                     bnLayoutParams.updateMargins(bottom = targetNavMargin)
                 }
 
-                val targetGradientMargin = initialGradientMarginBottom + navBarInsets.bottom
+                val targetBottomMargin = initialNavMarginBottom + navBarInsets.bottom
                 val bgLayoutParams = bottomGradient.layoutParams as ViewGroup.MarginLayoutParams
-                if (bgLayoutParams.bottomMargin != targetGradientMargin) {
-                    bgLayoutParams.updateMargins(bottom = targetGradientMargin)
+                if (bgLayoutParams.bottomMargin != targetBottomMargin) {
+                    bgLayoutParams.updateMargins(bottom = targetBottomMargin)
+                }
+
+                val bg2LayoutParams = bottomGradient2.layoutParams as ViewGroup.MarginLayoutParams
+
+                val additionalHeight = if (isGestureNavigation) navBarInsets.bottom else 0
+                val newHeight = initialNavMarginBottom + additionalHeight
+                if (bg2LayoutParams.height != newHeight) {
+                    bg2LayoutParams.height = newHeight
+                }
+                val targetBottom2Margin = if (isGestureNavigation) 0 else navBarInsets.bottom
+                if (bg2LayoutParams.bottomMargin != targetBottom2Margin) {
+                    bg2LayoutParams.updateMargins(bottom = targetBottom2Margin)
                 }
 
                 bottomNav.post {
@@ -541,6 +559,11 @@ class MainActivity : CommonActivity() {
 
             insets
         }
+    }
+
+    private fun detectGestureNavigation(insets: WindowInsetsCompat): Boolean {
+        val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
+        return gestureInsets.left > 0 || gestureInsets.right > 0
     }
 
     companion object {

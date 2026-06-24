@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
@@ -15,8 +14,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import androidx.viewpager2.widget.MarginPageTransformer
-import androidx.viewpager2.widget.ViewPager2
+import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
@@ -26,11 +24,8 @@ import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemEntranceBinding
-import com.sesameware.smartyard_oem.databinding.ItemEntrancesSliderBinding
-import com.sesameware.smartyard_oem.databinding.ItemEventLogBinding
 import com.sesameware.smartyard_oem.databinding.ItemHouseBinding
 import com.sesameware.smartyard_oem.databinding.ItemIssueBinding
-import com.sesameware.smartyard_oem.databinding.ItemVideoCameraBinding
 import com.sesameware.smartyard_oem.databinding.ItemWebExtBinding
 import com.sesameware.smartyard_oem.databinding.ItemYardBinding
 import com.sesameware.smartyard_oem.ui.main.address.models.AddressUiModel
@@ -52,7 +47,7 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnOpenEntranceClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
-import net.cachapa.expandablelayout.ExpandableLayout.OnExpansionUpdateListener
+import net.cachapa.expandablelayout.ExpandableLayout
 
 typealias HouseCallback = (HouseAction) -> Unit
 typealias IssueCallback = (IssueAction) -> Unit
@@ -92,22 +87,6 @@ class AddressListAdapter(
         }
     }
 
-    // To skip rebinding, when item expands itself
-    override fun onBindViewHolder(
-        holder: RecyclerView.ViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-        if (payloads.isNotEmpty()) {
-            val payload = payloads[0]
-            if (payload is Unit && holder is HouseViewHolder) {
-                // Ignore page index update to prevent PageIndicatorView reset
-                return
-            }
-        }
-        super.onBindViewHolder(holder, position, payloads)
-    }
-
     fun onViewDragged() {
         isViewDragged = true
     }
@@ -121,11 +100,6 @@ class AddressListAdapter(
             if (holder is IssueViewHolder) return
             (holder as HouseViewHolder).onAnyItemDragged(false)
         }
-    }
-
-    override fun onViewRecycled(holder: RecyclerView.ViewHolder) {
-        if (holder is IssueViewHolder) return
-        (holder as HouseViewHolder).onViewRecycled()
     }
 
     private companion object DiffCallback : DiffUtil.ItemCallback<AddressUiModel>() {
@@ -155,22 +129,19 @@ class AddressListAdapter(
                 else -> false
             }
 
-        override fun getChangePayload(oldItem: AddressUiModel, newItem: AddressUiModel): Any? =
-            when {
-                oldItem is HouseUiModel && newItem is HouseUiModel -> {
-                    if (oldItem.isExpanded != newItem.isExpanded) true
-                    else if (oldItem.selectedEntranceIndex != newItem.selectedEntranceIndex) Unit
-                    else null
-                }
-                else -> null
-            }
-
     }
 }
 
 class HouseViewHolder private constructor(
     private val binding: ItemHouseBinding
 ) : RecyclerView.ViewHolder(binding.root) {
+
+    private val yardViewBindingPool = mutableListOf<ItemYardBinding>()
+    private val sliderViewBindingPool = mutableListOf<ItemEntranceBinding>()
+    private val webExtViewBindingPool = mutableListOf<ItemWebExtBinding>()
+
+    private val sliderSpacingPx = binding.root.resources
+        .getDimensionPixelSize(R.dimen.entrance_slider_spacing)
 
     fun onThisItemDragged() {
         binding.root.apply {
@@ -196,12 +167,7 @@ class HouseViewHolder private constructor(
         }
     }
 
-    fun onViewRecycled() {
-        binding.houseContent.removeAllViews()
-    }
-
     fun bind(state: HouseUiModel, callback: HouseCallback, entranceView: EntrancesView) {
-        binding.houseContent.removeAllViews()
         with (binding) {
             houseAddress.text = state.address
             houseAddress.setOnLongClickListener {
@@ -210,17 +176,17 @@ class HouseViewHolder private constructor(
             }
 
             expandableLayout.setExpanded(state.isExpanded, false)
-            expandableLayout.setOnExpansionUpdateListener(object : OnExpansionUpdateListener {
-                private var lastFraction = -1f
+            expandableLayout.setOnExpansionUpdateListener(object :
+                ExpandableLayout.OnExpansionUpdateListener {
+                    private var lastFraction = -1f
 
-                override fun onExpansionUpdate(expansionFraction: Float, state: Int) {
-                    if (lastFraction != expansionFraction && expansionFraction == 1f) {
-                        callback(OnItemFullyExpanded(bindingAdapterPosition))
+                    override fun onExpansionUpdate(expansionFraction: Float, state: Int) {
+                        if (lastFraction != expansionFraction && expansionFraction == 1f) {
+                            callback(OnItemFullyExpanded(bindingAdapterPosition))
+                        }
+                        lastFraction = expansionFraction
                     }
-                    lastFraction = expansionFraction
-                }
-            })
-
+                })
             val onHeaderClickListener = View.OnClickListener {
                 expandHouse.isSelected = !expandHouse.isSelected
                 callback(OnExpandClick(bindingAdapterPosition, expandHouse.isSelected))
@@ -230,146 +196,286 @@ class HouseViewHolder private constructor(
             expandHouse.isSelected = state.isExpanded
 
             when (entranceView) {
-                EntrancesView.LIST ->
-                    addEntranceList(houseContent, state.entranceList, callback)
-                EntrancesView.PREVIEW ->
-                    addEntranceSlider(houseContent, state.houseId,
-                        state.entranceList, state.selectedEntranceIndex, callback)
+                EntrancesView.LIST -> configEntranceList(state.entranceList, callback)
+                EntrancesView.PREVIEW -> configEntranceSlider(state.houseId,
+                        state.entranceList, state.initialSliderPosition, callback)
             }
 
             val model = VideoCameraModelP(state.houseId, state.address)
-            addCameras(houseContent, model, state.cameraCount, callback)
-            addEventLog(houseContent, state.hasEventLog,
-                state.address, state.houseId, callback)
-            addWebExtensions(houseContent, state.extList, callback)
+            configCameras(model, state.cameraCount, callback)
+            configEventLog(state.hasEventLog,state.address, state.houseId, callback)
+            configWebExtensions(state.extList, callback)
         }
     }
-
-    private fun addEntranceList(
-        layout: LinearLayout,
+    private fun configEntranceList(
         states: List<EntranceState>,
         callback: HouseCallback
     ) {
-        states.forEach { state ->
-            val binding = ItemYardBinding.inflate(LayoutInflater.from(layout.context),
-                layout, true)
-            with (binding){
-                ivImage.setImageResource(state.iconRes)
-                tvName.text = state.name
-                tbOpen.isChecked = false
-                tbOpen.setOnClickListener {
-                    callback(OnOpenEntranceClick(state.lock))
-                    tbOpen.isClickable = false
-                    val handler = Handler(Looper.getMainLooper())
-                    handler.postDelayed(
-                        {
-                            tbOpen.isChecked = false
-                            tbOpen.isClickable = true
-                        },
-                        3000
-                    )
-                }
+        while (yardViewBindingPool.size < states.size) {
+            val yardBinding = ItemYardBinding.inflate(
+                LayoutInflater.from(binding.houseContent.context),
+                binding.houseContent,
+                false
+            )
+            val insertIndex = yardViewBindingPool.size + 1
+            binding.houseContent.addView(yardBinding.root, insertIndex)
+
+            yardViewBindingPool.add(yardBinding)
+        }
+
+        for (i in yardViewBindingPool.indices) {
+            val yardBinding = yardViewBindingPool[i]
+            if (i < states.size) {
+                yardBinding.root.isVisible = true
+                val entrance = states[i]
+                bindYardItem(yardBinding, entrance, callback)
+            } else {
+                yardBinding.root.isVisible = false
             }
         }
     }
 
-    private fun addEntranceSlider(
-        layout: LinearLayout,
-        houseId: Int,
-        states: List<EntranceState>,
-        selectedEntranceIndex: Int,
+    private fun bindYardItem(
+        itemBinding: ItemYardBinding,
+        state: EntranceState,
         callback: HouseCallback
     ) {
-        if (states.isEmpty()) return
+        with (itemBinding){
+            ivImage.setImageResource(state.iconRes)
+            tvName.text = state.name
+            tbOpen.isChecked = false
+            tbOpen.setOnClickListener {
+                callback(OnOpenEntranceClick(state.lock))
+                tbOpen.isClickable = false
+                val handler = Handler(Looper.getMainLooper())
+                handler.postDelayed(
+                    {
+                        tbOpen.isChecked = false
+                        tbOpen.isClickable = true
+                    },
+                    3000
+                )
+            }
+        }
+    }
 
-        val sliderBinding = ItemEntrancesSliderBinding.inflate(
-            LayoutInflater.from(layout.context), layout, true
-        )
+    private fun configEntranceSlider(
+        houseId: Int,
+        states: List<EntranceState>,
+        initialSliderPosition: Int,
+        callback: HouseCallback
+    ) {
+        val mappedStates = mapCamerasToStates(states)
+        if (mappedStates.isEmpty()) {
+            binding.sliderContainer.isVisible = false
+            return
+        }
+        binding.sliderContainer.isVisible = true
 
-        with (sliderBinding) {
-            val mappedStates = mapCamerasToStates(states)
-            entranceViewPager.adapter = EntranceSliderAdapter(mappedStates, callback)
-            entranceViewPager.setCurrentItem(selectedEntranceIndex, false)
-            pageIndicatorView.count = mappedStates.size
-            pageIndicatorView.setSelected(selectedEntranceIndex)
-            pageIndicatorView.isVisible = mappedStates.size > 1
-            val spacingPx = root.resources.getDimensionPixelSize(R.dimen.entrance_slider_spacing)
-            entranceViewPager.setPageTransformer(MarginPageTransformer(spacingPx))
-            entranceViewPager.registerOnPageChangeCallback(
-                object : ViewPager2.OnPageChangeCallback() {
+        // Creating lacking views for pool
+        while (sliderViewBindingPool.size < mappedStates.size) {
+            val itemBinding = ItemEntranceBinding.inflate(
+                LayoutInflater.from(binding.root.context),
+                binding.entranceViewPager,
+                false
+            )
+            sliderViewBindingPool.add(itemBinding)
+        }
+
+        // Rebinding pool views
+        val activeViews = mutableListOf<View>()
+        for (i in mappedStates.indices) {
+            val state = mappedStates[i]
+            val itemBinding = sliderViewBindingPool[i]
+
+            bindSliderItem(itemBinding, state, callback)
+            activeViews.add(itemBinding.root)
+        }
+
+        with (binding.pageIndicatorView) {
+            count = mappedStates.size
+            setSelected(initialSliderPosition)
+            isVisible = mappedStates.size > 1
+        }
+
+        with (binding.entranceViewPager) {
+            adapter = StaticPagerAdapter(activeViews)
+            pageMargin = sliderSpacingPx
+            setCurrentItem(initialSliderPosition)
+            clearOnPageChangeListeners()
+            addOnPageChangeListener(
+                object : ViewPager.SimpleOnPageChangeListener() {
+                    private var initialPosAlreadyFired = false
+
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
-                        pageIndicatorView.selection = position
-                        callback(OnEntrancePageSelected(houseId, position))
+
+                        if (!initialPosAlreadyFired && initialSliderPosition == position) {
+                            initialPosAlreadyFired = true
+                            return
+                        }
+
+                        binding.pageIndicatorView.selection = position
+                        val entranceCamera = mappedStates[position].cameras.firstOrNull()
+                        callback(OnEntrancePageSelected(houseId, position, entranceCamera))
                     }
                 }
             )
         }
     }
 
-    fun mapCamerasToStates(states: List<EntranceState>): List<EntranceState> =
+    private fun bindSliderItem(
+        itemBinding: ItemEntranceBinding,
+        state: EntranceState,
+        callback: HouseCallback
+    ) {
+        val camera = state.cameras.firstOrNull()
+        var previewSuccess = false
+
+        with(itemBinding) {
+            ivImage.setImageResource(state.iconRes)
+            tvName.text = state.name
+            tbOpen.isChecked = false
+
+            val color = ContextCompat.getColor(root.context, R.color.on_filled)
+
+            Glide.with(ivPreview).clear(ivPreview)
+            Glide.with(ivPreview)
+                .load(camera?.previewUrl)
+                .error(R.drawable.ic_no_photography_24)
+                .centerCrop()
+                .listener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                        ivPreview.setColorFilter(color)
+                        previewSuccess = false
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        ivPreview.clearColorFilter()
+                        ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
+                        previewSuccess = true
+                        return false
+                    }
+                })
+                .into(ivPreview)
+
+            root.setOnClickListener {
+                if (camera != null && camera.isValid && previewSuccess) {
+                    callback(OnEntrancePreviewClick(camera, state.lock))
+                } else {
+                    val caption = root.context.getString(R.string.entrance_camera_is_not_available)
+                    Toast.makeText(root.context, caption, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            tbOpen.setOnClickListener {
+                callback(OnOpenEntranceClick(state.lock))
+                tbOpen.isClickable = false
+                Handler(Looper.getMainLooper()).postDelayed({
+                    tbOpen.isChecked = false
+                    tbOpen.isClickable = true
+                }, 3000)
+            }
+        }
+    }
+
+    // Making a copy of the parent state for each camera
+    private fun mapCamerasToStates(states: List<EntranceState>): List<EntranceState> =
         states.flatMap { state ->
             state.cameras.map { camera ->
                 state.copy(cameras = listOf(camera))
             }.ifEmpty { listOf(state) }
         }
 
-    private fun addCameras(
-        layout: LinearLayout,
+    private fun configCameras(
         model: VideoCameraModelP,
         count: Int,
         callback: HouseCallback
     ) {
-        if (count == 0) return
-
-        val binding = ItemVideoCameraBinding.inflate(LayoutInflater.from(layout.context),
-            layout,true)
-        with (binding) {
-            tvCount.text = count.toString()
-            root.setOnClickListener {
-                callback(OnCameraClick(model))
+        with (binding.camerasItem) {
+            if (count > 0) {
+                root.isVisible = true
+                tvCameraCount.text = count.toString()
+                root.setOnClickListener {
+                    callback(OnCameraClick(model))
+                }
+            } else {
+                root.isVisible = false
             }
         }
     }
 
-    private fun addEventLog(
-        layout: LinearLayout,
+    private fun configEventLog(
         hasEventLog: Boolean,
         title: String,
         houseId: Int,
         callback: HouseCallback
     ) {
-        if (!hasEventLog) return
-
-        val binding = ItemEventLogBinding.inflate(
-            LayoutInflater.from(layout.context),
-            layout, true
-        )
-        with(binding) {
-            root.setOnClickListener {
-                callback(OnEventLogClick(title, houseId))
+        with (binding.eventLogItem) {
+            if (hasEventLog) {
+                root.isVisible = true
+                root.setOnClickListener {
+                    callback(OnEventLogClick(title, houseId))
+                }
+            } else {
+                root.isVisible = false
             }
         }
     }
 
-    private fun addWebExtensions(
-        layout: LinearLayout,
-        extItems: List<ExtItemModel>,
+    private fun configWebExtensions(
+        states: List<ExtItemModel>,
         callback: HouseCallback
     ) {
-        extItems.forEach { item ->
-            val binding = ItemWebExtBinding.inflate(
-                LayoutInflater.from(layout.context),
-                layout, true
+        while (webExtViewBindingPool.size < states.size) {
+            val webExtBinding = ItemWebExtBinding.inflate(
+                LayoutInflater.from(binding.houseContent.context),
+                binding.houseContent,
+                true
             )
-            item.icon?.let { icon ->
-                Glide.with(binding.ivImageWebExt)
-                    .load(icon)
-                    .into(binding.ivImageWebExt)
+            webExtViewBindingPool.add(webExtBinding)
+        }
+
+        for (i in webExtViewBindingPool.indices) {
+            val webExtBinding = webExtViewBindingPool[i]
+            if (i < states.size) {
+                webExtBinding.root.isVisible = true
+                val entrance = states[i]
+                bindWebExtItem(webExtBinding, entrance, callback)
+            } else {
+                webExtBinding.root.isVisible = true
             }
-            binding.tvTitleWebExt.text = item.caption
-            binding.root.setOnClickListener {
-                callback(OnWebExtensionClick(item.caption,item.basePath, item.code))
+        }
+    }
+
+    private fun bindWebExtItem(
+        webExtBinding: ItemWebExtBinding,
+        extItem: ExtItemModel,
+        callback: HouseCallback
+    ) {
+        with (webExtBinding) {
+            extItem.icon?.let { icon ->
+                Glide.with(ivImageWebExt).clear(ivImageWebExt)
+                Glide.with(ivImageWebExt)
+                    .load(icon)
+                    .into(ivImageWebExt)
+            } ?: ivImageWebExt.setImageResource(R.drawable.common_web_ext)
+            tvTitleWebExt.text = extItem.caption
+            root.setOnClickListener {
+                callback(OnWebExtensionClick(extItem.caption,extItem.basePath, extItem.code))
             }
         }
     }
@@ -411,6 +517,8 @@ private class EntranceSliderAdapter(
         private val binding: ItemEntranceBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var previewSuccess = false
+
         fun bind(state: EntranceState, callback: HouseCallback) {
             val camera: EntranceCamera? = state.cameras.firstOrNull()
 
@@ -434,6 +542,7 @@ private class EntranceSliderAdapter(
                         ): Boolean {
                             ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
                             ivPreview.setColorFilter(color)
+                            previewSuccess = false
                             return false
                         }
 
@@ -446,13 +555,14 @@ private class EntranceSliderAdapter(
                         ): Boolean {
                             ivPreview.clearColorFilter()
                             ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
+                            previewSuccess = true
                             return false
                         }
                     })
                     .into(ivPreview)
 
                 root.setOnClickListener {
-                    if (camera != null && camera.isValid) {
+                    if (camera != null && camera.isValid && previewSuccess) {
                         callback(OnEntrancePreviewClick(camera, state.lock))
                     } else {
                         val caption = root.context

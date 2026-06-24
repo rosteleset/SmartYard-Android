@@ -10,6 +10,8 @@ import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.DatabaseInteractor
 import com.sesameware.domain.interactors.ExtInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.interactors.WebRtcStreamingInteractor
+import com.sesameware.domain.interfaces.WebRtcState
 import com.sesameware.domain.model.AddressItem
 import com.sesameware.domain.model.StateButton
 import com.sesameware.domain.model.request.ExtRequest
@@ -29,7 +31,23 @@ import com.sesameware.smartyard_oem.ui.main.address.models.ExtItemModel
 import com.sesameware.smartyard_oem.ui.main.address.models.HouseUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 import com.sesameware.smartyard_oem.ui.main.address.models.Lock
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -39,7 +57,8 @@ class AddressViewModel(
     override val mAuthInteractor: AuthInteractor,
     private val issueInteractor: IssueInteractor,
     override val mDatabaseInteractor: DatabaseInteractor,
-    private val extInteractor: ExtInteractor
+    private val extInteractor: ExtInteractor,
+    private val webRtcInteractor: WebRtcStreamingInteractor
 ) : GenericViewModel() {
 
     val entranceView: EntrancesView
@@ -61,10 +80,28 @@ class AddressViewModel(
     private val _navigateToAuth = MutableLiveData<Event<Unit>>()
     val navigateToAuth: LiveData<Event<Unit>> get() = _navigateToAuth
 
-    var houseIdFlats: HashMap<Int, List<Flat>> = hashMapOf()
-        private set
+    val houseIdFlats: HashMap<Int, List<Flat>> = hashMapOf()
 
-    private var entranceStateById: Map<Int, EntranceState> = emptyMap()
+    private val _selectedWebRtcUrl = MutableStateFlow<String?>(null)
+
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val webRtcState: StateFlow<WebRtcState> = _selectedWebRtcUrl
+        .debounce { url ->
+            if (url == null) 0L else 300L
+        }
+        .flatMapLatest { url ->
+            if (url == null) {
+                flowOf(WebRtcState.Idle)
+            } else {
+                webRtcInteractor.playStream(url)
+                    .catch { emit(WebRtcState.Error("Stream failed")) }
+            }
+        }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = WebRtcState.Idle
+        )
 
     fun openDoor(id: Lock) {
         viewModelScope.withProgress {
@@ -77,22 +114,27 @@ class AddressViewModel(
     }
 
     fun setHouseItemExpanded(position: Int, isExpanded: Boolean) {
-        val list = houseUiState.value?.toMutableList() ?: return
+        val list = houseUiState.value ?: return
         if (position < 0 || position >= list.size) return
         if (list[position].isExpanded == isExpanded) return
-        val newState = list[position].copy(isExpanded = isExpanded)
-        list[position] = newState
-        houseUiState.value = list
+
+        list[position].isExpanded = isExpanded
     }
 
-    fun setHouseItemEntranceIndex(houseId: Int, index: Int) {
-        val list = houseUiState.value?.toMutableList() ?: return
+    fun setEntranceInitialPosition(houseId: Int, index: Int) {
+        val list = houseUiState.value ?: return
+
         val houseIndex = list.indexOfFirst { it.houseId == houseId }
         if (houseIndex == -1) return
-        if (list[houseIndex].selectedEntranceIndex == index) return
-        val newState = list[houseIndex].copy(selectedEntranceIndex = index)
-        list[houseIndex] = newState
-        houseUiState.value = list
+
+        if (list[houseIndex].initialSliderPosition != index) {
+            list[houseIndex].initialSliderPosition = index
+        }
+    }
+
+    fun setWebRtcUrl(whepUrl: String?) {
+        Timber.d("debug_dmm new whepUrl: $whepUrl")
+        _selectedWebRtcUrl.value = whepUrl
     }
 
     fun setHouseItemSavedPosition(oldPosition: Int, newPosition: Int) {
@@ -111,16 +153,18 @@ class AddressViewModel(
     }
 
     fun getDataList(forceRefresh: Boolean = false) {
-        viewModelScope.withProgress(progress = _progress) {
+        viewModelScope.withProgress(progress = null) {
+            _progress.value = true
             populateHouseIdFlats(forceRefresh)
-            launch(Dispatchers.IO) {
+            val job1 = launch(Dispatchers.IO) {
                 val houses = getHouses(forceRefresh)
                 houseUiState.postValue(houses)
             }
-            launch(Dispatchers.IO) {
-                issueUiState.postValue(getIssues(forceRefresh))
+            val job2 = launch(Dispatchers.IO) {
+                val issues = getIssues(forceRefresh)
+                issueUiState.postValue(issues)
             }
-            launch(Dispatchers.IO) {
+            val job3 = launch(Dispatchers.IO) {
                 if (DataModule.providerConfig.hasStories) {
                     val storiesRes = addressInteractor.getStories()
                     storiesUiState.postValue(storiesRes?.data ?: emptyList())
@@ -128,9 +172,8 @@ class AddressViewModel(
                     storiesUiState.postValue(emptyList())
                 }
             }
-        }
-        viewModelScope.withProgress(progress = null) {
-            getIssues(forceRefresh)
+            joinAll(job1, job2, job3)
+            _progress.value = false
         }
     }
 
@@ -145,21 +188,26 @@ class AddressViewModel(
                 (houseFlats.getOrPut(settingItem.houseId) { mutableSetOf() }).add(settingItem.flatId)
             }
         }
+        val houseIdToFlats = coroutineScope {
+            houseFlats.keys.map { houseId ->
+                async {
+                    val flats = houseFlats[houseId]!!.map { flatId ->
+                        async {
+                            val resIntercom = addressInteractor.getIntercom(flatId)
+                            val frsEnabled = (resIntercom.data.frsDisabled == false)
+                            Flat(flatId, flatToNumber[flatId]!!, frsEnabled)
+                        }
+                    }.awaitAll().filterNotNull().sortedBy {
+                        it.flatNumber
+                    }
+                    houseId to flats
+                }
+            }.awaitAll().filterNotNull()
+        }.toMap()
 
-        val houseIdFlats = hashMapOf<Int, List<Flat>>()  // идентификатор дома с квартирами пользователя
-        houseFlats.keys.forEach { houseId ->
-            houseIdFlats[houseId] = houseFlats[houseId]!!.map { flatId ->
-                val resIntercom = addressInteractor.getIntercom(flatId)
-                val frsEnabled = (resIntercom.data.frsDisabled == false)
-                Flat(flatId, flatToNumber[flatId]!!, frsEnabled)
-            }
-            houseIdFlats[houseId]?.sortedBy {
-                it.flatNumber
-            }
-        }
-
+        houseIdFlats.clear()
+        houseIdFlats.putAll(houseIdToFlats)
         Timber.d("debug_dmm houseIdFlats = $houseIdFlats")
-        this.houseIdFlats = houseIdFlats
     }
 
     private suspend fun getHouses(forceRefresh: Boolean): List<HouseUiModel> {
@@ -171,9 +219,11 @@ class AddressViewModel(
             }
             return listOf()
         }
-
         Timber.d(this.javaClass.simpleName, response.data.size)
-        mDatabaseInteractor.deleteAll()
+        val scope = CoroutineScope(currentCoroutineContext())
+        scope.launch {
+            mDatabaseInteractor.deleteAll()
+        }
 
         if (response.data.isEmpty()) return emptyList()
 
@@ -190,14 +240,22 @@ class AddressViewModel(
             houseIdPositions = state.toHouseIdPositions()
             entranceIndices = state.toEntranceIndices()
         }
-
         val camMapList = addressInteractor.camMap()?.data
         val cameraByEntranceId = getEntranceCamerasByEntranceId(camMapList) ?: emptyMap()
         val cameraByDomophoneId = getEntranceCamerasByDomophoneId(camMapList) ?: emptyMap()
-
+        val addressItems = mutableListOf<AddressItem>()
         val houseList = response.data.map { addressDto ->
             val entranceList = addressDto.doors.map { entranceDto ->
-                addToWidgetDatabase(entranceDto, addressDto)
+                val dbItem = AddressItem(
+                    name = entranceDto.name,
+                    address = addressDto.address,
+                    icon = entranceDto.icon,
+                    domophoneId = entranceDto.domophoneId,
+                    doorId = entranceDto.doorId,
+                    state = StateButton.CLOSE
+                )
+                addressItems.add(dbItem)
+
                 val entranceId = entranceDto.entrance.toIntOrNull()
 
                 EntranceState(
@@ -220,27 +278,8 @@ class AddressViewModel(
             val houseHasEntrances = entranceList.isNotEmpty()
             val houseHasFlats = houseIdFlats[addressDto.houseId]?.isNotEmpty() ?: false
             val isExpanded = expandedHouseIds.contains(addressDto.houseId)
-            val extList = mutableListOf<ExtItemModel>()
-            addressDto.ext.forEachIndexed { i, item ->
-                item.extId?.let { extId ->
-                    extInteractor.ext(ExtRequest(extId))?.let { extData ->
-                        extList.add(
-                            ExtItemModel(
-                                extId = item.extId,
-                                caption = item.caption,
-                                icon = item.icon,
-                                order = item.order ?: i,
-                                highlight = item.highlight,
-                                basePath = extData.data.basePath,
-                                code = extData.data.code
-                            ))
-                    }
-                }
-            }
-            extList.sortWith(
-                compareBy { it.order },
-            )
 
+            val extList = addressDto.toExtModels()
             HouseUiModel(
                 houseId = addressDto.houseId,
                 address = addressDto.address,
@@ -249,7 +288,7 @@ class AddressViewModel(
                 hasEventLog = addressDto.hasPlog && houseHasEntrances && houseHasFlats,
                 isExpanded = isExpanded,
                 extList = extList,
-                selectedEntranceIndex = entranceIndices[addressDto.houseId] ?: 0,
+                initialSliderPosition = entranceIndices[addressDto.houseId] ?: 0,
             )
         }.toMutableList()
 
@@ -258,9 +297,12 @@ class AddressViewModel(
                 { houseIdPositions[it.houseId] },
                 { it.entranceList.isEmpty() },
                 { it.address },
-
             )
         )
+
+        coroutineScope {
+            mDatabaseInteractor.insertItems(addressItems)
+        }
 
         val firstLaunch = mPreferenceStorage.justRegistered
         if (firstLaunch && expandedHouseIds.isEmpty()) {
@@ -268,8 +310,32 @@ class AddressViewModel(
             houseList[0] = newState
             mPreferenceStorage.justRegistered = false
         }
-
         return houseList
+    }
+
+    private suspend fun Address.toExtModels(): List<ExtItemModel> {
+        val address = this
+        return coroutineScope {
+            address.ext.mapIndexedNotNull { i, item ->
+                item.extId?.let { extId ->
+                    async {
+                        extInteractor.ext(ExtRequest(extId))?.let { extData ->
+                            ExtItemModel(
+                                extId = item.extId,
+                                caption = item.caption,
+                                icon = item.icon,
+                                order = item.order ?: i,
+                                highlight = item.highlight,
+                                basePath = extData.data.basePath,
+                                code = extData.data.code
+                            )
+                        }
+                    }
+                }
+            }.awaitAll()
+                .filterNotNull()
+                .sortedWith(compareBy { it.order })
+        }
     }
 
     private fun getEntranceCamerasByDomophoneId(camMapList: List<CamMap>?): Map<Int, List<EntranceCamera>>? {
@@ -313,23 +379,6 @@ class AddressViewModel(
         return issueModelList
     }
 
-    private suspend fun addToWidgetDatabase(
-        entranceDto: Address.Door,
-        addressDto: Address
-    ) {
-        mDatabaseInteractor
-            .createItem(
-                AddressItem(
-                    name = entranceDto.name,
-                    address = addressDto.address,
-                    icon = entranceDto.icon,
-                    domophoneId = entranceDto.domophoneId,
-                    doorId = entranceDto.doorId,
-                    state = StateButton.CLOSE
-                )
-            )
-    }
-
     private fun List<HouseUiModel>.toExpandedHouseIds(): Set<Int> =
         this.filter { it.isExpanded }
             .map { it.houseId }
@@ -341,11 +390,26 @@ class AddressViewModel(
             .toMap()
 
     private fun List<HouseUiModel>.toEntranceIndices(): Map<Int, Int> =
-        this.associate { it.houseId to it.selectedEntranceIndex }
+        this.associate { it.houseId to it.initialSliderPosition }
 
     fun persistUi() {
         mPreferenceStorage.expandedHouseIds = houseUiState.value?.toExpandedHouseIds()
         mPreferenceStorage.houseIdPositions = houseUiState.value?.toHouseIdPositions()
+    }
+
+    fun setWebRtcUrlForTopmostExpandedItemInRange(visiblePositions: IntRange) {
+        val firstExpanded = firstExpandedOrNull(visiblePositions) ?: return
+        Timber.d("debug_dmm found item ${firstExpanded.address}")
+        val allCameras = firstExpanded.entranceList.flatMap { it.cameras }
+        val lastSelectedCam = allCameras.getOrNull(firstExpanded.initialSliderPosition)
+
+        setWebRtcUrl(lastSelectedCam?.whepUrl)
+    }
+
+    private fun firstExpandedOrNull(positions: IntRange): HouseUiModel? {
+        return houseUiState.value
+            ?.slice(positions)
+            ?.firstOrNull { it.isExpanded }
     }
 
     companion object {

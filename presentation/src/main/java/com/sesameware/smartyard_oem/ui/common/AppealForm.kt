@@ -122,15 +122,16 @@ class AppealForm @JvmOverloads constructor(
     }
 
     private fun setupPrivacyPolicy(isRegistration: Boolean) {
-        val privacyPolicyCaption = privacyPolicy ?:
-            HtmlCompat.fromHtml(
-                getString(this@AppealForm.context, R.string.privacy_policy),
-                HtmlCompat.FROM_HTML_MODE_LEGACY
-            )
+        val rawPrivacyPolicy = privacyPolicy
+            ?: getString(this@AppealForm.context, R.string.privacy_policy)
+
+        val privacyPolicyCaption =
+            HtmlCompat.fromHtml(rawPrivacyPolicy, HtmlCompat.FROM_HTML_MODE_LEGACY)
+
         val privacyPolicyFeatureIsEnabled = privacyPolicyCaption.isNotBlank()
         if (privacyPolicyFeatureIsEnabled && isRegistration) {
             binding.privacyPolicy.isVisible = true
-            with (binding.privacyPolicyCaption) {
+            with(binding.privacyPolicyCaption) {
                 text = privacyPolicyCaption
                 movementMethod = LinkMovementMethod.getInstance()
             }
@@ -149,14 +150,14 @@ class AppealForm @JvmOverloads constructor(
         val patronymic = binding.patronymicText.text
         val last = binding.lastText.text
 
-        nameRegex?.let { if (it.matches(name)) return R.string.appeal_validation_name_error }
+        nameRegex?.let {if (!it.matches(name)) return R.string.appeal_validation_name_error }
         patronymicRegex?.let {
-            if (it.matches(patronymic)) return R.string.appeal_validation_patronymic_error
+            if (!it.matches(patronymic)) return R.string.appeal_validation_patronymic_error
         }
 
         if (userHasLastName) {
             lastRegex?.let {
-                if (it.matches(last)) return R.string.appeal_validation_last_error
+                if (!it.matches(last)) return R.string.appeal_validation_last_error
             }
 
             return when {

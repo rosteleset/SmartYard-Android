@@ -1,11 +1,9 @@
 package com.sesameware.data.local.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Update
 import com.sesameware.data.local.entity.AddressDoorEntity
 import com.sesameware.domain.model.StateButton
 
@@ -26,6 +24,9 @@ abstract class AddressDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insert(addressDoor: AddressDoorEntity): Long
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun insertAll(addresses: List<AddressDoorEntity>): List<Long>
 
     /*@Delete
     abstract suspend fun delete(addressDoor: AddressDoorEntity): Int*/

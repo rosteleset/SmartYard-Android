@@ -63,6 +63,8 @@ data class ProviderConfig(
 
     //privacy policy
     @Json(name = PRIVACY_POLICY) val privacyPolicy: String? = null,
+
+    @Json(name = "stunUrl") val stunUrl: String? = null,
 ) {
     val hasChat: Boolean
         get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true

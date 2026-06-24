@@ -3,7 +3,7 @@ package com.sesameware.smartyard_oem.di
 import android.os.Build
 import androidx.lifecycle.SavedStateHandle
 import com.sesameware.smartyard_oem.GlobalDataSource
-import com.sesameware.smartyard_oem.ui.SafeVideoDecoderFactory
+import com.sesameware.data.SafeVideoDecoderFactory
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivityViewModel
 import com.sesameware.smartyard_oem.ui.common.AppealFormViewModel
 import com.sesameware.smartyard_oem.ui.launcher.LauncherViewModel
@@ -82,59 +82,17 @@ object PresentationModule {
         viewModel { MainActivityViewModel(get(), get(), get(), get()) }
         viewModel { ChatViewModel(get()) }
         viewModel { SettingsViewModel(get(), get(), get()) }
-        viewModel { AddressViewModel(get(), get(), get(), get(), get(), get()) }
+        viewModel { AddressViewModel(get(), get(), get(), get(), get(), get(), get()) }
         viewModel { EventLogViewModel(get(), get()) }
         viewModel { FaceSettingsViewModel(get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CityCamerasViewModel(handle, get(), get(), get(), get()) }
-        viewModel { BurgerViewModel( get(), get(), get(), get(), get()) }
+        viewModel { BurgerViewModel(get(), get(), get(), get(), get()) }
         viewModel { CCTVArchivePlayerViewModel(get()) }
         viewModel { PayAddressViewModel(get()) }
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }
         viewModel { TrackedEventsViewModel(get()) }
         single { GlobalDataSource() }
-        single<EglBase> { EglBase.create() }
-        single<VideoDecoderFactory> {
-            val eglBase: EglBase = get()
-            val isBuggyDevice = shouldForceSoftwareDecoder()
-            SafeVideoDecoderFactory(eglBase.eglBaseContext, disableHighProfile = isBuggyDevice)
-        }
-        single<VideoEncoderFactory> {
-            val eglBase: EglBase = get()
-            DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
-        }
-        single<PeerConnectionFactory> {
-            val context = androidContext()
-
-            val options = PeerConnectionFactory.InitializationOptions.builder(context)
-                .setEnableInternalTracer(true)
-                .setFieldTrials("WebRTC-H264HighProfile/Enabled/")
-                .createInitializationOptions()
-            PeerConnectionFactory.initialize(options)
-
-            PeerConnectionFactory.builder()
-                .setVideoDecoderFactory(get<VideoDecoderFactory>())
-                .setVideoEncoderFactory(get<VideoEncoderFactory>())
-                .setOptions(PeerConnectionFactory.Options().apply {
-                    disableNetworkMonitor = true
-                })
-                .createPeerConnectionFactory()
-        }
     }
-}
-
-private fun shouldForceSoftwareDecoder(): Boolean {
-    val is32Bit = Build.SUPPORTED_64_BIT_ABIS.isEmpty()
-
-    // Trouble devices
-    val manufacturer = Build.MANUFACTURER.orEmpty()
-    val model = Build.MODEL.orEmpty()
-    val isBuggyDevice = manufacturer.contains("samsung", ignoreCase = true) &&
-            (model.contains("A13", ignoreCase = true) ||
-                    model.contains("A12", ignoreCase = true) ||
-                    model.contains("A03", ignoreCase = true) ||
-                    model.contains("A04", ignoreCase = true))
-
-    return is32Bit || isBuggyDevice
 }

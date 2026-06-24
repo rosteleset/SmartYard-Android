@@ -26,4 +26,7 @@
     <!-- Widget -->
     <color name="widget_background">#E6191919</color>
 
+    <!-- BottomNavView gradient -->
+    <color name="bottom_nav_grad_start">#801B1B1B</color>
+
 </resources>

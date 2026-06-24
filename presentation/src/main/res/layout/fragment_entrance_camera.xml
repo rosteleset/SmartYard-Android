@@ -118,4 +118,28 @@
 
     </androidx.cardview.widget.CardView>
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/muteWrapper"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="top|end"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="28dp"
+        android:visibility="invisible"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="#66000000"
+        app:cardCornerRadius="50dp"
+        tools:visibility="visible">
+
+        <ImageView
+            android:id="@+id/ivMute"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:scaleType="centerInside"
+            app:srcCompat="@drawable/selector_mute"
+            tools:ignore="ContentDescription" />
+
+    </androidx.cardview.widget.CardView>
+
 </FrameLayout>

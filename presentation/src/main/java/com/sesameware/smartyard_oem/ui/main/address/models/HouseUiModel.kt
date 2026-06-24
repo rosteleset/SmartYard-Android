@@ -6,7 +6,7 @@ data class HouseUiModel(
     val entranceList: List<EntranceState>,
     val cameraCount: Int,
     val hasEventLog: Boolean,
-    val isExpanded: Boolean = false,
+    var isExpanded: Boolean = false,
     val extList: List<ExtItemModel> = listOf(),
-    val selectedEntranceIndex: Int = 0,
+    var initialSliderPosition: Int = 0,
 ) : AddressUiModel

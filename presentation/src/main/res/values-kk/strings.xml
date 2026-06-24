@@ -39,8 +39,8 @@
     <!-- Регистрация код из смс-->
     <string name="reg_sms_code_tel">Нөмірге жіберілген SMS тен кодты енгізіңіз</string>
     <string name="reg_flash_call_code_tel">
-       Біз нөмірдің шынымен сіздікі екеніне көз 
-•	   жеткізуіміз керек. 
+       Біз нөмірдің шынымен сіздікі екеніне көз
+•	   жеткізуіміз керек.
 \n
        Кіріс қоңырауды қабылдамай оның нөмірінің соңғы 4 цифрын енгізу керек.
     </string>
@@ -175,10 +175,10 @@
 
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Аты бос болмауы керек</string>
-    <string name="appeal_empty_last_error">Аты бос болмауы керек</string>
-    <string name="appeal_validation_name_error">Аты бос болмауы керек</string>
-    <string name="appeal_validation_patronymic_error">Әкесінің аты бос болмауы керек</string>
-    <string name="appeal_validation_last_error">Аты бос болмауы керек</string>
+    <string name="appeal_empty_last_error">Фамилия бос болмауы керек</string>
+    <string name="appeal_validation_name_error">Аты дұрыс көрсетілмеген</string>
+    <string name="appeal_validation_patronymic_error">Әкесінің аты дұрыс көрсетілмеген</string>
+    <string name="appeal_validation_last_error">Тегі дұрыс көрсетілмеген</string>
     <string name="appeal_title">Сізге қалай хабарласуға болады</string>
     <string name="appeal_hint_patronymic">Әкеніздің аты</string>
 

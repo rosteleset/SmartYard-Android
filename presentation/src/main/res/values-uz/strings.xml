@@ -170,9 +170,9 @@
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Ism bo‘sh bo‘lishi mumkin emas</string>
     <string name="appeal_empty_last_error">Familiya bo‘sh qoldirilmasligi kerak</string>
-    <string name="appeal_validation_name_error">Ism bo‘sh bo‘lishi mumkin emas</string>
-    <string name="appeal_validation_patronymic_error">Otasining ismi bo‘sh bo‘lmasligi kerak</string>
-    <string name="appeal_validation_last_error">Familiya bo‘sh qoldirilmasligi kerak</string>
+    <string name="appeal_validation_name_error">Ism noto‘g‘ri ko‘rsatilgan</string>
+    <string name="appeal_validation_patronymic_error">Otasining ismi noto‘g‘ri ko‘rsatilgan</string>
+    <string name="appeal_validation_last_error">Familiya noto‘g‘ri ko‘rsatilgan</string>
     <string name="appeal_title">Sizga\nqanday murojaat qilish kerak?</string>
     <string name="appeal_hint_patronymic">Otasining ismi</string>
 

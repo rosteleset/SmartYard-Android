@@ -174,9 +174,9 @@
     <!-- Как к вам обращаться? -->
     <string name="appeal_empty_name_error">Name cannot be empty</string>
     <string name="appeal_empty_last_error">Last name field cannot be empty</string>
-    <string name="appeal_validation_name_error">First name field cannot be empty</string>
-    <string name="appeal_validation_patronymic_error">Patronymic field cannot be empty</string>
-    <string name="appeal_validation_last_error">Last name field cannot be empty</string>
+    <string name="appeal_validation_name_error">The name is incorrectly specified</string>
+    <string name="appeal_validation_patronymic_error">The patronymic name is incorrectly specified</string>
+    <string name="appeal_validation_last_error">The last name is incorrectly specified</string>
     <string name="appeal_title">How can\nwe address you?</string>
     <string name="appeal_hint_patronymic">Patronymic</string>
 

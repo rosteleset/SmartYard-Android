@@ -15,13 +15,13 @@ data class Intercom(
     @Json(name = "autoOpen")
     val autoOpen: String = "", // 2020-03-13 15:55:34
     @Json(name = "CMS")
-    val _cMS: String = "", // t
+    val _cMS: String? = null,
     @Json(name = "doorCode")
     val doorCode: String? = "", // 99764
     @Json(name = "VoIP")
-    val _voIP: String = "", // t
+    val _voIP: String? = null,
     @Json(name = "whiteRabbit")
-    val whiteRabbit: Int = 0, // 0
+    val whiteRabbit: Int? = null,
     @Json(name = "paperBill")
     val _paperBill: String? = null,
     @Json(name = "disablePlog")
@@ -35,10 +35,10 @@ data class Intercom(
 ) {
     val allowDoorCode: Boolean
         get() = _allowDoorCode == "t"
-    val cMS: Boolean
-        get() = _cMS == "t"
-    val voIP: Boolean
-        get() = _voIP == "t"
+    val cMS: Boolean?
+        get() = if (_cMS == null) null else _cMS == "t"
+    val voIP: Boolean?
+        get() = if (_voIP == null) null else _voIP == "t"
     val paperBill: Boolean?
         get() = if (_paperBill == null) null else _paperBill == "t"
     val disablePlog: Boolean?

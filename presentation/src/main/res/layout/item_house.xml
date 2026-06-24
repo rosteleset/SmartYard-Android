@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -10,33 +10,36 @@
     android:background="@drawable/background_card"
     android:orientation="vertical">
 
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/house_address"
-        style="@style/Base.TextAppearance.AppCompat.Subhead"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:padding="24dp"
-        android:textColor="@color/accent"
-        android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/expand_house"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/expandable_layout"
-        tools:text="@string/address_sample"/>
+        <TextView
+            android:id="@+id/house_address"
+            style="@style/Base.TextAppearance.AppCompat.Subhead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:padding="24dp"
+            android:layout_marginEnd="64dp"
+            android:textColor="@color/accent"
+            android:ellipsize="end"
+            android:lines="1"
+            android:textSize="14sp"
+            tools:textSize="18sp"
+            tools:text="@string/address_sample"/>
 
-    <ImageView
-        android:id="@+id/expand_house"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="@+id/house_address"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/house_address"
-        app:srcCompat="@drawable/ic_expand"
-        tools:ignore="ContentDescription" />
+        <ImageView
+            android:id="@+id/expand_house"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:scaleType="centerInside"
+            android:layout_gravity="center_vertical|end"
+            app:srcCompat="@drawable/ic_expand"
+            tools:ignore="ContentDescription" />
+
+    </FrameLayout>
 
     <net.cachapa.expandablelayout.ExpandableLayout
         android:id="@+id/expandable_layout"
@@ -44,17 +47,73 @@
         android:layout_height="wrap_content"
         app:el_duration="300"
         app:el_expanded="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/house_address">
+        tools:el_expanded="true">
 
         <LinearLayout
-            android:id="@+id/house_content"
+            android:id="@+id/houseContent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:orientation="vertical" />
+            android:divider="@drawable/divider_address_item"
+            android:showDividers="middle"
+            android:orientation="vertical">
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:text="PLACEHOLDER FOR SLIDER PREVIEW"
+                android:textSize="24sp"
+                android:textAlignment="center"
+                android:paddingVertical="16dp"
+                android:background="#80FF00FF"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout
+                android:id="@+id/sliderContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:aspectRatio="16:9"
+                android:visibility="gone">
+
+                <androidx.viewpager.widget.ViewPager
+                    android:id="@+id/entranceViewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <com.rd.PageIndicatorView
+                    android:id="@+id/pageIndicatorView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_gravity="top|center_horizontal"
+                    app:piv_animationType="worm"
+                    app:piv_selectedColor="@color/on_filled"
+                    app:piv_unselectedColor="#66FFFFFF" />
+
+            </com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout>
+
+            <include
+                android:id="@+id/yardDemoItem"
+                layout="@layout/item_yard"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+            <include
+                android:id="@+id/camerasItem"
+                layout="@layout/item_video_camera" />
+
+            <include
+                android:id="@+id/eventLogItem"
+                layout="@layout/item_event_log" />
+
+            <include
+                android:id="@+id/webExtDemoItem"
+                layout="@layout/item_web_ext"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </LinearLayout>
+        
     </net.cachapa.expandablelayout.ExpandableLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>

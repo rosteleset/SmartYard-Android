@@ -13,6 +13,7 @@ import com.sesameware.domain.interactors.SipInteractor
 import com.sesameware.domain.interactors.FRSInteractor
 import com.sesameware.domain.interactors.ExtInteractor
 import com.sesameware.domain.interactors.LPRSInteractor
+import com.sesameware.domain.interactors.WebRtcStreamingInteractor
 
 object DomainModule {
 
@@ -29,5 +30,6 @@ object DomainModule {
         factory { FRSInteractor(get()) }
         factory { LPRSInteractor(get()) }
         factory { ExtInteractor(get()) }
+        factory { WebRtcStreamingInteractor(get()) }
     }
 }

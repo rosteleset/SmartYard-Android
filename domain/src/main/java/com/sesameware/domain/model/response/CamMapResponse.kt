@@ -1,7 +1,7 @@
 package com.sesameware.domain.model.response
 
 import android.os.Parcelable
-import com.sesameware.domain.utils.concatIfNotBlank
+import com.sesameware.domain.model.concatIfCorrectUrl
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
 
@@ -11,8 +11,7 @@ typealias CamMapResponse = ApiResult<List<CamMap>>?
 data class EntranceCamera(
     val previewUrl: String,
     val whepUrl: String = "",
-    val hlsUrl: String,
-    val isTrickleIceSupported: Boolean
+    val hlsUrl: String
 ) : Parcelable {
     val isValid: Boolean
         get() = previewUrl.isNotBlank() || hlsUrl.isNotBlank() || hlsUrl.isNotBlank()
@@ -37,63 +36,54 @@ data class CamMap(
             }
         }
 
-    val isTrickleIceSupported: Boolean
-        get() = serverType in listOf(
-            MediaServerType.FLUSSONIC,
-            MediaServerType.SESAMEWARE,
-            MediaServerType.NIMBLE
-        )
-
     val entranceCamera: EntranceCamera
         get() = EntranceCamera(
             previewUrl = when (serverType) {
-                MediaServerType.NIMBLE -> url concatIfNotBlank "/thumbnail.mp4?wmsAuthSign=$token"
-                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.NIMBLE -> concatIfCorrectUrl(url, "/thumbnail.mp4?wmsAuthSign=$token")
+                MediaServerType.FORPOST -> concatIfCorrectUrl(url, "&$token")
                 MediaServerType.MACROSCOP,
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/preview.mp4?token=$token"
+                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/preview.mp4?token=$token")
             },
             hlsUrl = when (serverType) {
-                MediaServerType.NIMBLE -> url concatIfNotBlank "/playlist.m3u8?wmsAuthSign=$token"
+                MediaServerType.NIMBLE -> concatIfCorrectUrl(url, "/playlist.m3u8?wmsAuthSign=$token")
                 MediaServerType.MACROSCOP,
-                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.FORPOST -> concatIfCorrectUrl(url, "&$token")
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/index.m3u8?token=$token"
+                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/index.m3u8?token=$token")
             },
             whepUrl = when (serverType) {
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep?token=$token"
+                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/whep?token=$token")
                 MediaServerType.NIMBLE,
                 MediaServerType.MACROSCOP,
                 MediaServerType.FORPOST -> ""
-            },
-            isTrickleIceSupported = isTrickleIceSupported
+            }
         )
 
     val additionalCameras: List<EntranceCamera>? = altCameras?.map { altCam ->
         EntranceCamera(
             previewUrl = when (altCam.serverType) {
-                MediaServerType.NIMBLE -> url concatIfNotBlank "/thumbnail.mp4?wmsAuthSign=$token"
-                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.NIMBLE -> concatIfCorrectUrl(url, "/thumbnail.mp4?wmsAuthSign=$token")
+                MediaServerType.FORPOST -> concatIfCorrectUrl(url, "&$token")
                 MediaServerType.MACROSCOP,
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/preview.mp4?token=$token"
+                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/preview.mp4?token=$token")
             },
             hlsUrl = when (altCam.serverType) {
-                MediaServerType.NIMBLE -> url concatIfNotBlank "/playlist.m3u8?wmsAuthSign=$token"
+                MediaServerType.NIMBLE -> concatIfCorrectUrl(url, "/playlist.m3u8?wmsAuthSign=$token")
                 MediaServerType.MACROSCOP,
-                MediaServerType.FORPOST -> url concatIfNotBlank "&$token"
+                MediaServerType.FORPOST -> concatIfCorrectUrl(url, "&$token")
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> url concatIfNotBlank "/index.m3u8?token=$token"
+                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/index.m3u8?token=$token")
             },
             whepUrl = when (altCam.serverType) {
                 MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> "${url.trimEnd('/')}/whep?token=$token"
+                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/whep?token=$token")
                 MediaServerType.NIMBLE,
                 MediaServerType.MACROSCOP,
                 MediaServerType.FORPOST -> ""
-            },
-            isTrickleIceSupported = altCam.isTrickleIceSupported
+            }
         )
     }
 
@@ -113,12 +103,5 @@ data class CamMap(
                     else -> MediaServerType.FLUSSONIC
                 }
             }
-
-        val isTrickleIceSupported: Boolean
-            get() = serverType in listOf(
-                MediaServerType.FLUSSONIC,
-                MediaServerType.SESAMEWARE,
-                MediaServerType.NIMBLE
-            )
     }
 }

@@ -126,6 +126,9 @@ dependencies {
     // Koin main features for Android
     implementation "io.insert-koin:koin-android:$koin"
 
+    // WebRTC
+    implementation "com.dafruits:webrtc:$webrtc"
+
     // Log
     implementation "com.jakewharton.timber:timber:$timber"
 

@@ -47,7 +47,6 @@ class TouchInterceptorZoomLayout @JvmOverloads constructor(
     fun setSingleTapConfirmedListener(listener: (() -> Unit)?) { singleTapListener = listener }
     fun setDoubleTapConfirmedListener(listener: ((Float?) -> Unit)?) { doubleTapListener = listener }
 
-    // Твой старый добрый метод: сохраняем пропорции и обновляем размеры контейнера
     fun setAspectRatio(ratio: Float?) {
         aspectRatio = ratio
         post { updateChildBounds() }
@@ -61,8 +60,6 @@ class TouchInterceptorZoomLayout @JvmOverloads constructor(
         }
     }
 
-    // Тот самый расчет, который подгоняет контейнер РОВНО под размер видео,
-    // чтобы нельзя было панорамировать черные полосы.
     private fun updateChildBounds() {
         if (childCount == 0) return
         val child = getChildAt(0)
@@ -92,9 +89,6 @@ class TouchInterceptorZoomLayout @JvmOverloads constructor(
         }
     }
 
-    // КЛЮЧЕВОЙ МОМЕНТ №1: Забираем ВСЕ касания себе!
-    // Теперь ни WebRTC, ни PlayerView не смогут воровать свайпы,
-    // и зум будет работать ВСЕГДА, что бы ни было на экране.
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
         return true
     }
@@ -156,9 +150,6 @@ class TouchInterceptorZoomLayout @JvmOverloads constructor(
 
     override fun onScaleEnd(scaleDetector: ScaleGestureDetector) {}
 
-    // КЛЮЧЕВОЙ МОМЕНТ №2: Ограничитель.
-    // Он проверяет реальный размер видео (child.width), а не экрана,
-    // не позволяя утащить видео за экран (жесткая блокировка по граням).
     private fun applyBounds() {
         if (childCount == 0) return
         val child = getChildAt(0)
@@ -175,7 +166,6 @@ class TouchInterceptorZoomLayout @JvmOverloads constructor(
         val child = getChildAt(0)
         child.scaleX = scale
         child.scaleY = scale
-        // Точка масштабирования всегда строго по центру видео
         child.pivotX = child.width / 2f
         child.pivotY = child.height / 2f
         child.translationX = dx

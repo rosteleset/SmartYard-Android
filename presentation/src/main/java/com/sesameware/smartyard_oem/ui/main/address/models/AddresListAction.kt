@@ -13,4 +13,4 @@ data class OnItemFullyExpanded(val position: Int) : HouseAction
 data class OnCameraClick(val model: VideoCameraModelP) : HouseAction
 data class OnEventLogClick(val title: String, val houseId: Int) : HouseAction
 data class OnWebExtensionClick(val title: String?, val basePath: String?, val code: String?) : HouseAction
-data class OnEntrancePageSelected(val houseId: Int, val page: Int) : HouseAction
+data class OnEntrancePageSelected(val houseId: Int, val page: Int, val entranceCamera: EntranceCamera?) : HouseAction

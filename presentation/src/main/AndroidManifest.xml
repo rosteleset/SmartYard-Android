@@ -73,6 +73,10 @@
         android:screenOrientation="portrait"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher">
+
+        <profileable android:shell="true"
+            tools:targetApi="29" />
+
         <activity
             android:name=".ui.show_event.ShowEventActivity"
             android:exported="false"
