@@ -530,6 +530,7 @@
     <string name="dialog_face_cancel">Отмена</string>
     <string name="title_add_face">Добавить это лицо?</string>
     <string name="add_item">Добавить</string>
+    <string name="add_address">Добавить адрес</string>
     <string name="phone_number_not_saved">Номер телефона не сохранен</string>
     <string name="all_phone_numbers">Все номера</string>
     <string name="all_cars">Все авто</string>

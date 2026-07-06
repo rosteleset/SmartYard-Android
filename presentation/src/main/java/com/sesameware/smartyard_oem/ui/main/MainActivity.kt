@@ -12,7 +12,7 @@ import android.content.IntentFilter
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
-import android.content.res.Configuration
+import android.graphics.Color
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -20,9 +20,11 @@ import android.provider.Settings
 import android.view.ViewGroup
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import androidx.activity.SystemBarStyle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
-import androidx.core.graphics.Insets
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.view.ViewCompat
@@ -66,7 +68,11 @@ interface ExitFullscreenListener {
     fun onExitFullscreen()
 }
 
-class MainActivity : CommonActivity() {
+interface BottomNavProvider {
+    fun getBottomNavHeight(): Int
+}
+
+class MainActivity : CommonActivity(), BottomNavProvider {
     lateinit var binding: ActivityMainBinding
 
     override val mViewModel by viewModel<MainActivityViewModel>()
@@ -80,22 +86,23 @@ class MainActivity : CommonActivity() {
 
     private lateinit var navController: NavController
 
-    val isNightModeOn: Boolean
-        get() = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-                Configuration.UI_MODE_NIGHT_NO -> false
-                Configuration.UI_MODE_NIGHT_YES -> true
-            else -> {
-                false
-            }
-        }
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             installSplashScreen()
         }
 
-        enableEdgeToEdge()
+        val color = ContextCompat
+            .getColor(this, R.color.light_background)
+        val isLightBackground = ColorUtils.calculateLuminance(color) > 0.5
+        val navigationBarStyle = if (isLightBackground) {
+            SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT)
+        } else {
+            SystemBarStyle.dark(Color.TRANSPARENT)
+        }
+        enableEdgeToEdge(
+            navigationBarStyle = navigationBarStyle
+        )
 
         super.onCreate(savedInstanceState)
 
@@ -191,7 +198,7 @@ class MainActivity : CommonActivity() {
 
         navController.addOnDestinationChangedListener { _, dest, _ ->
             fragmentHasHeader = dest.id !in listOf(
-                R.id.notificationFragment, R.id.customWebViewFragmentChat, R.id.payWebViewFragment,
+                R.id.notificationFragment, R.id.chatFragment2, R.id.payWebViewFragment,
                 R.id.burgerFragment, R.id.eventLogDetailFragment
             )
         }
@@ -508,7 +515,6 @@ class MainActivity : CommonActivity() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
 
-            val isGestureNavigation = detectGestureNavigation(insets)
             val navBarInsets = insets.getInsets(WindowInsetsCompat.Type.navigationBars())
 
             val bottomNav = binding.bottomNav
@@ -530,28 +536,9 @@ class MainActivity : CommonActivity() {
 
                 val bg2LayoutParams = bottomGradient2.layoutParams as ViewGroup.MarginLayoutParams
 
-                val additionalHeight = if (isGestureNavigation) navBarInsets.bottom else 0
-                val newHeight = initialNavMarginBottom + additionalHeight
+                val newHeight = initialNavMarginBottom + navBarInsets.bottom
                 if (bg2LayoutParams.height != newHeight) {
                     bg2LayoutParams.height = newHeight
-                }
-                val targetBottom2Margin = if (isGestureNavigation) 0 else navBarInsets.bottom
-                if (bg2LayoutParams.bottomMargin != targetBottom2Margin) {
-                    bg2LayoutParams.updateMargins(bottom = targetBottom2Margin)
-                }
-
-                bottomNav.post {
-                    val totalHeight = bottomNav.height + bnLayoutParams.bottomMargin +
-                            bnLayoutParams.topMargin
-
-                    val customInsets = WindowInsetsCompat.Builder(insets)
-                        .setInsets(
-                            WindowInsetsCompat.Type.navigationBars(),
-                            Insets.of(0, 0, 0, totalHeight)
-                        )
-                        .build()
-
-                    ViewCompat.dispatchApplyWindowInsets(container, customInsets)
                 }
             } else {
                 ViewCompat.dispatchApplyWindowInsets(container, insets)
@@ -564,6 +551,12 @@ class MainActivity : CommonActivity() {
     private fun detectGestureNavigation(insets: WindowInsetsCompat): Boolean {
         val gestureInsets = insets.getInsets(WindowInsetsCompat.Type.systemGestures())
         return gestureInsets.left > 0 || gestureInsets.right > 0
+    }
+
+    override fun getBottomNavHeight(): Int {
+        if (!binding.bottomNav.isVisible) return 0
+        val lp = binding.bottomNav.layoutParams as ViewGroup.MarginLayoutParams
+        return binding.bottomNav.height + lp.bottomMargin + lp.topMargin
     }
 
     companion object {

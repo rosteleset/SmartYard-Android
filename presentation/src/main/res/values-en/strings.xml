@@ -527,6 +527,7 @@
     <string name="title_add_face">Add this face?</string>
     <string name="add_item">Add</string>
     <string name="text_no_image">No Image</string>
+    <string name="add_address">Add address</string>
     <string name="phone_number_not_saved">Phone number is not saved</string>
     <string name="guest_access">Guest access for an hour</string>
     <string name="item_theme_system_default">System default</string>

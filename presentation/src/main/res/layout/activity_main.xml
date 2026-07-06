@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/llMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/shaded_background">
+    android:background="@color/shaded_background"
+    tools:context=".ui.main.MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_container"
@@ -23,8 +25,10 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="8dp"
         app:menu="@menu/bottom_nav_menu"
-        app:activeColor="#007AFF"
-        app:inactiveColor="#8E8E93" />
+        app:activeTabColor="@color/brand"
+        app:inactiveTabColor="@color/no_accent"
+        app:solidBackgroundColor="@color/bottom_nav_bg_solid"
+        app:indicatorColor="@color/bottom_nav_indicator" />
 
     <View
         android:id="@+id/bottomGradient"
@@ -39,6 +43,6 @@
         android:layout_width="match_parent"
         android:layout_height="8dp"
         android:layout_gravity="bottom"
-        android:background="@color/bottom_nav_grad_start" />
+        android:background="@color/bottom_nav_bg_solid" />
 
 </FrameLayout>

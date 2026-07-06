@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:clipToPadding="false"
     tools:context=".ui.main.burger.cityCameras.RequestRecordFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -68,7 +67,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="10dp"
-            android:background="@drawable/background_dialog"
+            android:background="@drawable/background_surface_inverted"
             app:layout_constraintTop_toBottomOf="@id/tvRequestRecordTitleSub"
             app:layout_constraintBottom_toBottomOf="parent" />
 

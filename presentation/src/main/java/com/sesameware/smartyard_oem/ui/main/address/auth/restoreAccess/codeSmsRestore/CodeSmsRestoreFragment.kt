@@ -20,6 +20,7 @@ import com.sesameware.smartyard_oem.databinding.FragmentCodeSmsRestoreBinding
 import com.sesameware.smartyard_oem.eventHandler
 import com.sesameware.smartyard_oem.getColorCompat
 import com.sesameware.smartyard_oem.isEmailCharacter
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CodeSmsRestoreFragment : Fragment() {
@@ -83,6 +84,8 @@ class CodeSmsRestoreFragment : Fragment() {
             eventHandler(binding.pin, requireContext())
         }
 
+        binding.tvTimer.applyBottomNavInsetsToMargin()
+        binding.btnResendCode.applyBottomNavInsetsToMargin()
         binding.btnResendCode.setOnClickListener {
             mViewModel.sentCodeRecovery(contract, contactId)
         }

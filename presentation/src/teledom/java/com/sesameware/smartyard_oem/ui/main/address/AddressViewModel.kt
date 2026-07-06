@@ -147,9 +147,7 @@ class AddressViewModel(
     }
 
     fun onItemDrag() {
-        val list = houseUiState.value?.toMutableList() ?: return
-        val collapsedList = list.map { it.copy(isExpanded = false) }
-        houseUiState.value = collapsedList
+        houseUiState.value?.forEach { it.isExpanded = false }
     }
 
     fun getDataList(forceRefresh: Boolean = false) {

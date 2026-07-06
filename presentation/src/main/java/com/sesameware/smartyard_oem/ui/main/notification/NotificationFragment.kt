@@ -5,30 +5,28 @@ import android.app.DownloadManager
 import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
-import android.content.Context.DOWNLOAD_SERVICE
 import android.content.Intent
 import android.content.IntentFilter
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.JavascriptInterface
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.widget.FrameLayout
-import androidx.annotation.ColorRes
-import androidx.core.content.ContextCompat
+import android.widget.Toast
+import androidx.core.net.toUri
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNotificationBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
-import com.sesameware.smartyard_oem.ui.getStatusBarHeight
+import com.sesameware.smartyard_oem.ui.applyStatusBarInset
+import com.sesameware.smartyard_oem.ui.injectColorScheme
+import com.sesameware.smartyard_oem.ui.injectInsets
+import com.sesameware.smartyard_oem.ui.setInsetsListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -39,95 +37,54 @@ class NotificationFragment : Fragment() {
     private val mViewModel by viewModel<NotificationViewModel>()
     private var mLoaded: Boolean = false
 
+    private var windowInsets: WindowInsetsCompat? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentNotificationBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
+        binding.refreshLayout.applyStatusBarInset()
+        binding.webViewNotification.setInsetsListener { windowInsets = it }
         return binding.root
     }
-
-    inner class WebAppInterface {
-        @JavascriptInterface
-        fun resize(height: Float) {
-            activity?.runOnUiThread {
-                val viewGroup = binding.webViewNotification.layoutParams
-                viewGroup?.height = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    height,
-                    resources.displayMetrics
-                ).toInt()
-                binding.webViewNotification.layoutParams = viewGroup
-            }
-        }
-    }
-
-    private fun getWebColorString(@ColorRes id: Int): String {
-        val color = String
-            .format("#%08x", ContextCompat.getColor(requireContext(), id) and 0xffffffff.toInt())
-        return color[0] + color.substring(3..8) + color.substring(1..2)
-    }
-
 
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         mViewModel.onStart()
+        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
+            binding.webViewNotification.scrollY > 0
+        }
         binding.webViewNotification.settings.allowContentAccess = true
         binding.webViewNotification.settings.allowFileAccess = true
         binding.webViewNotification.settings.domStorageEnabled = true
         binding.webViewNotification.settings.databaseEnabled = true
         binding.webViewNotification.settings.javaScriptEnabled = true
-        binding.webViewNotification.addJavascriptInterface(WebAppInterface(), "AndroidFunction")
         binding.webViewNotification.webViewClient = object : WebViewClient() {
-            private val URL = """
-                javascript:document.documentElement.style.setProperty('--brand', '${getWebColorString(R.color.brand)}');
-                javascript:document.documentElement.style.setProperty('--light-background', '${getWebColorString(R.color.light_background)}');
-                javascript:document.documentElement.style.setProperty('--shaded-background', '${getWebColorString(R.color.shaded_background)}');
-                javascript:document.documentElement.style.setProperty('--accent', '${getWebColorString(R.color.accent)}');
-                javascript:document.documentElement.style.setProperty('--no-accent', '${getWebColorString(R.color.no_accent)}');
-                javascript:AndroidFunction.resize(document.body.scrollHeight);
-            """.trimIndent()
-
-            override fun onLoadResource(view: WebView?, url: String?) {
-                if (url != null && url.endsWith(".mp4")) {
-                    view?.stopLoading()
-                    val downloadManager: DownloadManager =
-                        requireActivity().getSystemService(DOWNLOAD_SERVICE) as DownloadManager
-                    val uri = Uri.parse(url)
-                    val title = "${getText(R.string.video_fragment)}_${System.currentTimeMillis()}"
-                    val request =
-                        DownloadManager.Request(uri)
-                    request.setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
-                    request.setTitle(title)
-                    request.setDescription(getText(R.string.downloading_fragment))
-                    request.setNotificationVisibility(
-                        DownloadManager.Request.VISIBILITY_VISIBLE
-                    )
-                    request.setDestinationInExternalPublicDir(
-                        Environment.DIRECTORY_DOWNLOADS,
-                        "$title.mp4"
-                    )
-                    downloadManager.enqueue(request)
-                }
-            }
 
             override fun onPageFinished(view: WebView?, url: String?) {
-                view?.loadUrl(URL)
+                view?.injectColorScheme()
+                windowInsets?.let { view?.injectInsets(it) }
+
                 if (!mLoaded) {
                     mViewModel.finishedLoading()
                     mLoaded = true
                 }
             }
 
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                Intent(Intent.ACTION_VIEW, request?.url).apply {
+            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                val url = request?.url?.toString() ?: return false
+
+                if (url.contains("/cctv/download/", ignoreCase = true) ||
+                    url.substringBefore("?").endsWith(".mp4", ignoreCase = true)) {
+                        downloadVideo(url)
+                        return true
+                    }
+
+                Intent(Intent.ACTION_VIEW, request.url).apply {
                     startActivity(this)
                 }
                 return true
@@ -151,15 +108,6 @@ class NotificationFragment : Fragment() {
         ) { progress ->
             binding.refreshLayout.isRefreshing = progress
         }
-
-        adjustTopMargin()
-    }
-
-    private fun adjustTopMargin() {
-        val lp = binding.flNotification.layoutParams as FrameLayout.LayoutParams
-        lp.topMargin = getStatusBarHeight()
-        binding.flNotification.layoutParams = lp
-        binding.flNotification.requestLayout()
     }
 
     private var receiver = object : BroadcastReceiver() {
@@ -167,6 +115,26 @@ class NotificationFragment : Fragment() {
             mViewModel.loadInbox()
             intentParse()
         }
+    }
+
+    private fun downloadVideo(url: String) {
+        val downloadManager = requireActivity()
+            .getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+
+        val title = "${getText(R.string.video_fragment)}_${System.currentTimeMillis()}"
+        val description = getText(R.string.downloading_fragment)
+
+        val request = DownloadManager.Request(url.toUri()).apply {
+            setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI or DownloadManager.Request.NETWORK_MOBILE)
+            setTitle(title)
+            setDescription(description)
+            setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+            setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, "$title.mp4")
+        }
+        downloadManager.enqueue(request)
+
+        Toast.makeText(requireContext(),"$description $title.mp4",
+            Toast.LENGTH_SHORT).show()
     }
 
     private fun intentParse() {

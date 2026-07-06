@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".ui.main.settings.accessAddress.AccessAddressFragment">
 
     <ImageView
@@ -79,20 +80,16 @@
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="16dp"
-        android:fillViewport="true"
         android:clipToPadding="false"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvAddressName">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clipToPadding="false"
-            android:paddingHorizontal="24dp">
+            android:paddingHorizontal="24dp"
+            android:paddingBottom="24dp">
 
             <TextView
                 android:id="@+id/tvTitleIntercom"
@@ -118,6 +115,8 @@
                 android:id="@+id/gOpeningCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:constraint_referenced_ids="tvTitleOpeningCode, tvOpeningCode, ivRefreshCode, divider1" />
 
             <TextView
@@ -207,6 +206,8 @@
                 android:id="@+id/gEnterByFace"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:constraint_referenced_ids="tvTitleByFace, vEnterByFace, tvEnterByFace, btnManageFaces" />
 
             <TextView
@@ -298,6 +299,8 @@
                 android:layout_marginTop="8dp"
                 android:background="@drawable/background_card"
                 android:padding="4dp"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:layout_constraintTop_toBottomOf="@id/tv_title_gate_access"
                 app:tabIndicator="@drawable/background_tab_indicator"
                 app:tabIndicatorColor="@android:color/transparent"
@@ -350,6 +353,8 @@
                 android:id="@+id/gPermanentAccessAddress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
+                tools:visibility="visible"
                 app:constraint_referenced_ids="vPermanentAccessAddress, tvTitlePermanentAccessAddress, rvPermanentAccessAddress, tvAddPermanentAccessAddress" />
 
             <TextView

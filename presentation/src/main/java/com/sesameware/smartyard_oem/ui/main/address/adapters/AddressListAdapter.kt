@@ -12,7 +12,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.doOnPreDraw
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
@@ -42,7 +41,6 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnEventLogClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnExpandClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnHouseAddressLongClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnIssueClick
-import com.sesameware.smartyard_oem.ui.main.address.models.OnItemFullyExpanded
 import com.sesameware.smartyard_oem.ui.main.address.models.OnOpenEntranceClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
@@ -56,9 +54,32 @@ class AddressListAdapter(
     private val houseCallback: HouseCallback,
     private val issueCallback: IssueCallback,
     private val entranceView: EntrancesView
-) : ListAdapter<AddressUiModel, RecyclerView.ViewHolder>(DiffCallback) {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var isViewDragged = false
+    var isViewDragged = false
+
+    private var items = listOf<AddressUiModel>()
+
+    fun submitList(newList: List<AddressUiModel>, commitCallback: (() -> Unit)? = null) {
+        val diffResult = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = items.size
+            override fun getNewListSize() = newList.size
+
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                areItemsTheSame(items[oldItemPosition], newList[newItemPosition])
+
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
+                areContentsTheSame(items[oldItemPosition], newList[newItemPosition])
+        })
+
+        items = newList
+        diffResult.dispatchUpdatesTo(this)
+        commitCallback?.invoke()
+    }
+
+    override fun getItemCount(): Int = items.size
+
+    fun getItem(position: Int): AddressUiModel = items[position]
 
     override fun getItemViewType(position: Int): Int {
         return when (getItem(position)) {
@@ -87,18 +108,11 @@ class AddressListAdapter(
         }
     }
 
-    fun onViewDragged() {
-        isViewDragged = true
-    }
-
-    fun onViewReleased() {
-        isViewDragged = false
-    }
-
+    // To collapse cached, but not shown on screen item, when drag sort
     override fun onViewAttachedToWindow(holder: RecyclerView.ViewHolder) {
         if (isViewDragged) {
             if (holder is IssueViewHolder) return
-            (holder as HouseViewHolder).onAnyItemDragged(false)
+            (holder as HouseViewHolder).collapseItem(false)
         }
     }
 
@@ -143,7 +157,7 @@ class HouseViewHolder private constructor(
     private val sliderSpacingPx = binding.root.resources
         .getDimensionPixelSize(R.dimen.entrance_slider_spacing)
 
-    fun onThisItemDragged() {
+    fun elevateItem() {
         binding.root.apply {
             val elevationPx = context.resources.displayMetrics.density * DRAGGED_ELEVATION
             translationZ = elevationPx
@@ -152,7 +166,7 @@ class HouseViewHolder private constructor(
         }
     }
 
-    fun onThisItemReleased() {
+    fun resetItemElevation() {
         binding.root.doOnPreDraw {
             it.translationZ = 0f
             it.scaleX = 1.0f
@@ -160,7 +174,7 @@ class HouseViewHolder private constructor(
         }
     }
 
-    fun onAnyItemDragged(animate: Boolean) {
+    fun collapseItem(animate: Boolean) {
         binding.apply {
             expandableLayout.setExpanded(false, animate)
             expandHouse.isSelected = false
@@ -170,23 +184,40 @@ class HouseViewHolder private constructor(
     fun bind(state: HouseUiModel, callback: HouseCallback, entranceView: EntrancesView) {
         with (binding) {
             houseAddress.text = state.address
-            houseAddress.setOnLongClickListener {
+            houseHeader.setOnLongClickListener {
                 callback(OnHouseAddressLongClick(bindingAdapterPosition))
                 return@setOnLongClickListener true
             }
 
             expandableLayout.setExpanded(state.isExpanded, false)
-            expandableLayout.setOnExpansionUpdateListener(object :
-                ExpandableLayout.OnExpansionUpdateListener {
-                    private var lastFraction = -1f
+            expandableLayout.setOnExpansionUpdateListener(object : ExpandableLayout.OnExpansionUpdateListener {
+                private var lastFraction = -1f
 
-                    override fun onExpansionUpdate(expansionFraction: Float, state: Int) {
-                        if (lastFraction != expansionFraction && expansionFraction == 1f) {
-                            callback(OnItemFullyExpanded(bindingAdapterPosition))
+                override fun onExpansionUpdate(expansionFraction: Float, state: Int) {
+                    val isExpanding = expansionFraction > lastFraction
+                    lastFraction = expansionFraction
+
+                    if (isExpanding) {
+                        binding.root.post {
+                            val recyclerView = binding.root.parent as? RecyclerView ?: return@post
+
+                            val rvBottom = recyclerView.height - recyclerView.paddingBottom
+                            val rvTop = recyclerView.paddingTop
+                            val viewBottom = binding.root.bottom
+                            val viewTop = binding.root.top
+
+                            if (viewBottom > rvBottom) {
+                                val dy = viewBottom - rvBottom
+                                val maxScroll = viewTop - rvTop
+
+                                if (maxScroll > 0) {
+                                    recyclerView.scrollBy(0, minOf(dy, maxScroll))
+                                }
+                            }
                         }
-                        lastFraction = expansionFraction
                     }
-                })
+                }
+            })
             val onHeaderClickListener = View.OnClickListener {
                 expandHouse.isSelected = !expandHouse.isSelected
                 callback(OnExpandClick(bindingAdapterPosition, expandHouse.isSelected))
@@ -302,6 +333,32 @@ class HouseViewHolder private constructor(
             adapter = StaticPagerAdapter(activeViews)
             pageMargin = sliderSpacingPx
             setCurrentItem(initialSliderPosition)
+
+            with (binding.entranceViewPager) {
+                adapter = StaticPagerAdapter(activeViews)
+                pageMargin = sliderSpacingPx
+                setCurrentItem(initialSliderPosition)
+
+                setOnTouchListener { v, event ->
+                    when (event.action) {
+                        android.view.MotionEvent.ACTION_DOWN -> {
+                            v.parent?.requestDisallowInterceptTouchEvent(true)
+                        }
+
+                        android.view.MotionEvent.ACTION_UP -> {
+                            v.parent?.requestDisallowInterceptTouchEvent(false)
+                            v.performClick()
+                        }
+
+                        android.view.MotionEvent.ACTION_CANCEL -> {
+                            v.parent?.requestDisallowInterceptTouchEvent(false)
+                        }
+                    }
+
+                    false
+                }
+            }
+
             clearOnPageChangeListeners()
             addOnPageChangeListener(
                 object : ViewPager.SimpleOnPageChangeListener() {
@@ -310,14 +367,27 @@ class HouseViewHolder private constructor(
                     override fun onPageSelected(position: Int) {
                         super.onPageSelected(position)
 
+                        binding.pageIndicatorView.selection = position
+                    }
+
+                    private fun initialFired(position: Int): Boolean {
                         if (!initialPosAlreadyFired && initialSliderPosition == position) {
                             initialPosAlreadyFired = true
-                            return
+                            return true
                         }
+                        return false
+                    }
 
-                        binding.pageIndicatorView.selection = position
-                        val entranceCamera = mappedStates[position].cameras.firstOrNull()
-                        callback(OnEntrancePageSelected(houseId, position, entranceCamera))
+                    override fun onPageScrollStateChanged(state: Int) {
+                        super.onPageScrollStateChanged(state)
+                        if (state == ViewPager.SCROLL_STATE_IDLE) {
+                            val position = binding.entranceViewPager.currentItem
+
+                            if (initialFired(position)) return
+
+                            val entranceCamera = mappedStates[position].cameras.firstOrNull()
+                            callback(OnEntrancePageSelected(houseId, position, entranceCamera))
+                        }
                     }
                 }
             )

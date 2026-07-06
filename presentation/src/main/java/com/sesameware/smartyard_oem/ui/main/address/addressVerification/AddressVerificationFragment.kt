@@ -9,6 +9,7 @@ import androidx.navigation.fragment.findNavController
 import com.sesameware.data.DataModule
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressVerificationBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.courier.CourierFragment
 import com.sesameware.smartyard_oem.ui.main.address.addressVerification.office.OfficeFragment
 import com.sesameware.smartyard_oem.ui.main.address.noNetwork.NoNetworkFragmentArgs
@@ -46,6 +47,7 @@ class AddressVerificationFragment : Fragment() {
                     resources.getString(R.string.address_verification_tab_title_2)
                 )
             }
+            binding.vpAddressVerification.applyBottomNavInsetsToPadding()
             binding.vpAddressVerification.adapter = adapter
             binding.tlAddressVerification.setupWithViewPager(binding.vpAddressVerification)
             if (!DataModule.providerConfig.addressVerificationTabLayoutVisible) {

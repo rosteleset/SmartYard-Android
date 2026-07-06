@@ -285,7 +285,7 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
     private fun setFullscreenMode() {
         lpContentWrap = ConstraintLayout.LayoutParams(binding.contentWrap.layoutParams as ConstraintLayout.LayoutParams)
 
-        lpVideoWrap = LinearLayout.LayoutParams(binding.videoWrap.layoutParams as LinearLayout.LayoutParams)
+        lpVideoWrap = binding.videoWrap.layoutParams
         (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
         binding.clVideoPlayback.addView(binding.videoWrap, 1)
 
@@ -312,7 +312,6 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         binding.mPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
         binding.mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
 
-        //layouts в полноэкранном режиме
         val lp2 = binding.videoWrap.layoutParams as ConstraintLayout.LayoutParams
         lp2.width = ConstraintLayout.LayoutParams.MATCH_PARENT
         lp2.height = ConstraintLayout.LayoutParams.MATCH_PARENT

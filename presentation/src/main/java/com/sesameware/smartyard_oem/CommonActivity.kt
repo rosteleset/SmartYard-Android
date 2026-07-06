@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem
 
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
@@ -16,14 +17,41 @@ abstract class CommonActivity : AppCompatActivity() {
     private lateinit var progressDialog: ProgressDialog
     abstract val mViewModel: GenericViewModel
 
-    internal var fragmentHasHeader: Boolean = false
-        set(value) {
-            val color = ContextCompat.getColor(this, R.color.on_top_background)
-            val lightHeaderContentColor = ColorUtils.calculateLuminance(color) > 0.5
-            val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
-            windowInsetsController.isAppearanceLightStatusBars = !lightHeaderContentColor
-            field = value
+    val isNightModeOn: Boolean
+        get() = when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
+            Configuration.UI_MODE_NIGHT_NO -> false
+            Configuration.UI_MODE_NIGHT_YES -> true
+            else -> {
+                false
+            }
         }
+
+    internal var fragmentHasHeader: Boolean = false
+        set(hasHeader) {
+            val isLightAppearance = resolveStatusBarAppearance(hasHeader)
+            setStatusBarAppearance(isLightAppearance)
+            field = hasHeader
+        }
+
+    private fun setStatusBarAppearance(isLightAppearance: Boolean) {
+        val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
+        windowInsetsController.isAppearanceLightStatusBars = isLightAppearance
+    }
+
+    private val isHeaderLight: Boolean
+        get() {
+            val color = ContextCompat.getColor(this, R.color.on_top_background)
+            return ColorUtils.calculateLuminance(color) < 0.5
+        }
+
+    private fun resolveStatusBarAppearance(hasHeader: Boolean): Boolean {
+        return when {
+            isNightModeOn -> false
+            !hasHeader -> true
+            isHeaderLight -> true
+            else -> false
+        }
+    }
 
     internal var lightNavBar: Boolean = true
         set(value) {

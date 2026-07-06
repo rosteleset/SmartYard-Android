@@ -62,7 +62,7 @@ buildscript {
         rustoreTracer = '0.3.1'
         safeArgsPlugin = '2.7.6'
         splashscreen = '1.0.1'
-        swipeLayout = '1.1.0'
+        swipeLayout = '1.2.0'
         swipeLayoutRambler = '1.0.17'
         threetenabp = '1.2.3'
         timber = '4.7.1'

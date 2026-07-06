@@ -82,11 +82,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
                             android:layout_marginEnd="24dp"
                             android:text="@string/event_log_unanswered_call"
                             android:textColor="@color/negative"
                             android:textSize="12sp"
                             android:visibility="invisible"
+                            android:drawablePadding="8dp"
                             app:drawableLeftCompat="@drawable/ic_eld_unanswered_call" />
 
                         <TextView
@@ -95,11 +97,13 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="24dp"
                             android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
                             android:layout_marginEnd="24dp"
                             android:text="@string/event_log_answered_call"
                             android:textColor="@color/positive"
                             android:textSize="12sp"
                             android:visibility="invisible"
+                            android:drawablePadding="8dp"
                             app:drawableLeftCompat="@drawable/ic_eld_answered_call" />
 
                         <TextView

@@ -12,7 +12,7 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.string
 import com.sesameware.smartyard_oem.databinding.FragmentWorkSoonOfficeBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 
@@ -30,7 +30,6 @@ class WorkSoonOfficeFragment() : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentWorkSoonOfficeBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 
@@ -47,6 +46,7 @@ class WorkSoonOfficeFragment() : Fragment() {
             getString(string.address_work_soon_office_caption), issueModel?.address
         )
 
+        binding.btnCancel.applyBottomNavInsetsToMargin()
         binding.btnCancel.setOnClickListener {
             viewModel.deleteIssue(issueModel?.key ?: "")
         }

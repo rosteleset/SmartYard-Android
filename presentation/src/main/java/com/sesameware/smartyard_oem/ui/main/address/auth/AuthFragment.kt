@@ -15,7 +15,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.R.string
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentAuthBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -82,7 +82,7 @@ class AuthFragment : Fragment() {
         binding.ivShowHide.setOnClickListener {
             showHidePass()
         }
-        binding.root.applyBottomNavInsetsToPadding()
+        binding.btnNoContract.applyBottomNavInsetsToMargin()
         binding.btnNoContract.setOnClickListener {
             viewModel.seenWarning()
             NavHostFragment.findNavController(this)

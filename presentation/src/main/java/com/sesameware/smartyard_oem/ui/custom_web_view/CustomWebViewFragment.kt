@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -20,8 +21,9 @@ import androidx.webkit.WebSettingsCompat
 import androidx.webkit.WebViewFeature
 import com.sesameware.domain.utils.doDelayed
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebViewBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyStatusBarInset
 import com.sesameware.smartyard_oem.ui.getStatusBarHeight
+import com.sesameware.smartyard_oem.ui.setInsetsListener
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import timber.log.Timber
@@ -44,6 +46,9 @@ class CustomWebViewFragment : Fragment() {
 
     private var stateBundle: Bundle? = null
 
+    private var windowInsets: WindowInsetsCompat? = null
+    private lateinit var webViewClient: CustomWebViewClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -56,6 +61,8 @@ class CustomWebViewFragment : Fragment() {
             hasBackButton = it.getBoolean(HAS_BACK_BUTTON, hasBackButton)
             canRefresh = it.getBoolean(CAN_REFRESH, canRefresh)
         }
+
+        webViewClient = CustomWebViewClient(fragmentId, popupId, this, null)
     }
 
     override fun onCreateView(
@@ -63,7 +70,13 @@ class CustomWebViewFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCustomWebViewBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
+        binding.srlCustomWebView.applyStatusBarInset()
+        binding.wvExt.setInsetsListener {
+            windowInsets = it
+            if (::webViewClient.isInitialized) {
+                webViewClient.windowInsets = it
+            }
+        }
         return binding.root
     }
 
@@ -72,6 +85,9 @@ class CustomWebViewFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.srlCustomWebView.clipToOutline = true
+        binding.srlCustomWebView.setOnChildScrollUpCallback { _, _ ->
+            binding.wvExt.scrollY > 0
+        }
         binding.wvExt.clipToOutline = true
         binding.wvExt.settings.allowContentAccess = true
         binding.wvExt.settings.allowFileAccess = true
@@ -81,7 +97,7 @@ class CustomWebViewFragment : Fragment() {
         binding.wvExt.settings.javaScriptCanOpenWindowsAutomatically = true
         binding.wvExt.settings.setSupportMultipleWindows(true)
         binding.wvExt.webChromeClient = CustomWebChromeClient(this, null)
-        binding.wvExt.webViewClient = CustomWebViewClient(fragmentId, popupId, this, null)
+        binding.wvExt.webViewClient = webViewClient
         if (WebViewFeature.isFeatureSupported(WebViewFeature.ALGORITHMIC_DARKENING)) {
             WebSettingsCompat.setAlgorithmicDarkeningAllowed(binding.wvExt.settings, true)
         }

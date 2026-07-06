@@ -14,7 +14,7 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAvailableServicesBinding
 import com.sesameware.smartyard_oem.ui.DividerItemDecorator
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -55,8 +55,8 @@ class AvailableServicesFragment : Fragment() {
             adapter.items = servicesList
             address = AvailableServicesFragmentArgs.fromBundle(it).address
         }
-        binding.root.applyBottomNavInsetsToPadding()
         binding.tvAddress.text = address
+        binding.btnNext.applyBottomNavInsetsToMargin()
         binding.btnNext.setOnClickListener {
             viewModel.checkServices(servicesList, address)
         }

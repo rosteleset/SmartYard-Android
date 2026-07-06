@@ -13,10 +13,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -127,7 +130,7 @@ class CCTVTreeFragment : Fragment() {
                             //this Box with calculated height is a workaround because for some reason the last item is partially shown in LazyColumn
                             //everything begins working correctly only if LazyColumn's height is set with specific number
                             Box(modifier = Modifier
-                                .padding(top = 24.dp, bottom = 48.dp)
+                                .padding(top = 24.dp)
                                 .fillMaxSize()
                                 .onGloballyPositioned {
                                     val screenPixelDensity =
@@ -137,7 +140,8 @@ class CCTVTreeFragment : Fragment() {
                                 }
                             ) {
                                 LazyColumn(
-                                    modifier = Modifier.height(listHeight)
+                                    modifier = Modifier.height(listHeight),
+                                    contentPadding = WindowInsets.navigationBars.asPaddingValues()
                                 ) {
                                     groupData?.childGroups?.let {childGroups ->
                                         items(childGroups) {
@@ -148,7 +152,11 @@ class CCTVTreeFragment : Fragment() {
                                     groupData?.cameras?.let { cameras ->
                                         cameras.forEachIndexed { index, cctvData ->
                                             item {
-                                                CameraItem(parent = groupData!!, index = index, camera = cctvData)
+                                                CameraItem(
+                                                    parent = groupData!!,
+                                                    index = index,
+                                                    camera = cctvData
+                                                )
                                             }
                                         }
                                     }
@@ -183,6 +191,7 @@ class CCTVTreeFragment : Fragment() {
                                 CCTVRepresentationType.LIST -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentSelf(
                                     group
                                 )
+
                                 else -> CCTVTreeFragmentDirections.actionCCTVTreeFragmentToCCTVMapFragment()
                             }
                             findNavController().navigate(action)

@@ -167,10 +167,14 @@
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:navigationBarColor">@color/light_background</item>
     </style>
 
     <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/rounded_bottom_sheet_dialog</item>
+        <item name="paddingBottomSystemWindowInsets">true</item>
+        <item name="paddingLeftSystemWindowInsets">true</item>
+        <item name="paddingRightSystemWindowInsets">true</item>
     </style>
 
     <style name="Theme.Transparent" parent="@style/Theme.AppCompat.Light.NoActionBar">

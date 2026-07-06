@@ -14,7 +14,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentRequestRecordBinding
 import com.sesameware.smartyard_oem.ui.DatePickerFragment
 import com.sesameware.smartyard_oem.ui.TimePickerFragment
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.threeten.bp.LocalDate
@@ -36,7 +36,6 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         _binding = FragmentRequestRecordBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 
@@ -69,6 +68,7 @@ class RequestRecordFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.spinnerRequestRecordDuration.onItemSelectedListener = this
         binding.spinnerRequestRecordDuration.setSelection(selectedDurationPosition)
 
+        binding.btnRequestRecord.applyBottomNavInsetsToMargin()
         binding.btnRequestRecord.setOnClickListener {
             viewModel.createIssue(recordDate, recordTime, durationList[selectedDurationPosition],
                 binding.tvRequestRecordComments.text.toString())

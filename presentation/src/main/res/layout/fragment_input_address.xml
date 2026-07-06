@@ -1,215 +1,178 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:clipToPadding="false"
     tools:context=".ui.main.address.inputAddress.InputAddressFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/ivHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"
+        app:srcCompat="@drawable/background_top_narrow"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
-            app:srcCompat="@drawable/background_top_wide"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/ivBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="28dp"
+        android:padding="16dp"
+        app:srcCompat="@drawable/ic_back_arrow"
+        app:tint="@color/on_top_background"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-        <ImageView
-            android:id="@+id/ivBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="28dp"
-            android:padding="16dp"
-            android:src="@drawable/ic_back_arrow"
-            app:tint="@color/on_top_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="32dp"
+        android:text="@string/input_address_title"
+        android:textColor="@color/on_top_background"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:autoSizeMinTextSize="15sp"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ivBack"/>
 
-        <TextView
-            android:id="@+id/textView9"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="32dp"
-            android:text="@string/input_address_title"
-            android:textColor="@color/on_top_background"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            app:autoSizeMinTextSize="15sp"
-            android:maxLines="2"
-            android:ellipsize="end"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivBack"/>
+    <View
+        android:id="@+id/surface"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/surface_corner_radius_compensation"
+        android:background="@drawable/background_radius"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivHeader" />
 
-        <LinearLayout
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/background_radius"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView9">
+    <AutoCompleteTextView
+        android:id="@+id/actvCity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        style="@style/AutoCompleteTextViewStyle"
+        android:hint="@string/hint_city"
+        app:layout_constraintTop_toTopOf="@+id/surface"/>
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp">
+    <ProgressBar
+        android:id="@+id/progressCity"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:indeterminateTint="@color/brand"
+        app:layout_constraintTop_toTopOf="@+id/actvCity"
+        app:layout_constraintBottom_toBottomOf="@+id/actvCity"
+        app:layout_constraintEnd_toEndOf="@+id/actvCity"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/actvCity"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    style="@style/AutoCompleteTextViewStyle"
-                    android:hint="@string/hint_city" />
+    <AutoCompleteTextView
+        android:id="@+id/actvStreet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        style="@style/AutoCompleteTextViewStyle"
+        android:hint="@string/hint_street"
+        app:layout_constraintTop_toBottomOf="@+id/actvCity"/>
 
-                <ProgressBar
-                    android:id="@+id/progressCity"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center|end"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:indeterminateTint="@color/brand"
-                    android:visibility="gone" />
+    <ProgressBar
+        android:id="@+id/progressStreet"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:indeterminateTint="@color/brand"
+        app:layout_constraintTop_toTopOf="@+id/actvStreet"
+        app:layout_constraintBottom_toBottomOf="@+id/actvStreet"
+        app:layout_constraintEnd_toEndOf="@+id/actvStreet"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-            </FrameLayout>
+    <AutoCompleteTextView
+        android:id="@+id/actvHouse"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="8dp"
+        style="@style/AutoCompleteTextViewStyle"
+        android:hint="@string/hint_house"
+        app:layout_constraintTop_toBottomOf="@+id/actvStreet"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/etApartment"/>
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
+    <ProgressBar
+        android:id="@+id/progressHouse"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="16dp"
+        android:indeterminateTint="@color/brand"
+        app:layout_constraintTop_toTopOf="@+id/actvHouse"
+        app:layout_constraintBottom_toBottomOf="@+id/actvHouse"
+        app:layout_constraintEnd_toEndOf="@+id/actvHouse"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
+    <EditText
+        android:id="@+id/etApartment"
+        style="@style/EditTextStyle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:hint="@string/hint_flat"
+        android:inputType="textCapWords|textNoSuggestions"
+        app:layout_constraintTop_toBottomOf="@+id/actvStreet"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/actvHouse" />
 
-                <AutoCompleteTextView
-                    android:id="@+id/actvStreet"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    style="@style/AutoCompleteTextViewStyle"
-                    android:hint="@string/hint_street" />
+    <Button
+        android:id="@+id/btnCheckAvailableServices"
+        style="@style/buttonBlueFlooded"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:enabled="false"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:text="@string/input_address_ok"
+        app:layout_constraintTop_toBottomOf="@+id/actvHouse" />
 
-                <ProgressBar
-                    android:id="@+id/progressStreet"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="20dp"
-                    android:layout_gravity="center|end"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="8dp"
-                    android:indeterminateTint="@color/brand"
-                    android:visibility="gone" />
+    <TextView
+        android:id="@+id/tvQrCode"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/dashed"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:drawablePadding="8dp"
+        android:gravity="bottom"
+        android:text="@string/input_address_text_qr"
+        android:textColor="@color/brand"
+        app:drawableLeftCompat="@drawable/ic_qr_code"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnCheckAvailableServices"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
-            </FrameLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_weight="1">
-
-
-                    <AutoCompleteTextView
-                        android:id="@+id/actvHouse"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="32dp"
-                        android:layout_marginEnd="8dp"
-                        style="@style/AutoCompleteTextViewStyle"
-                        android:hint="@string/hint_house" />
-
-                    <ProgressBar
-                        android:id="@+id/progressHouse"
-                        style="@style/Widget.AppCompat.ProgressBar"
-                        android:layout_width="wrap_content"
-                        android:layout_height="20dp"
-                        android:layout_gravity="center|end"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:indeterminateTint="@color/brand"
-                        android:visibility="gone" />
-                </FrameLayout>
-
-                <EditText
-                    android:id="@+id/etApartment"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_weight="1"
-                    style="@style/EditTextStyle"
-                    android:hint="@string/hint_flat"
-                    android:inputType="textCapWords|textNoSuggestions" />
-            </LinearLayout>
-
-            <Button
-                android:id="@+id/btnCheckAvailableServices"
-                style="@style/buttonBlueFlooded"
-                android:layout_width="match_parent"
-                android:layout_height="61dp"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="32dp"
-                android:enabled="false"
-                android:paddingTop="18dp"
-                android:paddingBottom="18dp"
-                android:text="@string/input_address_ok" />
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="16dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:paddingTop="10dp"
-                    android:src="@drawable/ic_qr_code" />
-
-                <TextView
-                    android:id="@+id/tvQrCode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/dashed"
-                    android:drawablePadding="8dp"
-                    android:paddingTop="10dp"
-                    android:text="@string/input_address_text_qr"
-                    android:textColor="@color/brand" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

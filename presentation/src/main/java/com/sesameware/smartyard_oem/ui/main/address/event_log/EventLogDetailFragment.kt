@@ -30,7 +30,6 @@ import com.sesameware.domain.utils.listenerGeneric
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogDetailBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
@@ -69,7 +68,6 @@ class EventLogDetailFragment : Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
         _binding = FragmentEventLogDetailBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

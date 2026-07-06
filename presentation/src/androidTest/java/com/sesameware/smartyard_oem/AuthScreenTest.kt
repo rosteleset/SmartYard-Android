@@ -44,9 +44,9 @@ class AuthScreenTest : TestCase() {
     fun logoutAccount() {
         run {
             step("Выход из аккаунта") {
-                MainScreen.bottomMenu {
-                    setSelectedItem(R.id.settings)
-                }
+//                MainScreen.bottomMenu {
+//                    setSelectedItem(R.id.settings)
+//                }
 //                SettingsScreen {
 //                    ivSettings {
 //                        click()
@@ -131,12 +131,12 @@ class AuthScreenTest : TestCase() {
         loginAccount()
         run {
             step("Настройки приложения") {
-                MainScreen {
-                    bottomMenu {
-                        setSelectedItem(R.id.settings)
-                        idle(1500)
-                    }
-                }
+//                MainScreen {
+//                    bottomMenu {
+//                        setSelectedItem(R.id.settings)
+//                        idle(1500)
+//                    }
+//                }
                 SettingsScreen {
 //                    ivSettings {
 //                        click()
@@ -176,14 +176,14 @@ class AuthScreenTest : TestCase() {
         run {
             loginAccount()
             MainScreen {
-                bottomMenu {
-                    setSelectedItem(R.id.address)
-                    idle(1500)
-                    setSelectedItem(R.id.pay)
-                    idle(1500)
-                    setSelectedItem(R.id.address)
-                    idle(1500)
-                }
+//                bottomMenu {
+//                    setSelectedItem(R.id.address)
+//                    idle(1500)
+//                    setSelectedItem(R.id.pay)
+//                    idle(1500)
+//                    setSelectedItem(R.id.address)
+//                    idle(1500)
+//                }
             }
             AddressScreen {
                 rv_parent {

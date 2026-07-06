@@ -17,7 +17,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentInputAddressBinding
 import com.sesameware.smartyard_oem.hideKeyboard
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class InputAddressFragment : Fragment() {
@@ -40,7 +40,6 @@ class InputAddressFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentInputAddressBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 
@@ -157,6 +156,7 @@ class InputAddressFragment : Fragment() {
         binding.actvStreet.afterTextChanged(this::validateFields)
         binding.actvHouse.afterTextChanged(this::validateHouse)
         // etApartment.afterTextChanged(this::validateFields)
+        binding.tvQrCode.applyBottomNavInsetsToMargin()
         binding.tvQrCode.setOnClickListener {
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_inputAddressFragment_to_qrCodeFragment)

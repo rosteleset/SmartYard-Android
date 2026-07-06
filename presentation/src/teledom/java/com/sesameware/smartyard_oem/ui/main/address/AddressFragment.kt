@@ -18,9 +18,7 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.SmoothScroller
 import com.bumptech.glide.Glide
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.CCTVDataTree
@@ -35,6 +33,7 @@ import com.sesameware.domain.model.response.Story
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressListAdapter
@@ -55,7 +54,6 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnEventLogClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnExpandClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnHouseAddressLongClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnIssueClick
-import com.sesameware.smartyard_oem.ui.main.address.models.OnItemFullyExpanded
 import com.sesameware.smartyard_oem.ui.main.address.models.OnOpenEntranceClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
@@ -124,10 +122,12 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
 
             it.adapter = adapter
 
+            it.applyBottomNavInsetsToPadding()
+
             val callback = DragToSortCallback(
-                mViewModel::setHouseItemSavedPosition,
-                ::onItemDrag,
-                ::onItemRelease
+                onItemsSwap = mViewModel::setHouseItemSavedPosition,
+                onItemDrag = ::onItemDrag,
+                onItemRelease = ::onItemRelease
             )
             itemTouchHelper = ItemTouchHelper(callback)
             itemTouchHelper!!.attachToRecyclerView(it)
@@ -190,21 +190,25 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     private fun onItemDrag(viewHolder: RecyclerView.ViewHolder?) {
-        (viewHolder as? HouseViewHolder)?.onThisItemDragged()
-        requireInitialized(adapter).onViewDragged()
+        (viewHolder as? HouseViewHolder)?.elevateItem()
+
+        requireInitialized(adapter).isViewDragged = true
+
         val manager = requireInitialized(layoutManager)
         val firstVisible = manager.findFirstVisibleItemPosition()
         val lastVisible = manager.findLastVisibleItemPosition()
         (firstVisible..lastVisible).forEach {
             (binding.addressList.findViewHolderForLayoutPosition(it) as? HouseViewHolder)
-                ?.onAnyItemDragged(true)
+                ?.collapseItem(true)
         }
+
         mViewModel.onItemDrag()
     }
 
     private fun onItemRelease(viewHolder: RecyclerView.ViewHolder?) {
-        (viewHolder as? HouseViewHolder)?.onThisItemReleased()
-        requireInitialized(adapter).onViewReleased()
+        (viewHolder as? HouseViewHolder)?.resetItemElevation()
+
+        requireInitialized(adapter).isViewDragged = false
     }
 
     private fun onAddressAction(action: HouseAction) {
@@ -219,7 +223,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             }
             is OnOpenEntranceClick -> mViewModel.openDoor(action.lock)
             is OnEntrancePreviewClick -> navigateToEntranceCameraFragment(action.camera, action.lock)
-            is OnItemFullyExpanded -> scrollUntilFullItemVisible(action.position)
             is OnHouseAddressLongClick -> startDrag(action.position)
             is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath, action.code)
             is OnEntrancePageSelected -> onEntrancePageSelected(action)
@@ -244,17 +247,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         val action = AddressFragmentDirections
             .actionAddressFragmentToEntranceCameraFragment(camera, lock)
         findNavController().navigate(action)
-    }
-
-    private fun scrollUntilFullItemVisible(position: Int) {
-        val layoutManager = binding.addressList.layoutManager as LinearLayoutManager
-        val smoothScroller: SmoothScroller = object : LinearSmoothScroller(context) {
-            override fun getVerticalSnapPreference(): Int {
-                return SNAP_TO_START
-            }
-        }
-        smoothScroller.targetPosition = position
-        layoutManager.startSmoothScroll(smoothScroller)
     }
 
     private fun navigateToCCTVFragment(model: VideoCameraModelP) {

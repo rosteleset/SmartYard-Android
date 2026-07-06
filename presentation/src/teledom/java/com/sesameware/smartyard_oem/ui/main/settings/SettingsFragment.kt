@@ -12,6 +12,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ConcatAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
@@ -48,9 +49,6 @@ class SettingsFragment : Fragment() {
         initRecycler()
         binding.ivBackAddressSettings.setOnClickListener {
             this.findNavController().popBackStack()
-        }
-        binding.imageView15.setOnClickListener {
-            (activity as MainActivity?)?.navigateToAddressAuthFragment()
         }
     }
 
@@ -109,6 +107,9 @@ class SettingsFragment : Fragment() {
     }
 
     private fun initRecycler() {
+        val buttonAdapter = ButtonAdapter {
+            (activity as MainActivity?)?.navigateToAddressAuthFragment()
+        }
         binding.rvSettings.apply {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
             applyBottomNavInsetsToPadding()
@@ -163,7 +164,12 @@ class SettingsFragment : Fragment() {
             )
         )
         adapter.items = emptyList()
-        binding.rvSettings.adapter = adapter
+
+        val config = ConcatAdapter.Config.Builder()
+            .setIsolateViewTypes(false)
+            .build()
+
+        binding.rvSettings.adapter = ConcatAdapter(config, adapter, buttonAdapter)
     }
 
     private var receiver = object : BroadcastReceiver() {

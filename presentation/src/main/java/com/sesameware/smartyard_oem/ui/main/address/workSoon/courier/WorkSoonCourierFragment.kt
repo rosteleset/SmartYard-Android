@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.sesameware.domain.model.request.DELIVERY_COURIER
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.databinding.FragmentWorkSoonCourierBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.office.WorkSoonOfficeFragmentArgs
@@ -27,7 +27,6 @@ class WorkSoonCourierFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentWorkSoonCourierBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
         return binding.root
     }
 
@@ -44,6 +43,7 @@ class WorkSoonCourierFragment : Fragment() {
                 DELIVERY_COURIER
             )
         }
+        binding.btnCancel.applyBottomNavInsetsToMargin()
         binding.btnCancel.setOnClickListener {
             viewModel.deleteIssue(issueModel?.key ?: "")
         }

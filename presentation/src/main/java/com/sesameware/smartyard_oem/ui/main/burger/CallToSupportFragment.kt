@@ -5,6 +5,9 @@ import android.telephony.PhoneNumberUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import androidx.core.view.WindowCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCallToSupportBinding
@@ -42,6 +45,18 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
         }
 
         setupObservers()
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        dialog?.window?.let { window ->
+            val color = ContextCompat
+                .getColor(requireContext(), R.color.light_background)
+            val isLightBackground = ColorUtils.calculateLuminance(color) > 0.5
+            WindowCompat.getInsetsController(window, window.decorView)
+                .isAppearanceLightNavigationBars = isLightBackground
+        }
     }
 
     private fun setupObservers() {

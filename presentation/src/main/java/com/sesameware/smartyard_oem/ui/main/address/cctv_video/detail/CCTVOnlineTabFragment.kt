@@ -13,7 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -95,7 +95,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
     private fun setFullscreenMode() {
         if (activity?.requestedOrientation != ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED) {
-            lpVideoWrap = LinearLayout.LayoutParams(binding.videoWrap.layoutParams as LinearLayout.LayoutParams)
+            lpVideoWrap = binding.videoWrap.layoutParams
             (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
 
             (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.INVISIBLE
@@ -110,7 +110,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             binding.videoWrap.background = null
             (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
-            val lp = binding.videoWrap.layoutParams as LinearLayout.LayoutParams
+            val lp = binding.videoWrap.layoutParams as FrameLayout.LayoutParams
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT
             lp.topMargin = 0

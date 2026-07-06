@@ -523,6 +523,7 @@
     <string name="title_add_face">Бұл бетті қосу керек пе??</string>
     <string name="add_item">Қосу</string>
     <string name="text_no_image">Сурет жоқ</string>
+    <string name="add_address">Мекенжайды қосу</string>
     <string name="phone_number_not_saved">Телефон нөмірі сақталмаған</string>
     <string name="guest_access">Қонақтарға бір сағатқа кіру</string>
     <string name="item_theme_system_default">Жүйемен анықталады</string>

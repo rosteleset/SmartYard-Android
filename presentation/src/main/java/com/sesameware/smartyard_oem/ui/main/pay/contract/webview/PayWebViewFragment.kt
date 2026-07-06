@@ -8,12 +8,14 @@ import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ProgressBar
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentPayWebViewBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.injectInsets
+import com.sesameware.smartyard_oem.ui.setInsetsListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PayWebViewFragment : Fragment() {
@@ -24,9 +26,11 @@ class PayWebViewFragment : Fragment() {
 
     private val args: PayWebViewFragmentArgs by navArgs()
 
+    private var windowInsets: WindowInsetsCompat? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentPayWebViewBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
+        binding.webView.setInsetsListener { windowInsets = it }
         return binding.root
     }
 
@@ -62,6 +66,8 @@ class PayWebViewFragment : Fragment() {
              */
             override fun onPageFinished(view: WebView?, url: String?) {
                 super.onPageFinished(view, url)
+                windowInsets?.let { view?.injectInsets(it) }
+
                 if (url?.contains("finish.html") == true) {
                     finishPay()
                 }

@@ -110,7 +110,6 @@
             android:id="@+id/addressList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:nestedScrollingEnabled="false"
             android:clipToPadding="false"
             tools:itemCount="10"
             tools:listitem="@layout/item_house" />

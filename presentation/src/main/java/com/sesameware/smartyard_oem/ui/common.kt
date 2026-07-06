@@ -39,12 +39,14 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.webkit.WebView
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TimePicker
 import android.widget.Toast
+import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
@@ -60,6 +62,7 @@ import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
@@ -76,6 +79,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.PUSH_DATA
+import com.sesameware.smartyard_oem.ui.main.BottomNavProvider
 import com.sesameware.smartyard_oem.ui.show_event.ShowEventActivity
 import com.sesameware.smartyard_oem.ui.widget.WidgetProvider
 import org.threeten.bp.LocalDate
@@ -663,36 +667,120 @@ fun String.formatPhoneWith(pattern: String): String {
     }
 }
 
+private fun getWebColorString(@ColorRes id: Int, context: Context): String {
+    val color = String.format("#%08x", ContextCompat.getColor(context, id) and 0xffffffff.toInt())
+    return color[0] + color.substring(3..8) + color.substring(1..2)
+}
+
+fun WebView.injectColorScheme() {
+    val prefix = "javascript:document.documentElement.style.setProperty"
+    val js =
+        """
+            $prefix('--brand', '${getWebColorString(R.color.brand, context)}');
+            $prefix('--light-background', '${getWebColorString(R.color.light_background, context)}');
+            $prefix('--shaded-background', '${getWebColorString(R.color.shaded_background, context)}');
+            $prefix('--accent', '${getWebColorString(R.color.accent, context)}');
+            $prefix('--no-accent', '${getWebColorString(R.color.no_accent, context)}');
+        """.trimIndent()
+
+    evaluateJavascript(js, null)
+}
+
+fun WebView.injectInsets(windowInsets: WindowInsetsCompat) {
+    val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+    val bottomNavHeight = (context as? BottomNavProvider)?.getBottomNavHeight() ?: 0
+    val extraHeight = if (bottomNavHeight > 0) bottomNavHeight else insets.bottom
+
+    val density = resources.displayMetrics.density
+    val top = (insets.top / density).toInt()
+    val bottom = (extraHeight / density).toInt()
+    val left = (insets.left / density).toInt()
+    val right = (insets.right / density).toInt()
+
+    val js = """
+        (function() {
+            var style = document.getElementById('android-insets-style');
+            if (!style) {
+                style = document.createElement('style');
+                style.id = 'android-insets-style';
+                if (document.head) document.head.appendChild(style);
+            }
+            style.innerHTML = `body { 
+                padding-top: ${top}px !important; 
+                padding-bottom: ${bottom}px !important; 
+                padding-left: ${left}px !important; 
+                padding-right: ${right}px !important; 
+                box-sizing: border-box !important; 
+            }`;
+        })();
+    """.trimIndent()
+
+    evaluateJavascript(js, null)
+}
+
+/*setTimeout(function() {
+    if (typeof AndroidFunction !== 'undefined') {
+        AndroidFunction.resize(document.body.scrollHeight);
+    }
+}, 100);*/
+
+fun WebView.setInsetsListener(insetsListener: (WindowInsetsCompat) -> Unit) {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { webView, insets ->
+        insetsListener.invoke(insets)
+        (webView as? WebView)?.injectInsets(insets)
+        insets
+    }
+}
+
+fun SwipeRefreshLayout.applyStatusBarInset() {
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
+        val l = (view as? SwipeRefreshLayout) ?: return@setOnApplyWindowInsetsListener windowInsets
+
+        val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+
+        val density = view.resources.displayMetrics.density
+        val startOffset = insets.top
+        val endOffset = startOffset + (64 * density).toInt()
+        l.setProgressViewOffset(false, startOffset, endOffset)
+
+        windowInsets
+    }
+}
+
 fun View.applyBottomNavInsetsToMargin() {
     val initialMarginBottom = marginBottom
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-        val bottomInset = insets
-            .getInsets(WindowInsetsCompat.Type.navigationBars())
-            .bottom
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
+        val bottomInset = windowInsets
+            .getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        val bottomNavHeight = (view.context as? BottomNavProvider)?.getBottomNavHeight() ?: 0
+        val extraHeight = if (bottomNavHeight > 0) bottomNavHeight else bottomInset
 
-        val targetMargin = initialMarginBottom + bottomInset
+        val targetMargin = initialMarginBottom + extraHeight
         val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
+
         if (layoutParams.bottomMargin != targetMargin) {
             layoutParams.updateMargins(bottom = targetMargin)
+            view.layoutParams = layoutParams // Не забываем применить!
         }
 
-        insets
+        windowInsets
     }
 }
 
 fun View.applyBottomNavInsetsToPadding() {
     val initialPaddingBottom = paddingBottom
-    ViewCompat.setOnApplyWindowInsetsListener(this) { view, insets ->
-        val bottomInset = insets
-            .getInsets(WindowInsetsCompat.Type.navigationBars())
-            .bottom
+    ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
+        val bottomInset = windowInsets
+            .getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        val bottomNavHeight = (view.context as? BottomNavProvider)?.getBottomNavHeight() ?: 0
+        val extraHeight = if (bottomNavHeight > 0) bottomNavHeight else bottomInset
 
-        val targetPadding = initialPaddingBottom + bottomInset
+        val targetPadding = initialPaddingBottom + extraHeight
         if (view.paddingBottom != targetPadding) {
             view.updatePadding(bottom = targetPadding)
         }
 
-        insets
+        windowInsets
     }
 }
 

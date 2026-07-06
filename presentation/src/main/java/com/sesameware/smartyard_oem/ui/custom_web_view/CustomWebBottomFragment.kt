@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -16,7 +17,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebBottomBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.setInsetsListener
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import timber.log.Timber
@@ -35,6 +36,9 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
 
     private var stateBundle: Bundle? = null
 
+    private var windowInsets: WindowInsetsCompat? = null
+    private lateinit var webViewClient: CustomWebViewClient
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -45,6 +49,8 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
             popupId = it.getInt(CustomWebViewFragment.POPUP_ID, popupId)
             url = it.getString(URL, url)
         }
+
+        webViewClient = CustomWebViewClient(fragmentId, popupId, null, this)
     }
 
     override fun onCreateView(
@@ -52,7 +58,13 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCustomWebBottomBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
+        binding.wvExtBottom.setInsetsListener {
+            windowInsets = it
+            if (::webViewClient.isInitialized) {
+                webViewClient.windowInsets = it
+            }
+        }
+
         return binding.root
     }
 
@@ -66,7 +78,7 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         binding.wvExtBottom.settings.domStorageEnabled = true
         binding.wvExtBottom.settings.databaseEnabled = true
         binding.wvExtBottom.webChromeClient = CustomWebChromeClient(null, this)
-        binding.wvExtBottom.webViewClient = CustomWebViewClient(fragmentId, popupId, null, this)
+        binding.wvExtBottom.webViewClient = webViewClient
         binding.wvExtBottom.addJavascriptInterface(CustomWebInterface(object : CustomWebInterface.Callback {
             override fun onPostLoadingStarted() {
                 requireActivity().runOnUiThread {

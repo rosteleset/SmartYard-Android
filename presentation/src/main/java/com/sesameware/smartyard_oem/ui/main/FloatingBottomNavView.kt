@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
+import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.toColorInt
@@ -30,11 +31,12 @@ class FloatingBottomNavView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var colorActive = "#007AFF".toColorInt()
-    private var colorInactive = "#8E8E93".toColorInt()
-    private val glassColor = "#E6FFFFFF".toColorInt()
-    private val indicatorColor = "#26007AFF".toColorInt()
-    private val badgeColor = "#FF3B30".toColorInt()
+    private var activeTabColor = "#007AFF".toColorInt()
+    private var inactiveTabColor = "#8E8E93".toColorInt()
+    private var solidBgColor = "#E6FFFFFF".toColorInt()
+    private var strokeBgColor = "#1A000000".toColorInt()
+    private var indicatorColor = "#26007AFF".toColorInt()
+    private var badgeColor = "#FF3B30".toColorInt()
 
     private val indicatorView: View
     private val tabsContainer: LinearLayout
@@ -50,7 +52,25 @@ class FloatingBottomNavView @JvmOverloads constructor(
     private val onItemReselectedListeners: MutableSet<(Int) -> Unit> = mutableSetOf()
 
     init {
-        background = createRoundRect(glassColor, 24f, "#1A000000".toColorInt())
+        var menuRes = 0
+        attrs?.let {
+            context.withStyledAttributes(it, R.styleable.FloatingBottomNavView) {
+
+                activeTabColor = getColor(R.styleable.FloatingBottomNavView_activeTabColor, activeTabColor)
+                inactiveTabColor = getColor(R.styleable.FloatingBottomNavView_inactiveTabColor, inactiveTabColor)
+                solidBgColor = getColor(R.styleable.FloatingBottomNavView_solidBackgroundColor, solidBgColor)
+                strokeBgColor = getColor(R.styleable.FloatingBottomNavView_strokeBackgroundColor, strokeBgColor)
+                indicatorColor = getColor(R.styleable.FloatingBottomNavView_indicatorColor, indicatorColor)
+                badgeColor = getColor(R.styleable.FloatingBottomNavView_badgeColor, badgeColor)
+                menuRes = getResourceId(R.styleable.FloatingBottomNavView_menu, 0)
+
+            }
+        }
+
+        val padding = dpToPx(6f).toInt()
+        setPadding(padding, padding, padding, padding)
+
+        background = createRoundRect(solidBgColor, 24f, strokeBgColor)
         elevation = dpToPx(8f)
         clipChildren = false
         clipToPadding = false
@@ -62,23 +82,13 @@ class FloatingBottomNavView @JvmOverloads constructor(
 
         tabsContainer = LinearLayout(context).apply {
             orientation = LinearLayout.HORIZONTAL
-            weightSum = 0f
             clipChildren = false
             clipToPadding = false
         }
         addView(tabsContainer, LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT))
 
-        attrs?.let {
-            context.withStyledAttributes(it, R.styleable.FloatingBottomNavView) {
-
-                colorActive = getColor(R.styleable.FloatingBottomNavView_activeColor, colorActive)
-                colorInactive = getColor(R.styleable.FloatingBottomNavView_inactiveColor, colorInactive)
-
-                val menuRes = getResourceId(R.styleable.FloatingBottomNavView_menu, 0)
-                if (menuRes != 0) {
-                    inflateMenu(menuRes)
-                }
-            }
+        if (menuRes != 0) {
+            inflateMenu(menuRes)
         }
     }
 
@@ -162,8 +172,6 @@ class FloatingBottomNavView @JvmOverloads constructor(
     }
 
     fun addItem(@IdRes itemId: Int, icon: Drawable?, title: CharSequence? = null) {
-        tabsContainer.weightSum = tabsContainer.weightSum + 1f
-
         val tabLayout = LinearLayout(context).apply {
             layoutParams = LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT, 1f)
             orientation = LinearLayout.VERTICAL
@@ -183,7 +191,7 @@ class FloatingBottomNavView @JvmOverloads constructor(
                 setMargins(dpToPx(12f).toInt(), dpToPx(4f).toInt(), dpToPx(12f).toInt(), dpToPx(2f).toInt())
             }
             setImageDrawable(icon)
-            setColorFilter(colorInactive)
+            setColorFilter(inactiveTabColor)
         }
 
         val badgeView = TextView(context).apply {
@@ -204,21 +212,22 @@ class FloatingBottomNavView @JvmOverloads constructor(
         iconContainer.addView(badgeView)
         tabLayout.addView(iconContainer)
 
-        var titleTextView: TextView? = null
+        var titleView: FitWidthTextView? = null
         if (!title.isNullOrEmpty()) {
-            titleTextView = TextView(context).apply {
-                layoutParams = LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT)
+            titleView = FitWidthTextView(context).apply {
+                layoutParams = LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
                 text = title
                 textSize = 10f
-                setTextColor(colorInactive)
+                textAlignment = TEXT_ALIGNMENT_CENTER
+                setTextColor(inactiveTabColor)
                 isSingleLine = true
             }
-            tabLayout.addView(titleTextView)
+            tabLayout.addView(titleView)
         }
 
         tabsContainer.addView(tabLayout)
         itemIds.add(itemId)
-        tabViews.add(TabViewHolder(imageView, titleTextView, badgeView))
+        tabViews.add(TabViewHolder(imageView, titleView, badgeView))
 
         if (itemIds.size == 1) {
             setSelection(itemId, animate = false)
@@ -234,30 +243,20 @@ class FloatingBottomNavView @JvmOverloads constructor(
         if (index == -1) return false
 
         if (itemId == selectedItemId) {
-            if (notify) {
-                onItemReselectedListeners.forEach { listener ->
-                    listener.invoke(itemId)
-                }
-            }
+            if (notify) onItemReselectedListeners.forEach { it.invoke(itemId) }
             return false
         }
 
         _selectedItemId = itemId
-
-        if (notify) {
-            onItemSelectedListeners.forEach { listener ->
-                listener.invoke(itemId)
-            }
-        }
+        if (notify) onItemSelectedListeners.forEach { it.invoke(itemId) }
 
         tabViews.forEachIndexed { i, tab ->
-            val color = if (i == index) colorActive else colorInactive
+            val color = if (i == index) activeTabColor else inactiveTabColor
             tab.icon.setColorFilter(color)
             tab.text?.setTextColor(color)
         }
 
         updateIndicatorLayout(animate)
-
         return true
     }
 
@@ -265,7 +264,6 @@ class FloatingBottomNavView @JvmOverloads constructor(
         val index = itemIds.indexOf(itemId)
         if (index == -1) return
 
-        tabsContainer.weightSum -= 1f
         tabsContainer.removeViewAt(index)
         itemIds.removeAt(index)
         tabViews.removeAt(index)
@@ -287,17 +285,15 @@ class FloatingBottomNavView @JvmOverloads constructor(
         val index = itemIds.indexOf(selectedItemId)
         if (index == -1) return
 
-        val tabWidth = width / itemIds.size.toFloat()
-        val margin = dpToPx(6f)
+        val availableWidth = width - paddingLeft - paddingRight
+        val tabWidth = availableWidth / itemIds.size.toFloat()
 
         val lp = indicatorView.layoutParams as LayoutParams
-        lp.width = (tabWidth - margin * 2).toInt()
-
-        lp.height = height - (margin * 2).toInt()
-        lp.topMargin = margin.toInt()
+        lp.width = tabWidth.toInt()
         indicatorView.layoutParams = lp
 
-        val targetX = (index * tabWidth) + margin
+        val targetX = index * tabWidth
+
         if (animate && !isInEditMode) {
             indicatorView.animate()
                 .translationX(targetX)
@@ -309,7 +305,12 @@ class FloatingBottomNavView @JvmOverloads constructor(
         }
 
         if (isInEditMode) {
-            indicatorView.layout(0, lp.topMargin, lp.width, lp.topMargin + lp.height)
+            indicatorView.layout(
+                paddingLeft,
+                paddingTop,
+                paddingLeft + lp.width,
+                height - paddingBottom
+            )
         }
     }
 
@@ -334,5 +335,41 @@ class FloatingBottomNavView @JvmOverloads constructor(
     private fun dpToPx(dp: Float): Float =
         TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics)
 
-    private data class TabViewHolder(val icon: ImageView, val text: TextView?, val badge: TextView)
+    private data class TabViewHolder(val icon: ImageView, val text: FitWidthTextView?, val badge: TextView)
+
+    private inner class FitWidthTextView(context: Context) : AppCompatTextView(context) {
+        override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+            val parentWidth = MeasureSpec.getSize(widthMeasureSpec)
+
+            val margin = dpToPx(6f)
+            val availableWidth = parentWidth - margin
+
+            paint.letterSpacing = 0f
+            paint.textScaleX = 1.0f
+
+            if (availableWidth > 0 && !text.isNullOrEmpty()) {
+                var textWidth = paint.measureText(text.toString())
+
+                if (textWidth > availableWidth) {
+                    var spacing = 0f
+                    while (textWidth > availableWidth && spacing > -0.05f) {
+                        spacing -= 0.01f
+                        paint.letterSpacing = spacing
+                        textWidth = paint.measureText(text.toString())
+                    }
+
+                    if (textWidth > availableWidth) {
+                        var scale = 1.0f
+                        while (textWidth > availableWidth && scale > 0.8f) {
+                            scale -= 0.01f
+                            paint.textScaleX = scale
+                            textWidth = paint.measureText(text.toString())
+                        }
+                    }
+                }
+            }
+
+            super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+        }
+    }
 }

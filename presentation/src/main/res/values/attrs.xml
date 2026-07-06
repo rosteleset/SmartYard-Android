@@ -31,8 +31,12 @@
 
     <declare-styleable name="FloatingBottomNavView">
         <attr name="menu" format="reference" />
-        <attr name="activeColor" format="color" />
-        <attr name="inactiveColor" format="color" />
+        <attr name="activeTabColor" format="color" />
+        <attr name="inactiveTabColor" format="color" />
+        <attr name="solidBackgroundColor" format="color" />
+        <attr name="strokeBackgroundColor" format="color" />
+        <attr name="indicatorColor" format="color" />
+        <attr name="badgeColor" format="color" />
     </declare-styleable>
 
 </resources>

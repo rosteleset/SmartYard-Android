@@ -24,6 +24,8 @@ import com.sesameware.smartyard_oem.databinding.FragmentEntranceCameraBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -48,6 +50,7 @@ class EntranceCameraFragment : Fragment() {
     private var videoTrack: VideoTrack? = null
     private var audioTrack: AudioTrack? = null
     private var hlsPlayer: BaseCCTVPlayer? = null
+    private var firstFrameTimeoutJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -80,20 +83,28 @@ class EntranceCameraFragment : Fragment() {
                             audioTrack = audio
                             startWebRtc()
                             mode = Mode.WEB_RTC
+
+                            firstFrameTimeoutJob?.cancel()
+                            firstFrameTimeoutJob = viewLifecycleOwner.lifecycleScope.launch {
+                                delay(1000)
+                                fallbackToHls("WebRTC first frame waiting timeout")
+                            }
                         }
                         is WebRtcState.Disconnected -> releaseWebRtcView()
-                        is WebRtcState.Error -> {
-                            Timber.d("debug_webrtc connection failed: $state")
-                            mode = Mode.HLS
-                            releaseWebRtcView()
-                            createHlsPlayer(binding.playerView, binding.progressBar)
-                            startHls()
-                        }
+                        is WebRtcState.Error -> fallbackToHls("Connection error: ${state.message}")
                         else -> {}
                     }
                 }
             }
         }
+    }
+
+    private fun fallbackToHls(reason: String) {
+        Timber.d("debug_webrtc fallback to HLS: $reason")
+        mode = Mode.HLS
+        releaseWebRtcView()
+        createHlsPlayer(binding.playerView, binding.progressBar)
+        startHls()
     }
 
     private fun startWebRtc() {
@@ -121,6 +132,7 @@ class EntranceCameraFragment : Fragment() {
 
     private fun stopWebRtc() {
         Timber.d("debug_webrtc stopWebRtc")
+        firstFrameTimeoutJob?.cancel()
 
         videoTrack?.apply {
             removeSink(binding.webRtcView)
@@ -139,6 +151,7 @@ class EntranceCameraFragment : Fragment() {
 
     private fun releaseWebRtcView() {
         Timber.d("debug_webrtc releaseWebRtc")
+        firstFrameTimeoutJob?.cancel()
 
         videoTrack = null
         started = false
@@ -171,6 +184,7 @@ class EntranceCameraFragment : Fragment() {
 
             init(rootEglBase.eglBaseContext, object : RendererEvents {
                 override fun onFirstFrameRendered() {
+                    firstFrameTimeoutJob?.cancel()
                     post {
                         Timber.d("debug_webrtc onFirstFrameRendered")
                         binding.progressBar.isVisible = false
@@ -229,7 +243,7 @@ class EntranceCameraFragment : Fragment() {
 
             override fun onPlayerError(exception: Exception) {
                 progressView.isVisible = false
-                val reason = (exception as? ExoPlaybackException)?.let { "HLS error ${it.type}" } ?: exception.message ?: "Unknown error"
+                val reason = resolveError(exception)
                 showNoStreamPlaceholder("HLS недоступен по причине: $reason")
                 mode = Mode.STOPPED
                 (exception as? ExoPlaybackException)?.let { Timber.d("Entrance HLS error ${it.type}") }
@@ -242,6 +256,12 @@ class EntranceCameraFragment : Fragment() {
             player.playWhenReady = true
         }
     }
+
+    private fun resolveError(exception: Exception): String =
+        (exception as? ExoPlaybackException)?.let {
+            "HLS error ${it.message}"
+        } ?: exception.message
+        ?: "Unknown error"
 
     private fun startHls() {
         val hlsUrl = args.entranceCamera.hlsUrl

@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -59,7 +60,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private val viewModel: CityCamerasViewModel by sharedStateViewModel()
 
     //для полноэкранного режима
-    private var lpVideoWrap: LinearLayout.LayoutParams? = null
+    private var lpVideoWrap: ViewGroup.LayoutParams? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -390,7 +391,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
 
         //сохраняем дефолтный layout
-        lpVideoWrap = LinearLayout.LayoutParams(binding.flCityCameraVideoWrap.layoutParams as LinearLayout.LayoutParams)
+        lpVideoWrap = binding.flCityCameraVideoWrap.layoutParams
 
         binding.pbCityCamera.progress = 0
         binding.ivCityCameraFullscreen.visibility = View.VISIBLE
@@ -404,7 +405,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)
         (activity as? MainActivity)?.binding?.llMain?.addView(binding.flCityCameraVideoWrap, 0)
 
-        val lp = binding.flCityCameraVideoWrap.layoutParams as LinearLayout.LayoutParams
+        val lp = binding.flCityCameraVideoWrap.layoutParams as FrameLayout.LayoutParams
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT
         lp.height = ViewGroup.LayoutParams.MATCH_PARENT
         lp.topMargin = 0
@@ -426,11 +427,13 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         //возвращаем дефолтные layouts
         lpVideoWrap?.let { lp ->
-            lp.height = 222.dpToPx()
-            lp.width = LinearLayout.LayoutParams.MATCH_PARENT
-            lp.marginStart = 16.dpToPx()
-            lp.marginEnd = 16.dpToPx()
-            lp.topMargin = 16.dpToPx()
+            if (lp is ViewGroup.MarginLayoutParams) {
+                lp.height = 222.dpToPx()
+                lp.width = ViewGroup.LayoutParams.MATCH_PARENT
+                lp.marginStart = 16.dpToPx()
+                lp.marginEnd = 16.dpToPx()
+                lp.topMargin = 16.dpToPx()
+            }
             binding.flCityCameraVideoWrap.layoutParams = lp
             binding.flCityCameraVideoWrap.requestLayout()
         }

@@ -29,9 +29,9 @@
     <!-- Widget -->
     <color name="widget_background">#E6FFFFFF</color>
 
-    <!-- BottomNavView gradient -->
-    <color name="bottom_nav_grad_start">#E6FFFFFF</color>
-
+    <!-- BottomNavView -->
+    <color name="bottom_nav_bg_solid">#E6FFFFFF</color>
+    <color name="bottom_nav_indicator">#16777777</color>
 
     <!-- Map -->
     <color name="marker_tint">@color/brand</color>

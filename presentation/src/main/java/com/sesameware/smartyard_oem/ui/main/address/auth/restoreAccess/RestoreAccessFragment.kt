@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentRestoreAccessBinding
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class RestoreAccessFragment : Fragment() {
@@ -28,6 +28,15 @@ class RestoreAccessFragment : Fragment() {
     private var contactId: String = ""
     private var contactName: String = ""
     private var contractNumber = ""
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentRestoreAccessBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     @Deprecated("Deprecated in Java")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -44,6 +53,7 @@ class RestoreAccessFragment : Fragment() {
         binding.etContractNumber.addTextChangedListener {
             binding.btnRecovery.isEnabled = it?.isNotEmpty() == true
         }
+        binding.btnRecovery.applyBottomNavInsetsToMargin()
         binding.btnRecovery.setOnClickListener {
             mViewModel.recoveryOptions(binding.etContractNumber.text.toString())
         }
@@ -52,6 +62,7 @@ class RestoreAccessFragment : Fragment() {
             this.findNavController().popBackStack()
         }
 
+        binding.btnCodeConfirm.applyBottomNavInsetsToMargin()
         binding.btnCodeConfirm.setOnClickListener {
             mViewModel.sentCodeRecovery(binding.etContractNumber.text.toString(), contactId)
         }
@@ -118,15 +129,5 @@ class RestoreAccessFragment : Fragment() {
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
         )
         super.onStop()
-    }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentRestoreAccessBinding.inflate(inflater, container, false)
-        binding.root.applyBottomNavInsetsToPadding()
-        return binding.root
     }
 }

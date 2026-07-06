@@ -21,6 +21,7 @@ import com.sesameware.lib.dpToPx
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogBinding
 import com.sesameware.smartyard_oem.ui.DatePickerFragment
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogParentAdapter
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -48,7 +49,8 @@ class EventLogFragment : Fragment() {
         @Suppress("DEPRECATION")
         super.onActivityCreated(savedInstanceState)
 
-        binding.surfaceRoot.applyBottomNavInsetsToPadding()
+        binding.fabEventLogScrollUp.applyBottomNavInsetsToMargin()
+        binding.rvEventLogParent.applyBottomNavInsetsToPadding()
 
         binding.spinnerEventLogType.adapter = ArrayAdapter.createFromResource(requireContext(),
             R.array.event_log_types, R.layout.item_event_log_type_spinner).apply {

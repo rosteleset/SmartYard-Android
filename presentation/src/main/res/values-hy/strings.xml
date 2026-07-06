@@ -521,6 +521,7 @@
     <string name="title_add_face">Ավելացնել այս դեռևստանիչը։</string>
     <string name="add_item">Ավելացնել</string>
     <string name="text_no_image">Պատկեր չկա</string>
+    <string name="add_address">Ավելացնել հասցե</string>
     <string name="phone_number_not_saved">Հեռախոսահամարը չի պահպանվել</string>
     <string name="guest_access">Հյուրերի մուտք մեկ ժամով</string>
     <string name="item_theme_system_default">Սահմանվում է համակարգի կողմից</string>

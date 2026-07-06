@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:fitsSystemWindows="true"
     android:id="@+id/wrapChatView"
-    android:clipToPadding="false"
-    android:background="#F3F4FA"
+    android:background="@color/shaded_background"
     tools:context=".ui.main.chat.ChatFragment">
 
     <com.sofit.onlinechatsdk.ChatView
@@ -16,4 +15,4 @@
         android:layout_height="match_parent"
         app:autoLoad="false" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

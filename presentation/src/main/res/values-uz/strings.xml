@@ -523,6 +523,7 @@
     <string name="title_add_face">Bu yuzni qo‘shmoqchimisiz?</string>
     <string name="add_item">Qo‘shish</string>
     <string name="text_no_image">Rasm yo‘q</string>
+    <string name="add_address">Manzilni qoʻshish</string>
     <string name="phone_number_not_saved">Telefon raqami saqlanmagan</string>
     <string name="guest_access">Bir soat davomida mehmonlar uchun kirish</string>
     <string name="item_theme_system_default">Tizim tomonidan belgilanadi</string>

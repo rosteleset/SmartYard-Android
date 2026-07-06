@@ -10,8 +10,10 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
+import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
+import com.sesameware.smartyard_oem.ui.injectInsets
 import org.koin.ext.clearQuotes
 import timber.log.Timber
 
@@ -23,6 +25,8 @@ class CustomWebViewClient(
 
 ) : WebViewClient() {
     private var pageTitle = ""
+
+    var windowInsets: WindowInsetsCompat? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -168,9 +172,13 @@ class CustomWebViewClient(
         super.onPageFinished(view, url)
 
         Timber.d("debug_web onPageFinished = $url")
-        fragment?.binding?.wvExt?.evaluateJavascript("document.title") {
-            pageTitle = it.clearQuotes()
+        fragment?.binding?.wvExt?.let { v ->
+            v.evaluateJavascript("document.title") { result ->
+                pageTitle = result.clearQuotes()
+            }
+            windowInsets?.let { view?.injectInsets(it) }
         }
+
         CookieManager.getInstance().apply {
             Timber.d("debug_web cookie: ${getCookie(url)}")
             setAcceptCookie(true)

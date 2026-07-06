@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clipToPadding="false"
     tools:context=".ui.custom_web_view.CustomWebViewFragment">
 
     <ImageView
@@ -54,16 +53,12 @@
         android:layout_marginTop="4dp"
         android:background="@drawable/background_radius_web"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivEWVBack">
 
         <WebView
             android:id="@+id/wvExt"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </WebView>
+            android:layout_height="match_parent" />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
