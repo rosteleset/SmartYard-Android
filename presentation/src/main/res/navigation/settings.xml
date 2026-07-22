@@ -91,6 +91,10 @@
             app:argType="boolean"
             android:defaultValue="false" />
         <argument
+            android:name="hasPlog"
+            app:argType="boolean"
+            android:defaultValue="false" />
+        <argument
             android:name="clientId"
             app:argType="string"/>
         <action
@@ -182,6 +186,10 @@
         <argument
             android:name="address"
             app:argType="string" />
+        <argument
+            android:name="canAddFace"
+            app:argType="boolean"
+            android:defaultValue="false" />
     </fragment>
     <fragment
         android:id="@+id/customWebViewFragmentSettings"

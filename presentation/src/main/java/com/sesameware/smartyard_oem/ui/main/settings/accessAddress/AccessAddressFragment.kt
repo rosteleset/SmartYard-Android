@@ -57,6 +57,7 @@ class AccessAddressFragment : Fragment() {
     private var address: String = ""
     private var flatOwner: Boolean = false
     private var hasGates: Boolean = false
+    private var hasPlog: Boolean = false
     private var hasLprs: Boolean = false
     private var clientId: String = ""
 
@@ -76,6 +77,7 @@ class AccessAddressFragment : Fragment() {
             address = AccessAddressFragmentArgs.fromBundle(it).address
             flatOwner = AccessAddressFragmentArgs.fromBundle(it).flatOwner
             hasGates = AccessAddressFragmentArgs.fromBundle(it).hasGates
+            hasPlog = AccessAddressFragmentArgs.fromBundle(it).hasPlog
             clientId = AccessAddressFragmentArgs.fromBundle(it).clientId
         }
 
@@ -108,6 +110,7 @@ class AccessAddressFragment : Fragment() {
             val action = AccessAddressFragmentDirections
                 .actionAccessAddressFragmentToFaceSettingsFragment(address)
             action.flatId = flatId
+            action.canAddFace = hasPlog
             this.findNavController().navigate(action)
         }
     }

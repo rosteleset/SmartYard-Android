@@ -114,6 +114,7 @@ class SettingsViewModel(
                         settingItem.services,
                         settingItem.lcab,
                         settingItem.hasGates,
+                        settingItem.hasPlog,
                         expandedFlatId.contains(settingItem.flatId)
                     )
                 }
