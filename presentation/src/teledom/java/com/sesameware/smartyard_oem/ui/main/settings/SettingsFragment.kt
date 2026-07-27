@@ -128,7 +128,7 @@ class SettingsFragment : Fragment() {
                     this.findNavController().navigate(action)
                 },
                 mViewModel::getAccess,
-                { address, flatId, flatOwner, hasGates, clientId ->
+                { address, flatId, flatOwner, hasGates, hasPlog, clientId ->
                     val action =
                         SettingsFragmentDirections.actionSettingsFragmentToAccessAddressFragment(
                             "",
@@ -138,6 +138,7 @@ class SettingsFragment : Fragment() {
                     action.flatId = flatId
                     action.flatOwner = flatOwner
                     action.hasGates = hasGates
+                    action.hasPlog = hasPlog
                     action.clientId = clientId
                     this.findNavController().navigate(action)
                 },

@@ -14,5 +14,6 @@ data class SettingsAddressModel(
     var services: List<String>,
     var lcab: String?,
     var hasGates: Boolean,
+    var hasPlog: Boolean,
     var isExpanded: Boolean = false
 )

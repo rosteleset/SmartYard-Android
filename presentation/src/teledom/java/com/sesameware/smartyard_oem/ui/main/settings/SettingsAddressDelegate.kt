@@ -25,7 +25,14 @@ class SettingsAddressDelegate(
     var activity: Activity,
     private val settingAddressListener: (address: String, flatId: Int, isKey: Boolean, flatOwner: Boolean, clientId: String) -> Unit,
     private val clickItem: (serviceType: Services, model: SettingsAddressModel, isCon: Boolean) -> Unit,
-    private val provideAccessListener: (address: String, flatId: Int, flatOwner: Boolean, hasGate: Boolean, clientId: String) -> Unit,
+    private val provideAccessListener: (
+        address: String,
+        flatId: Int,
+        flatOwner: Boolean,
+        hasGate: Boolean,
+        hasPlog: Boolean,
+        clientId: String
+    ) -> Unit,
     private val clickPos: (pos: Int, isExpanded: Boolean) -> Unit
 ) :
     AdapterDelegate<List<SettingsAddressModel>>() {
@@ -76,7 +83,14 @@ class SettingsAddressDelegate(
             }
 
             holder.llProvideAccess.setOnClickListener {
-                provideAccessListener.invoke(address, flatId, flatOwner, hasGates, clientId)
+                provideAccessListener.invoke(
+                    address,
+                    flatId,
+                    flatOwner,
+                    hasGates,
+                    hasPlog,
+                    clientId
+                )
             }
 
             holder.llSettingAddress.setOnClickListener {
