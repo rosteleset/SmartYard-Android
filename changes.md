@@ -1,5 +1,17 @@
 ## History of major changes
 
+### Version 1.0.98
+* Optimized WebRTC streams to prevent device overheating, video freezes, and interface slowdowns
+* Added automatic fallback to HLS when the WebRTC stream fails to load frames
+* Enhanced Custom Web Views (Web Extensions): added JS APIs to control the status bar appearance and improved handling of large extensions to prevent app crashes
+* Improved downloading of video recordings from the notifications screen (fixed interception of download links)
+* Made NFC hardware requirement optional to support a wider range of devices
+* Added an "Add address" button to the end of the settings list
+* Improved global UI layout: fixed content overlapping with the bottom navigation bar across multiple screens
+* Fixed scrolling, swiping, and drag-to-sort conflicts in the address list
+* Minor fixes and code refactoring
+
+
 ### Version 1.0.92
 * Added switching entrance view mode via ProviderConfig
 * Replaced bottom navigation menu

@@ -19,6 +19,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -40,6 +41,7 @@ import com.sesameware.smartyard_oem.databinding.FragmentCctvArchivePlayerBinding
 import com.sesameware.smartyard_oem.removeTrailingZeros
 import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.UserInteractionListener
@@ -86,6 +88,8 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
 
     //индекс проигрываемого в данный момент архивного интервала
     private var currentArchiveRangeIndex = -1
+
+    private var lpPanelPlay: ViewGroup.LayoutParams? = null
 
     private fun generateArchiveRanges() {
         archiveRanges.clear()
@@ -332,6 +336,9 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
         binding.contentWrap.requestLayout()
         (binding.mPlayerView.parent as ZoomLayout).resetZoom()
 
+        lpPanelPlay = LinearLayout.LayoutParams(binding.panelPlay.layoutParams as ViewGroup.MarginLayoutParams)
+        binding.panelPlay.applyBottomNavInsetsToMargin()
+
         (binding.rvTimeFragmentButtons.adapter as TimeFragmentButtonsAdapter).setFullscreen(true)
         binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_filled))
         binding.tvSpeedDown.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_filled))
@@ -358,6 +365,12 @@ class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, ExitFulls
 
             binding.llControls.addView(binding.panelTrim)
             binding.llControls.addView(binding.btnMainAction)
+
+            ViewCompat.setOnApplyWindowInsetsListener(binding.panelPlay, null)
+            lpPanelPlay?.let {
+                binding.panelPlay.layoutParams = it
+                binding.panelPlay.requestLayout()
+            }
 
             //показываем скрытые элементы
             binding.imageView.visibility = View.VISIBLE

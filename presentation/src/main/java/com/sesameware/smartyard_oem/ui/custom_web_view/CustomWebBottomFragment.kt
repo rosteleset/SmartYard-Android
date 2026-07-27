@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
-import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -17,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCustomWebBottomBinding
-import com.sesameware.smartyard_oem.ui.setInsetsListener
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import timber.log.Timber
@@ -36,7 +35,6 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
 
     private var stateBundle: Bundle? = null
 
-    private var windowInsets: WindowInsetsCompat? = null
     private lateinit var webViewClient: CustomWebViewClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,13 +56,7 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentCustomWebBottomBinding.inflate(inflater, container, false)
-        binding.wvExtBottom.setInsetsListener {
-            windowInsets = it
-            if (::webViewClient.isInitialized) {
-                webViewClient.windowInsets = it
-            }
-        }
-
+        binding.wvContainer.applyBottomNavInsetsToPadding()
         return binding.root
     }
 

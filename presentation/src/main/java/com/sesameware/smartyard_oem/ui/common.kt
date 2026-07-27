@@ -38,6 +38,7 @@ import android.text.format.DateFormat
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.view.Window
 import android.webkit.WebView
 import android.widget.DatePicker
@@ -51,6 +52,20 @@ import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -698,31 +713,62 @@ fun WebView.injectInsets(windowInsets: WindowInsetsCompat) {
     val right = (insets.right / density).toInt()
 
     val js = """
-        (function() {
-            var style = document.getElementById('android-insets-style');
-            if (!style) {
-                style = document.createElement('style');
-                style.id = 'android-insets-style';
-                if (document.head) document.head.appendChild(style);
-            }
-            style.innerHTML = `body { 
+         (function() {
+        const bottomInset = ${bottom};
+        
+        // 1. Добавляем инсеты для основной страницы
+        var style = document.getElementById('android-insets-style');
+        if (!style) {
+            style = document.createElement('style');
+            style.id = 'android-insets-style';
+            if (document.head) document.head.appendChild(style);
+        }
+        style.innerHTML = `
+            body { 
                 padding-top: ${top}px !important; 
                 padding-bottom: ${bottom}px !important; 
                 padding-left: ${left}px !important; 
                 padding-right: ${right}px !important; 
                 box-sizing: border-box !important; 
-            }`;
-        })();
+            }
+        `;
+
+        // 2. Функция для сдвига элементов, прижатых к низу
+        function shiftFixedElement(node) {
+            if (node.nodeType !== Node.ELEMENT_NODE) return;
+            // Игнорируем технические теги
+            if (['SCRIPT', 'STYLE', 'LINK', 'META', 'IFRAME'].includes(node.tagName)) return;
+
+            const compStyle = window.getComputedStyle(node);
+            
+            // Если элемент фиксированный и прижат к низу экрана
+            if ((compStyle.position === 'fixed' || compStyle.position === 'sticky') && compStyle.bottom === '0px') {
+                if (!node.dataset.insetsAdjusted) {
+                    // Используем transform, так как margin/padding могут сломать верстку внутри самого баннера
+                    node.style.setProperty('transform', `translateY(-${'$'}{bottomInset}px)`, 'important');
+                    node.dataset.insetsAdjusted = 'true';
+                }
+            }
+        }
+
+        // 3. Обрабатываем элементы, которые уже есть в DOM 
+        // (обычно попапы лежат прямо в корне body)
+        Array.from(document.body.children).forEach(shiftFixedElement);
+
+        // 4. Следим за новыми элементами, которые добавляются динамически (как куки-баннеры)
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                mutation.addedNodes.forEach(shiftFixedElement);
+            });
+        });
+
+        // Отслеживаем только прямых потомков body для высокой производительности
+        observer.observe(document.body, { childList: true });
+    })();
     """.trimIndent()
 
     evaluateJavascript(js, null)
 }
-
-/*setTimeout(function() {
-    if (typeof AndroidFunction !== 'undefined') {
-        AndroidFunction.resize(document.body.scrollHeight);
-    }
-}, 100);*/
 
 fun WebView.setInsetsListener(insetsListener: (WindowInsetsCompat) -> Unit) {
     ViewCompat.setOnApplyWindowInsetsListener(this) { webView, insets ->
@@ -748,6 +794,9 @@ fun SwipeRefreshLayout.applyStatusBarInset() {
 }
 
 fun View.applyBottomNavInsetsToMargin() {
+    if (getTag(R.id.bottom_nav_inset_tag) == true) return
+    setTag(R.id.bottom_nav_inset_tag, true)
+
     val initialMarginBottom = marginBottom
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
         val bottomInset = windowInsets
@@ -756,18 +805,39 @@ fun View.applyBottomNavInsetsToMargin() {
         val extraHeight = if (bottomNavHeight > 0) bottomNavHeight else bottomInset
 
         val targetMargin = initialMarginBottom + extraHeight
-        val layoutParams = view.layoutParams as ViewGroup.MarginLayoutParams
-
-        if (layoutParams.bottomMargin != targetMargin) {
-            layoutParams.updateMargins(bottom = targetMargin)
-            view.layoutParams = layoutParams // Не забываем применить!
-        }
+        (view.layoutParams as? ViewGroup.MarginLayoutParams)?.let { layoutParams ->
+            if (layoutParams.bottomMargin != targetMargin) {
+                layoutParams.updateMargins(bottom = targetMargin)
+                view.layoutParams = layoutParams // Не забываем применить!
+            }
+        } ?: Timber.d("debug_dmm $view layout params is not instance of ViewGroup.MarginLayoutParams")
 
         windowInsets
+    }
+
+    (context as? BottomNavProvider)?.let { provider ->
+        val layoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
+            private var lastHeight = -1
+            override fun onGlobalLayout() {
+                val currentHeight = provider.getBottomNavHeight()
+                if (currentHeight > 0 && currentHeight != lastHeight) {
+                    lastHeight = currentHeight
+                    ViewCompat.requestApplyInsets(this@applyBottomNavInsetsToMargin)
+                }
+            }
+        }
+        if (isAttachedToWindow) viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) = v.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+            override fun onViewDetachedFromWindow(v: View) = v.viewTreeObserver.removeOnGlobalLayoutListener(layoutListener)
+        })
     }
 }
 
 fun View.applyBottomNavInsetsToPadding() {
+    if (getTag(R.id.bottom_nav_inset_tag) == true) return
+    setTag(R.id.bottom_nav_inset_tag, true)
+
     val initialPaddingBottom = paddingBottom
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
         val bottomInset = windowInsets
@@ -782,6 +852,60 @@ fun View.applyBottomNavInsetsToPadding() {
 
         windowInsets
     }
+
+    (context as? BottomNavProvider)?.let { provider ->
+        val layoutListener = object : ViewTreeObserver.OnGlobalLayoutListener {
+            private var lastHeight = -1
+            override fun onGlobalLayout() {
+                val currentHeight = provider.getBottomNavHeight()
+                if (currentHeight > 0 && currentHeight != lastHeight) {
+                    lastHeight = currentHeight
+                    ViewCompat.requestApplyInsets(this@applyBottomNavInsetsToPadding)
+                }
+            }
+        }
+        if (isAttachedToWindow) viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) = v.viewTreeObserver.addOnGlobalLayoutListener(layoutListener)
+            override fun onViewDetachedFromWindow(v: View) = v.viewTreeObserver.removeOnGlobalLayoutListener(layoutListener)
+        })
+    }
+}
+
+@Composable
+fun rememberBottomNavInsets(): Dp {
+    val context = LocalContext.current
+    val view = LocalView.current
+    val density = LocalDensity.current
+
+    val systemBottomInset = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
+    var customNavHeightDp by remember { mutableStateOf(0.dp) }
+
+    DisposableEffect(context, view, density) {
+        val provider = context as? BottomNavProvider
+
+        val updateHeight = {
+            val heightPx = provider?.getBottomNavHeight() ?: 0
+            val heightDp = with(density) { heightPx.toDp() }
+            if (customNavHeightDp != heightDp) {
+                customNavHeightDp = heightDp
+            }
+        }
+
+        updateHeight()
+
+        val listener = ViewTreeObserver.OnGlobalLayoutListener {
+            updateHeight()
+        }
+        view.viewTreeObserver.addOnGlobalLayoutListener(listener)
+
+        onDispose {
+            view.viewTreeObserver.removeOnGlobalLayoutListener(listener)
+        }
+    }
+
+    return if (customNavHeightDp > 0.dp) customNavHeightDp else systemBottomInset
 }
 
 fun String.toRegexOrNull() = takeIf { it.isNotBlank() }?.toRegex()

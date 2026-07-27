@@ -16,6 +16,7 @@ import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -28,6 +29,7 @@ import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailOnlineBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
@@ -110,6 +112,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
             binding.videoWrap.background = null
             (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
+            binding.videoWrap.applyBottomNavInsetsToPadding()
             val lp = binding.videoWrap.layoutParams as FrameLayout.LayoutParams
             lp.width = ViewGroup.LayoutParams.MATCH_PARENT
             lp.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -138,6 +141,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
 
             //возвращаем дефолтные layouts
             if (lpVideoWrap != null) {
+                ViewCompat.setOnApplyWindowInsetsListener(binding.videoWrap, null)
                 binding.videoWrap.layoutParams = lpVideoWrap
                 binding.videoWrap.requestLayout()
             }

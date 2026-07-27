@@ -127,7 +127,7 @@ dependencies {
     implementation "io.insert-koin:koin-android:$koin"
 
     // WebRTC
-    implementation "com.dafruits:webrtc:$webrtc"
+    implementation("com.dafruits:webrtc:$webrtc@aar")
 
     // Log
     implementation "com.jakewharton.timber:timber:$timber"

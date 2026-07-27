@@ -8,4 +8,8 @@ data class ExtItemModel(
     val highlight: Boolean,
     val basePath: String?,
     val code: String?,
+    val version: Int,
+    val isHeaderHidden: Boolean,
+    val statusBarColor: String?,
+    val statusBarStyle: String?,
 )

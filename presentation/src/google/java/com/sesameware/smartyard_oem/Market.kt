@@ -12,11 +12,11 @@ import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
 
-fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context, providerId: String? = null, providerName: String? = null) {
-    if (providerId != null && providerName != null) {
+fun GenericViewModel.checkAndRegisterPushToken(applicationContext: Context) {
+    if (mPreferenceStorage.providerId != null) {
         val firebaseAnalytics = Firebase.analytics
-        firebaseAnalytics.setUserProperty("provider_id", providerId)
-        firebaseAnalytics.setUserProperty("provider_name", providerName)
+        firebaseAnalytics.setUserProperty("provider_id", mPreferenceStorage.providerId)
+        firebaseAnalytics.setUserProperty("provider_name", mPreferenceStorage.providerId)
     }
 
     val crashlytics = Crashlytics.getInstance()

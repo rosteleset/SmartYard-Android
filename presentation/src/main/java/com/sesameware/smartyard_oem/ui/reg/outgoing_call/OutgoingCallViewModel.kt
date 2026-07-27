@@ -31,7 +31,7 @@ class OutgoingCallViewModel(
                     isDone = true
                     mPreferenceStorage.authToken = res.data.accessToken
                     val userName: UserName = if (res.data.names is Boolean)
-                        UserName("", "")
+                        UserName()
                     else
                         Gson().fromJson(Gson().toJson(res.data.names), UserName::class.java)
                     mPreferenceStorage.userName = userName

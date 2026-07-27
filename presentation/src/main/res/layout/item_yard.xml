@@ -18,19 +18,15 @@
 
     <TextView
         android:id="@+id/tvName"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
         android:maxLines="1"
+        android:layout_weight="1"
         android:ellipsize="end"
-        android:text="@string/item_sample"
+        tools:text="Шлагбаум СеверШлагбаум СеверШлагбаум СеверШлагбаум СеверШлагбаум СеверШлагбаум Север"
         android:textColor="@color/accent"
         android:textSize="18sp" />
-
-    <View
-        android:layout_width="0dp"
-        android:layout_height="1dp"
-        android:layout_weight="1" />
 
     <ToggleButton
         android:id="@+id/tbOpen"

@@ -291,7 +291,7 @@ class EntranceCameraFragment : Fragment() {
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun enterFullscreen() {
-        (activity as? MainActivity)?.hideSystemUI(false)
+        (activity as? MainActivity)?.hideSystemUI()
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }

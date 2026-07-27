@@ -10,10 +10,8 @@ import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
-import androidx.core.view.WindowInsetsCompat
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
-import com.sesameware.smartyard_oem.ui.injectInsets
 import org.koin.ext.clearQuotes
 import timber.log.Timber
 
@@ -25,8 +23,6 @@ class CustomWebViewClient(
 
 ) : WebViewClient() {
     private var pageTitle = ""
-
-    var windowInsets: WindowInsetsCompat? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
@@ -176,7 +172,6 @@ class CustomWebViewClient(
             v.evaluateJavascript("document.title") { result ->
                 pageTitle = result.clearQuotes()
             }
-            windowInsets?.let { view?.injectInsets(it) }
         }
 
         CookieManager.getInstance().apply {

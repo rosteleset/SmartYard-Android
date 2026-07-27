@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/chat_bottom_bg"
+    android:clipToPadding="false"
     tools:context="com.sesameware.smartyard_oem.ui.main.pay.contract.webview.PayWebViewFragment">
 
     <WebView

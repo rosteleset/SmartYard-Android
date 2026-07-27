@@ -16,5 +16,6 @@ object AppealScreen : KScreen<AppealScreen>() {
     override val viewClass: Class<*>? = RegistrationActivity::class.java
     val nameText = KEditText { withId(R.id.nameText) }
     val patronymicText = KEditText { withId(R.id.patronymicText) }
+    val lastText = KEditText { withId(R.id.lastText) }
     val btnDone = KButton { withId(R.id.btnDone) }
 }

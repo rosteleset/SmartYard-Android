@@ -14,6 +14,8 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.os.SystemClock
 import android.view.View
 import android.view.WindowManager
@@ -87,10 +89,21 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     private var isWebRTCStopped = true
     private var peerConnection: PeerConnection? = null
     private var frameBitmap: Bitmap?  = null
+    private var isFrameCaptured = false
 
-    // Listener to maintain the last frame from WebRTC
-    private var webRTCListener = EglRenderer.FrameListener {bitmap: Bitmap? ->
-        frameBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, false)
+    // Listener to maintain the first frame from WebRTC
+    private val webRTCListener = object : EglRenderer.FrameListener {
+        override fun onFrame(bitmap: Bitmap?) {
+            if (isFrameCaptured) return
+
+            isFrameCaptured = true
+
+            frameBitmap = bitmap?.copy(Bitmap.Config.ARGB_8888, false)
+
+            Handler(Looper.getMainLooper()).post {
+                binding.mWebRTCView.removeFrameListener(this)
+            }
+        }
     }
 
     private val peerConnectionFactory: PeerConnectionFactory by inject()

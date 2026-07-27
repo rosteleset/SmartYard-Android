@@ -118,6 +118,11 @@ class AuthScreenTest : TestCase() {
                         typeText("Test Partronymic")
                         Espresso.closeSoftKeyboard()
                     }
+                    lastText {
+                        clearText()
+                        typeText("Test Last")
+                        Espresso.closeSoftKeyboard()
+                    }
                     idle(1500)
                     btnDone.click()
                     idle(1500)

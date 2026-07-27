@@ -15,6 +15,7 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentBurgerBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.custom_web_view.WebViewCodeCache
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -108,7 +109,7 @@ class BurgerFragment : Fragment() {
                     R.id.customWebViewFragmentSettings,
                     R.id.customWebBottomFragmentSettings,
                     it.basePath,
-                    it.code,
+                    WebViewCodeCache.put(it.code),
                     resources.getString(R.string.title_burger))
                 this.findNavController().navigate(action)
             }

@@ -18,6 +18,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import androidx.activity.SystemBarStyle
@@ -233,6 +234,17 @@ class MainActivity : CommonActivity(), BottomNavProvider {
                 bar.selectedItemId = itemId
             }
         )
+
+        bar.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            private var lastHeight = -1
+            override fun onGlobalLayout() {
+                val currentHeight = getBottomNavHeight()
+                if (currentHeight > 0 && currentHeight != lastHeight) {
+                    lastHeight = currentHeight
+                    ViewCompat.requestApplyInsets(binding.root)
+                }
+            }
+        })
     }
 
     private fun getNavController(): NavController {
@@ -361,14 +373,10 @@ class MainActivity : CommonActivity(), BottomNavProvider {
     }
 
     @Suppress("DEPRECATION")
-    fun hideSystemUI(barsIsTransient: Boolean = true) {
+    fun hideSystemUI() {
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
-        windowInsetsController.systemBarsBehavior = if (barsIsTransient) {
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-        } else {
-            WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE
-        }
+        windowInsetsController.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
         binding.bottomNav.isVisible = false
         binding.bottomGradient.isVisible = false
         binding.bottomGradient2.isVisible = false
@@ -540,9 +548,8 @@ class MainActivity : CommonActivity(), BottomNavProvider {
                 if (bg2LayoutParams.height != newHeight) {
                     bg2LayoutParams.height = newHeight
                 }
-            } else {
-                ViewCompat.dispatchApplyWindowInsets(container, insets)
             }
+            ViewCompat.dispatchApplyWindowInsets(container, insets)
 
             insets
         }

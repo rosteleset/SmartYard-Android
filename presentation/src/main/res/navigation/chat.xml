@@ -40,6 +40,16 @@
             app:argType="boolean"
             android:defaultValue="true" />
         <argument
+            android:name="statusBarColor"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+        <argument
+            android:name="statusBarStyle"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="null" />
+        <argument
             android:name="canRefresh"
             app:argType="boolean"
             android:defaultValue="true" />

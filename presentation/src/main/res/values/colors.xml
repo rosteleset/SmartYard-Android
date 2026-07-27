@@ -33,6 +33,9 @@
     <color name="bottom_nav_bg_solid">#E6FFFFFF</color>
     <color name="bottom_nav_indicator">#16777777</color>
 
+    <!-- Chat -->
+    <color name="chat_bottom_bg">@color/light_background</color>
+
     <!-- Map -->
     <color name="marker_tint">@color/brand</color>
 

@@ -318,14 +318,33 @@ class AddressViewModel(
                 item.extId?.let { extId ->
                     async {
                         extInteractor.ext(ExtRequest(extId))?.let { extData ->
+                            val basePath = extData.data.basePath
+                            val code = extData.data.code
+                            val version = extData.data.version
+
+                            val hasOptions = version == 2 && extData.data.options != null
+                            var isHeaderHidden = false
+                            var statusBarColor: String? = null
+                            var statusBarStyle: String? = null
+
+                            if (hasOptions) {
+                                isHeaderHidden = extData.data.options?.isHeaderHidden ?: false
+                                statusBarColor = extData.data.options?.statusBarColor
+                                statusBarStyle = extData.data.options?.statusBarStyle
+                            }
+
                             ExtItemModel(
                                 extId = item.extId,
                                 caption = item.caption,
                                 icon = item.icon,
                                 order = item.order ?: i,
                                 highlight = item.highlight,
-                                basePath = extData.data.basePath,
-                                code = extData.data.code
+                                basePath = basePath,
+                                code = code,
+                                version = version,
+                                isHeaderHidden = isHeaderHidden,
+                                statusBarColor = statusBarColor,
+                                statusBarStyle = statusBarStyle,
                             )
                         }
                     }
@@ -405,9 +424,11 @@ class AddressViewModel(
     }
 
     private fun firstExpandedOrNull(positions: IntRange): HouseUiModel? {
-        return houseUiState.value
-            ?.slice(positions)
-            ?.firstOrNull { it.isExpanded }
+        val list = houseUiState.value ?: return null
+        val safeRange = positions.first.coerceIn(0, list.size)..positions.last.coerceIn(-1, list.size - 1)
+        if (safeRange.isEmpty()) return null
+
+        return list.slice(safeRange).firstOrNull { it.isExpanded }
     }
 
     companion object {

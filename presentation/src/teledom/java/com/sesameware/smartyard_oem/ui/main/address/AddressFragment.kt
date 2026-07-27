@@ -34,6 +34,7 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.custom_web_view.WebViewCodeCache
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressListAdapter
@@ -152,9 +153,12 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     private fun setWebRtcForTopmostExpandedItem() {
-        val first = layoutManager?.findFirstVisibleItemPosition()!!
-        val last = layoutManager?.findLastVisibleItemPosition()!!
-        if (first == -1 || last == -1 || last < first) return
+        val firstLayoutPosition = layoutManager?.findFirstVisibleItemPosition()!!
+        val lastLayoutPosition = layoutManager?.findLastVisibleItemPosition()!!
+        val lastAddressPosition = mViewModel.addressUiState.value?.lastIndex ?: return
+        val first = minOf(firstLayoutPosition, lastAddressPosition)
+        val last = minOf(lastLayoutPosition, lastAddressPosition)
+        if (first < 0 || last < 0 || last < first) return
 
         mViewModel.setWebRtcUrlForTopmostExpandedItemInRange(first..last)
     }
@@ -224,7 +228,8 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             is OnOpenEntranceClick -> mViewModel.openDoor(action.lock)
             is OnEntrancePreviewClick -> navigateToEntranceCameraFragment(action.camera, action.lock)
             is OnHouseAddressLongClick -> startDrag(action.position)
-            is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath, action.code)
+            is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath,
+                action.code, action.isHeaderHidden, action.statusBarColor, action.statusBarStyle)
             is OnEntrancePageSelected -> onEntrancePageSelected(action)
         }
     }
@@ -295,13 +300,20 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         findNavController().navigate(R.id.action_addressFragment_to_eventLogFragment)
     }
 
-    private fun navigateToWebFragment(title: String?, basePath: String?, code: String?) {
+    private fun navigateToWebFragment(title: String?, basePath: String?, code: String?,
+        isHeaderHidden: Boolean, statusBarColor: String?, statusBarStyle: String?) {
         val action = AddressFragmentDirections.actionAddressFragmentToCustomWebViewFragmentAddress(
-            R.id.customWebViewFragmentAddress,
-            R.id.customWebBottomFragmentAddress,
-            basePath,
-            code,
-            title)
+            /* fragmentId = */ R.id.customWebViewFragmentAddress,
+            /* popupId = */ R.id.customWebBottomFragmentAddress,
+            /* basePath = */ basePath,
+            /* code = */ WebViewCodeCache.put(code),
+            /* title = */ title,
+        ).also {
+            it.hasBackButton = !isHeaderHidden
+            it.statusBarColor = statusBarColor
+            it.statusBarStyle = statusBarStyle
+        }
+
         this.findNavController().navigate(action)
     }
 
@@ -335,9 +347,9 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     private fun bindViews() {
-       binding.imageView5.setOnClickListener {
-                NavHostFragment.findNavController(this@AddressFragment)
-                    .navigate(R.id.action_addressFragment_to_authFragment)
+        binding.imageView5.setOnClickListener {
+            NavHostFragment.findNavController(this@AddressFragment)
+                .navigate(R.id.action_addressFragment_to_authFragment)
             }
 
         binding.swipeContainer.setOnRefreshListener {

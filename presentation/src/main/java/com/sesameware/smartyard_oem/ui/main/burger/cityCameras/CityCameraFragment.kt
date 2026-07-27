@@ -17,10 +17,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.LinearLayout
 import android.widget.ProgressBar
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -284,7 +284,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             mPlayer = createPlayer(serverType, binding.pvCityCamera, binding.pbCityCamera)
         }
         binding.flCityCameraVideoWrap.clipToOutline = true
-        
+
         loadDelayed(LOADING_VIDEO_DELAY)
     }
 
@@ -405,6 +405,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)
         (activity as? MainActivity)?.binding?.llMain?.addView(binding.flCityCameraVideoWrap, 0)
 
+        binding.flCityCameraVideoWrap.applyBottomNavInsetsToPadding()
         val lp = binding.flCityCameraVideoWrap.layoutParams as FrameLayout.LayoutParams
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT
         lp.height = ViewGroup.LayoutParams.MATCH_PARENT
@@ -427,6 +428,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         //возвращаем дефолтные layouts
         lpVideoWrap?.let { lp ->
+            ViewCompat.setOnApplyWindowInsetsListener(binding.flCityCameraVideoWrap, null)
             if (lp is ViewGroup.MarginLayoutParams) {
                 lp.height = 222.dpToPx()
                 lp.width = ViewGroup.LayoutParams.MATCH_PARENT

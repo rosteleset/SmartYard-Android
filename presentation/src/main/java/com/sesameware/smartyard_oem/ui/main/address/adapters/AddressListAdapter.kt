@@ -545,7 +545,8 @@ class HouseViewHolder private constructor(
             } ?: ivImageWebExt.setImageResource(R.drawable.common_web_ext)
             tvTitleWebExt.text = extItem.caption
             root.setOnClickListener {
-                callback(OnWebExtensionClick(extItem.caption,extItem.basePath, extItem.code))
+                callback(OnWebExtensionClick(extItem.caption,extItem.basePath, extItem.code,
+                    extItem.isHeaderHidden, extItem.statusBarColor, extItem.statusBarStyle))
             }
         }
     }

@@ -84,6 +84,7 @@
                         android:layout_height="222dp"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:background="@drawable/background_radius_video_clip">
 
@@ -188,8 +189,7 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/rvTimeFragmentButtonsWrap"
                         android:layout_width="match_parent"
-                        android:layout_height="24dp"
-                        android:layout_marginTop="20dp">
+                        android:layout_height="24dp">
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvTimeFragmentButtons"
@@ -209,6 +209,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginTop="24dp"
+                        android:layout_marginBottom="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
@@ -263,7 +264,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
-                        android:layout_marginTop="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:orientation="horizontal"
                         android:visibility="gone"
