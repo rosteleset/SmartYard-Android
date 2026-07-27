@@ -338,11 +338,16 @@
     <string name="event_log_code">Код: %s</string>
     <string name="event_log_plate_number">Номер автомобиля: %s</string>
     <string name="settings_by_face_comments">Вы даете согласие на хранение фотографий вашего лица в системе распознавания лиц.</string>
-    <string name="face_settings_comments">
-        Фотографии ваших гостей хранятся в разделе \"События\".\n
+    <string name="face_settings_comments_has_plog">
+        Фотографии ваших гостей хранятся в разделе "События".\n
         Для выбора и регистрации лица перейдите в указанный раздел, кликнув на Плюс.\n
         В событиях кликните на значок информации напротив нужного события и на открывшемся экране выберите необходимое фото.
     </string>
+    <string name="face_settings_comments_no_plog">
+        Фотографии ваших гостей хранятся в разделе \"События\".\n
+        Поскольку журнал событий недоступен, вы можете только удалять зарегистрированные лица.
+    </string>
+    <string name="face_settings_no_faces">Здесь будут фотографии зарегистрированных гостей</string>
     <string name="settings_white_rabbit">Режим «Белый кролик»</string>
 
     <string name="help_white_rabbit">

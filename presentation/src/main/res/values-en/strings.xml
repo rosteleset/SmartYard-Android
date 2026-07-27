@@ -337,11 +337,16 @@
     <string name="event_log_code">Code: %s</string>
     <string name="event_log_plate_number">Car number: %s</string>
     <string name="settings_by_face_comments">You consent to storing photos of your face in the face recognition system.</string>
-    <string name="face_settings_comments">
+    <string name="face_settings_comments_has_plog">
         Photos of your guests are stored in the \"Events\" section.\n
         To select and register a face, go to the specified section by clicking on the Plus icon.\n
         In the events, click on the information icon next to the event you want, and on the opened screen, select the necessary photo.
     </string>
+    <string name="face_settings_comments_no_plog">
+        Photos of your guests are stored in the "Events" section.\n
+        Since the event log is unavailable, you can only delete registered faces.
+    </string>
+    <string name="face_settings_no_faces">Photos of registered guests will appear here.</string>
     <string name="settings_white_rabbit">\'White Rabbit\' mode</string>
 
     <string name="help_white_rabbit">

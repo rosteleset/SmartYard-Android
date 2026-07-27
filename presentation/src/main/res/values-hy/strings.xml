@@ -333,10 +333,15 @@
     <string name="event_log_code">Կոդ: %s</string>
     <string name="event_log_plate_number">Մեքենայի համարը: %s</string>
     <string name="settings_by_face_comments">Դուք համաձայն եք ձեր դիմացից ներկայացված ձեր նկարները պահելու համար։</string>
-    <string name="face_settings_comments">
+    <string name="face_settings_comments_has_plog">
         Ձեր հյութի նկարները պահելու համար, ձեր հյութի գործարկիչները պահանջում են "Անցնել բաժին" բաժնում։\n
         Նախատեսված ներկայացուցիչները կարող եք գտնել "Իմ հայցեր" բաժնում։ Նկարի ընտրման արագությունը հյութի գործարկիչների "Ստեղնաշարի վրա ներկայացված մուտքեր" բաժնում է։
     </string>
+    <string name="face_settings_comments_no_plog">
+        Ձեր հյուրերի լուսանկարները պահվում են «Իրադարձություններ» բաժնում։\n
+        Քանի որ իրադարձությունների մատյանը հասանելի չէ, դուք կարող եք միայն ջնջել գրանցված դեմքերը։
+    </string>
+    <string name="face_settings_no_faces">Այստեղ կլինեն գրանցված հյուրերի լուսանկարները։</string>
     <string name="settings_white_rabbit">"Սպիտակ հաղորդագրություն" ռեժիմ</string>
 
     <string name="help_white_rabbit">

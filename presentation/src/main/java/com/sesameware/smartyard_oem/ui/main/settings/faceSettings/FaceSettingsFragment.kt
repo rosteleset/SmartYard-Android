@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
@@ -26,6 +28,7 @@ class FaceSettingsFragment : Fragment() {
     private val mEventLogVM by sharedViewModel<EventLogViewModel>()
     private var flatId = 0
     private var address = ""
+    private var canAddFace = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -39,8 +42,18 @@ class FaceSettingsFragment : Fragment() {
         arguments?.let {
             flatId = FaceSettingsFragmentArgs.fromBundle(it).flatId
             address = FaceSettingsFragmentArgs.fromBundle(it).address
+            canAddFace = FaceSettingsFragmentArgs.fromBundle(it).canAddFace
             mViewModel.listFaces(flatId, true)
         }
+
+        binding.ivFSAddFace.isVisible = canAddFace
+
+        val captionRes = if (canAddFace) {
+            R.string.face_settings_comments_has_plog
+        } else {
+            R.string.face_settings_comments_no_plog
+        }
+        binding.tvFSComments.text = getString(captionRes)
 
         binding.ivFaceSettingsBack.setOnClickListener {
             this.findNavController().popBackStack()
@@ -54,6 +67,8 @@ class FaceSettingsFragment : Fragment() {
         initObservers()
 
         binding.ivFSAddFace.setOnClickListener {
+            if (!canAddFace) return@setOnClickListener
+
             mEventLogVM.address = address
             mEventLogVM.flatsAll = listOf(Flat(flatId, "", true))
             mEventLogVM.filterFlat = null
@@ -95,9 +110,11 @@ class FaceSettingsFragment : Fragment() {
                         }
                     )
                 }
-                if (it == null) {
+                if (it.isNullOrEmpty()) {
                     adapter = FaceSettingsAdapter(listOf(), {}, {})
                 }
+                binding.llFacesList.isGone = it.isNullOrEmpty() && !canAddFace
+                binding.tvNoFaces.isVisible = it.isNullOrEmpty() && !canAddFace
             }
         }
     }

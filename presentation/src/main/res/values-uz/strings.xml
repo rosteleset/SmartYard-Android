@@ -333,10 +333,15 @@
     <string name="event_log_code">Kod: %s</string>
     <string name="event_log_plate_number">Avtomobil raqami: %s</string>
     <string name="settings_by_face_comments">Siz o‘zingizning yuzingizning tasvirlarini yig‘ishga rozilik berasiz.</string>
-    <string name="face_settings_comments">
+    <string name="face_settings_comments_has_plog">
         Mehmonlaringizning tasvirlari "Hodislar" bo‘limida saqlanadi.\n
         Yuzni tanlash va ro‘yxatga olish uchun ko‘rsatilgan bo‘limga o‘tib, ko‘rsatilgan hodisning ma‘lumotlar belgisining yonida bo‘lgan "Plyus" belgisini bosishingiz kerak.
     </string>
+    <string name="face_settings_comments_no_plog">
+        Mehmonlaringizning suratlari "Hodisalar" bo‘limida saqlanadi.\n
+        Hodisalar jurnali mavjud bo‘lmagani sababli, siz faqat ro‘yxatga olingan yuzlarni o‘chira olasiz.
+    </string>
+    <string name="face_settings_no_faces">Bu yerda ro‘yxatga olingan mehmonlarning suratlari bo‘ladi.</string>
     <string name="settings_white_rabbit">"Oq urug‘li" rejimi</string>
 
     <string name="help_white_rabbit">

@@ -78,8 +78,9 @@
                 android:textStyle="bold" />
 
             <LinearLayout
+                android:id="@+id/llFacesList"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="96dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="14dp"
                 android:layout_marginEnd="16dp"
@@ -96,7 +97,7 @@
                 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                     android:id="@+id/srlFaceSettings"
                     android:layout_width="0dp"
-                    android:layout_height="96dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1">
 
                     <androidx.recyclerview.widget.RecyclerView
@@ -112,6 +113,16 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvNoFaces"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:gravity="center"
+                android:textColor="@color/accent"
+                android:textSize="24sp"
+                android:text="@string/face_settings_no_faces"
+                android:visibility="gone"/>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="0.6dp"
@@ -125,7 +136,7 @@
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
-                android:text="@string/face_settings_comments"
+                android:text="@string/face_settings_comments_has_plog"
                 android:textColor="@color/accent" />
         </LinearLayout>
 

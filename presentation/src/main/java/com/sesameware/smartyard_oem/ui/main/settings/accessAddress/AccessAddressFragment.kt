@@ -39,6 +39,7 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.Licens
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -57,6 +58,7 @@ class AccessAddressFragment : Fragment() {
     private var address: String = ""
     private var flatOwner: Boolean = false
     private var hasGates: Boolean = false
+    private var hasPlog: Boolean = false
     private var hasLprs: Boolean = false
     private var clientId: String = ""
 
@@ -76,6 +78,7 @@ class AccessAddressFragment : Fragment() {
             address = AccessAddressFragmentArgs.fromBundle(it).address
             flatOwner = AccessAddressFragmentArgs.fromBundle(it).flatOwner
             hasGates = AccessAddressFragmentArgs.fromBundle(it).hasGates
+            hasPlog = AccessAddressFragmentArgs.fromBundle(it).hasPlog
             clientId = AccessAddressFragmentArgs.fromBundle(it).clientId
         }
 
@@ -108,6 +111,7 @@ class AccessAddressFragment : Fragment() {
             val action = AccessAddressFragmentDirections
                 .actionAccessAddressFragmentToFaceSettingsFragment(address)
             action.flatId = flatId
+            action.canAddFace = hasPlog
             this.findNavController().navigate(action)
         }
     }
@@ -171,7 +175,7 @@ class AccessAddressFragment : Fragment() {
                 }
                 hideCodeOpen(it.allowDoorCode)
 
-                binding.gEnterByFace.isVisible = it.frsDisabled == false
+                binding.gEnterByFace.isVisible = true
 
                 hasLprs = it.lprsDisabled == false
                 with (binding) {
