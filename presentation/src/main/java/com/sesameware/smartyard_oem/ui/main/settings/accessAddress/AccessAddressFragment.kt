@@ -175,7 +175,7 @@ class AccessAddressFragment : Fragment() {
                 }
                 hideCodeOpen(it.allowDoorCode)
 
-                binding.gEnterByFace.isVisible = true
+                binding.gEnterByFace.isVisible = it.frsDisabled == false
 
                 hasLprs = it.lprsDisabled == false
                 with (binding) {
