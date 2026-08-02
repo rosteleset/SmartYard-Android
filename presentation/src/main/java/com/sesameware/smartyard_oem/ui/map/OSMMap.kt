@@ -34,7 +34,7 @@ class OSMMap(settings: MapSettings) : SimpleMap(settings) {
 
         view.layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.MATCH_PARENT
+            LinearLayout.LayoutParams.WRAP_CONTENT
         )
         setNightMode()
         onInit()
