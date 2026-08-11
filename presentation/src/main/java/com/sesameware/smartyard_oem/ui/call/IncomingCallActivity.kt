@@ -391,7 +391,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }
 
         if (isEnabled) {
-            val ff = hasWebRTC && (mLinphone?.isVideoCall() == false || mPushCallData.image.isEmpty())
+            val ff = (mViewModel.eyeState.value ?: false) || hasWebRTC && (mLinphone?.isVideoCall() == false || mPushCallData.image.isEmpty())
             Timber.d("debug_dmm  enableCallButtons set eyeState = $ff")
             LinphoneService.instance?.provider?.pushCallData?.eyeState = ff
             mViewModel.eyeState.value = ff
@@ -531,6 +531,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                     .asBitmap()
                     .load(string)
                     .timeout(GLIDE_TIMEOUT_MS.toInt())
+                    .dontAnimate()
+                    .placeholder(binding.mPeekImageView.drawable)
                     .diskCacheStrategy(DiskCacheStrategy.NONE)
                     .skipMemoryCache(true)
                     .listener(object : RequestListener<Bitmap> {

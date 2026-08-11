@@ -1,6 +1,7 @@
 package com.sesameware.smartyard_oem.ui.custom_web_view
 
 import android.annotation.SuppressLint
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.nfc.NfcAdapter
@@ -9,6 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
+import android.webkit.WebChromeClient
+import android.webkit.WebViewClient
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -27,7 +30,7 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
 
     private val viewModel: NfcViewModel by viewModels()
 
-    var nfcManager: NfcManager? = null
+    private var nfcManager: NfcManager? = null
 
     private var fragmentId: Int = 0
     private var popupId: Int = 0
@@ -36,6 +39,8 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
     private var stateBundle: Bundle? = null
 
     private lateinit var webViewClient: CustomWebViewClient
+    private var nfcSessionActive = false
+    private var nfcSessionTimeout = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,7 +112,16 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
 
             override fun scanNfc(timeout: Long) {
                 Timber.d("debug_nfc call scanNfc from WebView $timeout")
-                startNfcScan(timeout)
+                activity?.runOnUiThread {
+                    startNfcScan(timeout)
+                }
+            }
+
+            override fun stopNfc() {
+                Timber.d("debug_nfc call stopNfc from WebView")
+                activity?.runOnUiThread {
+                    stopNfcScan()
+                }
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
 
@@ -147,39 +161,43 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
     }
 
     private fun startNfcScan(timeout: Long) {
+        nfcSessionActive = true
+        nfcSessionTimeout = timeout
+        startNfcReader(timeout)
+    }
+
+    private fun startNfcReader(timeout: Long) {
+        stopNfcReader()
+
         val nfcAdapter = NfcAdapter.getDefaultAdapter(requireContext())
         if (nfcAdapter != null) {
-            if (nfcManager == null) {
-                nfcManager = NfcManager(nfcAdapter)
+            val manager = NfcManager(nfcAdapter)
+            nfcManager = manager
+            Timber.d("debug_nfc enable reader")
+            manager.enableReader(requireActivity()) { tag ->
+                val uid = tag.id.joinToString(":") {
+                    String.format("%02X", it)
+                }
+                viewModel.onTagScanned(uid)
+                sendToWebView(uid)
             }
         } else {
             viewModel.notSupported()
             return
         }
-        if (viewModel.state.value != NfcViewModel.State.Idle)
-        {
-            Timber.d("debug_nfc state is not idle")
-            return
-        }
-        Timber.d("debug_nfc start scan")
         viewModel.startScan(timeout)
-        nfcManager?.enableReader(requireActivity()) { tag ->
-            val uid = tag.id.joinToString(":") {
-                String.format("%02X", it)
-            }
-            Timber.d("debug_nfc success uid=$uid")
+    }
 
-            viewModel.onTagScanned(uid)
-            stopNfcScan()
-        }
+    private fun stopNfcReader() {
+        viewModel.stopScan()
+        Timber.d("debug_nfc disable reader")
+        activity?.let { nfcManager?.disableReader(it) }
+        nfcManager = null
     }
 
     private fun stopNfcScan() {
-        nfcManager?.disableReader(requireActivity())
-        viewModel.stopScan()
-        if (nfcManager != null) {
-            Timber.d("debug_nfc stop scan")
-        }
+        nfcSessionActive = false
+        stopNfcReader()
     }
 
     private fun observeState() {
@@ -187,21 +205,10 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     when (state) {
-                        is NfcViewModel.State.Success -> {
-                            val uid = state.uid
-                            sendToWebView(uid)
-                        }
-
                         is NfcViewModel.State.Timeout -> {
                             Timber.d("debug_nfc timeout")
                             stopNfcScan()
                             sendToWebView("timeout")
-                        }
-
-                        is NfcViewModel.State.Error -> {
-                            Timber.d("debug_nfc error")
-                            stopNfcScan()
-                            sendToWebView("error")
                         }
 
                         is NfcViewModel.State.NotSupported -> {
@@ -210,7 +217,8 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
                             sendToWebView("not supported")
                         }
 
-                        else -> {}
+                        NfcViewModel.State.Idle,
+                        NfcViewModel.State.Scanning -> Unit
                     }
                 }
             }
@@ -218,19 +226,23 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
     }
 
     private fun sendToWebView(uid: String) {
+        val webView = _binding?.wvExtBottom ?: return
         val data = JSONObject.quote(uid)
         Timber.d("debug_nfc send callback with value=$data")
         val js = """
             window.onNfcResult($data);
         """.trimIndent()
 
-        binding.wvExtBottom.post {
-            binding.wvExtBottom.evaluateJavascript(js, null)
+        webView.post {
+            webView.evaluateJavascript(js, null)
         }
     }
 
     override fun onPause() {
+        Timber.d("debug_web onPause CustomWebBottomFragment")
+        binding.wvExtBottom.onPause()
         super.onPause()
+        stopNfcReader()
 
         saveState()
         CookieManager.getInstance().apply {
@@ -282,9 +294,33 @@ class CustomWebBottomFragment : BottomSheetDialogFragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onResume() {
+        super.onResume()
+        binding.wvExtBottom.onResume()
+        if (nfcSessionActive && nfcManager == null) {
+            Timber.d("debug_nfc resume reader")
+            startNfcReader(nfcSessionTimeout)
+        }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        Timber.d("debug_web onDismiss CustomWebBottomFragment")
         stopNfcScan()
+        super.onDismiss(dialog)
+    }
+
+    override fun onDestroyView() {
+        Timber.d("debug_web onDestroyView CustomWebBottomFragment")
+        stopNfcScan()
+        _binding?.wvExtBottom?.let { webView ->
+            webView.stopLoading()
+            webView.webViewClient = WebViewClient()
+            webView.webChromeClient = WebChromeClient()
+            webView.removeAllViews()
+            webView.destroy()
+        }
+        _binding = null
+        super.onDestroyView()
     }
 
     companion object {

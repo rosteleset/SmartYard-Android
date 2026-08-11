@@ -24,13 +24,12 @@
 
             <ImageView
                 android:id="@+id/ivIcon"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|center_vertical"
-                android:layout_margin="8dp"
-                android:layout_weight="0"
-                android:paddingStart="24dp"
-                android:paddingEnd="12dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="16dp"
+                android:scaleType="fitCenter"
                 app:tint="@color/no_accent"
                 app:srcCompat="@drawable/address_settings_burger" />
 

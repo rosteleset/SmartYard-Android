@@ -14,9 +14,26 @@ data class Ext(
 }
 
 data class WebViewOptions(
-    @Json(name = "navBarHidden") val _isHeaderHidden: String? = null,
+    @Json(name = "navBarHidden") val _isHeaderHidden: Any? = null,
     @Json(name = "statusBarColor") val statusBarColor: String? = null,
     @Json(name = "statusBarStyle") val statusBarStyle: String? = null,
+    @Json(name = "pullToRefreshEnabled") val _pullToRefreshEnabled: Any? = null,
 ) {
-    val isHeaderHidden get() = _isHeaderHidden == "t"
+    val isHeaderHidden get() = when (val value = _isHeaderHidden) {
+        is Boolean -> value
+        is Number -> value.toInt() != 0
+        is String -> value.equals("t", ignoreCase = true)
+            || value.equals("true", ignoreCase = true)
+            || value == "1"
+        else -> false
+    }
+
+    val pullToRefreshEnabled get() = when (val value = _pullToRefreshEnabled) {
+        is Boolean -> value
+        is Number -> value.toInt() != 0
+        is String -> !(value.equals("f", ignoreCase = true)
+            || value.equals("false", ignoreCase = true)
+            || value == "0")
+        else -> true
+    }
 }

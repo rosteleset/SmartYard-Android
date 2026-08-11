@@ -64,7 +64,6 @@ class IncomingCallActivityViewModel(
 
     fun start(data: PushCallData) {
         mPushCallData = data
-        setSlideShowEnabled(false)
     }
 
     fun connectedChangeStateUiAudioToSpeaker() {

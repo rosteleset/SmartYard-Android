@@ -33,6 +33,7 @@ http://developer.android.com/guide/topics/appwidgets/index.html#CreatingLayout
 
     <dimen name="surface_corner_radius">24dp</dimen>
     <dimen name="surface_corner_radius_compensation">-24dp</dimen>
+    <dimen name="surface_corner_radius_compensation_wide">-96dp</dimen>
     <dimen name="edit_text_corner_radius">8dp</dimen>
     <dimen name="tab_layout_corner_radius">8dp</dimen>
     <dimen name="dialog_large_corner_radius">20dp</dimen>

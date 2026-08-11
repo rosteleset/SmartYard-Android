@@ -1,9 +1,7 @@
 package com.sesameware.smartyard_oem.di
 
-import android.os.Build
 import androidx.lifecycle.SavedStateHandle
 import com.sesameware.smartyard_oem.GlobalDataSource
-import com.sesameware.data.SafeVideoDecoderFactory
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivityViewModel
 import com.sesameware.smartyard_oem.ui.common.AppealFormViewModel
 import com.sesameware.smartyard_oem.ui.launcher.LauncherViewModel
@@ -24,6 +22,7 @@ import com.sesameware.smartyard_oem.ui.main.address.qrCode.QrCodeViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.courier.WorkSoonCourierViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.office.WorkSoonOfficeViewModel
 import com.sesameware.smartyard_oem.ui.main.burger.BurgerViewModel
+import com.sesameware.smartyard_oem.ui.main.burger.CallToSupportFragment
 import com.sesameware.smartyard_oem.ui.main.burger.cityCameras.CityCamerasViewModel
 import com.sesameware.smartyard_oem.ui.main.chat.ChatViewModel
 import com.sesameware.smartyard_oem.ui.main.notification.NotificationViewModel
@@ -43,14 +42,8 @@ import com.sesameware.smartyard_oem.ui.reg.outgoing_call.OutgoingCallViewModel
 import com.sesameware.smartyard_oem.ui.reg.providers.ProvidersViewModel
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegViewModel
 import com.sesameware.smartyard_oem.ui.reg.tel.NumberRegViewModel
-import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
-import org.webrtc.DefaultVideoEncoderFactory
-import org.webrtc.EglBase
-import org.webrtc.PeerConnectionFactory
-import org.webrtc.VideoDecoderFactory
-import org.webrtc.VideoEncoderFactory
 
 object PresentationModule {
     fun create() = module {
@@ -93,6 +86,7 @@ object PresentationModule {
         viewModel { PayBottomSheetDialogViewModel(get()) }
         viewModel { PayWebViewViewModel(get()) }
         viewModel { TrackedEventsViewModel(get()) }
+        factory { CallToSupportFragment() }
         single { GlobalDataSource() }
     }
 }

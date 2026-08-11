@@ -52,7 +52,7 @@ class CustomWebViewClient(
                                     putString(CustomWebViewFragment.BASE_PATH, url)
                                     putString(CustomWebViewFragment.CODE, "")
                                     putString(CustomWebViewFragment.TITLE, (f.binding.wvExt.webViewClient as CustomWebViewClient).pageTitle)
-                                    putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                                    inheritWebViewOptions(f)
                                 })
 
                             return true
@@ -66,7 +66,7 @@ class CustomWebViewClient(
                                 putString(CustomWebViewFragment.BASE_PATH, url)
                                 putString(CustomWebViewFragment.CODE, "")
                                 putString(CustomWebViewFragment.TITLE, pageTitle)
-                                putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                                inheritWebViewOptions(fragment)
                             })
 
                         return true
@@ -87,7 +87,7 @@ class CustomWebViewClient(
                                         putString(CustomWebViewFragment.BASE_PATH, url)
                                         putString(CustomWebViewFragment.CODE, "")
                                         putString(CustomWebViewFragment.TITLE, f.binding.tvEWVTitle.text.toString())
-                                        putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, f.hasBackButton)
+                                        inheritWebViewOptions(f)
                                     }, option)
                             }
 
@@ -104,7 +104,7 @@ class CustomWebViewClient(
                                 putString(CustomWebViewFragment.BASE_PATH, url)
                                 putString(CustomWebViewFragment.CODE, "")
                                 putString(CustomWebViewFragment.TITLE, fragment.binding.tvEWVTitle.text.toString())
-                                putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, true)
+                                inheritWebViewOptions(fragment)
                             }, option)
 
                         return true
@@ -156,6 +156,14 @@ class CustomWebViewClient(
         }
 
         return false
+    }
+
+    private fun Bundle.inheritWebViewOptions(source: CustomWebViewFragment?) {
+        source ?: return
+        putBoolean(CustomWebViewFragment.HAS_BACK_BUTTON, source.hasBackButton)
+        putString(CustomWebViewFragment.STATUS_BAR_COLOR, source.webStatusBarColor)
+        putString(CustomWebViewFragment.STATUS_BAR_STYLE, source.webStatusBarStyle)
+        putBoolean(CustomWebViewFragment.CAN_REFRESH, source.webCanRefresh)
     }
 
     override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {

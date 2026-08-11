@@ -39,7 +39,6 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.Licens
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale

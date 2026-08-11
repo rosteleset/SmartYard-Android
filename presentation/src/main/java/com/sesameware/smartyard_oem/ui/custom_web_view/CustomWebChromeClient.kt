@@ -20,6 +20,7 @@ class CustomWebChromeClient(
         Timber.d("debug_web error message: ${consoleMessage?.message()}")
         Timber.d("debug_web error line number: ${consoleMessage?.lineNumber()}")
         Timber.d("debug_web error source: ${consoleMessage?.sourceId()}")
+        Timber.d("debug_web error message level: ${consoleMessage?.messageLevel()}")
         return super.onConsoleMessage(consoleMessage)
     }
 

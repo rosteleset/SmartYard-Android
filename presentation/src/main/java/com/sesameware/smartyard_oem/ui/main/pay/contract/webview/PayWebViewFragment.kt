@@ -68,6 +68,28 @@ class PayWebViewFragment : Fragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        binding.webView.onResume()
+    }
+
+    override fun onPause() {
+        binding.webView.onPause()
+        super.onPause()
+    }
+
+    override fun onDestroyView() {
+        binding.webView.apply {
+            stopLoading()
+            webViewClient = WebViewClient()
+            webChromeClient = WebChromeClient()
+            removeAllViews()
+            destroy()
+        }
+        _binding = null
+        super.onDestroyView()
+    }
+
     fun finishPay() {
         this@PayWebViewFragment.findNavController().popBackStack()
         this@PayWebViewFragment.findNavController()

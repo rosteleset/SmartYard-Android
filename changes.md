@@ -1,5 +1,11 @@
 ## History of major changes
 
+### Version 1.0.102
+* Update project to meet Google Play requirements for August 2026, including migration to targetSdk 36 (Android 16)
+* Prevent the virtual keyboard from overlapping input in the appeal, SMS and phone registration screens
+* Minor improvements, fixes and code refactoring
+
+
 ### Version 1.0.98
 * Optimized WebRTC streams to prevent device overheating, video freezes, and interface slowdowns
 * Added automatic fallback to HLS when the WebRTC stream fails to load frames

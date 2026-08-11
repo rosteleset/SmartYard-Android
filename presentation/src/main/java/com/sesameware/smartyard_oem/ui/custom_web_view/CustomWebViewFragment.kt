@@ -11,10 +11,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.WebChromeClient
+import android.webkit.WebViewClient
 import androidx.annotation.UiThread
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
+import androidx.core.os.ConfigurationCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -43,7 +47,7 @@ class CustomWebViewFragment : Fragment() {
 
     private val viewModel: NfcViewModel by viewModels()
 
-    var nfcManager: NfcManager? = null
+    private var nfcManager: NfcManager? = null
 
     val args: CustomWebViewFragmentArgs by navArgs()
     private val fragmentId get() = args.fragmentId
@@ -52,6 +56,9 @@ class CustomWebViewFragment : Fragment() {
     private val code by lazy { WebViewCodeCache.get(args.code) }
     private val title get() = args.title ?: ""
     val hasBackButton get() = args.hasBackButton
+    val webStatusBarColor get() = args.statusBarColor
+    val webStatusBarStyle get() = args.statusBarStyle
+    val webCanRefresh get() = args.canRefresh
     private val statusBarCupertinoStyle get() = args.statusBarStyle
     private val statusBarBackgroundColor get() = args.statusBarColor
     private val canRefresh get() = args.canRefresh
@@ -59,6 +66,8 @@ class CustomWebViewFragment : Fragment() {
     private var stateBundle: Bundle? = null
 
     private lateinit var webViewClient: CustomWebViewClient
+    private var nfcSessionActive = false
+    private var nfcSessionTimeout = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -122,7 +131,16 @@ class CustomWebViewFragment : Fragment() {
 
             override fun scanNfc(timeout: Long) {
                 Timber.d("debug_nfc call scanNfc from WebView $timeout")
-                startNfcScan(timeout)
+                activity?.runOnUiThread {
+                    startNfcScan(timeout)
+                }
+            }
+
+            override fun stopNfc() {
+                Timber.d("debug_nfc call stopNfc from WebView")
+                activity?.runOnUiThread {
+                    stopNfcScan()
+                }
             }
         }), CustomWebInterface.WEB_INTERFACE_OBJECT)
         binding.wvExt.clearCache(true)
@@ -156,9 +174,18 @@ class CustomWebViewFragment : Fragment() {
         }
 
         binding.tvEWVTitle.text = title
-        binding.tvEWVTitle.isVisible = title.isNotEmpty()
-
+        binding.tvEWVTitle.isVisible = hasBackButton && title.isNotEmpty()
         binding.ivEWVBack.isVisible = hasBackButton
+        binding.imageViewCustom.isVisible = hasBackButton
+
+        val webViewLayoutParams =
+            binding.srlCustomWebView.layoutParams as ConstraintLayout.LayoutParams
+        webViewLayoutParams.topToBottom = if (hasBackButton) {
+            binding.ivEWVBack.id
+        } else {
+            binding.fakeStatusBarBackground.id
+        }
+        binding.srlCustomWebView.layoutParams = webViewLayoutParams
 
         binding.fakeStatusBarBackground.isGone = hasBackButton
         if (!hasBackButton) {
@@ -195,39 +222,43 @@ class CustomWebViewFragment : Fragment() {
     }
 
     private fun startNfcScan(timeout: Long) {
+        nfcSessionActive = true
+        nfcSessionTimeout = timeout
+        startNfcReader(timeout)
+    }
+
+    private fun startNfcReader(timeout: Long) {
+        stopNfcReader()
+
         val nfcAdapter = NfcAdapter.getDefaultAdapter(requireContext())
         if (nfcAdapter != null) {
-            if (nfcManager == null) {
-                nfcManager = NfcManager(nfcAdapter)
+            val manager = NfcManager(nfcAdapter)
+            nfcManager = manager
+            Timber.d("debug_nfc enable reader")
+            manager.enableReader(requireActivity()) { tag ->
+                val uid = tag.id.joinToString(":") {
+                    String.format("%02X", it)
+                }
+                viewModel.onTagScanned(uid)
+                sendToWebView(uid)
             }
         } else {
             viewModel.notSupported()
             return
         }
-        if (viewModel.state.value != NfcViewModel.State.Idle)
-        {
-            Timber.d("debug_nfc state is not idle")
-            return
-        }
-        Timber.d("debug_nfc start scan")
         viewModel.startScan(timeout)
-        nfcManager?.enableReader(requireActivity()) { tag ->
-            val uid = tag.id.joinToString(":") {
-                String.format("%02X", it)
-            }
-            Timber.d("debug_nfc success uid=$uid")
+    }
 
-            viewModel.onTagScanned(uid)
-            stopNfcScan()
-        }
+    private fun stopNfcReader() {
+        viewModel.stopScan()
+        Timber.d("debug_nfc disable reader")
+        activity?.let { nfcManager?.disableReader(it) }
+        nfcManager = null
     }
 
     private fun stopNfcScan() {
-        nfcManager?.disableReader(requireActivity())
-        viewModel.stopScan()
-        if (nfcManager != null) {
-            Timber.d("debug_nfc stop scan")
-        }
+        nfcSessionActive = false
+        stopNfcReader()
     }
 
     private fun observeState() {
@@ -235,21 +266,10 @@ class CustomWebViewFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.state.collect { state ->
                     when (state) {
-                        is NfcViewModel.State.Success -> {
-                            val uid = state.uid
-                            sendToWebView(uid)
-                        }
-
                         is NfcViewModel.State.Timeout -> {
                             Timber.d("debug_nfc timeout")
                             stopNfcScan()
                             sendToWebView("timeout")
-                        }
-
-                        is NfcViewModel.State.Error -> {
-                            Timber.d("debug_nfc error")
-                            stopNfcScan()
-                            sendToWebView("error")
                         }
 
                         is NfcViewModel.State.NotSupported -> {
@@ -258,7 +278,8 @@ class CustomWebViewFragment : Fragment() {
                             sendToWebView("not supported")
                         }
 
-                        else -> {}
+                        NfcViewModel.State.Idle,
+                        NfcViewModel.State.Scanning -> Unit
                     }
                 }
             }
@@ -266,19 +287,23 @@ class CustomWebViewFragment : Fragment() {
     }
 
     private fun sendToWebView(uid: String) {
+        val webView = _binding?.wvExt ?: return
         val data = JSONObject.quote(uid)
         Timber.d("debug_nfc send callback with value=$data")
         val js = """
             window.onNfcResult($data);
         """.trimIndent()
 
-        binding.wvExt.post {
-            binding.wvExt.evaluateJavascript(js, null)
+        webView.post {
+            webView.evaluateJavascript(js, null)
         }
     }
 
     override fun onPause() {
+        Timber.d("debug_web onPause CustomWebViewFragment")
+        binding.wvExt.onPause()
         super.onPause()
+        stopNfcReader()
 
         saveState()
         CookieManager.getInstance().apply {
@@ -315,9 +340,27 @@ class CustomWebViewFragment : Fragment() {
             }, timeout * 1000L)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onResume() {
+        super.onResume()
+        binding.wvExt.onResume()
+        if (nfcSessionActive && nfcManager == null) {
+            Timber.d("debug_nfc resume reader")
+            startNfcReader(nfcSessionTimeout)
+        }
+    }
+
+    override fun onDestroyView() {
+        Timber.d("debug_web onDestroyView CustomWebViewFragment")
         stopNfcScan()
+        _binding?.wvExt?.let { webView ->
+            webView.stopLoading()
+            webView.webViewClient = WebViewClient()
+            webView.webChromeClient = WebChromeClient()
+            webView.removeAllViews()
+            webView.destroy()
+        }
+        _binding = null
+        super.onDestroyView()
     }
 
     @UiThread
@@ -328,6 +371,11 @@ class CustomWebViewFragment : Fragment() {
     }
 
     private inner class UiWebInterface {
+        @JavascriptInterface
+        fun getLocale(): String =
+            ConfigurationCompat.getLocales(resources.configuration)[0]?.toLanguageTag()
+                ?: "ru"
+
         @JavascriptInterface
         fun setStatusBarColor(colorHex: String?): String? {
             val errMsg = when {
@@ -385,6 +433,8 @@ class CustomWebViewFragment : Fragment() {
         const val CODE = "code"
         const val TITLE = "title"
         const val HAS_BACK_BUTTON = "hasBackButton"
+        const val STATUS_BAR_COLOR = "statusBarColor"
+        const val STATUS_BAR_STYLE = "statusBarStyle"
         const val CAN_REFRESH = "canRefresh"
 
         private fun String?.isValidHexColor(): Boolean {

@@ -799,10 +799,10 @@ fun View.applyBottomNavInsetsToMargin() {
 
     val initialMarginBottom = marginBottom
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
-        val bottomInset = windowInsets
-            .getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        val types = WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.ime()
+        val bottomInset = windowInsets.getInsets(types).bottom
         val bottomNavHeight = (view.context as? BottomNavProvider)?.getBottomNavHeight() ?: 0
-        val extraHeight = if (bottomNavHeight > 0) bottomNavHeight else bottomInset
+        val extraHeight = maxOf(bottomNavHeight, bottomInset)
 
         val targetMargin = initialMarginBottom + extraHeight
         (view.layoutParams as? ViewGroup.MarginLayoutParams)?.let { layoutParams ->
@@ -840,10 +840,10 @@ fun View.applyBottomNavInsetsToPadding() {
 
     val initialPaddingBottom = paddingBottom
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
-        val bottomInset = windowInsets
-            .getInsets(WindowInsetsCompat.Type.navigationBars()).bottom
+        val types = WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.ime()
+        val bottomInset = windowInsets.getInsets(types).bottom
         val bottomNavHeight = (view.context as? BottomNavProvider)?.getBottomNavHeight() ?: 0
-        val extraHeight = if (bottomNavHeight > 0) bottomNavHeight else bottomInset
+        val extraHeight = maxOf(bottomNavHeight, bottomInset)
 
         val targetPadding = initialPaddingBottom + extraHeight
         if (view.paddingBottom != targetPadding) {

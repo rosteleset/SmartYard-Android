@@ -21,7 +21,7 @@
         android:id="@+id/surface"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="@dimen/surface_corner_radius_compensation"
+        android:layout_marginTop="@dimen/surface_corner_radius_compensation_wide"
         android:background="@drawable/background_surface"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/headerBackground" />
@@ -78,6 +78,19 @@
         android:textColor="@color/brand"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etPassword" />
+
+
+    <ViewStub
+        android:id="@+id/fragmentAuthStub"
+        android:inflatedId="@+id/inflatedAuthStub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/preview_for_stub"
+        tools:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/btnSignIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvRememberAnything" />
 
     <Button
         android:id="@+id/btnSignIn"

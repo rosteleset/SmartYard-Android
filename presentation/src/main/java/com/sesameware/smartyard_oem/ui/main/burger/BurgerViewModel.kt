@@ -39,7 +39,14 @@ class BurgerViewModel(
     val navigateToFragment: LiveData<Event<Int>>
         get() = _navigateToFragment
 
-    data class WebExtension(var basePath: String, var code: String)
+    data class WebExtension(
+        val basePath: String,
+        val code: String,
+        val isHeaderHidden: Boolean,
+        val statusBarColor: String?,
+        val statusBarStyle: String?,
+        val pullToRefreshEnabled: Boolean,
+    )
     private val _navigateToWebView = MutableLiveData<Event<WebExtension>>()
     val navigateToWebView: LiveData<Event<WebExtension>>
         get() = _navigateToWebView
@@ -132,7 +139,16 @@ class BurgerViewModel(
                                         viewModelScope.withProgress({false}) {
                                             extInteractor.ext(ExtRequest(item.extId!!))?.let {
                                                 if (it.data.basePath != null && it.data.code != null) {
-                                                    _navigateToWebView.value = Event(WebExtension(it.data.basePath!!, it.data.code!!))
+                                                    _navigateToWebView.value = Event(
+                                                        WebExtension(
+                                                            basePath = it.data.basePath!!,
+                                                            code = it.data.code!!,
+                                                            isHeaderHidden = it.data.options?.isHeaderHidden == true,
+                                                            statusBarColor = it.data.options?.statusBarColor,
+                                                            statusBarStyle = it.data.options?.statusBarStyle,
+                                                            pullToRefreshEnabled = it.data.options?.pullToRefreshEnabled != false,
+                                                        )
+                                                    )
                                                 }
                                             }
                                         }

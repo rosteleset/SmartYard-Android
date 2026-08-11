@@ -19,9 +19,9 @@ import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class AuthFragment : Fragment() {
+open class AuthFragment : Fragment() {
     private var _binding: FragmentAuthBinding? = null
-    private val binding get() = _binding!!
+    protected val binding get() = _binding!!
 
     private val viewModel by viewModel<AuthViewModel>()
     private var start = 0
@@ -108,7 +108,11 @@ class AuthFragment : Fragment() {
         binding.tvRememberAnything.setOnClickListener {
             showDialogIssue()
         }
+
+        configureStubs()
     }
+
+    protected open fun configureStubs() {/* no-op */}
 
     private fun showDialogIssue() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)

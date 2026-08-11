@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.hannesdorfmann.adapterdelegates4.ListDelegationAdapter
 import com.sesameware.smartyard_oem.EventObserver
+import org.koin.android.ext.android.get
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentBurgerBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
@@ -40,7 +41,7 @@ class BurgerFragment : Fragment() {
             val hardcodedPhoneNumber =
                 requireContext().getString(R.string.burger_call_support_hardcoded_phone)
             viewModel.getHelpMe(hardcodedPhoneNumber)
-            val dialog = CallToSupportFragment()
+            val dialog = get<CallToSupportFragment>()
             dialog.show(requireActivity().supportFragmentManager, "callToSupport")
         }
 
@@ -111,6 +112,10 @@ class BurgerFragment : Fragment() {
                     it.basePath,
                     WebViewCodeCache.put(it.code),
                     resources.getString(R.string.title_burger))
+                action.hasBackButton = !it.isHeaderHidden
+                action.statusBarColor = it.statusBarColor
+                action.statusBarStyle = it.statusBarStyle
+                action.canRefresh = it.pullToRefreshEnabled
                 this.findNavController().navigate(action)
             }
         )

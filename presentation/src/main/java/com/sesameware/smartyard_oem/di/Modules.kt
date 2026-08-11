@@ -1,16 +1,15 @@
 package com.sesameware.smartyard_oem.di
 
-import org.koin.core.module.Module
 import com.sesameware.data.DataModule
 import com.sesameware.domain.DomainModule
+import org.koin.core.module.Module
 
 object Modules {
 
-    fun allModules(): List<Module> {
-        return listOf(
+    fun get(): List<Module> = listOf(
             DataModule.create(),
             PresentationModule.create(),
-            DomainModule.create()
+            DomainModule.create(),
+            AdditionalModule.create()
         )
-    }
 }

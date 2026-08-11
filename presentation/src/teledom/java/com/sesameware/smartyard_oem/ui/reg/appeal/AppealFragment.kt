@@ -29,7 +29,13 @@ class AppealFragment : Fragment() {
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, 0, systemBars.right, systemBars.bottom)
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            v.setPadding(
+                systemBars.left,
+                0,
+                systemBars.right,
+                maxOf(systemBars.bottom, ime.bottom)
+            )
             insets
         }
 

@@ -14,9 +14,9 @@ import com.sesameware.smartyard_oem.databinding.FragmentCallToSupportBinding
 import com.sesameware.smartyard_oem.getCountryIso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
-class CallToSupportFragment : BottomSheetDialogFragment() {
+open class CallToSupportFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCallToSupportBinding? = null
-    private val binding get() = _binding!!
+    protected val binding get() = _binding!!
 
     private val viewModel: BurgerViewModel by sharedViewModel()
 
@@ -38,7 +38,7 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        binding.llOrderCallback.visibility = View.VISIBLE
+        customizeViewBehavior()
         binding.llOrderCallback.setOnClickListener {
             viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)
             dismiss()
@@ -46,6 +46,8 @@ class CallToSupportFragment : BottomSheetDialogFragment() {
 
         setupObservers()
     }
+
+    protected open fun customizeViewBehavior() {/* no-op */}
 
     override fun onStart() {
         super.onStart()

@@ -21,7 +21,9 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
+import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -58,6 +60,7 @@ import com.sesameware.smartyard_oem.ui.setupExitOnBackPressedWhenInRoot
 import com.sesameware.smartyard_oem.ui.setupPopToRootOnItemReselected
 import com.sesameware.smartyard_oem.ui.setupWithNavController
 import kotlinx.coroutines.runBlocking
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -88,6 +91,8 @@ class MainActivity : CommonActivity(), BottomNavProvider {
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setupKoinFragmentFactory()
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             installSplashScreen()
@@ -182,6 +187,14 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         }
 
         handleDeepLink(intent)
+
+        onBackPressedDispatcher.addCallback(this) {
+            exitFullscreenListener?.onExitFullscreen()
+            requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            isEnabled = false
+            onBackPressedDispatcher.onBackPressed()
+            isEnabled = true
+        }
     }
 
     private fun handleBadge(badge: Boolean, itemId: Int) {
@@ -495,15 +508,7 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         }
     }
 
-    @Deprecated("Deprecated in Java")
     @SuppressLint("SourceLockedOrientationActivity")
-    override fun onBackPressed() {
-        exitFullscreenListener?.onExitFullscreen()
-        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        super.onBackPressed()
-    }
-
     override fun onUserInteraction() {
         super.onUserInteraction()
 

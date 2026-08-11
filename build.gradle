@@ -2,20 +2,20 @@
 buildscript {
     ext {
         minSdk = 24
-        targetSdk = 35
-        compileSdk = 35
+        targetSdk = 36
+        compileSdk = 36
         adapterdelegates = '4.2.0'
         androidPlugin = '8.12.1'
         androidxLegacy = '1.0.0'
         androidxTransition = '1.4.1'
-        appCompat = '1.6.1'
+        appCompat = '1.7.0'
         archCore = '2.0.1'
         calendarView = '0.3.4'
         camerax = '1.4.2'
         composeBom = '2022.10.00'
         composePlugin = '1.8.2'
         constraintLayout = '2.1.4'
-        coreKtx = '1.12.0'
+        coreKtx = '1.15.0'
         coroutines = '1.10.2'
         dexter = '6.2.2'
         espressoCore = '3.2.0'

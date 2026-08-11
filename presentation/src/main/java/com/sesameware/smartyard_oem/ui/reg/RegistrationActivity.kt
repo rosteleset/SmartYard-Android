@@ -13,6 +13,7 @@ import com.sesameware.smartyard_oem.MessagingService.TypeMessage.Companion.getTy
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityRegistrationBinding
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivity.Companion.NOTIFICATION_ID
+import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import timber.log.Timber
 
@@ -25,6 +26,8 @@ class RegistrationActivity : CommonActivity() {
     private var notificationId = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        setupKoinFragmentFactory()
 
         setTheme(R.style.AppTheme_NoActionBar)
 

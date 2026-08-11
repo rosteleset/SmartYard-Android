@@ -7,6 +7,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import kotlin.time.Duration.Companion.milliseconds
 
 class NfcViewModel : ViewModel() {
 
@@ -14,8 +16,6 @@ class NfcViewModel : ViewModel() {
         data object Idle : State()
         data object Scanning : State()
         data object Timeout : State()
-        data class Success(val uid: String) : State()
-        data class Error(val message: String) : State()
         data object NotSupported : State()
     }
 
@@ -25,12 +25,18 @@ class NfcViewModel : ViewModel() {
     private var timeoutJob: Job? = null
 
     fun startScan(timeoutMs: Long) {
+        Timber.d("debug_nfc start scan")
         timeoutJob?.cancel()
 
         _state.value = State.Scanning
 
+        if (timeoutMs <= 0) {
+            Timber.d("debug_nfc persistent scan without timeout")
+            return
+        }
+
         timeoutJob = viewModelScope.launch {
-            delay(timeoutMs)
+            delay(timeoutMs.milliseconds)
 
             if (_state.value is State.Scanning) {
                 _state.value = State.Timeout
@@ -39,11 +45,12 @@ class NfcViewModel : ViewModel() {
     }
 
     fun onTagScanned(uid: String) {
+        Timber.d("debug_nfc success uid=$uid")
         timeoutJob?.cancel()
-        _state.value = State.Success(uid)
     }
 
     fun stopScan() {
+        Timber.d("debug_nfc stop scan")
         timeoutJob?.cancel()
         _state.value = State.Idle
     }

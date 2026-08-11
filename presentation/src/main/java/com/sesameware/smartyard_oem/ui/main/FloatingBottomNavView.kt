@@ -191,7 +191,11 @@ class FloatingBottomNavView @JvmOverloads constructor(
                 setMargins(dpToPx(12f).toInt(), dpToPx(4f).toInt(), dpToPx(12f).toInt(), dpToPx(2f).toInt())
             }
             setImageDrawable(icon)
-            setColorFilter(inactiveTabColor)
+            if (icon?.isStateful == true) {
+                isSelected = false
+            } else {
+                setColorFilter(inactiveTabColor)
+            }
         }
 
         val badgeView = TextView(context).apply {
@@ -251,8 +255,17 @@ class FloatingBottomNavView @JvmOverloads constructor(
         if (notify) onItemSelectedListeners.forEach { it.invoke(itemId) }
 
         tabViews.forEachIndexed { i, tab ->
-            val color = if (i == index) activeTabColor else inactiveTabColor
-            tab.icon.setColorFilter(color)
+            val isSelected = i == index
+            val color = if (isSelected) activeTabColor else inactiveTabColor
+
+            tab.icon.isSelected = isSelected
+
+            if (tab.icon.drawable?.isStateful == true) {
+                tab.icon.clearColorFilter()
+            } else {
+                tab.icon.setColorFilter(color)
+            }
+
             tab.text?.setTextColor(color)
         }
 
