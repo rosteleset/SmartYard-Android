@@ -1,0 +1,12 @@
+tracer {
+    defaultConfig {
+        // See the "Settings" section
+        appToken = "*******************************************"
+        pluginToken = "********************************************"
+
+        // Enables mapping files uploading during a build. The default value is true, i.e. the uploading is enabled.
+        uploadMapping = true
+        // Enables output of debugging information about the plugin operation. The default value is false.
+        // printBuildUUID = true
+    }
+}

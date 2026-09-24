@@ -2,4 +2,5 @@
 */release
 */debug
 */disableLint
-/src/client/
+/src/google/google-services.json
+/src/huawei/agconnect-services.json

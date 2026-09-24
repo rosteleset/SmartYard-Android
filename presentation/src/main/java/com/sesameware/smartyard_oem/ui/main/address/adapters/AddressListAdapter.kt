@@ -19,6 +19,7 @@ import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.signature.ObjectKey
 import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.smartyard_oem.R
@@ -46,6 +47,7 @@ import com.sesameware.smartyard_oem.ui.main.address.models.OnQrCodeClick
 import com.sesameware.smartyard_oem.ui.main.address.models.OnWebExtensionClick
 import com.sesameware.smartyard_oem.ui.main.address.models.interfaces.VideoCameraModelP
 import net.cachapa.expandablelayout.ExpandableLayout
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 typealias HouseCallback = (HouseAction) -> Unit
 typealias IssueCallback = (IssueAction) -> Unit
@@ -153,6 +155,7 @@ class HouseViewHolder private constructor(
     private val yardViewBindingPool = mutableListOf<ItemYardBinding>()
     private val sliderViewBindingPool = mutableListOf<ItemEntranceBinding>()
     private val webExtViewBindingPool = mutableListOf<ItemWebExtBinding>()
+    private val delegate: ItemYardDelegate? by injectOrNull(ItemYardDelegate::class.java)
 
     private val sliderSpacingPx = binding.root.resources
         .getDimensionPixelSize(R.dimen.entrance_slider_spacing)
@@ -287,6 +290,8 @@ class HouseViewHolder private constructor(
                     3000
                 )
             }
+
+            delegate?.extendConfig(this)
         }
     }
 
@@ -410,37 +415,41 @@ class HouseViewHolder private constructor(
             val color = ContextCompat.getColor(root.context, R.color.on_filled)
 
             Glide.with(ivPreview).clear(ivPreview)
-            Glide.with(ivPreview)
-                .load(camera?.previewUrl)
-                .error(R.drawable.ic_no_photography_24)
-                .centerCrop()
-                .listener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                        ivPreview.setColorFilter(color)
-                        previewSuccess = false
-                        return false
-                    }
 
-                    override fun onResourceReady(
-                        resource: Drawable,
-                        model: Any,
-                        target: Target<Drawable>,
-                        dataSource: DataSource,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        ivPreview.clearColorFilter()
-                        ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
-                        previewSuccess = true
-                        return false
-                    }
-                })
-                .into(ivPreview)
+            if (camera != null) {
+                Glide.with(ivPreview)
+                    .load(camera.previewUrl)
+                    .signature(ObjectKey(camera.previewCacheKey))
+                    .error(R.drawable.ic_no_photography_24)
+                    .centerCrop()
+                    .listener(object : RequestListener<Drawable> {
+                        override fun onLoadFailed(
+                            e: GlideException?,
+                            model: Any?,
+                            target: Target<Drawable>,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                            ivPreview.setColorFilter(color)
+                            previewSuccess = false
+                            return false
+                        }
+
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            model: Any,
+                            target: Target<Drawable>,
+                            dataSource: DataSource,
+                            isFirstResource: Boolean
+                        ): Boolean {
+                            ivPreview.clearColorFilter()
+                            ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
+                            previewSuccess = true
+                            return false
+                        }
+                    })
+                    .into(ivPreview)
+            }
 
             root.setOnClickListener {
                 if (camera != null && camera.isValid && previewSuccess) {
@@ -600,37 +609,40 @@ private class EntranceSliderAdapter(
 
                 val color = ContextCompat.getColor(root.context, R.color.on_filled)
 
-                Glide.with(ivPreview)
-                    .load(camera?.previewUrl)
-                    .error(R.drawable.ic_no_photography_24)
-                    .centerCrop()
-                    .listener(object : RequestListener<Drawable> {
-                        override fun onLoadFailed(
-                            e: GlideException?,
-                            model: Any?,
-                            target: Target<Drawable>,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
-                            ivPreview.setColorFilter(color)
-                            previewSuccess = false
-                            return false
-                        }
+                if (camera != null) {
+                    Glide.with(ivPreview)
+                        .load(camera.previewUrl)
+                        .signature(ObjectKey(camera.previewCacheKey))
+                        .error(R.drawable.ic_no_photography_24)
+                        .centerCrop()
+                        .listener(object : RequestListener<Drawable> {
+                            override fun onLoadFailed(
+                                e: GlideException?,
+                                model: Any?,
+                                target: Target<Drawable>,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                ivPreview.scaleType = ImageView.ScaleType.CENTER_INSIDE
+                                ivPreview.setColorFilter(color)
+                                previewSuccess = false
+                                return false
+                            }
 
-                        override fun onResourceReady(
-                            resource: Drawable,
-                            model: Any,
-                            target: Target<Drawable>,
-                            dataSource: DataSource,
-                            isFirstResource: Boolean
-                        ): Boolean {
-                            ivPreview.clearColorFilter()
-                            ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
-                            previewSuccess = true
-                            return false
-                        }
-                    })
-                    .into(ivPreview)
+                            override fun onResourceReady(
+                                resource: Drawable,
+                                model: Any,
+                                target: Target<Drawable>,
+                                dataSource: DataSource,
+                                isFirstResource: Boolean
+                            ): Boolean {
+                                ivPreview.clearColorFilter()
+                                ivPreview.scaleType = ImageView.ScaleType.CENTER_CROP
+                                previewSuccess = true
+                                return false
+                            }
+                        })
+                        .into(ivPreview)
+                }
 
                 root.setOnClickListener {
                     if (camera != null && camera.isValid && previewSuccess) {

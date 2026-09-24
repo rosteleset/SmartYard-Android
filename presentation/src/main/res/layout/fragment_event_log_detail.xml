@@ -14,10 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
-        android:backgroundTint="@color/accent"
         android:padding="16dp"
         android:src="@drawable/ic_back_arrow"
-        app:tint="@color/on_top_background"
+        app:tint="@color/accent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription" />

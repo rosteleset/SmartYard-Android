@@ -13,6 +13,7 @@ import com.sesameware.domain.model.response.LicensePlate
 import com.sesameware.domain.model.response.Settings.Roommate
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.LicensePlateValue
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -50,10 +51,10 @@ class AccessAddressViewModel(
         }
     }
 
-    fun guestAccess(flatId: Int, isOpen: Boolean) {
+    fun guestAccess(flatId: Int, isOpen: Boolean, guestAccessHours: Int = 1) {
         val cal: Calendar = Calendar.getInstance()
         if (isOpen) {
-            cal.add(Calendar.HOUR_OF_DAY, 1)
+            cal.add(Calendar.HOUR_OF_DAY, guestAccessHours)
         } else {
             cal.add(Calendar.SECOND, -1)
         }

@@ -7,6 +7,9 @@ import android.text.method.PasswordTransformationMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
@@ -18,10 +21,12 @@ import com.sesameware.smartyard_oem.databinding.FragmentAuthBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
-open class AuthFragment : Fragment() {
+class AuthFragment : Fragment() {
     private var _binding: FragmentAuthBinding? = null
-    protected val binding get() = _binding!!
+    private val binding get() = _binding!!
+    private val delegate: AuthDelegate? by injectOrNull(AuthDelegate::class.java)
 
     private val viewModel by viewModel<AuthViewModel>()
     private var start = 0
@@ -35,9 +40,7 @@ open class AuthFragment : Fragment() {
         return binding.root
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setupUi()
         setupObserve()
     }
@@ -79,6 +82,16 @@ open class AuthFragment : Fragment() {
     }
 
     private fun setupUi() {
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { _, insets ->
+            val isStubVisible = !insets.isVisible(WindowInsetsCompat.Type.ime())
+
+            if (binding.fragmentAuthStub.layoutResource != 0) {
+                binding.fragmentAuthStub.isVisible = isStubVisible
+            }
+
+            insets
+        }
+
         binding.ivShowHide.setOnClickListener {
             showHidePass()
         }
@@ -109,10 +122,8 @@ open class AuthFragment : Fragment() {
             showDialogIssue()
         }
 
-        configureStubs()
+        delegate?.extendConfig(binding)
     }
-
-    protected open fun configureStubs() {/* no-op */}
 
     private fun showDialogIssue() {
         val builder: AlertDialog.Builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)

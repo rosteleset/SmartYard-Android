@@ -16,6 +16,7 @@ import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import com.sesameware.smartyard_oem.ui.main.IssueOrigin
 
 class BurgerViewModel(
     private val sipInteractor: SipInteractor,
@@ -80,6 +81,7 @@ class BurgerViewModel(
             null,
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
             CreateIssuesRequest.TypeAction.ACTION1,
+            origin
         )
     }
 
@@ -171,5 +173,9 @@ class BurgerViewModel(
 
     enum class SupportOption {
         NONE, CALL_TO_SUPPORT_BY_PHONE, ORDER_CALLBACK
+    }
+
+    companion object {
+        private val origin = IssueOrigin.BURGER
     }
 }

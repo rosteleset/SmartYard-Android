@@ -2,6 +2,7 @@ package com.sesameware.domain.model.response
 
 import android.os.Parcelable
 import com.squareup.moshi.Json
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
@@ -26,6 +27,13 @@ data class CCTVData(
     @Json(name = "url") val url: String,
     @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
 ) : Parcelable {
+
+    @IgnoredOnParcel
+    private val timestamp: Long = System.currentTimeMillis()
+
+    val previewCacheKey: String
+        get() = "$preview$timestamp"
+
     val hls: String get() =
         when (serverType) {
             MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"

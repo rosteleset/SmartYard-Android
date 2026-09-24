@@ -1,7 +1,9 @@
 package com.sesameware.smartyard_oem.ui.custom_web_view
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.nfc.NfcAdapter
@@ -13,8 +15,10 @@ import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebChromeClient
 import android.webkit.WebViewClient
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.UiThread
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.toDrawable
 import androidx.core.graphics.toColorInt
@@ -69,6 +73,13 @@ class CustomWebViewFragment : Fragment() {
     private var nfcSessionActive = false
     private var nfcSessionTimeout = 0L
 
+    private val requestAudioPermission =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { _ ->
+            // No actions
+        }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -88,6 +99,14 @@ class CustomWebViewFragment : Fragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.RECORD_AUDIO
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestAudioPermission.launch(Manifest.permission.RECORD_AUDIO)
+        }
 
         binding.srlCustomWebView.clipToOutline = true
         binding.srlCustomWebView.setOnChildScrollUpCallback { _, _ ->
@@ -168,9 +187,8 @@ class CustomWebViewFragment : Fragment() {
         }
 
         binding.ivEWVBack.setOnClickListener {
-            if (binding.tvEWVTitle.text.isNotEmpty()) {
-                findNavController().popBackStack()
-            }
+            Timber.d("debug_web Back button clicked")
+            findNavController().popBackStack()
         }
 
         binding.tvEWVTitle.text = title

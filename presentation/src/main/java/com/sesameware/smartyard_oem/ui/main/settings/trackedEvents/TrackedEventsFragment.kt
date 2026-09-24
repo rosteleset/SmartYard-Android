@@ -12,6 +12,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.main.BottomNavProvider
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.Flat
@@ -35,6 +36,8 @@ class TrackedEventsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        val bottomNavHeight = (requireActivity() as? BottomNavProvider)?.getBottomNavHeight() ?: 0
+
         return ComposeView(requireContext()).apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
@@ -42,8 +45,9 @@ class TrackedEventsFragment : Fragment() {
                     TrackedEventsScreen(
                         viewModel = mViewModel,
                         address = args.address,
+                        bottomNavHeight = bottomNavHeight,
                         onBackClick = { findNavController().popBackStack() },
-                        onFabClick = {
+                        onAddClick = {
                             val eventLogModel = EventLogModel().apply {
                                 address = args.address
                                 flats = emptyList() // Apartments at the address will be loaded into EventLogFragment

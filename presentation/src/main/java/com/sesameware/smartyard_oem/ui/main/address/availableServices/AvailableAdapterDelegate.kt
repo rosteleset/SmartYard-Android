@@ -36,15 +36,15 @@ class AvailableAdapterDelegate(private var clickCheckBox: () -> Unit) :
         vh.apply {
             tvTitle.text = parentsModel.title
             tvDescription.text = parentsModel.description
-            checkbox.isChecked = parentsModel.check
+            checkbox.isChecked = parentsModel.isMandatory || parentsModel.isChecked
             checkbox.isActivated = true
-            if (!parentsModel.active) {
+            if (parentsModel.isMandatory) {
                 checkbox.isEnabled = false
                 tvDescription.isEnabled = false
                 tvTitle.isEnabled = false
             }
             checkbox.setOnCheckedChangeListener { _, isChecked ->
-                items[position].check = isChecked
+                items[position].isChecked = isChecked
             }
             checkbox.setOnClickListener {
                 clickCheckBox.invoke()

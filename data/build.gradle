@@ -42,8 +42,8 @@ android {
         }
     }
 
-    // Обязательно в таком порядке, иначе google-services.json не подтянется
-    flavorDimensions = ["site", "market"]
+    // It must be in that order, otherwise google-services.json won't catch up.
+    flavorDimensions = ["market", "site"]
 
     productFlavors {
         google {
@@ -71,6 +71,14 @@ android {
         }
     }
     namespace 'com.sesameware.data'
+}
+
+if (file('ext.gradle').exists()) {
+    apply from: 'ext.gradle'
+}
+
+if (rootProject.clientDir != null) {
+    apply from: "flavors.gradle"
 }
 
 project.afterEvaluate {
@@ -127,10 +135,12 @@ dependencies {
     implementation "io.insert-koin:koin-android:$koin"
 
     // WebRTC
-    implementation("com.dafruits:webrtc:$webrtc@aar")
+    implementation("io.getstream:stream-webrtc-android:$webrtc")
 
     // Log
     implementation "com.jakewharton.timber:timber:$timber"
+    debugImplementation "com.github.chuckerteam.chucker:library:$chucker"
+    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:$chucker"
 
     // Testing
     testImplementation "junit:junit:$junit"

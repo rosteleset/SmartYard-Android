@@ -25,6 +25,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import com.bumptech.glide.Glide
@@ -50,6 +51,7 @@ import com.sesameware.smartyard_oem.MessagingService.Companion.CALL_TURN_USERNAM
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ActivityIncomingCallBinding
 import com.sesameware.smartyard_oem.show
+import com.sesameware.smartyard_oem.ui.setContentEnabled
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -62,6 +64,7 @@ import okhttp3.RequestBody
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.injectOrNull
 import org.linphone.core.Call
 import org.linphone.core.RegistrationState
 import org.webrtc.DataChannel
@@ -82,6 +85,8 @@ import kotlin.math.min
 
 class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListener {
     private lateinit var binding: ActivityIncomingCallBinding
+    private val delegate: IncomingCallDelegate?
+        by injectOrNull(IncomingCallDelegate::class.java)
 
     // WebRTC staff
     private val rootEglBase: EglBase by inject()
@@ -142,7 +147,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             }
 
             override fun onIceCandidatesRemoved(p0: Array<out IceCandidate>?) {
-                Timber.d("debug_webrtc onIceCandidatesRemoved: $p0")
+                Timber.d("debug_webrtc onIceCandidatesRemoved: ${p0.contentToString()}")
             }
 
             override fun onAddStream(p0: MediaStream?) {
@@ -164,7 +169,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             }
 
             override fun onAddTrack(p0: RtpReceiver?, p1: Array<out MediaStream>?) {
-                Timber.d("debug_webrtc onAddTrack: $p0 \n $p1")
+                Timber.d("debug_webrtc onAddTrack: $p0 \n ${p1.contentToString()}")
             }
         })
         peerConnection?.createConnection()
@@ -317,7 +322,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mProximity = mSensorManager?.getDefaultSensor(Sensor.TYPE_PROXIMITY)
         setupUi()
         initClickListeners()
-        enableCallButtons(false)
+        setUiConnectionStatus(false)
 
         @Suppress("DEPRECATION") val fcmData = intent.extras?.get(PUSH_DATA) as PushCallData?
         waitForLinServiceAndRun(fcmData) {
@@ -326,13 +331,13 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 if (LinphoneService.instance?.connectionStarted == false) {
                     mLinphone?.startConnection(fcmData)
                 }
-                mPushCallData = fcmData
+                mPushCallData = fcmData.copy(_isSupport = "f")
                 resetView(mPushCallData)
                 checkAndRequestCallPermissions()
                 mLinphone?.setNativeVideoWindowId(binding.mVideoSip)
 
                 mViewModel.start(mPushCallData)
-                binding.mImageViewWrap.clipToOutline = true
+
                 window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O_MR1) {
                     window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED)
@@ -341,7 +346,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
                 observeChanges()
                 if (LinphoneService.instance?.isCallOk == true) {
-                    enableCallButtons(true)
+                    setUiConnectionStatus(true)
                 }
                 setConnectedState(mLinphone?.isConnected() == true)
             } else {
@@ -360,6 +365,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 }
             }
         }
+
+        delegate?.extendConfig(binding)
     }
 
     private fun setupUi() {
@@ -375,22 +382,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         binding = ActivityIncomingCallBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        binding.mImageViewWrap.clipToOutline = true
     }
 
-    private fun enableCallButtons(isEnabled: Boolean) {
+    private fun setUiConnectionStatus(isConnected: Boolean) {
         with(binding) {
-            mPeepholeButton.isEnabled = isEnabled
-            mAnswerButton.isEnabled = isEnabled
-            mAnswerButtonSupport.isEnabled = isEnabled
-            mSpeakerButton.isEnabled = isEnabled
-            mHangUpButton.isEnabled = isEnabled
-            mHangUpButtonSupport.isEnabled = isEnabled
-            mOpenedButton.isEnabled = isEnabled
-            mOpenButton.isEnabled = isEnabled
-            pbIncomingCall.isVisible = !isEnabled
+            mCallButtons.setContentEnabled(isConnected)
+            pbIncomingCall.isVisible = !isConnected
         }
 
-        if (isEnabled) {
+        if (isConnected) {
             val ff = (mViewModel.eyeState.value ?: false) || hasWebRTC && (mLinphone?.isVideoCall() == false || mPushCallData.image.isEmpty())
             Timber.d("debug_dmm  enableCallButtons set eyeState = $ff")
             LinphoneService.instance?.provider?.pushCallData?.eyeState = ff
@@ -430,7 +432,8 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             mPeepholeButton.setOnClickListener {
                 if (mLinphone?.isConnected() == false) {
                     cancelNotification()
-                    mViewModel.eyeState.value = !mPeepholeButton.isChecked
+                    val state = mViewModel.eyeState.value ?: false
+                    mViewModel.eyeState.value = !state
                 }
             }
 
@@ -516,9 +519,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         )
         mViewModel.eyeState.observe(
             this
-        ) { boolean ->
-            Timber.d("debug_dmm  eyeState observer call enablePeepholeVideo($boolean)")
-            enablePeepholeVideo(boolean)
+        ) { enabled ->
+            Timber.d("debug_dmm  eyeState observer call enablePeepholeVideo($enabled)")
+            binding.mPeepholeButton.isSelected = enabled
+            enablePeepholeVideo(enabled)
         }
         mViewModel.imageStringData.observe(
             this,
@@ -573,9 +577,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.connected.observe(
             this,
             EventObserver {
-                binding.mAnswerButton.isVisible = false
-                binding.mAnswerButtonSupport.isVisible = false
-                binding.mSpeakerButton.isVisible = true
+                if (mPushCallData.isSupport) {
+                    binding.mAnswerButtonSupport.isVisible = false
+                } else {
+                    binding.mAnswerButton.isVisible = false
+                    binding.mSpeakerButton.isVisible = true
+                }
             }
         )
 
@@ -617,15 +624,17 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         setDoorState(false)
         binding.mStatusText.text = data.callerId
         if (data.isSupport) {
-            binding.mPanel.visibility = View.INVISIBLE
-            binding.mSupportRow?.visibility = View.VISIBLE
+            binding.mIntercomCall.visibility = View.INVISIBLE
+            binding.mSupportCall.visibility = View.VISIBLE
         } else {
-            binding.mPanel.visibility = View.VISIBLE
-            binding.mSupportRow?.visibility = View.INVISIBLE
+            binding.mIntercomCall.visibility = View.VISIBLE
+            binding.mSupportCall.visibility = View.INVISIBLE
         }
     }
 
     private fun setDoorState(opened: Boolean) {
+        if (mPushCallData.isSupport) return
+
         if (opened) {
             doDelayed(
                 {
@@ -635,11 +644,11 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 DOOR_OPEN_DELAY_MS
             )
         }
-        binding.mOpenedButton.show(opened, true)
-        binding.mHangUpButton.show(!opened)
-        binding.mHangUpButtonSupport.show(!opened)
+
+        binding.mOpenedButton.isVisible = opened
+        binding.mHangUpButton.isGone = opened
         if (this::mPushCallData.isInitialized && mPushCallData.dtmf.isNotEmpty()) {
-            binding.mOpenButton.show(!opened)
+            binding.mOpenButton.isGone = opened
         }
     }
 
@@ -702,7 +711,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         }
         binding.mTitle.text = text
         mViewModel.setSlideShowEnabled(!hasWebRTC && isEnabled)
-        binding.mPeepholeButton.isChecked = isEnabled
+        binding.mPeepholeButton.isSelected = isEnabled
 
         if (hasWebRTC) {
             if (isEnabled) {
@@ -753,7 +762,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
             when (state) {
                 CallStateSimple.INCOMING -> {
                     Timber.d("debug_dmm  enable call buttons")
-                    enableCallButtons(true)
+                    setUiConnectionStatus(true)
                     mViewModel.routeAudioToValue(useSpeaker)
                 }
                 CallStateSimple.OTHER_CONNECTED -> {
@@ -813,7 +822,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         super.onPause()
         mSensorManager?.unregisterListener(this)
         mLinphone?.routeAudioToEarpiece()
-        LinphoneService.instance?.provider?.pushCallData?.eyeState = binding.mPeepholeButton.isChecked
+        LinphoneService.instance?.provider?.pushCallData?.eyeState = mViewModel.eyeState.value ?: false
 
         //mLinphone?.core?.currentCall?.pause()
     }

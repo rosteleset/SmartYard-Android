@@ -37,13 +37,21 @@ class AddressVerificationFragment : Fragment() {
             val adapter = TabAdapter(it)
             if (DataModule.providerConfig.addressVerificationTab1Visible) {
                 adapter.addFragment(
-                    CourierFragment.getInstance(address),
+                    childFragmentManager.fragmentFactory.instantiate(
+                        requireContext().classLoader,
+                        CourierFragment::class.java.name
+                    ).apply {
+                        arguments = Bundle().apply { putString(CourierFragment.ADDRESS_FIELD, address) }
+                    },
                     resources.getString(R.string.address_verification_tab_title_1)
                 )
             }
             if (DataModule.providerConfig.addressVerificationTab2Visible) {
                 adapter.addFragment(
-                    OfficeFragment.getInstance(address),
+                    childFragmentManager.fragmentFactory.instantiate(
+                        requireContext().classLoader,
+                        OfficeFragment::class.java.name
+                    ),
                     resources.getString(R.string.address_verification_tab_title_2)
                 )
             }

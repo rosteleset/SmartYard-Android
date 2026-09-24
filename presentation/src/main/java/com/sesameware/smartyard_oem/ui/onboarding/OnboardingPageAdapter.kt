@@ -10,6 +10,8 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.text.HtmlCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.R
+import org.koin.java.KoinJavaComponent.injectOrNull
+import kotlin.getValue
 
 /**
  * @author Artem Budarin
@@ -18,6 +20,8 @@ import com.sesameware.smartyard_oem.R
 class OnboardingPageAdapter(
     private val onboardingPageModels: List<OnboardingPageModel>
 ) : RecyclerView.Adapter<OnboardingPageAdapter.PageViewHolder>() {
+
+    private val delegate: OnboardingPageDelegate? by injectOrNull(OnboardingPageDelegate::class.java)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PageViewHolder {
         val itemView = LayoutInflater
@@ -45,6 +49,8 @@ class OnboardingPageAdapter(
                     text = page.subtitle
                 }
             }
+
+            delegate?.extendConfig(this)
         }
     }
     class PageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)

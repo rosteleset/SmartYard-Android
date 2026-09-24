@@ -10,6 +10,7 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.FRSInteractor
+import com.sesameware.domain.model.response.GroupData
 import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.Event
@@ -17,7 +18,6 @@ import com.sesameware.smartyard_oem.GenericViewModel
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
 import timber.log.Timber
-import kotlin.math.log
 
 data class Flat(
     val flatId: Int,
@@ -35,7 +35,7 @@ data class TrackedEventData(
     val flatId: Int,
     val eventType: Int,
     val eventDetail: String,
-    val comments: String
+    var comments: String
 )
 
 /**
@@ -101,6 +101,8 @@ class EventLogViewModel(
     var camMapDataByEntrance = hashMapOf<Int, DoorphoneData>()
 
     var faceIdToUrl = hashMapOf<Int, String>()
+    var faceIdToGroupId = hashMapOf<Int, Int>()
+    var groupIdToName = hashMapOf<Int, String>()
     var trackedEvents = hashMapOf<String, TrackedEventData>()
 
     var newFaceId = MutableLiveData<Event<Pair<Int, Plog>>>()
@@ -142,14 +144,27 @@ class EventLogViewModel(
     fun getAllFaces() {
         viewModelScope.withProgress(progress = null) {
             val q = hashMapOf<Int, String>()
-            flatsAll.forEach {
-                val res = frsInteractor.listFaces(it.flatId)
+            val faceToGroup = hashMapOf<Int, Int>()
+            val groups = hashMapOf<Int, String>()
+            flatsAll.forEach { flat ->
+                if (DataModule.providerConfig.hasFaceGroups) {
+                    val groupsRes = addressInteractor.listGroups(flat.flatId)
+                    groupsRes?.data?.forEach { groupData ->
+                        groups[groupData.groupId] = groupData.groupName
+                    }
+                }
+                val res = frsInteractor.listFaces(flat.flatId)
                 res?.data?.forEach { faceData ->
                     q[faceData.faceId.toInt()] = faceData.faceImage
+                    faceData.groupId?.let {
+                        faceToGroup[faceData.faceId.toInt()] = it
+                    }
                 }
             }
             withContext(Dispatchers.Main) {
                 faceIdToUrl = HashMap(q)
+                faceIdToGroupId = HashMap(faceToGroup)
+                groupIdToName = HashMap(groups)
             }
         }
     }
@@ -386,6 +401,21 @@ class EventLogViewModel(
                             plog.address += " [${plog.mechanizmaDescription}]"
                         }
                         plog.frsEnabled = flat.frsEnabled
+                        if (plog.eventType == Plog.EVENT_OPEN_BY_FACE && plog.detailX?.groupName.isNullOrEmpty()) {
+                            val faceId = plog.detailX?.faceId?.toIntOrNull()
+                            if (faceId != null) {
+                                val groupId = faceIdToGroupId[faceId] ?: plog.detailX?.groupId
+                                if (groupId != null) {
+                                    val groupName = groupIdToName[groupId]
+                                    if (groupName != null) {
+                                        plog.detailX?.let { detail ->
+                                            val newDetail = detail.copy(groupName = groupName, groupId = groupId)
+                                            plog.detailX = newDetail
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         cacheEvents.getOrPut(cacheKey) { mutableListOf() }.add(plog)
                         if (filterEventType.contains(plog.eventType)) {
                             _eventsByDaysFilter.getOrPut(day) { mutableListOf() }
@@ -402,14 +432,50 @@ class EventLogViewModel(
     fun dislike(position: Int, plog: Plog) {
         viewModelScope.withProgress(progress = null) {
             frsInteractor.disLike(plog.uuid, null, null)
+            plog.detailX?.groupId = null
+            plog.detailX?.groupName = null
             removeFaceId.postValue(Event(Pair(position, plog)))
         }
     }
 
-    fun like(position: Int, plog: Plog) {
+    fun listGroups(flatId: Int, callback: (List<GroupData>) -> Unit) {
+        viewModelScope.withProgress(progress = null) {
+            val res = addressInteractor.listGroups(flatId)
+            withContext(Dispatchers.Main) {
+                callback(res?.data ?: emptyList())
+            }
+        }
+    }
+
+    fun like(position: Int, plog: Plog, groupId: Int? = null, groupName: String? = null) {
         viewModelScope.withProgress(progress = null) {
             frsInteractor.like(plog.uuid, "")?.data?.faceId?.let { faceId ->
                 plog.detailX?.faceId = faceId
+                plog.detailX?.groupId = groupId
+                plog.detailX?.groupName = groupName
+                if (groupId != null && groupId != 0) {
+                    frsInteractor.attachFaceToGroup(faceId.toInt(), groupId.toString())
+                    // Refresh faces and groups
+                    getAllFaces()
+                }
+            }
+            newFaceId.postValue(Event(Pair(position, plog)))
+        }
+    }
+
+    fun likeWithNewGroup(position: Int, plog: Plog, groupName: String) {
+        viewModelScope.withProgress(progress = null) {
+            val flatId = plog.flatId ?: return@withProgress
+            val addGroupRes = addressInteractor.addGroup(flatId, groupName)
+            val groupId = addGroupRes?.data?.groupId
+            if (groupId != null) {
+                frsInteractor.like(plog.uuid, "")?.data?.faceId?.let { faceId ->
+                    plog.detailX?.faceId = faceId
+                    plog.detailX?.groupId = groupId
+                    plog.detailX?.groupName = groupName
+                    frsInteractor.attachFaceToGroup(faceId.toInt(), groupId.toString())
+                    getAllFaces()
+                }
             }
             newFaceId.postValue(Event(Pair(position, plog)))
         }

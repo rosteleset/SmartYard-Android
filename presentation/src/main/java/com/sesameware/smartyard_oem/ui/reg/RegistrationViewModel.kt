@@ -66,7 +66,7 @@ class RegistrationViewModel(
                 }
             }
 
-            if (mPreferenceStorage.userName == null) {
+            if (mPreferenceStorage.userName?.firstName.isNullOrEmpty()) {
                 val action =
                     ProvidersFragmentDirections.actionProvidersFragmentToAppealFragment()
                 fragment.findNavController().navigate(action)

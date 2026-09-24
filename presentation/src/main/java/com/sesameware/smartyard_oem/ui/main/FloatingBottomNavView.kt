@@ -14,15 +14,19 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
 import androidx.annotation.IdRes
 import androidx.annotation.MenuRes
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.PopupMenu
+import androidx.core.content.ContextCompat
 import androidx.core.content.withStyledAttributes
 import androidx.core.graphics.toColorInt
 import androidx.core.view.get
 import androidx.core.view.isVisible
 import androidx.core.view.size
+import com.google.common.collect.Multimaps.index
 import com.sesameware.smartyard_oem.R
 
 class FloatingBottomNavView @JvmOverloads constructor(
@@ -30,6 +34,7 @@ class FloatingBottomNavView @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
+    private var activeTabResource = 0
 
     private var activeTabColor = "#007AFF".toColorInt()
     private var inactiveTabColor = "#8E8E93".toColorInt()
@@ -55,7 +60,7 @@ class FloatingBottomNavView @JvmOverloads constructor(
         var menuRes = 0
         attrs?.let {
             context.withStyledAttributes(it, R.styleable.FloatingBottomNavView) {
-
+                activeTabResource = getResourceId(R.styleable.FloatingBottomNavView_activeTabColor, activeTabColor)
                 activeTabColor = getColor(R.styleable.FloatingBottomNavView_activeTabColor, activeTabColor)
                 inactiveTabColor = getColor(R.styleable.FloatingBottomNavView_inactiveTabColor, inactiveTabColor)
                 solidBgColor = getColor(R.styleable.FloatingBottomNavView_solidBackgroundColor, solidBgColor)
@@ -254,23 +259,30 @@ class FloatingBottomNavView @JvmOverloads constructor(
         _selectedItemId = itemId
         if (notify) onItemSelectedListeners.forEach { it.invoke(itemId) }
 
-        tabViews.forEachIndexed { i, tab ->
-            val isSelected = i == index
-            val color = if (isSelected) activeTabColor else inactiveTabColor
-
-            tab.icon.isSelected = isSelected
-
-            if (tab.icon.drawable?.isStateful == true) {
-                tab.icon.clearColorFilter()
-            } else {
-                tab.icon.setColorFilter(color)
-            }
-
-            tab.text?.setTextColor(color)
+        itemIds.forEach { id ->
+            updateTabColor(id)
         }
 
         updateIndicatorLayout(animate)
         return true
+    }
+
+    private fun updateTabColor(@IdRes itemId: Int) {
+        val isSelected = itemId == selectedItemId
+        val color = if (isSelected) activeTabColor else inactiveTabColor
+
+        val index = itemIds.indexOf(itemId)
+        val tab = tabViews[index]
+
+        tab.icon.isSelected = isSelected
+
+        if (tab.icon.drawable?.isStateful == true) {
+            tab.icon.clearColorFilter()
+        } else {
+            tab.icon.setColorFilter(color)
+        }
+
+        tab.text?.setTextColor(color)
     }
 
     fun removeItem(@IdRes itemId: Int) {
@@ -343,6 +355,24 @@ class FloatingBottomNavView @JvmOverloads constructor(
             cornerRadius = dpToPx(16f)
             setStroke(dpToPx(1.5f).toInt(), Color.WHITE)
         }
+    }
+
+    fun setActiveTabColor(@ColorInt color: Int) {
+        if (activeTabColor == color) return
+
+        activeTabColor = color
+        activeTabResource = 0
+
+        updateTabColor(selectedItemId)
+    }
+
+    fun setActiveTabResource(@ColorRes resid: Int) {
+        if (resid == 0 || activeTabResource == resid) return
+
+        activeTabColor = ContextCompat.getColor(context, resid)
+        activeTabResource = resid
+
+        updateTabColor(selectedItemId)
     }
 
     private fun dpToPx(dp: Float): Float =

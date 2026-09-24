@@ -27,6 +27,76 @@
         android:adjustViewBounds="true"
         android:scaleType="fitCenter" />
 
+    <LinearLayout
+        android:id="@+id/llFaceGroups"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="24dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <RadioGroup
+            android:id="@+id/rgFaceGroups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RadioButton
+                android:id="@+id/rbNoGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:checked="true"
+                android:text="@string/face_group_ungrouped_faces"
+                android:textColor="@color/accent"
+                android:textSize="18sp" />
+
+            <RadioButton
+                android:id="@+id/rbExistingGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/face_group_selection_existing"
+                android:textColor="@color/accent"
+                android:textSize="18sp" />
+
+            <Spinner
+                android:id="@+id/sExistingGroups"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:visibility="gone" />
+
+            <RadioButton
+                android:id="@+id/rbNewGroup"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/face_group_selection_new"
+                android:textColor="@color/accent"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/etNewGroupName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_bg_no_flooded_rounded"
+                android:hint="@string/event_log_enter_group_name"
+                android:inputType="textCapSentences"
+                android:maxLines="1"
+                android:padding="12dp"
+                android:textColor="@color/accent"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+        </RadioGroup>
+    </LinearLayout>
+
     <Button
         android:id="@+id/btnAddFaceConfirm"
         style="@style/buttonGreenFlooded"

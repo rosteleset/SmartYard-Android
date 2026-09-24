@@ -1,0 +1,4 @@
+<resources>
+    <item name="pin_vertical_bias" type="fraction">0.5</item>
+    <item name="guest_access_hours" type="integer">1</item>
+</resources>

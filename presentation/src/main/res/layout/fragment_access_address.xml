@@ -277,7 +277,7 @@
                 app:layout_constraintTop_toBottomOf="@id/vEnterByFace" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_add_gate_access"
+                android:id="@+id/tvAddGateAccess"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="8dp"

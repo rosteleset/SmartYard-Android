@@ -9,10 +9,12 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.databinding.FragmentCourierBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
+import org.koin.java.KoinJavaComponent.injectOrNull
 
-class CourierFragment : Fragment() {
+open class CourierFragment : Fragment() {
     private var _binding: FragmentCourierBinding? = null
     private val binding get() = _binding!!
+    private val delegate: CourierDelegate? by injectOrNull(CourierDelegate::class.java)
 
     private val viewModel by viewModel<CourierViewModel>()
     private var address = ""
@@ -38,13 +40,18 @@ class CourierFragment : Fragment() {
         binding.btnOk.setOnClickListener {
             viewModel.createIssue(address)
         }
+        delegate?.extendConfig(binding)
+    }
+
+    protected open fun onIssueCreated() {
+        (activity as MainActivity?)?.reloadToAddress()
     }
 
     private fun setupObserve() {
         viewModel.navigateToIssueSuccessDialogAction.observe(
             viewLifecycleOwner,
             EventObserver {
-                (activity as MainActivity?)?.reloadToAddress()
+                onIssueCreated()
             }
         )
     }

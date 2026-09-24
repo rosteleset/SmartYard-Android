@@ -7,5 +7,5 @@ package com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models
 data class ContactModel(
     var name: String,
     var number: String,
-    var isOwner: Boolean = false
+    val isOwner: Boolean = false
 )

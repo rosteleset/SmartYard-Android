@@ -12,6 +12,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.R
 import com.sesameware.domain.model.response.TrackedEvent
 
@@ -37,11 +38,12 @@ fun TrackedEventItem(
         ) {
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = getEventName(event.eventType) + if (event.eventDetail?.isNotEmpty() == true) ": " + event.eventDetail else "",
+                    text = getEventName(event.eventType) +
+                            if (event.eventDetail?.isNotEmpty() == true) ": " + (if (event.eventType == Plog.EVENT_OPEN_BY_FACE) event.comments ?: "" else event.eventDetail) else "",
                     fontSize = 16.sp,
                     color = Color.Black
                 )
-                if (event.comments?.isNotEmpty() == true) {
+                if (event.comments?.isNotEmpty() == true && event.eventType != Plog.EVENT_OPEN_BY_FACE) {
                     Text(
                         text = event.comments ?: "",
                         fontSize = 14.sp,

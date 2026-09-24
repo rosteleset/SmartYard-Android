@@ -13,6 +13,8 @@ data class CreateIssuesRequest(
     val customFields: CustomFields?,
     @Json(name = "actions")
     val actions: List<String>?,
+    @Json(name = "class")
+    val cls: String? = null
 ) {
     enum class TypeAction(var list: List<String> = listOf()) {
         ACTION1(listOf("Начать работу", "Позвонить")),
@@ -52,11 +54,13 @@ data class CreateIssuesRequest(
         var issue: Issue? = null,
         var customFields: CustomFields? = null,
         var actions: List<String>? = null,
+        var cls: String? = null
     ) {
         fun issue(issue: Issue) = apply { this.issue = issue }
         fun customFields(customFields: CustomFields) = apply { this.customFields = customFields }
         fun actions(actions: List<String>) = apply { this.actions = actions }
-        fun build() = CreateIssuesRequest(issue, customFields, actions)
+        fun cls(cls: String?) = apply { this.cls = cls }
+        fun build() = CreateIssuesRequest(issue, customFields, actions, cls)
     }
 }
 

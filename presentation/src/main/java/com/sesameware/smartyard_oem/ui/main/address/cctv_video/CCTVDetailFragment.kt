@@ -15,11 +15,13 @@ import com.sesameware.smartyard_oem.ui.main.address.addressVerification.TabAdapt
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.CCTVOnlineTabFragment
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.detail.arhive.CCTVArchiveTabCalendarFragment
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 import timber.log.Timber
 
 class CCTVDetailFragment : Fragment() {
     private var _binding: FragmentCctvDetailBinding? = null
     private val binding get() = _binding!!
+    private val delegate: CctvDetailDelegate? by injectOrNull(CctvDetailDelegate::class.java)
 
     private val mCCTVViewModel: CCTVViewModel by sharedStateViewModel()
 
@@ -41,8 +43,7 @@ class CCTVDetailFragment : Fragment() {
         setupObserve()
     }
 
-    private fun setupUi(fm: FragmentManager
-    ) {
+    private fun setupUi(fm: FragmentManager) {
         binding.contentWrap.applyBottomNavInsetsToPadding()
         binding.ivBack.setOnClickListener {
             this.findNavController().popBackStack()
@@ -67,6 +68,8 @@ class CCTVDetailFragment : Fragment() {
             }
         })
         binding.viewPager.setCurrentItem(mCCTVViewModel.currentTabId, false)
+
+        delegate?.extendConfig(binding)
     }
 
     private fun setupTabs(adapter: TabAdapter, position: Int) {
@@ -96,15 +99,19 @@ class CCTVDetailFragment : Fragment() {
         }
         mCCTVViewModel.closedRangeCalendar.observe(
             viewLifecycleOwner
-        ) {
-            val camHasRanges = mCCTVViewModel.availableRanges.isNotEmpty()
-            binding.tabLayout.getTabAt(1)?.view?.isClickable = camHasRanges
-            val title2 = if (camHasRanges) {
+        ) { calendar ->
+            val hasArchive = !calendar.peekContent().isEmpty()
+            binding.viewPager.scrollEnabled = hasArchive
+
+            val tab = binding.tabLayout.getTabAt(1) ?: return@observe
+
+            tab.view.isEnabled = hasArchive
+            val textRes = if (hasArchive) {
                 R.string.cctv_detail_tab_archive
             } else {
                 R.string.cctv_detail_tab_archive_is_missing
             }
-            binding.tabLayout.getTabAt(1)?.text = resources.getString(title2)
+            tab.text = getString(textRes)
         }
     }
 

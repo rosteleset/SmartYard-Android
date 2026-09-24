@@ -13,6 +13,13 @@ pluginManagement {
         maven { url 'https://developer.huawei.com/repo/' }
         maven { url 'https://artifactory-external.vkpartner.ru/artifactory/maven' }
     }
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'com.github.triplet.play') {
+                useModule('com.github.triplet.gradle:play-publisher:3.8.4')
+            }
+        }
+    }
 }
 
 dependencyResolutionManagement {

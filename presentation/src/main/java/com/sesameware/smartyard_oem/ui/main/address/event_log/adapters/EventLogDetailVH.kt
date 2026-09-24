@@ -20,7 +20,9 @@ import com.sesameware.smartyard_oem.databinding.ItemEventLogDetailBinding
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.main.address.event_log.ItemEventLogDetailDelegate
 import com.sesameware.smartyard_oem.ui.main.address.event_log.TrackedEventData
+import org.koin.java.KoinJavaComponent.injectOrNull
 import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 
@@ -30,6 +32,7 @@ fun extractEventTrackingDetail(plog: Plog): String {
         Plog.EVENT_OPEN_FROM_APP -> plog.detailX?.phone ?: ""
         Plog.EVENT_OPEN_BY_CODE -> ""
         Plog.EVENT_OPEN_GATES_BY_VEHICLE -> plog.detailX?.vehicle?.plateNumber ?: ""
+        Plog.EVENT_OPEN_BY_FACE -> plog.detailX?.groupId?.toString() ?: ""
         else -> ""
     }
     return detail
@@ -41,6 +44,8 @@ class EventLogDetailVH(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     private var isMuted = true
+    private val delegate: ItemEventLogDetailDelegate?
+        by injectOrNull(ItemEventLogDetailDelegate::class.java)
 
     init {
         onCreateViewHolderBind()
@@ -189,6 +194,19 @@ class EventLogDetailVH(
                     }
                 }
 
+                Plog.EVENT_OPEN_BY_FACE -> {
+                    tvEventUnansweredCall.isVisible = false
+                    tvEventAnsweredCall.isVisible = false
+                    val hasFaceGroups = DataModule.providerConfig.hasFaceGroups
+                    val groupName = plog.detailX?.groupName
+                    if (hasFaceGroups && !groupName.isNullOrEmpty()) {
+                        tvEventAdditional.isVisible = true
+                        tvEventAdditional.text = groupName
+                    } else {
+                        tvEventAdditional.isVisible = false
+                    }
+                }
+
                 else -> {
                     tvEventUnansweredCall.isVisible = false
                     tvEventAnsweredCall.isVisible = false
@@ -278,7 +296,9 @@ class EventLogDetailVH(
                 onAction(EventLogDetailItemAction.OnMuteClick(isMuted))
             }
 
-            val canEventTracking = DataModule.providerConfig.hasEventsTracking && plog.flatId != null && plog.eventType in listOf(Plog.EVENT_OPEN_BY_CODE, Plog.EVENT_OPEN_FROM_APP, Plog.EVENT_OPEN_BY_KEY, Plog.EVENT_OPEN_GATES_BY_VEHICLE)
+            val canEventTracking = DataModule.providerConfig.hasEventsTracking && plog.flatId != null &&
+                    (plog.eventType in listOf(Plog.EVENT_OPEN_BY_CODE, Plog.EVENT_OPEN_FROM_APP, Plog.EVENT_OPEN_BY_KEY, Plog.EVENT_OPEN_GATES_BY_VEHICLE) ||
+                            (DataModule.providerConfig.hasFaceGroups && plog.eventType == Plog.EVENT_OPEN_BY_FACE && plog.detailX?.groupId != null && plog.detailX?.groupId!! > 0))
             cvTrackEvent.visibility = if (canEventTracking) View.VISIBLE else View.GONE
             Timber.d("debug_dmm canEventTracking=$canEventTracking")
             if (canEventTracking) {
@@ -292,13 +312,19 @@ class EventLogDetailVH(
                         onAction(EventLogDetailItemAction.OnTrackEvent(position,plog.flatId!!, plog.eventType, eventDetail))
                     } else {
                         if (trackedEvent != null) {
-                            val key = "${plog.flatId!!}_${plog.eventType}_$eventDetail"
+                            val key = if (plog.eventType == Plog.EVENT_OPEN_BY_FACE) {
+                                "${plog.flatId!!}_${plog.eventType}_${plog.detailX?.groupId ?: 0}"
+                            } else {
+                                "${plog.flatId!!}_${plog.eventType}_$eventDetail"
+                            }
                             onAction(EventLogDetailItemAction.OnUntrackEvent(position, trackedEvent.watcherId, key))
                         }
                     }
                 }
             }
         }
+
+        delegate?.extendConfig(binding)
     }
 
     private fun onPlayerViewSingleTap() {

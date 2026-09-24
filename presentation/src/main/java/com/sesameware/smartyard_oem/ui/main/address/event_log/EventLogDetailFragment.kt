@@ -90,7 +90,7 @@ class EventLogDetailFragment : Fragment() {
         }
         if (mPlayer == null) {
             val callbacks = object : BaseCCTVPlayer.Callbacks {
-                override fun onPlayerStateReady() {
+                override fun onPlayerStateReady(player: DefaultCCTVPlayer) {
                     activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
                 }
 
@@ -235,14 +235,20 @@ class EventLogDetailFragment : Fragment() {
                     if (flags.contains(Plog.FLAG_CAN_LIKE)) {
                         //пользователь лайкнул
                         val dialogAddPhoto = DialogAddPhotoFragment(
-                            plog.preview ?: "",
-                            plog.detailX?.face?.left ?: -1,
-                            plog.detailX?.face?.top ?: -1,
-                            plog.detailX?.face?.width ?: -1,
-                            plog.detailX?.face?.height ?: -1,
-                            plog.eventType == Plog.EVENT_OPEN_BY_FACE
-                        ) {
-                            mViewModel.like(position, plog)
+                            photoUrl = plog.preview ?: "",
+                            faceLeft = plog.detailX?.face?.left ?: -1,
+                            faceTop = plog.detailX?.face?.top ?: -1,
+                            faceWidth = plog.detailX?.face?.width ?: -1,
+                            faceHeight = plog.detailX?.face?.height ?: -1,
+                            isReg = plog.eventType == Plog.EVENT_OPEN_BY_FACE,
+                            flatId = plog.flatId ?: 0,
+                            viewModel = mViewModel
+                        ) { groupId, groupName, newGroupName ->
+                            if (newGroupName != null) {
+                                mViewModel.likeWithNewGroup(position, plog, newGroupName)
+                            } else {
+                                mViewModel.like(position, plog, groupId, groupName)
+                            }
                         }
                         dialogAddPhoto.show(requireActivity().supportFragmentManager, "")
                     }
@@ -262,8 +268,12 @@ class EventLogDetailFragment : Fragment() {
 
     private fun onTrackEvent(position: Int, flatId: Int, eventType: Int, eventDetail: String) {
         Timber.d("debug_dmm onTrackEvent position=$position, flatId=$flatId, eventType=$eventType, eventDetail=$eventDetail")
-        showInputDialogForEventTracking { comments ->
-            mViewModel.trackEvent(position, flatId, eventType, eventDetail, comments)
+        if (eventType == Plog.EVENT_OPEN_BY_FACE && DataModule.providerConfig.hasFaceGroups) {
+            mViewModel.trackEvent(position, flatId, eventType, eventDetail, "")
+        } else {
+            showInputDialogForEventTracking { comments ->
+                mViewModel.trackEvent(position, flatId, eventType, eventDetail, comments)
+            }
         }
     }
 
@@ -272,7 +282,7 @@ class EventLogDetailFragment : Fragment() {
         mViewModel.untrackEvent(position, watcherId, key)
     }
 
-    private fun showInputDialogForEventTracking(callback: listenerGeneric<String>) {
+    private fun showInputDialogForEventTracking(titleRes: Int = R.string.event_log_enter_comments, callback: listenerGeneric<String>) {
         val editText = EditText(requireContext()).apply {
             setBackgroundResource(R.drawable.button_bg_no_flooded_rounded)
             textSize = 16f
@@ -287,7 +297,7 @@ class EventLogDetailFragment : Fragment() {
 
         val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
         val dialog = builder
-            .setTitle(R.string.event_log_enter_comments)
+            .setTitle(titleRes)
             .setView(container)
             .setPositiveButton(android.R.string.ok) { _: DialogInterface?, _: Int ->
                 val text = editText.text.toString()

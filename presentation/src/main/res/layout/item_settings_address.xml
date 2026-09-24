@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="5dp"
     android:background="@drawable/background_card"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.sesameware.smartyard_oem.ui.main.settings.SettingsAddressAdapter">
 
     <TextView
         android:id="@+id/tvAddress"
@@ -55,7 +56,7 @@
         app:srcCompat="@drawable/ic_arrow_bottom" />
 
     <net.cachapa.expandablelayout.ExpandableLayout
-        android:id="@+id/expandable_layout"
+        android:id="@+id/coll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:el_duration="300"
@@ -114,12 +115,12 @@
                     android:id="@+id/cbCall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="10dp"
                     android:layout_marginStart="6dp"
                     android:layout_marginEnd="6dp"
                     android:background="@drawable/checkbox_state"
-                    android:src="@drawable/ic_settings_call"
-                    android:foregroundGravity="center" />
+                    android:foregroundGravity="center"
+                    android:padding="10dp"
+                    android:src="@drawable/ic_settings_call" />
 
                 <ImageView
                     android:id="@+id/cbKey"
@@ -185,7 +186,7 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/view2"
+                android:id="@+id/viewSettingAddress"
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:layout_marginStart="24dp"
@@ -223,7 +224,7 @@
             </LinearLayout>
 
             <View
-                android:id="@+id/view4"
+                android:id="@+id/viewAccess"
                 android:layout_width="match_parent"
                 android:layout_height="0.7dp"
                 android:layout_marginStart="24dp"

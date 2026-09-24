@@ -65,15 +65,21 @@ data class ProviderConfig(
     @Json(name = PRIVACY_POLICY) val privacyPolicy: String? = null,
 
     @Json(name = "stunUrl") val stunUrl: String? = null,
+
+    //face groups
+    @param:Json(name = FACE_GROUPS) val _faceGroups: String? = "f",
+
+    //face clustering
+    @param:Json(name = FACE_CLUSTERING) val _faceClustering: String? = "f",
 ) {
     val hasChat: Boolean
-        get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
+        get() = _hasChat == "t" && chatUrl?.isNotEmpty() == true
 
     val hasCityCams: Boolean
         get() = _hasCityCams == "t"
 
     val hasPayments: Boolean
-        get() = _hasPayments == "t" || paymentsUrl?.isNotEmpty() == true
+        get() = _hasPayments == "t" && paymentsUrl?.isNotEmpty() == true
 
     data class ChatOptions(
         @Json(name = CHAT_ID) val id: String? = null,
@@ -106,6 +112,14 @@ data class ProviderConfig(
 
     val userHasLastName: Boolean
         get() = _userHasLastName == "t"
+
+    //face groups
+    val hasFaceGroups: Boolean
+        get() = _faceGroups == "t"
+
+    //face clustering
+    val hasFaceClustering: Boolean
+        get() = _faceClustering == "t"
 
     companion object {
         //чат
@@ -154,6 +168,7 @@ data class ProviderConfig(
 
         //версия заявок
         const val ISSUES_VERSION = "issuesVersion"
+        const val ISSUES_VERSION_NONE = "none"
 
         //appeal form validation
         const val VALIDATION_NAME_PATTERN = "validationNamePattern"
@@ -179,6 +194,12 @@ data class ProviderConfig(
 
         //privacy policy
         const val PRIVACY_POLICY = "privacyPolicy"
+
+        //face groups
+        const val FACE_GROUPS = "faceGroups"
+
+        //face clustering
+        const val FACE_CLUSTERING = "faceClustering"
     }
 }
 

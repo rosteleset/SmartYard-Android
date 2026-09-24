@@ -20,6 +20,7 @@ import com.sesameware.domain.model.response.CCTVCityCameraData
 import com.sesameware.domain.model.response.CCTVYoutubeData
 import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import com.sesameware.smartyard_oem.ui.main.IssueOrigin
 
 class CityCamerasViewModel(
     private val state: SavedStateHandle,
@@ -96,6 +97,7 @@ class CityCamerasViewModel(
             null,
             CreateIssuesRequest.CustomFields(x10011 = x10011, x12440 = x12440),
             CreateIssuesRequest.TypeAction.ACTION3,
+            origin
         )
     }
 
@@ -116,6 +118,7 @@ class CityCamerasViewModel(
     companion object {
         private const val chosenCityCamera_Key = "chosenCityCamera_Key"
         private const val eventList_Key = "eventList_Key"
+        private val origin = IssueOrigin.CITY_CAMERAS
 
         //количество подгружаемых происшествий
         const val CHUNK_ITEM_COUNT = 8

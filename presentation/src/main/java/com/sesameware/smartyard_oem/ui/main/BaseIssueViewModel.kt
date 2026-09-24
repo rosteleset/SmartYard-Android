@@ -21,6 +21,7 @@ import com.sesameware.domain.model.request.ISSUE_ACTION_CLOSE
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 /**
  * @author Nail Shakurov
@@ -30,6 +31,8 @@ abstract class BaseIssueViewModel(
     private val geoInteractor: GeoInteractor,
     private val issueInteractor: IssueInteractor
 ) : GenericViewModel() {
+
+    private val delegate: BaseIssueDelegate? by injectOrNull(BaseIssueDelegate::class.java)
 
     private val _navigateToIssueSuccessDialogAction = MutableLiveData<Event<Unit>>()
     val navigateToIssueSuccessDialogAction: LiveData<Event<Unit>>
@@ -49,6 +52,7 @@ abstract class BaseIssueViewModel(
         address: String?,
         customFields: CustomFields,
         typeAction: TypeAction,
+        origin: IssueOrigin,
     ) {
         val project = "REM"
         val type = 32L
@@ -61,8 +65,9 @@ abstract class BaseIssueViewModel(
                 customFields.x10744 = apiResult.data.lon.replace(".", ",")
             }
             customFields.x11840 = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yy HH:mm"))
-            val result = issueInteractor.createIssues(
-                CreateIssuesRequest.Builder().issue(
+
+            val builder = CreateIssuesRequest.Builder()
+                .issue(
                     Issue(
                         description,
                         project,
@@ -72,8 +77,10 @@ abstract class BaseIssueViewModel(
                 ).customFields(
                     customFields
                 ).actions(typeAction.list)
-                    .build()
-            )
+
+            delegate?.extendBuilder(builder, origin)
+
+            val result = issueInteractor.createIssues(builder.build())
             _navigateToIssueSuccessDialogAction.value = Event(Unit)
             if (address != null) {
                 _navigateToIssueFragmentAction.value = Event(IssueModel(address, result.data))

@@ -15,10 +15,12 @@ import com.sesameware.smartyard_oem.databinding.FragmentWorkSoonOfficeBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 class WorkSoonOfficeFragment() : Fragment() {
     private var _binding: FragmentWorkSoonOfficeBinding? = null
     private val binding get() = _binding!!
+    private val delegate: WorkSoonOfficeDelegate? by injectOrNull(WorkSoonOfficeDelegate::class.java)
 
     private val viewModel by viewModel<WorkSoonOfficeViewModel>()
 
@@ -58,6 +60,8 @@ class WorkSoonOfficeFragment() : Fragment() {
             )
         }
         setupObserve()
+
+        delegate?.extendConfig(binding, (requireActivity() as? MainActivity)?.binding?.bottomNav)
     }
 
     private fun setupObserve() {

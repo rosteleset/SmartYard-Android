@@ -3,6 +3,7 @@ package com.sesameware.data
 import android.content.Context
 import android.os.Build
 import androidx.room.Room
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.sesameware.data.DataModule.BASE_URL
 import com.sesameware.data.interceptors.CommonInterceptor
 import com.sesameware.data.interceptors.SessionInterceptor
@@ -45,6 +46,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import org.webrtc.DefaultVideoDecoderFactory
 import org.webrtc.DefaultVideoEncoderFactory
 import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
@@ -60,18 +62,18 @@ object DataModule {
     var providerConfig = ProviderConfig()
     var providerName = BuildConfig.PROVIDER_NAME
     var defaultPhonePattern = BuildConfig.DEFAULT_PHONE_PATTERN
-    var phonePattern = defaultPhonePattern
+    var phonePattern: String = defaultPhonePattern
     var defaultLicensePlatePattern = BuildConfig.DEFAULT_LICENSE_PLATE_PATTERN
-    var licensePlatePattern = defaultLicensePlatePattern
+    var licensePlatePattern: String = defaultLicensePlatePattern
     var xDmApiRefresh = false
     val serverTz: String
         get() = providerConfig.timeZone.orEmpty().ifEmpty { BuildConfig.SERVER_TZ }
 //    val mapBoxToken = BuildConfig.MAP_BOX_TOKEN
 
     fun create() = module {
-        single { createHttpClient(get()) }
+        single { createHttpClient(get(), get()) }
 
-        single(named("clean")) { createCleanHttpClient() }
+        single(named("clean")) { createCleanHttpClient(get()) }
 
         single { createApi(get(), get()) }
 
@@ -82,6 +84,8 @@ object DataModule {
                 .fallbackToDestructiveMigration(false)
                 .build()
         }
+
+        single { createChuckerInterceptor(get()) }
 
         single { get<ItemsDatabase>().itemDao() }
 
@@ -116,7 +120,8 @@ object DataModule {
         single<VideoDecoderFactory> {
             val eglBase: EglBase = get()
             val isBuggyDevice = shouldForceSoftwareDecoder()
-            SafeVideoDecoderFactory(eglBase.eglBaseContext, disableHighProfile = isBuggyDevice)
+//            SafeVideoDecoderFactory(eglBase.eglBaseContext, disableHighProfile = isBuggyDevice)
+            DefaultVideoDecoderFactory(eglBase.eglBaseContext)
         }
 
         single<VideoEncoderFactory> {
@@ -142,6 +147,12 @@ object DataModule {
         single { WebRtcStreamingRepositoryImpl(get(), get(named("clean"))) as WebRtcStreamingRepository }
     }
 
+    fun createChuckerInterceptor(applicationContext: Context): Interceptor =
+        ChuckerInterceptor.Builder(applicationContext)
+            .maxContentLength(250_000L)
+            .alwaysReadResponseBody(true)
+            .build()
+
     private fun shouldForceSoftwareDecoder(): Boolean {
         val is32Bit = Build.SUPPORTED_64_BIT_ABIS.isEmpty()
 
@@ -166,7 +177,12 @@ object DataModule {
             .create(TeledomApi::class.java)
     }
 
-    private fun createHttpClient(preferenceStorage: PreferenceStorage): OkHttpClient {
+
+
+    private fun createHttpClient(
+        chuckerInterceptor: Interceptor,
+        preferenceStorage: PreferenceStorage
+    ): OkHttpClient {
         val builder = OkHttpClient.Builder()
         with(builder) {
             connectTimeout(30, TimeUnit.SECONDS)
@@ -174,13 +190,25 @@ object DataModule {
             writeTimeout(30, TimeUnit.SECONDS)
             addInterceptor(CommonInterceptor())
             addInterceptor(SessionInterceptor(preferenceStorage))
+            if (BuildConfig.DEBUG) {
+                addNetworkInterceptor(chuckerInterceptor)
+            }
             addNetworkInterceptor(loggingInterceptor())
         }
         return builder.build()
     }
 
-    private fun createCleanHttpClient(): OkHttpClient =
-        OkHttpClient.Builder().addNetworkInterceptor(loggingInterceptor()).build()
+    private fun createCleanHttpClient(chuckerInterceptor: Interceptor): OkHttpClient {
+        val builder = OkHttpClient.Builder()
+
+        with (builder) {
+            if (BuildConfig.DEBUG) {
+                addNetworkInterceptor(chuckerInterceptor)
+            }
+            addNetworkInterceptor(loggingInterceptor())
+        }
+        return builder.build()
+    }
 
     private fun loggingInterceptor(): Interceptor {
         val logger =

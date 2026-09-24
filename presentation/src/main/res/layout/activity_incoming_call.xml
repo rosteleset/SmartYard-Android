@@ -1,243 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:background="@drawable/background_call"
     tools:context=".ui.call.IncomingCallActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <!-- Header -->
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/mTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:text="@string/call_on_domophone"
+        android:textAlignment="center"
+        android:textColor="@color/on_filled"
+        android:textSize="32sp"
+        android:textStyle="bold"
+        app:autoSizeMinTextSize="15sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Status -->
+    <TextView
+        android:id="@+id/mStatusText"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/background_call"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        tools:context=".ui.call.IncomingCallActivity">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:textAlignment="center"
+        android:textColor="@color/on_filled"
+        android:textSize="16sp"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintTop_toBottomOf="@id/mTitle"
+        tools:text="@string/address_sample" />
 
-        <TextView
-            android:id="@+id/mTitle"
+    <Chronometer
+        android:id="@+id/mCallTimer"
+        style="@style/clock_style"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/mStatusText"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/mStatusWrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="mStatusText,mCallTimer" />
+
+    <!-- Video -->
+
+    <FrameLayout
+        android:id="@+id/mImageViewWrap"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="192dp"
+        android:background="@drawable/layout_rounded_bg"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextureView
+            android:id="@+id/mVideoSip"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/mPeekImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            tools:ignore="ContentDescription"
+            tools:src="@drawable/ic_placeholder_image" />
+
+        <org.webrtc.SurfaceViewRenderer
+            android:id="@+id/mWebRTCView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:visibility="invisible" />
+
+        <ProgressBar
+            android:id="@+id/pbIncomingCall"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="40dp"
-            android:text="@string/call_on_domophone"
-            android:textAlignment="center"
-            android:textColor="@color/on_filled"
-            android:textSize="32sp"
-            android:textStyle="bold"
-            app:autoSizeMinTextSize="15sp"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <LinearLayout
-            android:id="@+id/mStatusWrap"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:orientation="vertical"
-            android:paddingBottom="32dp"
-            app:layout_constraintTop_toBottomOf="@id/mTitle">
-
-            <TextView
-                android:id="@+id/mStatusText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="center"
-                android:textColor="@color/on_filled"
-                android:textSize="16sp"
-                app:autoSizeMinTextSize="10sp"
-                tools:text="@string/address_sample" />
-
-            <Chronometer
-                android:id="@+id/mCallTimer"
-                style="@style/clock_style"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:visibility="gone"
-                tools:visibility="visible" />
-
-        </LinearLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/mImageViewWrap"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="32dp"
-            android:background="@drawable/layout_rounded_bg"
-            android:orientation="vertical"
-            app:layout_constraintDimensionRatio="H,16:9"
-            app:layout_constraintTop_toBottomOf="@id/mStatusWrap"
-            tools:layout_editor_absoluteX="16dp">
-
-            <TextureView
-                android:id="@+id/mVideoSip"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/mPeekImageView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_placeholder_image"
-                tools:ignore="ContentDescription" />
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/mWebRTCView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ProgressBar
-                android:id="@+id/pbIncomingCall"
-                style="?android:attr/progressBarStyle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:indeterminateTint="@color/brand"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:visibility="invisible" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/mPanel"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginBottom="47dp"
-            android:baselineAligned="false"
-            android:paddingTop="28dp"
-            tools:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mImageViewWrap"
-            tools:layout_editor_absoluteX="16dp">
-
-            <LinearLayout
-                android:id="@+id/mTopRow"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginBottom="32dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toTopOf="@+id/mBottomRow"
-                app:layout_constraintTop_toTopOf="parent">
-
-
-                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                    android:id="@+id/mPeepholeButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/peek"
-                    app:buttonBG="@drawable/checkbox_round_state_peek"
-                    app:buttonCheckable="true" />
-
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center" />
-
-
-                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                    android:id="@+id/mAnswerButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/answer"
-                    android:visibility="visible"
-                    app:buttonBG="@drawable/checkbox_round_state_answer" />
-
-                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                    android:id="@+id/mSpeakerButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/speak"
-                    android:visibility="gone"
-                    app:buttonBG="@drawable/checkbox_round_state_speak" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/mBottomRow"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:orientation="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mTopRow">
-
-                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                    android:id="@+id/mHangUpButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/ignore"
-                    app:buttonBG="@drawable/checkbox_round_state_hang" />
-
-                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                    android:id="@+id/mOpenedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/opened"
-                    android:visibility="invisible"
-                    app:buttonBG="@drawable/checkbox_round_state_unlocked" />
-
-                <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                    android:id="@+id/mOpenButton"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:text="@string/open"
-                    app:buttonBG="@drawable/checkbox_round_state_unlock" />
-
-            </LinearLayout>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <LinearLayout
-            android:id="@+id/mSupportRow"
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:orientation="horizontal"
-            android:visibility="invisible"
-            tools:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/mImageViewWrap">
-
-            <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                android:id="@+id/mAnswerButtonSupport"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/answer"
-                app:buttonBG="@drawable/checkbox_round_state_answer_support" />
-
-            <com.sesameware.smartyard_oem.ui.call.IncomingButtonView
-                android:id="@+id/mHangUpButtonSupport"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="@string/ignore"
-                app:buttonBG="@drawable/checkbox_round_state_hang_support" />
-
-        </LinearLayout>
+            android:layout_gravity="center"
+            android:indeterminateTint="@color/brand"
+            tools:visibility="invisible" />
 
         <ImageView
             android:id="@+id/ivFullscreenMinimalize"
@@ -246,12 +107,204 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="8dp"
             android:padding="8dp"
-            android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/mImageViewWrap"
-            app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_fullscreen"
             tools:ignore="ContentDescription" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </FrameLayout>
 
-</LinearLayout>
+    <!-- Intercom call buttons -->
+
+    <!-- Row 1. Peek, Answer -->
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bRow1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:barrierAllowsGoneWidgets="false"
+        app:constraint_referenced_ids="mPeepholeButton,mAnswerButton,mSpeakerButton" />
+
+    <TextView
+        android:id="@+id/mPeepholeButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="6dp"
+        android:gravity="center"
+        android:text="@string/peek"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        app:drawableTopCompat="@drawable/checkbox_round_state_peek"
+        app:layout_constraintBottom_toTopOf="@id/bRow2"
+        app:layout_constraintEnd_toStartOf="@id/mAnswerButton"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mImageViewWrap"
+        app:layout_constraintVertical_bias="0.65" />
+
+    <TextView
+        android:id="@+id/mAnswerButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="6dp"
+        android:layout_marginTop="48dp"
+        android:gravity="center"
+        android:text="@string/answer"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        app:drawableTopCompat="@drawable/checkbox_round_state_answer"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintBottom_toTopOf="@id/bRow2"
+        app:layout_constraintEnd_toStartOf="@+id/mSpeakerButton"
+        app:layout_constraintStart_toEndOf="@id/mPeepholeButton"
+        app:layout_constraintTop_toBottomOf="@id/mImageViewWrap"
+        app:layout_constraintVertical_bias="0.65" />
+
+    <TextView
+        android:id="@+id/mSpeakerButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="6dp"
+        android:gravity="center"
+        android:text="@string/speak"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/checkbox_round_state_speak"
+        app:layout_constraintBottom_toTopOf="@id/bRow2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toEndOf="@+id/mAnswerButton"
+        app:layout_constraintTop_toBottomOf="@id/mImageViewWrap"
+        app:layout_constraintVertical_bias="0.65"
+        tools:visibility="visible" />
+
+    <!-- Row 2: Decline, Opened, Open -->
+
+       <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/bRow2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:barrierAllowsGoneWidgets="false"
+        app:constraint_referenced_ids="mHangUpButton,mOpenedButton,mOpenButton" />
+
+    <TextView
+        android:id="@+id/mHangUpButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="6dp"
+        android:gravity="center"
+        android:text="@string/ignore"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        app:drawableTopCompat="@drawable/checkbox_round_state_hang"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/mOpenedButton"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bRow1" />
+
+    <TextView
+        android:id="@+id/mOpenedButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="6dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:text="@string/opened"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:drawableTopCompat="@drawable/checkbox_round_state_unlocked"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/mOpenButton"
+        app:layout_constraintStart_toEndOf="@id/mHangUpButton"
+        app:layout_constraintTop_toBottomOf="@id/bRow1" />
+
+    <TextView
+        android:id="@+id/mOpenButton"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="6dp"
+        android:layout_marginBottom="24dp"
+        android:gravity="center"
+        android:text="@string/open"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        app:drawableTopCompat="@drawable/checkbox_round_state_unlock"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mOpenedButton"
+        app:layout_constraintTop_toBottomOf="@id/bRow1" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/mIntercomCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="mPeepholeButton,mAnswerButton,mHangUpButton,mOpenButton" />
+
+    <!-- Support call buttons -->
+
+    <TextView
+        android:id="@+id/mAnswerButtonSupport"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:text="@string/answer"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        app:drawableTopCompat="@drawable/checkbox_round_state_answer_support"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/mHangUpButtonSupport"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/mImageViewWrap"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <TextView
+        android:id="@+id/mHangUpButtonSupport"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_marginBottom="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:drawablePadding="8dp"
+        android:gravity="center"
+        android:text="@string/ignore"
+        android:textColor="@color/on_filled"
+        android:textSize="14sp"
+        app:drawableTopCompat="@drawable/checkbox_round_state_hang_support"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/mAnswerButtonSupport"
+        app:layout_constraintTop_toBottomOf="@id/mImageViewWrap"
+        app:layout_constraintVertical_bias="0.6" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/mSupportCall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:constraint_referenced_ids="mAnswerButtonSupport,mHangUpButtonSupport" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/mCallButtons"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="mPeepholeButton,mAnswerButton,mSpeakerButton,mHangUpButton,mOpenButton,mOpenedButton,mAnswerButtonSupport,mHangUpButtonSupport"
+        tools:visibility="visible"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

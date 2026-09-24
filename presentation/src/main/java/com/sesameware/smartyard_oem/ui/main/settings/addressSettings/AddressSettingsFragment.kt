@@ -1,0 +1,454 @@
+package com.sesameware.smartyard_oem.ui.main.settings.addressSettings
+
+import android.app.AlertDialog
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
+import com.sesameware.data.DataModule
+import com.sesameware.domain.model.TF
+import com.sesameware.smartyard_oem.EventObserver
+import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.databinding.FragmentAddressSettingsBinding
+import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
+import com.sesameware.smartyard_oem.ui.main.settings.SettingsViewModel
+import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogDeleteReason.DialogDeleteReasonFragment
+import com.sesameware.smartyard_oem.ui.showStandardAlert
+import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
+
+class AddressSettingsFragment : Fragment() {
+    private var _binding: FragmentAddressSettingsBinding? = null
+    private val binding get() = _binding!!
+    private val delegate: AddressSettingsDelegate?
+        by injectOrNull(AddressSettingsDelegate::class.java)
+
+    private lateinit var mSetting: AddressSettingsFragmentArgs
+    private val viewModel by viewModel<AddressSettingsViewModel>()
+
+    private var flatId: Int = 0
+    private var clientId: String = ""
+    private var isKey: Boolean = false
+    private var flatOwner: Boolean = false
+
+    private val mAddressVM by sharedViewModel<AddressViewModel>()
+    private val mSettingsVM by sharedViewModel<SettingsViewModel>()
+
+    private var allowIntercom = false
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentAddressSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        requireNotNull(arguments).let {
+            mSetting = AddressSettingsFragmentArgs.fromBundle(it)
+        }
+        binding.scrollView2.applyBottomNavInsetsToPadding()
+        binding.cvDeleteAddress.setOnClickListener {
+            if (flatOwner) {
+                val dialog = DialogDeleteReasonFragment()
+                dialog.setTargetFragment(this, 0)
+                dialog.onDeleteReasonListener =
+                    object : DialogDeleteReasonFragment.OnGuestDeleteListener {
+                        override fun onDismiss(dialog: DialogDeleteReasonFragment) {
+                            dialog.dismiss()
+                        }
+
+                        override fun onShare(reasonText: String, reasonList: String) {
+                            viewModel.createIssue(mSetting.address, reasonText, reasonList)
+                            dialog.dismiss()
+                        }
+                    }
+                dialog.show(parentFragmentManager, "")
+            } else {
+                showDialogDelete()
+            }
+        }
+
+        if (DataModule.providerConfig.hasEventsTracking) {
+            binding.tvTrackedEvents.isVisible = true
+            binding.tvTrackedEvents.setOnClickListener {
+                val action = AddressSettingsFragmentDirections.actionAddressSettingsFragmentToTrackedEventsFragment(
+                    flatId,
+                    mSetting.address
+                )
+                findNavController().navigate(action)
+            }
+        } else {
+            binding.tvTrackedEvents.visibility = View.GONE
+            binding.tvTrackedEvents.setOnClickListener(null)
+        }
+
+        binding.tvTitleDomophone.setOnClickListener {
+            if (binding.expandableLayoutNotif.isExpanded) {
+                binding.expandableLayoutNotif.collapse()
+                binding.tvTitleDomophone.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_arrow_bottom,
+                    0
+                )
+            } else {
+                binding.expandableLayoutNotif.expand()
+                binding.tvTitleDomophone.setCompoundDrawablesWithIntrinsicBounds(
+                    0,
+                    0,
+                    R.drawable.ic_arrow_top,
+                    0
+                )
+            }
+        }
+
+        binding.tvWhiteRabbit.setOnClickListener {
+            WebViewDialogFragment(R.string.help_white_rabbit).show(requireActivity().supportFragmentManager, "HelpWhiteRabbit")
+        }
+
+        binding.tvAddressName.text = mSetting.address
+        flatId = mSetting.flatId
+        clientId = mSetting.clientId
+        isKey = mSetting.isKey
+        flatOwner = mSetting.flatOwner
+
+        // Значение домофона
+        binding.cvDomophone.isVisible = isKey
+        binding.ivBack.setOnClickListener {
+            this.findNavController().popBackStack()
+        }
+        viewModel.getIntercom(flatId)
+
+        viewModel.navigateToIssueSuccessDialogAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                showStandardAlert(
+                    requireContext(),
+                    resources.getString(R.string.issue_dialog_caption_0),
+                    null,
+                    false
+                )
+            }
+        )
+
+        viewModel.intercom.observe(
+            viewLifecycleOwner
+        ) {
+            val cMS = it.cMS
+            if (cMS == null) {
+                binding.tvIntercom.isVisible = false
+                binding.switchIntercom.isVisible = false
+                binding.vIntercom.isVisible = false
+            } else {
+                binding.tvIntercom.isVisible = true
+                binding.switchIntercom.isChecked = cMS
+                binding.switchIntercom.isVisible = true
+                binding.vIntercom.isVisible = true
+            }
+
+            val voIP = it.voIP
+            if (voIP == null) {
+                binding.tvVoip.isVisible = false
+                binding.switchVoip.isVisible = false
+                binding.vVoip.isVisible = false
+            } else {
+                binding.tvVoip.isVisible = true
+                binding.switchVoip.isChecked = voIP
+                binding.switchVoip.isVisible = true
+                binding.vVoip.isVisible = true
+            }
+
+            val paperBill = it.paperBill
+            if (paperBill == null) {
+                binding.tvPaperBill.isVisible = false
+                binding.switchPaperBill.isVisible = false
+                binding.vPaperBill.isVisible = false
+            } else {
+                binding.tvPaperBill.isVisible = true
+                binding.switchPaperBill.isChecked = paperBill
+                binding.switchPaperBill.isVisible = true
+                binding.vPaperBill.isVisible = true
+            }
+
+            val useEventLog = it.disablePlog
+            if (useEventLog == null) {
+                binding.tvUseEventLog.isVisible = false
+                binding.switchUseEventLog.isVisible = false
+                binding.vUseEventLog.isVisible = false
+            } else {
+                binding.tvUseEventLog.isVisible = true
+                binding.switchUseEventLog.isChecked = !useEventLog
+                binding.switchUseEventLog.isVisible = true
+                binding.vUseEventLog.isVisible = true
+            }
+
+            val ownerEventLog = it.hiddenPlog
+            if (ownerEventLog == null) {
+                binding.tvOwnerEventLog.isVisible = false
+                binding.switchOwnerEventLog.isVisible = false
+                binding.vOwnerEventLog.isVisible = false
+            } else {
+                binding.tvOwnerEventLog.isVisible = true
+                binding.switchOwnerEventLog.isChecked = ownerEventLog
+                binding.switchOwnerEventLog.isVisible = true
+                binding.vOwnerEventLog.isVisible = true
+                if (useEventLog != null) {
+                    //журнал событий выключен, запрещаем переключатель скрытия журнала и делаем его полупрозрачным
+                    binding.tvOwnerEventLog.isEnabled = !useEventLog
+                    binding.switchOwnerEventLog.isEnabled = !useEventLog
+                    binding.vOwnerEventLog.isEnabled = !useEventLog
+                    val alpha = if (useEventLog) DISABLED_ALPHA else ENABLED_ALPHA
+                    binding.tvOwnerEventLog.alpha = alpha
+                    binding.switchOwnerEventLog.alpha = alpha
+                    binding.vOwnerEventLog.alpha = alpha
+                }
+            }
+
+            //new code for FRS switch: just hidden
+            binding.tvUseFRS.isVisible = false
+            binding.switchUseFRS.isVisible = false
+            binding.vUseFRS.isVisible = false
+
+            //old code for FRS switch: individual setting for flat that depends if user is owner of the flat
+            /*val useFRS = it.frsDisabled
+            if (useFRS == null) {
+                binding.tvUseFRS.isVisible = false
+                binding.ivUseFRSBeta.isVisible = false
+                binding.switchUseFRS.isVisible = false
+                binding.vUseFRS.isVisible = false
+            } else {
+                if (!flatOwner) {
+                    //не владелец квартиры, запрещаем переключатель распознавания лиц и делаем настройку попупрозрачной
+                    binding.tvUseFRS.alpha = DISABLED_ALPHA
+                    binding.ivUseFRSBeta.alpha = DISABLED_ALPHA
+                    binding.switchUseFRS.alpha = DISABLED_ALPHA
+                    binding.switchUseFRS.isEnabled = false
+                    binding.switchUseFRS.setOnCheckedChangeListener(null)
+                }
+
+                binding.tvUseFRS.isVisible = true
+                binding.ivUseFRSBeta.isVisible = true
+                binding.switchUseFRS.isChecked = !useFRS
+                binding.switchUseFRS.isVisible = true
+                binding.vUseFRS.isVisible = true
+            }*/
+
+            val whiteRabbit = it.whiteRabbit
+            if (whiteRabbit == null) {
+                binding.tvWhiteRabbit.isVisible = false
+                binding.switchWhiteRabbit.isVisible = false
+                binding.vWhiteRabbit.isVisible = false
+            } else {
+                binding.tvWhiteRabbit.isVisible = true
+                binding.switchWhiteRabbit.isVisible = true
+                binding.switchWhiteRabbit.isChecked = (whiteRabbit > 0)
+                binding.vWhiteRabbit.isVisible = true
+            }
+
+            manageControls(true)
+
+            delegate?.extendConfig(binding, ::showDialogDelete)
+        }
+
+        viewModel.deleteRoommate.observe(
+            viewLifecycleOwner
+        ) {
+            mSettingsVM.expandedFlatId.remove(flatId)
+            mSettingsVM.getDataList(true)
+            mAddressVM.getDataList(true)
+
+            val option = NavOptions.Builder()
+                .setPopUpTo(R.id.settingsFragment, true)
+                .build()
+            NavHostFragment.findNavController(this)
+                .navigate(R.id.action_addressSettingsFragment_to_settingsFragment, null, option)
+        }
+
+        binding.switchIntercom.setOnCheckedChangeListener { compoundButton, check ->
+            if (!compoundButton.isPressed) {
+                return@setOnCheckedChangeListener
+            }
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                if (check) TF.TRUE else TF.FALSE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+        }
+
+        binding.switchVoip.setOnCheckedChangeListener { _, check ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                null,
+                if (check) TF.TRUE else TF.FALSE,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            )
+        }
+
+        binding.switchPaperBill.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                if (isChecked) TF.TRUE else TF.FALSE,
+                null,
+                null,
+                null
+            )
+        }
+
+        binding.switchUseEventLog.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                if (isChecked) TF.FALSE else TF.TRUE,
+                null,
+                null
+            )
+        }
+
+        binding.switchOwnerEventLog.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                if (isChecked) TF.TRUE else TF.FALSE,
+                null
+            )
+        }
+
+        binding.switchUseFRS.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                if (isChecked) TF.FALSE else TF.TRUE
+            )
+        }
+
+        binding.switchWhiteRabbit.setOnCheckedChangeListener { _, isChecked ->
+            if (!allowIntercom) {
+                return@setOnCheckedChangeListener
+            }
+            manageControls(false)
+            viewModel.putIntercom(
+                flatId,
+                null,
+                null,
+                null,
+                null,
+                if (isChecked) WHITE_RABBIT_ON else WHITE_RABBIT_OFF,
+                null,
+                null,
+                null,
+                null
+            )
+        }
+
+        binding.switchUseSpeaker.setOnCheckedChangeListener { _, isChecked ->
+            viewModel.saveSpeakerFlag(flatId, isChecked)
+        }
+
+        binding.switchUseSpeaker.isChecked = (viewModel.preferenceStorage.addressOptions.getOption(flatId).isSpeaker == true)
+
+        delegate?.extendConfig(binding, ::showDialogDelete)
+    }
+
+    private fun showDialogDelete() {
+        val builder: AlertDialog.Builder = AlertDialog.Builder(context, R.style.AlertDialogStyle)
+        val dialog = builder
+            .setMessage(resources.getString(R.string.setting_dialog_delete_title))
+            .setPositiveButton(resources.getString(R.string.setting_dialog_delete_yes)) { _, _ ->
+                viewModel.deleteRoommate(flatId, clientId)
+            }
+            .setNegativeButton(resources.getString(R.string.setting_dialog_delete_no)) { _, _ ->
+                returnTransition
+            }.show()
+        dialog.window?.setBackgroundDrawableResource(R.drawable.background_dialog_large)
+    }
+
+    private fun manageControls(enabled: Boolean) {
+        allowIntercom = enabled
+        binding.switchIntercom.isEnabled = enabled
+        binding.switchVoip.isEnabled = enabled
+        binding.switchPaperBill.isEnabled = enabled
+        binding.switchUseEventLog.isEnabled = enabled
+        binding.switchOwnerEventLog.isEnabled = enabled
+        binding.switchUseFRS.isEnabled = enabled
+        binding.switchWhiteRabbit.isEnabled = enabled
+    }
+
+    companion object {
+        const val WHITE_RABBIT_ON = 5
+        const val WHITE_RABBIT_OFF = 0
+        const val DISABLED_ALPHA = 0.4f
+        const val ENABLED_ALPHA = 1.0f
+    }
+}

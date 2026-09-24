@@ -6,8 +6,10 @@ import com.sesameware.data.remote.TeledomApi
 import com.sesameware.domain.interfaces.AddressRepository
 import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.request.AccessRequest
+import com.sesameware.domain.model.request.AddGroupRequest
 import com.sesameware.domain.model.request.AddMyPhoneRequest
 import com.sesameware.domain.model.request.ConfirmCodeRecoveryRequest
+import com.sesameware.domain.model.request.DeleteGroupRequest
 import com.sesameware.domain.model.request.GetIntercomRequest
 import com.sesameware.domain.model.request.GetTrackedEventsRequest
 import com.sesameware.domain.model.request.PutIntercomRequest
@@ -16,18 +18,23 @@ import com.sesameware.domain.model.request.RecoveryOptionsRequest
 import com.sesameware.domain.model.request.ResendRequest
 import com.sesameware.domain.model.request.ResetCodeRequest
 import com.sesameware.domain.model.request.SentCodeRecoveryRequest
+import com.sesameware.domain.model.request.ListGroupsRequest
 import com.sesameware.domain.model.request.Settings
 import com.sesameware.domain.model.request.PlogDaysRequest
 import com.sesameware.domain.model.request.PlogRequest
 import com.sesameware.domain.model.request.TrackEventRequest
+import com.sesameware.domain.model.request.UpdateGroupRequest
 import com.sesameware.domain.model.request.UntrackEventRequest
 import com.sesameware.domain.model.response.AccessResponse
+import com.sesameware.domain.model.response.AddGroupResponse
 import com.sesameware.domain.model.response.AddMyPhoneResponse
 import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
+import com.sesameware.domain.model.response.DeleteGroupResponse
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
 import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.IntercomResponse
+import com.sesameware.domain.model.response.ListGroupsResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.QRResponse
 import com.sesameware.domain.model.response.RecoveryOptionsResponse
@@ -41,9 +48,7 @@ import com.sesameware.domain.model.response.CamMapResponse
 import com.sesameware.domain.model.response.GetTrackedEventsResponse
 import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UntrackEventResponse
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.Request
+import com.sesameware.domain.model.response.UpdateGroupResponse
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
@@ -53,13 +58,8 @@ import java.util.concurrent.TimeUnit
  */
 class AddressRepositoryImpl(
     private val teledomApi: TeledomApi,
-
     override val moshi: Moshi
 ) : AddressRepository, BaseRepository(moshi) {
-
-    private val client = OkHttpClient.Builder()
-        .callTimeout(5, TimeUnit.SECONDS)
-        .build()
 
     override suspend fun getAddressList(): GetAddressListResponse {
         return safeApiCall {
@@ -272,6 +272,46 @@ class AddressRepositoryImpl(
         return safeApiCall {
             teledomApi.getStories(
                 DataModule.BASE_URL + "address/getStories"
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun addGroup(flatId: Int, groupName: String): AddGroupResponse {
+        return safeApiCall {
+            teledomApi.addGroup(
+                DataModule.BASE_URL + "user/addGroup",
+                AddGroupRequest(flatId, groupName)
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun updateGroup(
+        groupId: String,
+        flatId: Int,
+        groupName: String
+    ): UpdateGroupResponse {
+        return safeApiCall {
+            teledomApi.updateGroup(
+                DataModule.BASE_URL + "user/updateGroup",
+                UpdateGroupRequest(groupId, flatId, groupName)
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun deleteGroup(groupId: String, flatId: Int): DeleteGroupResponse {
+        return safeApiCall {
+            teledomApi.deleteGroup(
+                DataModule.BASE_URL + "user/deleteGroup",
+                DeleteGroupRequest(groupId, flatId)
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun listGroups(flatId: Int): ListGroupsResponse {
+        return safeApiCall {
+            teledomApi.listGroups(
+                DataModule.BASE_URL + "user/listGroups",
+                ListGroupsRequest(flatId)
             ).getResponseBody()
         }
     }

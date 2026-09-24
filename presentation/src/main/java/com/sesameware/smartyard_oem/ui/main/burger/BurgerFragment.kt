@@ -19,10 +19,12 @@ import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.custom_web_view.WebViewCodeCache
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 class BurgerFragment : Fragment() {
     private var _binding: FragmentBurgerBinding? = null
     private val binding get() = _binding!!
+    val delegate: BurgerDelegate? by injectOrNull(BurgerDelegate::class.java)
 
     private val viewModel: BurgerViewModel by sharedViewModel()
 
@@ -49,6 +51,8 @@ class BurgerFragment : Fragment() {
 
         initRecycler()
         setupObservers()
+
+        delegate?.extendConfig(binding)
     }
 
     private fun initRecycler() {
@@ -56,7 +60,7 @@ class BurgerFragment : Fragment() {
             layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         }
         adapter = ListDelegationAdapter(
-            BurgerDelegate()
+            BurgerAdapterDelegate()
         )
         binding.rvBurger.adapter = adapter
     }

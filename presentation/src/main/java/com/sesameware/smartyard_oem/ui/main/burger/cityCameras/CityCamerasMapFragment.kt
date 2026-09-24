@@ -10,19 +10,19 @@ import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import com.sesameware.domain.model.response.CCTVCityCameraData
 import com.sesameware.smartyard_oem.MapFragment
 import com.sesameware.smartyard_oem.R
-import com.sesameware.smartyard_oem.databinding.CityCamerasMapFragmentBinding
+import com.sesameware.smartyard_oem.databinding.FragmentCityCamerasMapBinding
 import com.sesameware.smartyard_oem.toLatLng
 import com.sesameware.smartyard_oem.ui.map.*
 
 class CityCamerasMapFragment : MapFragment() {
-    private var _binding: CityCamerasMapFragmentBinding? = null
+    private var _binding: FragmentCityCamerasMapBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: CityCamerasViewModel by sharedStateViewModel()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
-        _binding = CityCamerasMapFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentCityCamerasMapBinding.inflate(inflater, container, false)
         return binding.root
     }
 

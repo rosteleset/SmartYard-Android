@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import com.sesameware.domain.model.response.Plog
 import com.sesameware.domain.model.response.TrackedEvent
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.compose.DeleteDialog
 import com.sesameware.smartyard_oem.ui.main.settings.trackedEvents.TrackedEventsViewModel
 
 @Composable
@@ -48,8 +50,9 @@ fun getEventName(eventType: Int): String {
 fun TrackedEventsScreen(
     viewModel: TrackedEventsViewModel,
     address: String,
+    bottomNavHeight: Int = 0,
     onBackClick: () -> Unit,
-    onFabClick: () -> Unit
+    onAddClick: () -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     var eventToDelete by remember { mutableStateOf<TrackedEvent?>(null) }
@@ -80,35 +83,23 @@ fun TrackedEventsScreen(
         }
     }
 
-    if (eventToDelete != null) {
-        AlertDialog(
-            onDismissRequest = { eventToDelete = null },
-            title = { Text(text = stringResource(id = R.string.tracked_events_delete_confirm_title)) },
-            text = {
-                Text(
-                    text = stringResource(
-                        id = R.string.tracked_events_delete_confirm_message,
-                        (getEventName(
-                            eventToDelete?.eventType ?: 0
-                        ) + if (eventToDelete?.eventDetail?.isNotEmpty() == true) ": " + eventToDelete?.eventDetail else "")
-                    )
-                )
+    eventToDelete?.let { event ->
+        DeleteDialog(
+            title = stringResource(id = R.string.tracked_events_delete_confirm_title),
+            body = stringResource(
+                id = R.string.tracked_events_delete_confirm_message,
+                (getEventName(event.eventType) +
+                        if (event.eventDetail?.isNotEmpty() == true) ": " + (if (event.eventType == Plog.EVENT_OPEN_BY_FACE) event.comments ?: "" else event.eventDetail) else "")
+            ),
+            onConfirm = {
+                eventToDelete?.let { viewModel.untrackEvent(it.watcherId) }
+                eventToDelete = null
             },
-            confirmButton = {
-                TextButton(
-                    onClick = {
-                        eventToDelete?.let { viewModel.untrackEvent(it.watcherId) }
-                        eventToDelete = null
-                    }
-                ) {
-                    Text(text = stringResource(id = R.string.tracked_events_delete_confirm_positive), color = Color.Red)
-                }
+            onDismiss = {
+                eventToDelete = null
             },
-            dismissButton = {
-                TextButton(onClick = { eventToDelete = null }) {
-                    Text(text = stringResource(id = R.string.tracked_events_delete_confirm_negative), color = Color.Black)
-                }
-            }
+            confirmText = stringResource(id = R.string.tracked_events_delete_confirm_positive),
+            cancelText = stringResource(id = R.string.tracked_events_delete_confirm_negative)
         )
     }
 
@@ -119,6 +110,7 @@ fun TrackedEventsScreen(
         modifier = Modifier
             .fillMaxWidth()
     )
+
     Column {
         Image(
             painter = painterResource(id = R.drawable.ic_back_arrow),
@@ -132,54 +124,58 @@ fun TrackedEventsScreen(
                     onBackClick()
                 }
         )
+
         Text(
             text = stringResource(id = R.string.tracked_events_title),
-            color = colorResource(id = R.color.on_filled),
+            color = colorResource(id = R.color.on_top_background),
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             modifier = Modifier
                 .padding(start = 40.dp, top = 20.dp)
         )
-        Text(
-            text = address,
-            color = colorResource(id = R.color.on_filled),
-            fontSize = 14.sp,
-            modifier = Modifier
-                .padding(start = 40.dp, top = 4.dp, bottom = 28.dp)
-        )
+
+        Row {
+            Text(
+                text = address,
+                color = colorResource(id = R.color.on_top_background),
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 40.dp, top = 4.dp, bottom = 28.dp)
+            )
+            IconButton(
+                onClick = onAddClick,
+                modifier = Modifier
+                    .padding(end = 20.dp)
+                    .size(48.dp)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.ic_addd),
+                    contentDescription = null,
+                    tint = colorResource(id = R.color.on_top_background)
+                )
+            }
+        }
+
+        val density = LocalDensity.current
+        val bottomPadding = remember(bottomNavHeight) {
+            density.run { bottomNavHeight.toDp() }
+        }
 
         Scaffold(
-            backgroundColor = Color.Transparent,
-            floatingActionButton = {
-                AnimatedVisibility(
-                    visible = isFabVisible,
-                    enter = scaleIn(),
-                    exit = scaleOut()
-                ) {
-                    FloatingActionButton(
-                        onClick = onFabClick,
-                        modifier = Modifier.offset(y = (-12).dp),  // Adjust the offset as needed
-                        backgroundColor = colorResource(R.color.brand),
-                        contentColor = colorResource(id = R.color.on_filled)
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.ic_plus),
-                            contentDescription = "Add"
-                        )
-                    }
-                }
-            }
+            backgroundColor = Color.Transparent
         ) { padding ->
             Box(
                 modifier = Modifier
-                    .clip(shape = RoundedCornerShape(12.dp, 12.dp))
+                    .clip(shape = RoundedCornerShape(24.dp, 24.dp))
                     .background(color = colorResource(id = R.color.shaded_background))
                     .fillMaxSize()
                     .padding(padding)
+                    .padding(bottom = bottomPadding)
             ) {
                 when {
                     state.isLoading -> {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                        //CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                     }
                     state.error != null -> {
                         Text(

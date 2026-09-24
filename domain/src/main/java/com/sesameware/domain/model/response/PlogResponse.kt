@@ -27,7 +27,7 @@ data class Plog(
     @Json(name = "preview") val preview: String? = null, // url картинки
     @Json(name = "previewType") val previewType: Int, // тип картинки (0 - нет, 1 - flussonic, 2 - FRS, 3 - base64)
     @Json(name = "detail") val detail: String? = null, // детализация (старый вариант, не используем)
-    @Json(name = "detailX") val detailX: DetailX? = null, // детализация события
+    @Json(name = "detailX") var detailX: DetailX? = null, // детализация события
     var address: String = "", // адрес события для показа
     var frsEnabled: Boolean = false // доступна ли FRS
 ) {
@@ -40,6 +40,8 @@ data class Plog(
         @Json(name = "key") val key: String? = null, // ключ, которым открыли дверь
         @Json(name = "phone") val phone: String? = null, // телефон
         @Json(name = "faceId") var faceId: String?, // идентификатор дескриптора лица
+        @Json(name = "groupId") var groupId: Int? = null, // идентификатор группы
+        @Json(name = "groupName") var groupName: String? = null, // имя группы
         @Json(name = "code") val code: String? = null, // код, которым открыли дверь
         @Json(name = "phone_from") val phoneFrom: String? = null, // телефон
         @Json(name = "phone_to") val phoneTo: String? = null, // телефон

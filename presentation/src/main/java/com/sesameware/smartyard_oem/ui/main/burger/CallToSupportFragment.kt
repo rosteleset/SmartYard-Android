@@ -9,14 +9,19 @@ import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.view.WindowCompat
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.sesameware.data.DataModule
+import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCallToSupportBinding
 import com.sesameware.smartyard_oem.getCountryIso
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
-open class CallToSupportFragment : BottomSheetDialogFragment() {
+class CallToSupportFragment : BottomSheetDialogFragment() {
     private var _binding: FragmentCallToSupportBinding? = null
-    protected val binding get() = _binding!!
+    private val binding get() = _binding!!
+    private val delegate: CallToSupportDelegate?
+        by injectOrNull(CallToSupportDelegate::class.java)
 
     private val viewModel: BurgerViewModel by sharedViewModel()
 
@@ -38,16 +43,19 @@ open class CallToSupportFragment : BottomSheetDialogFragment() {
             dismiss()
         }
 
-        customizeViewBehavior()
-        binding.llOrderCallback.setOnClickListener {
-            viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)
-            dismiss()
+        if (DataModule.providerConfig.issuesVersion.lowercase() == ProviderConfig.ISSUES_VERSION_NONE) {
+            binding.llOrderCallback.visibility = View.INVISIBLE
+        } else {
+            binding.llOrderCallback.setOnClickListener {
+                viewModel.chosenSupportOption.postValue(BurgerViewModel.SupportOption.ORDER_CALLBACK)
+                dismiss()
+            }
         }
 
         setupObservers()
-    }
 
-    protected open fun customizeViewBehavior() {/* no-op */}
+        delegate?.extendConfig(binding)
+    }
 
     override fun onStart() {
         super.onStart()

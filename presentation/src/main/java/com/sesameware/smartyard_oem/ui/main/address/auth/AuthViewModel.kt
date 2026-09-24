@@ -14,6 +14,7 @@ import com.sesameware.domain.model.request.CreateIssuesRequestV2
 import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import com.sesameware.smartyard_oem.ui.main.IssueOrigin
 
 /**
  * @author Nail Shakurov
@@ -81,6 +82,7 @@ class AuthViewModel(
                 x12440 = x12440
             ),
             ACTION1,
+            origin
         )
     }
 
@@ -94,5 +96,9 @@ class AuthViewModel(
 
     fun seenWarning() {
         preferenceStorage.whereIsContractWarningSeen = true
+    }
+    
+    companion object {
+        private val origin = IssueOrigin.AUTH
     }
 }

@@ -15,6 +15,7 @@ import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.domain.model.response.Intercom
 import com.sesameware.smartyard_oem.ui.SoundChooser
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import com.sesameware.smartyard_oem.ui.main.IssueOrigin
 
 /**
  * @author Nail Shakurov
@@ -139,6 +140,7 @@ class AddressSettingsViewModel(
                 x12440 = x12440
             ),
             ACTION1,
+            origin
         )
     }
 
@@ -150,5 +152,10 @@ class AddressSettingsViewModel(
             comments = "$reasonText($reasonList)"
         )
         super.createIssueV2(issue)
+    }
+
+
+    companion object {
+        private val origin = IssueOrigin.ADDRESS_SETTINGS
     }
 }

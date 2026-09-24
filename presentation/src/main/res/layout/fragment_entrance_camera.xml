@@ -39,12 +39,24 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="fitCenter"
+                tools:scaleType="centerCrop"
                 tools:ignore="ContentDescription"
                 tools:src="@drawable/ic_placeholder_image" />
 
         </FrameLayout>
 
     </com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout>
+
+    <TextView
+        android:id="@+id/connectionLog"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="96dp"
+        android:background="#66000000"
+        tools:text="lorem ipsum"
+        android:textColor="@android:color/white"
+        android:textSize="16sp" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/progressBar"

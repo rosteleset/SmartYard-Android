@@ -1,13 +1,13 @@
 package com.sesameware.data.repository
 
 import com.sesameware.data.DataModule
+import com.sesameware.data.SdpMunger
 import com.sesameware.data.executeSuspend
 import org.webrtc.AudioTrack
 import org.webrtc.VideoTrack
 import com.sesameware.domain.interfaces.MediaTrack
 import com.sesameware.domain.interfaces.WebRtcState
 import com.sesameware.domain.interfaces.WebRtcStreamingRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.delay
@@ -27,13 +27,13 @@ import org.webrtc.MediaStream
 import org.webrtc.MediaStreamTrack
 import org.webrtc.PeerConnection
 import org.webrtc.PeerConnectionFactory
-import org.webrtc.RtpReceiver
 import org.webrtc.RtpTransceiver
 import org.webrtc.SdpObserver
 import org.webrtc.SessionDescription
-import kotlin.collections.forEach
+import timber.log.Timber
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlin.time.Duration.Companion.milliseconds
 
 class WebRtcStreamingRepositoryImpl(
     private val peerConnectionFactory: PeerConnectionFactory,
@@ -94,7 +94,7 @@ class WebRtcStreamingRepositoryImpl(
                 val offer = peerConnection.createOfferSuspend(constraints)
                 peerConnection.setLocalDescriptionSuspend(offer)
 
-                withTimeoutOrNull(500) {
+                withTimeoutOrNull(500.milliseconds) {
                     var hasSrflx = false
                     var hasHost = false
 
@@ -106,15 +106,19 @@ class WebRtcStreamingRepositoryImpl(
                         if (hasHost && hasSrflx) {
                             break
                         }
-                        delay(20)
+                        delay(20.milliseconds)
                     }
                 }
 
-                val sdpToSend = peerConnection.localDescription.description
+                val constraintProfileLocalSdp = peerConnection.localDescription.description
+                val unconstraintProfileLocalSdp = SdpMunger.mungeLocalSdp(constraintProfileLocalSdp)
 
                 val request = Request.Builder()
                     .url(whepUrl)
-                    .post(sdpToSend.toRequestBody("application/sdp".toMediaType()))
+                    .post(
+                        unconstraintProfileLocalSdp
+                            .toRequestBody("application/sdp".toMediaType())
+                    )
                     .build()
 
                 val response = okHttpClient.newCall(request).executeSuspend()
@@ -122,10 +126,18 @@ class WebRtcStreamingRepositoryImpl(
                     throw Exception("WHEP POST failed: ${response.code} ${response.message}")
                 }
 
-                val remoteSdp = response.body?.string() ?: throw Exception("Empty SDP from server")
+                val unconstraintProfileRemoteSdp = response.body?.string()
+                    ?: throw Exception("Empty SDP from server")
+
+                Timber.d("debug_webrtc  SDP: $unconstraintProfileRemoteSdp")
+
+                val constraintProfileRemoteSdp = SdpMunger.mungeRemoteSdp(unconstraintProfileRemoteSdp)
 
                 peerConnection.setRemoteDescriptionSuspend(
-                    SessionDescription(SessionDescription.Type.ANSWER, remoteSdp)
+                    SessionDescription(
+                        SessionDescription.Type.ANSWER,
+                        constraintProfileRemoteSdp
+                    )
                 )
 
                 val activeReceivers = peerConnection.receivers

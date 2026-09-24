@@ -205,7 +205,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm createPlayer()")
 
         val callbacks = object : BaseCCTVPlayer.Callbacks {
-            override fun onPlayerStateReady() {
+            override fun onPlayerStateReady(player: DefaultCCTVPlayer) {
                 progressView.visibility = View.GONE
                 canRenewToken = true
                 (mPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let {

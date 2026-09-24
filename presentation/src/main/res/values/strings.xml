@@ -93,8 +93,8 @@
 
     <!-- Авторизация по номеру договора -->
     <string name="auth_where_is_contract_title">У вас есть договор с оператором?</string>
-    <string name="auth_where_is_contract_caption">Введите номер и пароль договора, привязанного к данному адресу, и управляйте услугами из этого приложения.</string>
-    <string name="auth_numer_pass0">Не помню пароль </string>
+    <string name="auth_where_is_contract_caption">Введите номер и пароль договора, привязанного к данному адресу, и управляйте услугами из приложения.</string>
+    <string name="auth_numer_pass0">Не помню пароль</string>
     <string name="auth_number_pass1">Ничего не помню</string>
     <string name="auth_number_btn_ok">Войти</string>
     <string name="auth_number_btn_no">У меня нет договора с оператором</string>
@@ -339,12 +339,12 @@
     <string name="event_log_plate_number">Номер автомобиля: %s</string>
     <string name="settings_by_face_comments">Вы даете согласие на хранение фотографий вашего лица в системе распознавания лиц.</string>
     <string name="face_settings_comments_has_plog">
-        Фотографии ваших гостей хранятся в разделе "События".\n
-        Для выбора и регистрации лица перейдите в указанный раздел, кликнув на Плюс.\n
+        Фотографии ваших гостей хранятся в разделе «События».\n
+        Для выбора и регистрации лица перейдите в указанный раздел, кликнув на «%s».\n
         В событиях кликните на значок информации напротив нужного события и на открывшемся экране выберите необходимое фото.
     </string>
     <string name="face_settings_comments_no_plog">
-        Фотографии ваших гостей хранятся в разделе \"События\".\n
+        Фотографии ваших гостей хранятся в разделе «События».\n
         Поскольку журнал событий недоступен, вы можете только удалять зарегистрированные лица.
     </string>
     <string name="face_settings_no_faces">Здесь будут фотографии зарегистрированных гостей</string>
@@ -396,10 +396,10 @@
 
     <string name="event_door_phone_call_unanswered">Звонок в домофон</string>
     <string name="event_door_phone_call_answered">Звонок в домофон</string>
-    <string name="event_open_by_key">Открывание ключом</string>
+    <string name="event_open_by_key">Открытие ключом</string>
     <string name="event_open_from_app">Открытие из приложения</string>
-    <string name="event_open_by_face">Открывание по лицу</string>
-    <string name="event_open_by_code">Открывание по коду</string>
+    <string name="event_open_by_face">Открытие по лицу</string>
+    <string name="event_open_by_code">Открытие по коду</string>
     <string name="event_open_gates_by_call">Открытие ворот звонком</string>
     <string name="event_open_gates_by_vehicle">Открытие ворот по номеру машины</string>
     <string name="event_unknown">Неизвестное событие</string>
@@ -548,10 +548,34 @@
         <item>Только активные</item>
         <item>Только неактивные</item>
     </string-array>
+
+    <!-- События -->
     <string name="tracked_events_title">Отслеживаемые события</string>
     <string name="tracked_events_empty">Нет отслеживаемых событий</string>
     <string name="tracked_events_delete_confirm_title">Удаление события</string>
     <string name="tracked_events_delete_confirm_message">Вы действительно хотите прекратить отслеживание события «%1$s»?</string>
     <string name="tracked_events_delete_confirm_positive">Удалить</string>
     <string name="tracked_events_delete_confirm_negative">Отмена</string>
+    <string name="event_log_track_group">Отслеживать группу</string>
+    <string name="event_log_track_face_new_group">Отслеживать лицо (создать группу)</string>
+    <string name="event_log_enter_group_name">Введите название группы</string>
+
+    <!-- Лица -->
+    <string name="face_groups_title">Группы лиц</string>
+    <string name="face_group_add">Добавить группу</string>
+    <string name="face_group_edit">Редактировать группу</string>
+    <string name="face_group_delete">Удалить группу</string>
+    <string name="face_group_delete_confirm">Вы уверены, что хотите удалить группу «%1$s» вместе с лицами?</string>
+    <string name="face_group_empty">Групп пока нет</string>
+    <string name="face_group_faces_empty">В этой группе пока нет лиц</string>
+    <string name="face_group_attach">Привязать к группе</string>
+    <string name="face_group_detach">Отвязать от группы</string>
+    <string name="face_group_clustering">Сгруппировать все похожие лица</string>
+    <string name="face_group_clustering_prefix">Введите префикс для названий групп</string>
+    <string name="face_group_clustering_success">Лица успешно объединены</string>
+    <string name="face_group_all_faces">Все лица</string>
+    <string name="face_group_ungrouped_faces">Без группы</string>
+    <string name="face_group_selection_existing">Существующая группа</string>
+    <string name="face_group_selection_new">Новая группа</string>
+    <string name="add_face">Добавить лицо</string>
 </resources>

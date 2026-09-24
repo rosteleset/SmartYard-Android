@@ -50,6 +50,7 @@ import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.annotation.DimenRes
 import androidx.annotation.DrawableRes
+import androidx.annotation.IdRes
 import androidx.annotation.StringRes
 import androidx.appcompat.app.AlertDialog
 import androidx.compose.foundation.layout.WindowInsets
@@ -66,6 +67,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.constraintlayout.widget.Group
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -77,6 +79,9 @@ import androidx.core.view.updateMargins
 import androidx.core.view.updatePadding
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph
+import androidx.navigation.fragment.FragmentNavigator
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.karumi.dexter.Dexter
 import com.karumi.dexter.MultiplePermissionsReport
@@ -799,7 +804,7 @@ fun View.applyBottomNavInsetsToMargin() {
 
     val initialMarginBottom = marginBottom
     ViewCompat.setOnApplyWindowInsetsListener(this) { view, windowInsets ->
-        val types = WindowInsetsCompat.Type.navigationBars() or WindowInsetsCompat.Type.ime()
+        val types = WindowInsetsCompat.Type.navigationBars()
         val bottomInset = windowInsets.getInsets(types).bottom
         val bottomNavHeight = (view.context as? BottomNavProvider)?.getBottomNavHeight() ?: 0
         val extraHeight = maxOf(bottomNavHeight, bottomInset)
@@ -911,3 +916,32 @@ fun rememberBottomNavInsets(): Dp {
 fun String.toRegexOrNull() = takeIf { it.isNotBlank() }?.toRegex()
 
 fun String.takeIfNotBlank() = takeIf { it.isNotBlank() }
+
+fun Group.setContentEnabled(enabled: Boolean) {
+    val referencedIds = this.referencedIds
+    val parentView = this.parent as? View ?: return
+
+    for (id in referencedIds) {
+        parentView.findViewById<View>(id)?.isEnabled = enabled
+    }
+}
+
+inline fun <reified T : Fragment> NavController.attachDestinationToGraph(
+    @IdRes destId: Int,
+    @IdRes graphId: Int
+) {
+    val targetGraph = graph.findNode(graphId) as? NavGraph
+        ?: error("The nested graph with the id: $graphId was not found in the root graph")
+
+    if (targetGraph.findNode(destId) == null) {
+        val navigator = navigatorProvider.getNavigator(FragmentNavigator::class.java)
+
+        val destination = navigator.createDestination().apply {
+            id = destId
+            setClassName(T::class.java.name)
+            label = T::class.java.simpleName
+        }
+
+        targetGraph.addDestination(destination)
+    }
+}

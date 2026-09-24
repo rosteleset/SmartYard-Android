@@ -17,9 +17,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.size
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.DiffUtil
 import com.google.android.material.tabs.TabLayout
-import com.hannesdorfmann.adapterdelegates4.AsyncListDifferDelegationAdapter
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.GuestAccessType
 import com.sesameware.smartyard_oem.EventObserver
@@ -31,7 +29,7 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemG
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByLicensePlateShowAllBinder
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByPhoneBinder
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByPhoneShowAllBinder
-import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapterdelegates.ContactAdapterDelegate
+import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapterdelegates.ContactAdapter
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.manager.FixedListItemManager
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
@@ -39,6 +37,7 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.Licens
 import com.sesameware.smartyard_oem.ui.showStandardAlert
 import com.sesameware.smartyard_oem.ui.webview_dialog.WebViewDialogFragment
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -46,10 +45,12 @@ import java.util.Locale
 class AccessAddressFragment : Fragment() {
     private var _binding: FragmentAccessAddressBinding? = null
     private val binding get() = _binding!!
+    private val delegate: AccessAddressDelegate?
+        by injectOrNull(AccessAddressDelegate::class.java)
 
     private var gateAccessByPhoneManager: FixedListItemManager<ContactModel>? = null
     private var gateAccessByLicensePlateManager: FixedListItemManager<LicensePlateValue>? = null
-    private var permanentAccessAdapter: AsyncListDifferDelegationAdapter<ContactModel>? = null
+    private var permanentAccessAdapter: ContactAdapter? = null
 
     private val mViewModel by sharedViewModel<AccessAddressViewModel>()
 
@@ -113,6 +114,8 @@ class AccessAddressFragment : Fragment() {
             action.canAddFace = hasPlog
             this.findNavController().navigate(action)
         }
+
+        delegate?.extendConfig(binding)
     }
 
     private fun initAddContact() {
@@ -195,6 +198,8 @@ class AccessAddressFragment : Fragment() {
                 }
 
                 binding.gPermanentAccessAddress.isVisible = flatOwner
+
+                delegate?.extendConfig(binding)
             }
         }
 
@@ -217,7 +222,7 @@ class AccessAddressFragment : Fragment() {
                 gateByPhoneList.take(CARD_ITEMS_FOR_PREVIEW), stub
             )
 
-            permanentAccessAdapter!!.items = permanentAccessList
+            permanentAccessAdapter!!.submitList(permanentAccessList)
         }
 
         mViewModel.licensePlates.observe(
@@ -344,23 +349,14 @@ class AccessAddressFragment : Fragment() {
     }
 
     private fun initPermanentAddressAccess() {
-        permanentAccessAdapter = AsyncListDifferDelegationAdapter<ContactModel>(
-            object : DiffUtil.ItemCallback<ContactModel>() {
-                override fun areItemsTheSame(oldItem: ContactModel, newItem: ContactModel) =
-                    oldItem.number == newItem.number
-
-                override fun areContentsTheSame(oldItem: ContactModel,newItem: ContactModel) =
-                    oldItem == newItem
+        permanentAccessAdapter = ContactAdapter(
+            requireActivity(), true,
+            { _, number ->
+                showDialogDelete(number = number)
             },
-            ContactAdapterDelegate(
-                requireActivity(), true,
-                { _, number ->
-                    showDialogDelete(number = number)
-                },
-                { number ->
-                    mViewModel.resend(flatId, number)
-                }
-            )
+            { number ->
+                mViewModel.resend(flatId, number)
+            }
         )
 
         binding.rvPermanentAccessAddress.adapter = permanentAccessAdapter
@@ -374,7 +370,7 @@ class AccessAddressFragment : Fragment() {
                 .setMessage(resources.getString(R.string.dialog_message))
                 .setCancelable(false)
                 .setPositiveButton(resources.getString(R.string.dialog_yes)) { _, _ ->
-                    mViewModel.guestAccess(flatId, true)
+                    mViewModel.guestAccess(flatId, true, resources.getInteger(R.integer.guest_access_hours))
                     binding.btnGuestAccessOpen.isClickable = false
                 }
                 .setNegativeButton(resources.getString(R.string.dialog_no)) { _, _ ->
@@ -389,7 +385,7 @@ class AccessAddressFragment : Fragment() {
                 .setMessage(resources.getString(if (isOpen) R.string.dialog_message2 else R.string.dialog_message))
                 .setCancelable(false)
                 .setPositiveButton(resources.getString(if (isOpen) R.string.dialog_turn_off else R.string.dialog_yes)) { _, _ ->
-                    mViewModel.guestAccess(flatId, !isOpen)
+                    mViewModel.guestAccess(flatId, !isOpen, resources.getInteger(R.integer.guest_access_hours))
                     binding.btnGuestAccessOpen.isChecked = !isOpen
                 }
                 .setNegativeButton(resources.getString(R.string.dialog_no)) { _, _ ->

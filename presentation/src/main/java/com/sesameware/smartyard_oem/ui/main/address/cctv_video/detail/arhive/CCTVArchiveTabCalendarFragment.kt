@@ -105,7 +105,9 @@ class CCTVArchiveTabCalendarFragment : Fragment() {
 //            selectDate(date)
 //            (parentFragment as CCTVDetailFragment).navigateToCCTVTrimmerFragment(date)
 //        }
-        if (rangeDays.contains(date) && isDateInAvailableRanges(date, mCCTVViewModel.availableRanges)) {
+        if (
+            rangeDays.contains(date) && isDateInAvailableRanges(date, mCCTVViewModel.availableRanges)
+        ) {
             selectDate(date)
             navigateToCCTVArchivePlayerFragment(date)
         }

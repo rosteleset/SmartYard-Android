@@ -21,7 +21,6 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.SystemBarStyle
 import androidx.activity.addCallback
 import androidx.activity.enableEdgeToEdge
@@ -62,6 +61,7 @@ import com.sesameware.smartyard_oem.ui.setupWithNavController
 import kotlinx.coroutines.runBlocking
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 import timber.log.Timber
 
 interface UserInteractionListener {
@@ -78,6 +78,7 @@ interface BottomNavProvider {
 
 class MainActivity : CommonActivity(), BottomNavProvider {
     lateinit var binding: ActivityMainBinding
+    private val delegate: MainDelegate? by injectOrNull(MainDelegate::class.java)
 
     override val mViewModel by viewModel<MainActivityViewModel>()
 
@@ -195,6 +196,8 @@ class MainActivity : CommonActivity(), BottomNavProvider {
             onBackPressedDispatcher.onBackPressed()
             isEnabled = true
         }
+
+        delegate?.extendConfig(binding)
     }
 
     private fun handleBadge(badge: Boolean, itemId: Int) {
@@ -418,6 +421,10 @@ class MainActivity : CommonActivity(), BottomNavProvider {
             binding.bottomNav.selectedItemId = R.id.address
             mViewModel.navigationToAddress()
         }
+    }
+
+    fun navigateToChat() {
+        binding.bottomNav.selectedItemId = R.id.chat
     }
 
     private var receiver = object : BroadcastReceiver() {

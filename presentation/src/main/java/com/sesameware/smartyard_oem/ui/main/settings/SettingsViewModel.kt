@@ -11,6 +11,9 @@ import com.sesameware.domain.model.Services
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.main.settings.model.SettingsAddressModel
+import com.sesameware.smartyard_oem.ui.main.settings.model.toSettingsAddressModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 /**
  * @author Nail Shakurov
@@ -21,6 +24,8 @@ class SettingsViewModel(
     override val mAuthInteractor: AuthInteractor,
     override val mPreferenceStorage: PreferenceStorage
 ) : GenericViewModel() {
+
+    private val delegate: SettingsDelegate? by injectOrNull(SettingsDelegate::class.java)
 
     val dataList = MutableLiveData<List<SettingsAddressModel>>()
 
@@ -90,9 +95,12 @@ class SettingsViewModel(
     }
 
     fun refreshSentName() {
-        userName.postValue(
-            mPreferenceStorage.userName ?: UserName("", "")
-        )
+        viewModelScope.withProgress({ false }) {
+            delegate?.refreshSentName(mAuthInteractor, mPreferenceStorage)
+            val name = mPreferenceStorage.userName ?: UserName("", "")
+            userName.postValue(name)
+        }
+
         phone.postValue(mPreferenceStorage.phone ?: "")
     }
 
@@ -102,36 +110,25 @@ class SettingsViewModel(
                 mPreferenceStorage.xDmApiRefresh = true
             }
             val res = addressInteractor.getSettingsList()
+
             dataList.postValue(
-                res?.data?.map { settingItem ->
-                    SettingsAddressModel(
-                        settingItem.address,
-                        settingItem.contractName,
-                        settingItem.houseId,
-                        settingItem.flatId,
-                        settingItem.clientId,
-                        settingItem.flatOwner,
-                        settingItem.services,
-                        settingItem.lcab,
-                        settingItem.hasGates,
-                        settingItem.hasPlog,
-                        expandedFlatId.contains(settingItem.flatId)
-                    )
+                res?.data?.map {
+                    it.toSettingsAddressModel(expandedFlatId.contains(it.flatId))
                 }
             )
         }
     }
 
     fun getAccess(
-        service: Services,
+        serviceType: Services,
         model: SettingsAddressModel,
         isConnected: Boolean
     ) {
         viewModelScope.withProgress {
             val resSer = mAuthInteractor.getServices(model.houseId)
-            val isAvailable = resSer?.data?.firstOrNull { it.icon == service.value } != null
+            val isAvailable = resSer?.data?.firstOrNull { it.icon == serviceType.value } != null
             val type = if (isConnected) {
-                when (service) {
+                when (serviceType) {
                     Services.Domophone -> TypeDialog.DomophoneConnected
                     Services.Cctv -> TypeDialog.CCTVConnected
                     else -> TypeDialog.Connected
@@ -140,8 +137,18 @@ class SettingsViewModel(
                 if (isAvailable) TypeDialog.NotConnected else TypeDialog.NotAvailable
             }
             dialogService.postValue(
-                Event(DialogServiceData(type, service, model.contractName))
+                Event(DialogServiceData(type, serviceType, model.contractName))
             )
         }
+    }
+
+    fun modifyExpandedFlats(position: Int, isExpanded: Boolean) {
+        val address = dataList.value?.get(position) ?: return
+        if (isExpanded) {
+            expandedFlatId.add(address.flatId)
+        } else {
+            expandedFlatId.remove(address.flatId)
+        }
+        address.isExpanded = isExpanded
     }
 }

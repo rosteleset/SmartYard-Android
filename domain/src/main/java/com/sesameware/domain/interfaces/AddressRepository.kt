@@ -2,23 +2,27 @@ package com.sesameware.domain.interfaces
 
 import retrofit2.http.Field
 import com.sesameware.domain.model.TF
+import com.sesameware.domain.model.response.AccessResponse
+import com.sesameware.domain.model.response.AddGroupResponse
+import com.sesameware.domain.model.response.AddMyPhoneResponse
+import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
+import com.sesameware.domain.model.response.DeleteGroupResponse
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
 import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.IntercomResponse
+import com.sesameware.domain.model.response.ListGroupsResponse
 import com.sesameware.domain.model.response.ResetCodeResponse
-import com.sesameware.domain.model.response.AddMyPhoneResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.RecoveryOptionsResponse
-import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
 import com.sesameware.domain.model.response.SentCodeRecoveryResponse
+import com.sesameware.domain.model.response.UpdateGroupResponse
 import com.sesameware.domain.model.response.QRResponse
 import com.sesameware.domain.model.response.RoommateResponse
-import com.sesameware.domain.model.response.AccessResponse
 import com.sesameware.domain.model.response.ResendResponse
 import com.sesameware.domain.model.response.PlogDaysResponse
 import com.sesameware.domain.model.response.PlogResponse
-import com.sesameware.domain.model.response.CamMapResponse
 import com.sesameware.domain.model.response.GetTrackedEventsResponse
 import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UntrackEventResponse
@@ -121,4 +125,24 @@ interface AddressRepository {
     ): GetTrackedEventsResponse
 
     suspend fun getStories(): GetStoriesResponse
+
+    suspend fun addGroup(
+        flatId: Int,
+        groupName: String
+    ): AddGroupResponse
+
+    suspend fun updateGroup(
+        groupId: String,
+        flatId: Int,
+        groupName: String
+    ): UpdateGroupResponse
+
+    suspend fun deleteGroup(
+        groupId: String,
+        flatId: Int
+    ): DeleteGroupResponse
+
+    suspend fun listGroups(
+        flatId: Int
+    ): ListGroupsResponse
 }

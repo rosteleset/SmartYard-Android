@@ -155,7 +155,7 @@
         android:id="@+id/cityCamerasMapFragment"
         android:name="com.sesameware.smartyard_oem.ui.main.burger.cityCameras.CityCamerasMapFragment"
         android:label="city_cameras_map_fragment"
-        tools:layout="@layout/city_cameras_map_fragment">
+        tools:layout="@layout/fragment_city_cameras_map">
         <action
             android:id="@+id/action_cityCamerasMapFragment_to_cityCameraFragment"
             app:destination="@id/cityCameraFragment" />

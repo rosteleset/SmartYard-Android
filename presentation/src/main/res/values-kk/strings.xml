@@ -156,7 +156,7 @@
 
     <!-- Нет сети по адресу. -->
     <string name="address_no_network_title">Упс :(</string>
-    <string name="address_no_network_caption">Сіздің мекен-жайыңыз нақтылауды қажет етеді. Маманның қоңырауын күтіңіз.\n \ сіз қандай қызметті қосқыңыз келеді?</string>
+    <string name="address_no_network_caption">Сіздің мекен-жайыңыз нақтылауды қажет етеді. Маманның қоңырауын күтіңіз.\n\nсіз қандай қызметті қосқыңыз келеді?</string>
     <string name="address_no_network_btn_ok">Өтініш қалдыру</string>
 
     <!-- Скоро все заработает офис. -->
@@ -266,6 +266,7 @@
     <string name="burger_common_settings_title">Жалпы параметрлер</string>
     <string name="burger_call_support_button">Техникалық қолдау қоңырауы</string>
     <string name="burger_call_support_by_phone">Қоңырау шалу %s</string>
+    <string name="burger_call_support_hardcoded_phone" translatable="false"> </string>
 
     <!-- Городские камеры  -->
     <string name="city_cameras_title">Қалалық камералар</string>
@@ -329,7 +330,7 @@
         \"Өзіңдікі" параметрін таңдағанда, пайдаланушының бет-әлпетін одан әрі тану үшін осы оқиғадан фотосурет қосамыз. Жүйеде тіркелген барлық адамдарды мекен-жай параметрлері - > кіруді басқару - > кілтсіз бетке кіру бөлімінен табуға болады..
     </string>
     <string name="event_log_detail_foe_description">
-        \"Бөтен\" таңдау кезінде біз сіздің алгоритмдеріміздің жалған позитиві болған тіркелген адамыңызды жоямыз.\ N Жүйеде тіркелген барлық адамдарды мекен-жай параметрлері - > кіруді басқару - > кілтсіз бетке кіру бөлімінен табуға болады..
+        \"Бөтен\" таңдау кезінде біз сіздің алгоритмдеріміздің жалған позитиві болған тіркелген адамыңызды жоямыз.\n Жүйеде тіркелген барлық адамдарды мекен-жай параметрлері - > кіруді басқару - > кілтсіз бетке кіру бөлімінен табуға болады..
     </string>
     <string name="event_log_key">Кілт: %s</string>
     <string name="event_log_phone">Телефон: %s</string>
@@ -337,10 +338,9 @@
     <string name="event_log_plate_number">Көлік нөмірі %s</string>
     <string name="settings_by_face_comments">Сіз өзіңіздің бетіңіздің фотосуреттерін бетті тану жүйесінде сақтауға келісім бересіз.</string>
     <string name="face_settings_comments_has_plog">
-        Қонақтарыңыздың суреттері "Оқиғалар" бөлімінде сақталады.\n
-        Тұлғаны таңдау және тіркеу үшін Плюс батырмасын басу арқылы көрсетілген бөлімге өтіңіз.\n
-        Oқиғаларда қажетті оқиғаға қарама-қарсы ақпарат белгішесін нұқыңыз және ашылған экранда қажетті фотосуретті таңдаңыз.
-    </string>
+        Қонақтарыңыздың фотосуреттері «Оқиғалар» бөлімінде сақталады.\n
+        Бетті таңдау және тіркеу үшін «%s» түймесін басып, көрсетілген бөлімге өтіңіз.\n
+        «Оқиғалар» бөлімінде қажетті оқиғаның жанындағы ақпарат белгішесін басып, ашылған экраннан қажетті фотосуретті таңдаңыз.</string>
     <string name="face_settings_comments_no_plog">
         Қонақтарыңыздың фотосуреттері "Оқиғалар" бөлімінде сақталады.\n
         Оқиғалар журналы қолжетімсіз болғандықтан, сіз тек тіркелген бет-әлпеттерді өшіре аласыз.
@@ -491,6 +491,7 @@
     <string name="text_scroll_up">Жоғары</string>
     <string name="title_common_settings">Жалпы параметрлер</string>
     <string name="user_name_sample">Алексеев В.Б.</string>
+    <string name="user_phone_sample" translatable="false">+7 (912) 345-67-82</string>
     <string name="title_notifications">Хабарламалар</string>
     <string name="title_theme">Тақырыбы</string>
     <string name="item_theme_light">Жеңіл</string>
@@ -551,4 +552,28 @@
     <string name="tracked_events_delete_confirm_message">Бұл оқиғаны бақылауды шынымен тоқтатқыңыз келе ме \"%1$s\"?</string>
     <string name="tracked_events_delete_confirm_positive">Жою</string>
     <string name="tracked_events_delete_confirm_negative">Болдырмау</string>
+
+    <!-- События -->
+    <string name="event_log_track_group">Топты бақылау</string>
+    <string name="event_log_track_face_new_group">Бетті бақылау (топ құру)</string>
+    <string name="event_log_enter_group_name">Топ атауын енгізіңіз</string>
+
+    <!-- Лица -->
+    <string name="face_groups_title">Беттер топтары</string>
+    <string name="face_group_add">Топты қосу</string>
+    <string name="face_group_edit">Топты өңдеу</string>
+    <string name="face_group_delete">Топты жою</string>
+    <string name="face_group_delete_confirm">«%1$s» тобын беттермен бірге жоюға сенімдісіз бе?</string>
+    <string name="face_group_empty">Топтар әлі жоқ</string>
+    <string name="face_group_faces_empty">Бұл топта әлі беттер жоқ</string>
+    <string name="face_group_attach">Топқа бекіту</string>
+    <string name="face_group_detach">Топтан ажырату</string>
+    <string name="face_group_clustering">Барлық ұқсас беттерді топтастыру</string>
+    <string name="face_group_clustering_prefix">Топ атаулары үшін префиксті енгізіңіз</string>
+    <string name="face_group_clustering_success">Беттер сәтті біріктірілді</string>
+    <string name="face_group_all_faces">Барлық беттер</string>
+    <string name="face_group_ungrouped_faces">Топсыз</string>
+    <string name="face_group_selection_existing">Бар топ</string>
+    <string name="face_group_selection_new">Жаңа топ</string>
+    <string name="add_face">Бетті қосу</string>
 </resources>

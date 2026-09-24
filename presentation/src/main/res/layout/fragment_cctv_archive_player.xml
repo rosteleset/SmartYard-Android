@@ -56,7 +56,6 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="28dp"
-            android:background="@drawable/background_dialog"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -67,7 +66,7 @@
                 android:id="@+id/svContentWrap"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/dialog_background"
+                android:background="@drawable/background_surface_inverted"
                 android:fillViewport="true"
                 tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTabFragment">
 
@@ -75,7 +74,6 @@
                     android:id="@+id/llControls"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/dialog_background"
                     android:orientation="vertical">
 
                     <FrameLayout
@@ -84,7 +82,6 @@
                         android:layout_height="222dp"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginTop="24dp"
-                        android:layout_marginBottom="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:background="@drawable/background_radius_video_clip">
 
@@ -189,7 +186,8 @@
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/rvTimeFragmentButtonsWrap"
                         android:layout_width="match_parent"
-                        android:layout_height="24dp">
+                        android:layout_height="24dp"
+                        android:layout_marginTop="24dp">
 
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/rvTimeFragmentButtons"
@@ -209,7 +207,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginTop="24dp"
-                        android:layout_marginBottom="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:orientation="horizontal"
                         android:paddingStart="20dp"
@@ -263,6 +260,7 @@
                         android:id="@+id/panelTrim"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
                         android:orientation="horizontal"

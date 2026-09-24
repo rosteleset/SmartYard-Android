@@ -35,6 +35,9 @@ class EventLogDetailAdapter(
             val key = "${plog.flatId}_${plog.eventType}_$eventDetail"
             if (trackedEvents.containsKey(key)) {
                 trackedEvent = trackedEvents[key]
+                if (trackedEvent?.eventType == Plog.EVENT_OPEN_BY_FACE) {
+                    trackedEvent.comments = plog.detailX?.groupName ?: ""
+                }
                 Timber.d("debug_dmm  trackedEvent=$trackedEvents")
             }
         }

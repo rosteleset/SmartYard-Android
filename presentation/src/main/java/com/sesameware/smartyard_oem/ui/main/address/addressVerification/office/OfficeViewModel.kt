@@ -14,6 +14,7 @@ import com.sesameware.domain.model.request.CreateIssuesRequestV2
 import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.domain.model.response.Office
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import com.sesameware.smartyard_oem.ui.main.IssueOrigin
 
 /**
  * @author Nail Shakurov
@@ -89,6 +90,7 @@ class OfficeViewModel(
                 x10941 = x10941
             ),
             ACTION2,
+            origin
         )
     }
 
@@ -100,5 +102,9 @@ class OfficeViewModel(
             services = ""
         )
         super.createIssueV2(issue)
+    }
+
+    companion object {
+        private val origin = IssueOrigin.OFFICE
     }
 }

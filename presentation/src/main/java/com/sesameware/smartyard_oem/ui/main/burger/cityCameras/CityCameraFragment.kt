@@ -30,7 +30,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
 import com.google.android.exoplayer2.ui.PlayerView
+import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.MediaServerType
+import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.lib.dpToPx
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCityCameraBinding
@@ -49,11 +51,13 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 import timber.log.Timber
 
 class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCityCameraBinding? = null
     private val binding get() = _binding!!
+    private val delegate: CityCameraDelegate? by injectOrNull(CityCameraDelegate::class.java)
 
     private var mPlayer: BaseCCTVPlayer? = null
     private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
@@ -75,6 +79,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         bindViews()
 
         setupObservers()
+
+        delegate?.extendConfig(binding, viewModel, viewLifecycleOwner)
     }
 
     private fun bindViews() {
@@ -84,27 +90,11 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         binding.llCityCameraMain.applyBottomNavInsetsToPadding()
 
+        binding.btnCityCameraEvents.isVisible =
+            DataModule.providerConfig.issuesVersion.lowercase() != ProviderConfig.ISSUES_VERSION_NONE
         binding.btnCityCameraEvents.setOnClickListener {
-            (binding.btnCityCameraEvents.parent as ViewGroup).removeView(binding.btnCityCameraEvents)
-            binding.clEvents.visibility = View.VISIBLE
-
-            //меняем layout у некоторых элементов
-            (binding.tvCityCameraTitleSub.parent as ViewGroup).removeView(binding.tvCityCameraTitleSub)
-            binding.tvCityCameraTitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20.0f)
-            val lp = binding.tvCityCameraTitle.layoutParams as ConstraintLayout.LayoutParams
-            lp.startToStart = ConstraintLayout.LayoutParams.UNSET
-            lp.topToBottom = ConstraintLayout.LayoutParams.UNSET
-            lp.startToEnd = R.id.ivCityCameraBack
-            lp.topToTop = R.id.ivCityCameraBack
-            lp.topMargin = 16.dpToPx()
-            lp.leftMargin = 8.dpToPx()
-            binding.tvCityCameraTitle.layoutParams = lp
-            binding.tvCityCameraTitle.requestLayout()
-
-            val lp2 = binding.llCityCameraMain.layoutParams as ConstraintLayout.LayoutParams
-            lp2.topToBottom = R.id.ivCityCameraBack
-            binding.llCityCameraMain.layoutParams = lp2
-            binding.llCityCameraMain.requestLayout()
+            binding.btnCityCameraEvents.isVisible = false
+            binding.clEvents.isVisible = true
         }
 
         binding.zlCityCamera.setSingleTapConfirmedListener {
@@ -178,29 +168,30 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private fun setupObservers() {
         viewModel.chosenCamera.observe(
             viewLifecycleOwner
-        ) {
-            it?.run {
-                val slash = this.name.indexOf("/")
-                if (0 < slash && slash < this.name.length - 1) {
-                    binding.tvCityCameraTitle.text = this.name.substring(0, slash).trim()
-                    binding.tvCityCameraTitleSub.text = this.name.substring(slash + 1).trim()
-                } else {
-                    binding.tvCityCameraTitle.text = this.name
-                    binding.tvCityCameraTitleSub.text = this.name
-                }
+        ) { camera ->
 
-                viewModel.getEvents(it.id) {
-                    if (viewModel.eventList.isEmpty()) {
-                        binding.btnCityCameraEvents.text =
-                            resources.getString(R.string.city_camera_events)
-                    } else {
-                        binding.btnCityCameraEvents.text = resources.getString(
-                            R.string.city_camera_events_count,
-                            viewModel.eventList.size
-                        )
-                    }
-                    setupEventAdapter()
+            camera ?: return@observe
+
+            val slash = camera.name.indexOf("/")
+            if (0 < slash && slash < camera.name.length - 1) {
+                binding.tvCityCameraTitle.text = camera.name.substring(0, slash).trim()
+                binding.tvCityCameraTitleSub.text = camera.name.substring(slash + 1).trim()
+            } else {
+                binding.tvCityCameraTitle.text = camera.name
+                binding.tvCityCameraTitleSub.text = ""
+            }
+
+            viewModel.getEvents(camera.id) {
+                if (viewModel.eventList.isEmpty()) {
+                    binding.btnCityCameraEvents.isVisible = false
+                    binding.clEvents.isVisible = true
+                } else {
+                    binding.btnCityCameraEvents.text = resources.getString(
+                        R.string.city_camera_events_count,
+                        viewModel.eventList.size
+                    )
                 }
+                setupEventAdapter()
             }
         }
 
@@ -305,7 +296,7 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         Timber.d("debug_dmm createPlayer()")
 
         val callbacks = object : BaseCCTVPlayer.Callbacks {
-            override fun onPlayerStateReady() {
+            override fun onPlayerStateReady(player: DefaultCCTVPlayer) {
                 progressView.visibility = View.GONE
                 (mPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let {
                     if (it.width > 0 && it.height > 0) {

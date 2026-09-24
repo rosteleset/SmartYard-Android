@@ -8,14 +8,18 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.InsetDrawable
 import android.os.Bundle
 import android.view.*
+import android.widget.ArrayAdapter
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.sesameware.domain.utils.listenerEmpty
+import com.sesameware.data.DataModule
+import com.sesameware.domain.model.response.GroupData
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.DialogAddPhotoBinding
+import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 
 class DialogAddPhotoFragment(
     private val photoUrl: String,
@@ -24,7 +28,9 @@ class DialogAddPhotoFragment(
     private val faceWidth: Int = -1,
     private val faceHeight: Int = -1,
     private val isReg: Boolean = false,
-    private val callback: listenerEmpty
+    private val flatId: Int = 0,
+    private val viewModel: EventLogViewModel? = null,
+    private val callback: (Int?, String?, String?) -> Unit
 ) : DialogFragment() {
     private var _binding: DialogAddPhotoBinding? = null
     private val binding get() = _binding!!
@@ -58,8 +64,46 @@ class DialogAddPhotoFragment(
                 override fun onLoadCleared(placeholder: Drawable?) {}
             })
 
+        if (DataModule.providerConfig.hasFaceGroups && viewModel != null) {
+            binding.llFaceGroups.isVisible = true
+            viewModel.listGroups(flatId) { groups ->
+                if (isAdded) {
+                    val adapter = ArrayAdapter(
+                        requireContext(),
+                        android.R.layout.simple_spinner_item,
+                        groups.map { it.groupName }
+                    )
+                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+                    binding.sExistingGroups.adapter = adapter
+                    binding.sExistingGroups.tag = groups
+                }
+            }
+
+            binding.rgFaceGroups.setOnCheckedChangeListener { _, checkedId ->
+                binding.sExistingGroups.isVisible = checkedId == R.id.rbExistingGroup
+                binding.etNewGroupName.isVisible = checkedId == R.id.rbNewGroup
+            }
+        }
+
         binding.btnAddFaceConfirm.setOnClickListener {
-            callback()
+            var selectedGroupId: Int? = null
+            var selectedGroupName: String? = null
+            var newGroupName: String? = null
+
+            if (DataModule.providerConfig.hasFaceGroups) {
+                if (binding.rbExistingGroup.isChecked) {
+                    val groups = binding.sExistingGroups.tag as? List<GroupData>
+                    selectedGroupId = groups?.getOrNull(binding.sExistingGroups.selectedItemPosition)?.groupId
+                    selectedGroupName = groups?.getOrNull(binding.sExistingGroups.selectedItemPosition)?.groupName
+                } else if (binding.rbNewGroup.isChecked) {
+                    newGroupName = binding.etNewGroupName.text.toString()
+                    if (newGroupName.isBlank()) {
+                        return@setOnClickListener
+                    }
+                }
+            }
+
+            callback(selectedGroupId, selectedGroupName, newGroupName)
             this.dismiss()
         }
 

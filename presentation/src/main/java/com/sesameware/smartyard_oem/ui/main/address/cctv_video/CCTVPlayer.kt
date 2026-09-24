@@ -11,6 +11,8 @@ import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.Tracks
 import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
+import com.google.android.exoplayer2.source.hls.HlsManifest
+import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylistTracker
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
 import com.google.android.exoplayer2.util.EventLogger
 import com.google.android.exoplayer2.util.MimeTypes
@@ -53,7 +55,7 @@ abstract class BaseCCTVPlayer {
     open var playWhenReady: Boolean = false
 
     interface Callbacks {
-        fun onPlayerStateReady() {}
+        fun onPlayerStateReady(player: DefaultCCTVPlayer) {}
         fun onPlayerStateEnded() {}
         fun onPlayerStateBuffering() {}
         fun onPlayerStateIdle() {}
@@ -86,6 +88,52 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
 
     init {
         createPlayer()
+    }
+
+    fun isLlHlsError(error: PlaybackException): Boolean {
+        val errorCode = error.errorCode
+        val errorCause = error.cause
+
+        val isBehindLiveWindow = errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW
+        val isHttpError = errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS
+        val isTimeout = errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
+         val isPlaylistStuck = errorCause is HlsPlaylistTracker.PlaylistStuckException
+
+        return isBehindLiveWindow || isHttpError || isTimeout || isPlaylistStuck
+    }
+
+    fun isLlHlsStream(): Boolean {
+        val manifest = mPlayer?.currentManifest
+
+        if (manifest !is HlsManifest) return false
+
+        val mediaPlaylist = manifest.mediaPlaylist
+        val usesParts = mediaPlaylist.partTargetDurationUs != C.TIME_UNSET
+        val canBlockReload = mediaPlaylist.serverControl.canBlockReload
+
+        return usesParts || canBlockReload
+    }
+
+    // For LL-HLS with slow connection
+    private fun performFallback(seekToLastPosition: Boolean = false) {
+        val currentPosition = mPlayer?.currentPosition ?: return
+
+        val fallbackMediaItem = mPlayer?.currentMediaItem?.buildUpon()
+            ?.setLiveConfiguration(
+                MediaItem.LiveConfiguration.Builder()
+                    .setTargetOffsetMs(15000)
+                    .setMinOffsetMs(10000)
+                    .setMaxOffsetMs(30000)
+                    .build()
+            )
+            ?.build()
+
+        if (fallbackMediaItem != null) {
+            mPlayer?.setMediaItem(fallbackMediaItem)
+            if (seekToLastPosition) mPlayer?.seekTo(currentPosition)
+            mPlayer?.prepare()
+            mPlayer?.play()
+        }
     }
 
     override fun play() {
@@ -166,7 +214,7 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
                 super.onPlaybackStateChanged(state)
 
                 if (state == Player.STATE_READY) {
-                    callbacks?.onPlayerStateReady()
+                    callbacks?.onPlayerStateReady(this@DefaultCCTVPlayer)
                 }
 
                 if (state == Player.STATE_ENDED) {

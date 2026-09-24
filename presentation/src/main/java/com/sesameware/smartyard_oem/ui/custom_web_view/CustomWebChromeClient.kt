@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Message
 import android.webkit.ConsoleMessage
+import android.webkit.PermissionRequest
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
@@ -56,5 +57,11 @@ class CustomWebChromeClient(
         }
         (fragment?.requireActivity() as? MainActivity)?.filePathCallback = filePathCallback
         return true
+    }
+
+    override fun onPermissionRequest(request: PermissionRequest?) {
+        request?.grant(
+            arrayOf(PermissionRequest.RESOURCE_AUDIO_CAPTURE)
+        )
     }
 }

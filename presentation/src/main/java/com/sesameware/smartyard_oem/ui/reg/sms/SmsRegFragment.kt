@@ -24,14 +24,16 @@ import com.sesameware.smartyard_oem.eventHandler
 import com.sesameware.smartyard_oem.getColorCompat
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 /**
  * @author Nail Shakurov
  * Created on 2020-02-04.
  */
-open class SmsRegFragment : Fragment() {
+class SmsRegFragment : Fragment() {
     private var _binding: FragmentSmsRegBinding? = null
-    protected val binding get() = _binding!!
+    private val binding get() = _binding!!
+    private val delegate: SmsRegDelegate? by injectOrNull(SmsRegDelegate::class.java)
 
     private var phoneNumber: String = ""
     private var authMethod = AuthMethod.SMS_CODE
@@ -151,10 +153,8 @@ open class SmsRegFragment : Fragment() {
             binding.btnResendCode.isVisible = false
         }
 
-        configureStubs()
+        delegate?.extendConfig(binding)
     }
-
-    protected open fun configureStubs() {/* no-op */}
 
     private fun togglePinLineColor(error: Boolean) {
         if (error) {

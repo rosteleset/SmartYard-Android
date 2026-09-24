@@ -3,17 +3,24 @@ package com.sesameware.domain.interactors
 import com.sesameware.domain.interfaces.AddressRepository
 import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.response.AccessResponse
+import com.sesameware.domain.model.response.AddGroupResponse
 import com.sesameware.domain.model.response.AddMyPhoneResponse
+import com.sesameware.domain.model.response.AttachFaceToGroupResponse
 import com.sesameware.domain.model.response.CamMapResponse
+import com.sesameware.domain.model.response.ClusterFacesResponse
 import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
+import com.sesameware.domain.model.response.DeleteGroupResponse
+import com.sesameware.domain.model.response.DetachFaceFromGroupResponse
 import com.sesameware.domain.model.response.GetAddressListResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
 import com.sesameware.domain.model.response.GetStoriesResponse
 import com.sesameware.domain.model.response.IntercomResponse
+import com.sesameware.domain.model.response.ListGroupsResponse
 import com.sesameware.domain.model.response.ResetCodeResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.RecoveryOptionsResponse
 import com.sesameware.domain.model.response.SentCodeRecoveryResponse
+import com.sesameware.domain.model.response.UpdateGroupResponse
 import com.sesameware.domain.model.response.QRResponse
 import com.sesameware.domain.model.response.RoommateResponse
 import com.sesameware.domain.model.response.ResendResponse
@@ -172,5 +179,33 @@ class AddressInteractor(
 
     suspend fun getStories(): GetStoriesResponse {
         return repository.getStories()
+    }
+
+    suspend fun addGroup(
+        flatId: Int,
+        groupName: String
+    ): AddGroupResponse {
+        return repository.addGroup(flatId, groupName)
+    }
+
+    suspend fun updateGroup(
+        groupId: String,
+        flatId: Int,
+        groupName: String
+    ): UpdateGroupResponse {
+        return repository.updateGroup(groupId, flatId, groupName)
+    }
+
+    suspend fun deleteGroup(
+        groupId: String,
+        flatId: Int
+    ): DeleteGroupResponse {
+        return repository.deleteGroup(groupId, flatId)
+    }
+
+    suspend fun listGroups(
+        flatId: Int
+    ): ListGroupsResponse {
+        return repository.listGroups(flatId)
     }
 }

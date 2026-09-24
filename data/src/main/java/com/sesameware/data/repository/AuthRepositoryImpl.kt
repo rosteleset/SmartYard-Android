@@ -15,6 +15,7 @@ import com.sesameware.domain.model.request.UserNotificationRequest
 import com.sesameware.domain.model.response.ApiResult
 import com.sesameware.domain.model.response.AppVersionResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.GetNameResponse
 import com.sesameware.domain.model.response.GetServicesResponse
 import com.sesameware.domain.model.response.OpenDoorResponse
 import com.sesameware.domain.model.response.ProviderConfigResponse
@@ -98,6 +99,14 @@ class AuthRepositoryImpl(
             teledomApi.sendName(
                 DataModule.BASE_URL + "user/sendName",
                 SendNameRequest(name, patronymic, last)).getResponseBody()
+        }
+    }
+
+    override suspend fun getName(): GetNameResponse {
+        return safeApiCall {
+            teledomApi.getName(
+                DataModule.BASE_URL + "user/getName"
+            )
         }
     }
 

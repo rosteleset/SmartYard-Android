@@ -22,11 +22,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageView
+        <View
             android:id="@+id/imageView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/background_radius"
+            android:background="@drawable/background_surface_inverted"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"

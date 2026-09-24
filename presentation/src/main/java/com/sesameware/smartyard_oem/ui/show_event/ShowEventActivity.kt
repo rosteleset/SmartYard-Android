@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
-import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +27,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.bumptech.glide.integration.compose.placeholder
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.main.settings.faceSettings.compose.FloodedBrandButton
 
 class ShowEventActivity : ComponentActivity() {
     private var title: String = ""
@@ -108,12 +108,13 @@ class ShowEventActivity : ComponentActivity() {
                             .fillMaxWidth(),
                         horizontalArrangement = Arrangement.Center,
                     ) {
-                        TextButton(
+                        FloodedBrandButton(
+                            title = stringResource(R.string.dialog_close),
                             onClick = { onDismissRequest() },
-                            modifier = Modifier.padding(8.dp),
-                        ) {
-                            Text(stringResource(R.string.dialog_close))
-                        }
+                            modifier = Modifier
+                                .padding(24.dp)
+                                .fillMaxWidth()
+                        )
                     }
                 }
             }

@@ -4,20 +4,25 @@ import com.sesameware.data.BuildConfig
 import com.sesameware.domain.model.request.AccessRequest
 import com.sesameware.domain.model.request.ActionIssueRequest
 import com.sesameware.domain.model.request.ActionIssueRequestV2
+import com.sesameware.domain.model.request.AddGroupRequest
 import com.sesameware.domain.model.request.AddLicensePlateNumberRequest
 import com.sesameware.domain.model.request.AddMyPhoneRequest
 import com.sesameware.domain.model.request.AppVersionRequest
+import com.sesameware.domain.model.request.AttachFaceToGroupRequest
 import com.sesameware.domain.model.request.CCTVAllRequest
 import com.sesameware.domain.model.request.CCTVRangesRequest
 import com.sesameware.domain.model.request.CCTVRecDownloadRequest
 import com.sesameware.domain.model.request.CCTVRecPrepareRequest
 import com.sesameware.domain.model.request.CCTVYoutubeRequest
+import com.sesameware.domain.model.request.ClusterFacesRequest
 import com.sesameware.domain.model.request.CommentRequest
 import com.sesameware.domain.model.request.ConfirmCodeRecoveryRequest
 import com.sesameware.domain.model.request.ConfirmCodeRequest
 import com.sesameware.domain.model.request.CreateIssuesRequest
 import com.sesameware.domain.model.request.CreateIssuesRequestV2
+import com.sesameware.domain.model.request.DeleteGroupRequest
 import com.sesameware.domain.model.request.DeliveryChangeRequest
+import com.sesameware.domain.model.request.DetachFaceFromGroupRequest
 import com.sesameware.domain.model.request.DisLikeRequest
 import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.domain.model.request.GetAddressRequest
@@ -29,6 +34,7 @@ import com.sesameware.domain.model.request.GetStreetsRequest
 import com.sesameware.domain.model.request.GetTrackedEventsRequest
 import com.sesameware.domain.model.request.LikeRequest
 import com.sesameware.domain.model.request.ListFacesRequest
+import com.sesameware.domain.model.request.ListGroupsRequest
 import com.sesameware.domain.model.request.ListLicensePlateNumbersRequest
 import com.sesameware.domain.model.request.OpenDoorRequest
 import com.sesameware.domain.model.request.PayPrepareRequest
@@ -48,11 +54,14 @@ import com.sesameware.domain.model.request.SentCodeRecoveryRequest
 import com.sesameware.domain.model.request.TrackEventRequest
 import com.sesameware.domain.model.request.UntrackEventRequest
 import com.sesameware.domain.model.request.UserNotificationRequest
+import com.sesameware.domain.model.request.UpdateGroupRequest
 import com.sesameware.domain.model.response.AccessResponse
 import com.sesameware.domain.model.response.ActionIssueResponse
+import com.sesameware.domain.model.response.AddGroupResponse
 import com.sesameware.domain.model.response.AddLicensePlateNumberResponse
 import com.sesameware.domain.model.response.AddMyPhoneResponse
 import com.sesameware.domain.model.response.ApiResult
+import com.sesameware.domain.model.response.AttachFaceToGroupResponse
 import com.sesameware.domain.model.response.AppVersionResponse
 import com.sesameware.domain.model.response.CCTVCityCameraGetResponse
 import com.sesameware.domain.model.response.CCTVGetResponse
@@ -61,12 +70,15 @@ import com.sesameware.domain.model.response.CCTVRecDownloadResponse
 import com.sesameware.domain.model.response.CCTVRecPrepareResponse
 import com.sesameware.domain.model.response.CCTVTreeResponse
 import com.sesameware.domain.model.response.CCTVYoutubeResponse
+import com.sesameware.domain.model.response.ClusterFacesResponse
 import com.sesameware.domain.model.response.CamMapResponse
 import com.sesameware.domain.model.response.CommentResponse
 import com.sesameware.domain.model.response.ConfirmCodeRecoveryResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.DeleteGroupResponse
 import com.sesameware.domain.model.response.CreateIssuesResponse
 import com.sesameware.domain.model.response.DeliveryChangeResponse
+import com.sesameware.domain.model.response.DetachFaceFromGroupResponse
 import com.sesameware.domain.model.response.DisLikeResponse
 import com.sesameware.domain.model.response.ExtListResponse
 import com.sesameware.domain.model.response.ExtResponse
@@ -75,6 +87,7 @@ import com.sesameware.domain.model.response.GetAddressResponse
 import com.sesameware.domain.model.response.GetAllLocationsResponse
 import com.sesameware.domain.model.response.GetCoderResponse
 import com.sesameware.domain.model.response.GetHousesResponse
+import com.sesameware.domain.model.response.GetNameResponse
 import com.sesameware.domain.model.response.GetServicesResponse
 import com.sesameware.domain.model.response.GetSettingsListResponse
 import com.sesameware.domain.model.response.GetStoriesResponse
@@ -85,6 +98,7 @@ import com.sesameware.domain.model.response.IntercomResponse
 import com.sesameware.domain.model.response.LikeResponse
 import com.sesameware.domain.model.response.ListConnectIssueResponse
 import com.sesameware.domain.model.response.ListFacesResponse
+import com.sesameware.domain.model.response.ListGroupsResponse
 import com.sesameware.domain.model.response.ListLicensePlatesNumbersResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.OpenDoorResponse
@@ -109,6 +123,7 @@ import com.sesameware.domain.model.response.SentCodeRecoveryResponse
 import com.sesameware.domain.model.response.SipHelpMeResponse
 import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UnreadedResponse
+import com.sesameware.domain.model.response.UpdateGroupResponse
 import com.sesameware.domain.model.response.UntrackEventResponse
 import com.sesameware.domain.model.response.UserNotificationResponse
 import retrofit2.Response
@@ -150,6 +165,11 @@ interface TeledomApi {
         @Url url: String,
         @Body request: SendNameRequest
     ): Response<SendNameResponse>
+
+    @POST
+    suspend fun getName(
+        @Url url: String
+    ): GetNameResponse
 
     @POST
     suspend fun getServices(
@@ -388,6 +408,48 @@ interface TeledomApi {
     suspend fun listFaces(
         @Url url: String,
         @Body request: ListFacesRequest): Response<ListFacesResponse>
+
+    @POST
+    suspend fun addGroup(
+        @Url url: String,
+        @Body request: AddGroupRequest
+    ): Response<AddGroupResponse>
+
+    @POST
+    suspend fun updateGroup(
+        @Url url: String,
+        @Body request: UpdateGroupRequest
+    ): Response<UpdateGroupResponse>
+
+    @POST
+    suspend fun deleteGroup(
+        @Url url: String,
+        @Body request: DeleteGroupRequest
+    ): Response<DeleteGroupResponse>
+
+    @POST
+    suspend fun listGroups(
+        @Url url: String,
+        @Body request: ListGroupsRequest
+    ): Response<ListGroupsResponse>
+
+    @POST
+    suspend fun attachFaceToGroup(
+        @Url url: String,
+        @Body request: AttachFaceToGroupRequest
+    ): Response<AttachFaceToGroupResponse>
+
+    @POST
+    suspend fun detachFaceFromGroup(
+        @Url url: String,
+        @Body request: DetachFaceFromGroupRequest
+    ): Response<DetachFaceFromGroupResponse>
+
+    @POST
+    suspend fun clusterFaces(
+        @Url url: String,
+        @Body request: ClusterFacesRequest
+    ): Response<ClusterFacesResponse>
 
     @POST
     suspend fun addNumber(

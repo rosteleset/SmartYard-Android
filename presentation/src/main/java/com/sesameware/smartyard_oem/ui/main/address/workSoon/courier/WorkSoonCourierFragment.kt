@@ -13,10 +13,13 @@ import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.office.WorkSoonOfficeFragmentArgs
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
+import kotlin.getValue
 
 class WorkSoonCourierFragment : Fragment() {
     private var _binding: FragmentWorkSoonCourierBinding? = null
     private val binding get() = _binding!!
+    private val delegate: WorkSoonCourierDelegate? by injectOrNull(WorkSoonCourierDelegate::class.java)
 
     private val viewModel by viewModel<WorkSoonCourierViewModel>()
     private var issueModel: IssueModel? = null
@@ -48,6 +51,7 @@ class WorkSoonCourierFragment : Fragment() {
             viewModel.deleteIssue(issueModel?.key ?: "")
         }
         setupObserve()
+        delegate?.extendConfig(binding)
     }
 
     private fun setupObserve() {

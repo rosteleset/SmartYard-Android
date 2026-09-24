@@ -22,6 +22,8 @@ import com.sesameware.smartyard_oem.ui.takeIfNotBlank
 import com.sesameware.smartyard_oem.ui.toRegexOrNull
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import org.koin.java.KoinJavaComponent.injectOrNull
+import kotlin.jvm.java
 
 class AppealForm @JvmOverloads constructor(
     context: Context,
@@ -30,6 +32,7 @@ class AppealForm @JvmOverloads constructor(
 ) : LinearLayout(context, attrs, defStyleAttr), KoinComponent {
     private var _binding: FormAppealBinding? = null
     private val binding get() = _binding!!
+    private val delegate: AppealDelegate? by injectOrNull(AppealDelegate::class.java)
 
     private val nameRegex: Regex? by lazy {
         DataModule.providerConfig.validationNamePattern.toRegexOrNull()
@@ -63,6 +66,7 @@ class AppealForm @JvmOverloads constructor(
 
     init {
         _binding = FormAppealBinding.inflate(LayoutInflater.from(context) ,this, true)
+        delegate?.extendConfig(binding)
     }
 
     private fun textChangeListener() {

@@ -32,11 +32,14 @@ import com.sesameware.smartyard_oem.ui.main.settings.dialog.SelectThemeBottomShe
 import com.sesameware.smartyard_oem.ui.reg.RegistrationActivity
 import com.sesameware.smartyard_oem.ui.updateAllWidget
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 import timber.log.Timber
 
 class BasicSettingsFragment : Fragment() {
     private var _binding: FragmentBasicSettingsBinding? = null
     private val binding get() = _binding!!
+    private val delegate: BasicSettingsDelegate?
+        by injectOrNull(BasicSettingsDelegate::class.java)
 
     private val mViewModel by viewModel<BasicSettingsViewModel>()
 
@@ -221,6 +224,8 @@ class BasicSettingsFragment : Fragment() {
             BuildConfig.VERSION_CODE,
             BuildConfig.FLAVOR_market,
             "${Build.MANUFACTURER} ${Build.MODEL}")
+
+        delegate?.extendConfig(binding)
     }
 
     private fun TextView.setArrowDown() {

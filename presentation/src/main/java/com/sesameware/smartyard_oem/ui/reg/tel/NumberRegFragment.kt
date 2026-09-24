@@ -23,11 +23,13 @@ import com.sesameware.smartyard_oem.databinding.PinEntryBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 
 class NumberRegFragment : Fragment() {
     private var _binding: FragmentNumberRegBinding? = null
     private val binding get() = _binding!!
+    private val delegate: NumberRegDelegate? by injectOrNull(NumberRegDelegate::class.java)
 
     private var mPhonePrefix: String = ""
     private val mViewModel by viewModel<NumberRegViewModel>()
@@ -80,6 +82,8 @@ class NumberRegFragment : Fragment() {
         )
 
         createFromTemplate()
+
+        delegate?.extendConfig(binding, pinSlots)
     }
 
     private fun createFromTemplate() {

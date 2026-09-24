@@ -36,16 +36,18 @@ val ButtonTypography = Typography().copy(
 @Composable
 fun BrandedOutlinedButton(
     title: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier.padding(bottom = 12.dp),
+    enabled: Boolean = true,
 ) {
     val brandColor = colorResource(R.color.brand)
     MaterialTheme(
         typography = ButtonTypography
     ) {
         OutlinedButton(
+            enabled = enabled,
             onClick = onClick,
-            modifier = Modifier
-                .padding(bottom = 12.dp)
+            modifier = modifier
                 .fillMaxWidth()
                 .height(57.dp),
             shape = RoundedCornerShape(12.dp),

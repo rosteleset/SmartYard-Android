@@ -19,10 +19,13 @@ import com.sesameware.smartyard_oem.databinding.FragmentInputAddressBinding
 import com.sesameware.smartyard_oem.hideKeyboard
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 class InputAddressFragment : Fragment() {
     private var _binding: FragmentInputAddressBinding? = null
     private val binding get() = _binding!!
+    private val delegate: InputAddressDelegate?
+        by injectOrNull(InputAddressDelegate::class.java)
 
     private val mViewModel by viewModel<InputAddressViewModel>()
 
@@ -70,9 +73,7 @@ class InputAddressFragment : Fragment() {
         }
     }
 
-    @Deprecated("Deprecated in Java")
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initAutoCompleteTextView()
 
         binding.ivBack.setOnClickListener {
@@ -161,6 +162,8 @@ class InputAddressFragment : Fragment() {
             NavHostFragment.findNavController(this)
                 .navigate(R.id.action_inputAddressFragment_to_qrCodeFragment)
         }
+
+        delegate?.extendConfig(binding)
     }
 
     private fun validateFields(text: String) {

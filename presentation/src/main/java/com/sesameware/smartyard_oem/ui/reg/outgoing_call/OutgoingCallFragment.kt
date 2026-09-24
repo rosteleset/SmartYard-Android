@@ -20,10 +20,12 @@ import com.sesameware.smartyard_oem.databinding.FragmentOutgoingCallBinding
 import com.sesameware.smartyard_oem.ui.reg.sms.SmsRegFragment
 import kotlinx.coroutines.Job
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.java.KoinJavaComponent.injectOrNull
 
 class OutgoingCallFragment : Fragment() {
     private var _binding: FragmentOutgoingCallBinding? = null
     private val binding get() = _binding!!
+    val delegate: OutgoingCallDelegate? by injectOrNull(OutgoingCallDelegate::class.java)
 
     private val mViewModel by viewModel<OutgoingCallViewModel>()
     private var phoneNumber: String = ""
@@ -100,6 +102,8 @@ class OutgoingCallFragment : Fragment() {
                 findNavController().navigate(action)
             }
         }
+
+        delegate?.extendConfig(binding)
     }
 
     override fun onDestroy() {

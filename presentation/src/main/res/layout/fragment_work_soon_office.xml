@@ -23,11 +23,11 @@
             app:layout_constraintTop_toTopOf="parent" />
 
 
-        <ImageView
+        <View
             android:id="@+id/imageView2"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@drawable/background_radius"
+            android:background="@drawable/background_surface_inverted"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -90,7 +90,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView13"
+            android:id="@+id/ivCourier"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
@@ -113,7 +113,7 @@
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/imageView13" />
+            app:layout_constraintTop_toBottomOf="@+id/ivCourier" />
 
         <TextView
             android:id="@+id/tvCaption"

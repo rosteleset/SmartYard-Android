@@ -5,6 +5,7 @@ import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.response.ApiResult
 import com.sesameware.domain.model.response.AppVersionResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.GetNameResponse
 import com.sesameware.domain.model.response.GetServicesResponse
 import com.sesameware.domain.model.response.OpenDoorResponse
 import com.sesameware.domain.model.response.ProviderConfigResponse
@@ -43,6 +44,10 @@ class AuthInteractor(
 
     suspend fun sendName(name: String, patronymic: String?, last: String?): SendNameResponse {
         return repository.sendName(name, patronymic, last)
+    }
+
+    suspend fun getName(): GetNameResponse {
+        return repository.getName()
     }
 
     suspend fun openDoor(domophoneId: Int, doorId: Int? = null): OpenDoorResponse {

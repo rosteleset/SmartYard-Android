@@ -42,8 +42,8 @@ android {
         }
     }
 
-    // Обязательно в таком порядке, иначе google-services.json не подтянется
-    flavorDimensions = ["site", "market"]
+    // It must be in that order, otherwise google-services.json won't catch up.
+    flavorDimensions = ["market", "site"]
 
     productFlavors {
         google {
@@ -64,13 +64,17 @@ android {
         teledom {
             dimension "site"
         }
-
-        client {
-            dimension "site"
-        }
     }
     
     namespace 'com.sesameware.domain'
+}
+
+if (file('ext.gradle').exists()) {
+    apply from: 'ext.gradle'
+}
+
+if (rootProject.clientDir != null) {
+    apply from: "flavors.gradle"
 }
 
 project.afterEvaluate {

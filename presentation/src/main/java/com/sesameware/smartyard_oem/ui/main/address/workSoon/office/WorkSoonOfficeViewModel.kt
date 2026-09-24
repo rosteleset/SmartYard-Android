@@ -9,6 +9,7 @@ import com.sesameware.domain.model.request.CreateIssuesRequest.CustomFields
 import com.sesameware.domain.model.request.CreateIssuesRequestV2
 import com.sesameware.domain.model.request.IssueTypeV2
 import com.sesameware.smartyard_oem.ui.main.BaseIssueViewModel
+import com.sesameware.smartyard_oem.ui.main.IssueOrigin
 
 /**
  * @author Nail Shakurov
@@ -66,6 +67,7 @@ class WorkSoonOfficeViewModel(
                 x10941 = x10941
             ),
             CreateIssuesRequest.TypeAction.ACTION1,
+            origin
         )
     }
 
@@ -77,5 +79,9 @@ class WorkSoonOfficeViewModel(
             services = ""
         )
         super.createIssueV2(issue)
+    }
+
+    companion object {
+        private val origin = IssueOrigin.WORK_SOON_OFFICE
     }
 }

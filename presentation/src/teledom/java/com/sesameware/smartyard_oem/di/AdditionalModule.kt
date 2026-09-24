@@ -4,5 +4,7 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 
 object AdditionalModule {
-    fun create(): Module = module {}
+    fun create(): Module = module {
+        // factory<SomeDelegate> { ClientNameSomeDelegate() }
+    }
 }

@@ -260,6 +260,7 @@
     <string name="burger_common_settings_title">Umumiy sozlamalar</string>
     <string name="burger_call_support_button">Texnik xizmatga qo‘ng‘iroq</string>
     <string name="burger_call_support_by_phone">%s ga qo‘ng‘iroq</string>
+    <string name="burger_call_support_hardcoded_phone" translatable="false"> </string>
 
     <!-- Городские камеры  -->
     <string name="city_cameras_title">Shahar kameralari</string>
@@ -334,8 +335,9 @@
     <string name="event_log_plate_number">Avtomobil raqami: %s</string>
     <string name="settings_by_face_comments">Siz o‘zingizning yuzingizning tasvirlarini yig‘ishga rozilik berasiz.</string>
     <string name="face_settings_comments_has_plog">
-        Mehmonlaringizning tasvirlari "Hodislar" bo‘limida saqlanadi.\n
-        Yuzni tanlash va ro‘yxatga olish uchun ko‘rsatilgan bo‘limga o‘tib, ko‘rsatilgan hodisning ma‘lumotlar belgisining yonida bo‘lgan "Plyus" belgisini bosishingiz kerak.
+        Mehmonlaringizning fotosuratlari «Voqealar» bo‘limida saqlanadi.\n
+        Yuzni tanlash va ro‘yxatdan o‘tkazish uchun «%s» tugmasini bosib, ko‘rsatilgan bo‘limga o‘ting.\n
+        «Voqealar» bo‘limida kerakli voqea yonidagi ma’lumot belgisini bosing va ochilgan ekranda kerakli fotosuratni tanlang.
     </string>
     <string name="face_settings_comments_no_plog">
         Mehmonlaringizning suratlari "Hodisalar" bo‘limida saqlanadi.\n
@@ -489,6 +491,7 @@
     <string name="text_scroll_up">Yuqoriga o‘tish</string>
     <string name="title_common_settings">Umumiy sozlamalar</string>
     <string name="user_name_sample">Alekseyev V.B.</string>
+    <string name="user_phone_sample" translatable="false">+7 (912) 345-67-82</string>
     <string name="title_notifications">Bildirishnomalar</string>
     <string name="title_theme">Mavzusi</string>
     <string name="item_theme_light">Engil</string>
@@ -549,4 +552,28 @@
     <string name="tracked_events_delete_confirm_message">Haqiqatan ham bu hodisani kuzatishni to‘xtatmoqchimisiz \"%1$s\"?</string>
     <string name="tracked_events_delete_confirm_positive">O‘chirish</string>
     <string name="tracked_events_delete_confirm_negative">Bekor qilish</string>
+
+    <!-- События -->
+    <string name="event_log_track_group">Guruhni kuzatish</string>
+    <string name="event_log_track_face_new_group">Yuzni kuzatish (guruh yaratish)</string>
+    <string name="event_log_enter_group_name">Guruh nomini kiriting</string>
+
+    <!-- Лица -->
+    <string name="face_groups_title">Yuzlar guruhlari</string>
+    <string name="face_group_add">Guruh qo‘shish</string>
+    <string name="face_group_edit">Guruhni tahrirlash</string>
+    <string name="face_group_delete">Guruhni o‘chirish</string>
+    <string name="face_group_delete_confirm">«%1$s» guruhini yuzlar bilan birga o‘chirishga ishonchingiz komilmi?</string>
+    <string name="face_group_empty">Guruhlar hali yo‘q</string>
+    <string name="face_group_faces_empty">Bu guruhda hali yuzlar yo‘q</string>
+    <string name="face_group_attach">Guruhga biriktirish</string>
+    <string name="face_group_detach">Guruhdan ajratish</string>
+    <string name="face_group_clustering">Barcha o‘xshash yuzlarni guruhlash</string>
+    <string name="face_group_clustering_prefix">Guruh nomlari uchun prefiks kiriting</string>
+    <string name="face_group_clustering_success">Yuzlar muvaffaqiyatli birlashtirildi</string>
+    <string name="face_group_all_faces">Barcha yuzlar</string>
+    <string name="face_group_ungrouped_faces">Guruhsiz</string>
+    <string name="face_group_selection_existing">Mavjud guruh</string>
+    <string name="face_group_selection_new">Yangi guruh</string>
+    <string name="add_face">Yuzni qo‘shish</string>
 </resources>

@@ -78,7 +78,7 @@ class NumberRegViewModel(
 
     fun onStart(fragment: Fragment, activity: Activity) {
         if (mPreferenceStorage.authToken != null) {
-            if (mPreferenceStorage.userName == null) {
+            if (mPreferenceStorage.userName?.firstName.isNullOrEmpty()) {
                 val action = NumberRegFragmentDirections.actionNumberRegFragmentToAppealFragment()
                 fragment.findNavController().navigate(action)
             } else {

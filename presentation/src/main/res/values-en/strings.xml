@@ -338,12 +338,12 @@
     <string name="event_log_plate_number">Car number: %s</string>
     <string name="settings_by_face_comments">You consent to storing photos of your face in the face recognition system.</string>
     <string name="face_settings_comments_has_plog">
-        Photos of your guests are stored in the \"Events\" section.\n
-        To select and register a face, go to the specified section by clicking on the Plus icon.\n
-        In the events, click on the information icon next to the event you want, and on the opened screen, select the necessary photo.
+        Your guests\' photos are stored in the \"Events\" section.\n
+        To select and register a face, go to the specified section by clicking \"%s\".\n
+        In Events, click the information icon next to the required event and select the desired photo on the screen that opens.
     </string>
     <string name="face_settings_comments_no_plog">
-        Photos of your guests are stored in the "Events" section.\n
+        Photos of your guests are stored in the \"Events\" section.\n
         Since the event log is unavailable, you can only delete registered faces.
     </string>
     <string name="face_settings_no_faces">Photos of registered guests will appear here.</string>
@@ -553,4 +553,23 @@
     <string name="tracked_events_delete_confirm_message">Are you sure you want to stop tracking the event \"%1$s\"?</string>
     <string name="tracked_events_delete_confirm_positive">Delete</string>
     <string name="tracked_events_delete_confirm_negative">Cancel</string>
+    <string name="event_log_track_group">Track group</string>
+    <string name="event_log_track_face_new_group">Track face (create group)</string>
+    <string name="event_log_enter_group_name">Enter group name</string>
+    <string name="face_groups_title">Face groups</string>
+    <string name="face_group_add">Add group</string>
+    <string name="face_group_edit">Edit group</string>
+    <string name="face_group_delete">Delete group</string>
+    <string name="face_group_delete_confirm">Are you sure you want to delete the group \"%1$s\" along with its faces?</string>
+    <string name="face_group_empty">No groups yet</string>
+    <string name="face_group_faces_empty">No faces in this group yet</string>
+    <string name="face_group_attach">Attach to group</string>
+    <string name="face_group_detach">Detach from group</string>
+    <string name="face_group_clustering">Cluster all similar faces</string>
+    <string name="face_group_clustering_prefix">Enter prefix for group names</string>
+    <string name="face_group_clustering_success">Faces successfully clustered</string>
+    <string name="face_group_all_faces">All faces</string>
+    <string name="face_group_ungrouped_faces">Ungrouped</string>
+    <string name="face_group_selection_existing">Existing group</string>
+    <string name="face_group_selection_new">New group</string>
 </resources>

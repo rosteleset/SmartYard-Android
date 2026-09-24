@@ -4,6 +4,7 @@ import com.sesameware.domain.model.TF
 import com.sesameware.domain.model.response.ApiResult
 import com.sesameware.domain.model.response.AppVersionResponse
 import com.sesameware.domain.model.response.ConfirmCodeResponse
+import com.sesameware.domain.model.response.GetNameResponse
 import com.sesameware.domain.model.response.GetServicesResponse
 import com.sesameware.domain.model.response.OpenDoorResponse
 import com.sesameware.domain.model.response.ProviderConfigResponse
@@ -20,6 +21,7 @@ interface AuthRepository {
     suspend fun confirmCode(userPhone: String, smsCode: String, deviceToken: String): ConfirmCodeResponse
     suspend fun checkPhone(userPhone: String, deviceToken: String): ConfirmCodeResponse
     suspend fun sendName(name: String, patronymic: String?, last: String?): SendNameResponse
+    suspend fun getName(): GetNameResponse
     suspend fun openDoor(domophoneId: Int, doorId: Int?): OpenDoorResponse
     suspend fun getServices(id: Int): GetServicesResponse
     suspend fun appVersion(version: String): AppVersionResponse

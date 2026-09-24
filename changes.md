@@ -1,5 +1,11 @@
 ## History of major changes
 
+### Version 1.0.111
+* Face Groups & Clustering: Added face grouping functionality, clustering algorithms, and event tracking; updated the face settings and tracked events screens, added custom dialogs and button styles. 
+* WebRTC Update: Replaced the outdated WebRTC library, added SDP munging support for profile compatibility. 
+* Network Request Debugging: Integrated and configured the Chucker library for intercepting and analyzing HTTP requests. 
+* Calls & Intercom: Refactored the incoming call screen UI, fixed a crash when minimizing the app right after opening the entrance.
+
 ### Version 1.0.102
 * Update project to meet Google Play requirements for August 2026, including migration to targetSdk 36 (Android 16)
 * Prevent the virtual keyboard from overlapping input in the appeal, SMS and phone registration screens
