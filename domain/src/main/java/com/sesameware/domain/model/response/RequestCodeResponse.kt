@@ -5,8 +5,8 @@ import com.squareup.moshi.Json
 typealias RequestCodeResponse = ApiResult<RequestCode>?
 
 data class RequestCode(
-    @Json(name = "method") val _method: String = AUTH_METHOD_SMS_CODE,
-    @Json(name = "confirmationNumbers") val confirmationNumbers: MutableList<String>?
+    @param:Json(name = "method") val _method: String = AUTH_METHOD_SMS_CODE,
+    @param:Json(name = "confirmationNumbers") val confirmationNumbers: MutableList<String>?
 ) {
     val method: AuthMethod
         get() {

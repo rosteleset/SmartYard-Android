@@ -1,18 +1,27 @@
 ## History of major changes
 
+### Version 1.0.119
+
+* LL-HLS & Streaming: Added Low-Latency HLS support (Flussonic/Sesameware).
+* WebRTC & Player Stability: Fixed WebRTC flickering, crashes, and recovery after app pause or airplane mode.
+* Player Diagnostics & Logs: Refactored player logging into a dedicated screen/repository.
+* UI & Minor Fixes: Fixed WebView scrolling inside SwipeRefreshLayout, updated service settings DTOs, and improved overall stability.
+
 ### Version 1.0.111
+
 * Face Groups & Clustering: Added face grouping functionality, clustering algorithms, and event tracking; updated the face settings and tracked events screens, added custom dialogs and button styles. 
 * WebRTC Update: Replaced the outdated WebRTC library, added SDP munging support for profile compatibility. 
 * Network Request Debugging: Integrated and configured the Chucker library for intercepting and analyzing HTTP requests. 
 * Calls & Intercom: Refactored the incoming call screen UI, fixed a crash when minimizing the app right after opening the entrance.
 
 ### Version 1.0.102
+
 * Update project to meet Google Play requirements for August 2026, including migration to targetSdk 36 (Android 16)
 * Prevent the virtual keyboard from overlapping input in the appeal, SMS and phone registration screens
 * Minor improvements, fixes and code refactoring
 
-
 ### Version 1.0.98
+
 * Optimized WebRTC streams to prevent device overheating, video freezes, and interface slowdowns
 * Added automatic fallback to HLS when the WebRTC stream fails to load frames
 * Enhanced Custom Web Views (Web Extensions): added JS APIs to control the status bar appearance and improved handling of large extensions to prevent app crashes
@@ -23,13 +32,14 @@
 * Fixed scrolling, swiping, and drag-to-sort conflicts in the address list
 * Minor fixes and code refactoring
 
-
 ### Version 1.0.92
+
 * Added switching entrance view mode via ProviderConfig
 * Replaced bottom navigation menu
 * Minor fixes and code refactoring
 
 ### Version 1.0.88
+
 * Added stories to the address tab
 * The UI for displaying address list entries has been slightly modified: you can now view live WebRTC streams from CCTV cameras at the entrances
 * Added tracking of intercom opening events from the app, by key, by code, and by license plate number
@@ -37,6 +47,7 @@
 * Minor fixes and code refactoring
 
 ### Version 1.0.85
+
 * Added deep link processing for QR code registration
 * Added dtmfProtocol support in the incomming call data
 * Fixed edge-to-edge

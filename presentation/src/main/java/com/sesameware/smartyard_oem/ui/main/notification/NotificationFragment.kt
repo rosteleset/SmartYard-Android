@@ -55,8 +55,9 @@ class NotificationFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         mViewModel.onStart()
-        binding.refreshLayout.setOnChildScrollUpCallback { _, _ ->
-            binding.webViewNotification.scrollY > 0
+        val webView = binding.webViewNotification
+        webView.setOnScrollChangeListener { _, _, scrollY, _, _ ->
+            binding.refreshLayout.isEnabled = (scrollY == 0)
         }
         binding.webViewNotification.settings.allowContentAccess = true
         binding.webViewNotification.settings.allowFileAccess = true

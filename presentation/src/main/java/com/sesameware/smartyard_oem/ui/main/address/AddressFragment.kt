@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.net.toUri
-import androidx.core.view.doOnNextLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -25,7 +24,6 @@ import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
 import com.sesameware.domain.model.response.EntranceCamera
-import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.domain.model.response.PRESENT_METHOD_OPEN_APP
 import com.sesameware.domain.model.response.PRESENT_METHOD_POPUP
 import com.sesameware.domain.model.response.PRESENT_METHOD_VIEW
@@ -84,8 +82,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     private var layoutManager: LinearLayoutManager? = null
     private var itemTouchHelper: ItemTouchHelper? = null
 
-    private var navigatingToEntranceCameraFragment = false
-
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             Timber.d("debug_dmm address")
@@ -108,30 +104,16 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         viewLifecycleOwner.lifecycleScope.launch(Dispatchers.IO) {
             Glide.get(requireContext())
         }
-        navigatingToEntranceCameraFragment = false
 
-        val onScrollListener = if (mViewModel.entranceView == EntrancesView.LIST) {
-            null
-        } else {
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    super.onScrollStateChanged(recyclerView, newState)
-
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        createWebRtcConnectionForTopmostExpandedItem()
-                    }
-                }
-            }
-        }
-        initAddressList(onScrollListener)
+        initAddressList()
         bindViews()
         initActivityObservers()
         initObservers()
         delegate?.extendConfig(findNavController(), binding, mViewModel,
-            viewLifecycleOwner, onScrollListener)
+            viewLifecycleOwner, null)
     }
 
-    private fun initAddressList(onScrollListener: RecyclerView.OnScrollListener?) {
+    private fun initAddressList() {
         layoutManager = LinearLayoutManager(requireContext())
         adapter = AddressListAdapter(
             ::onAddressAction,
@@ -152,25 +134,12 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             )
             itemTouchHelper = ItemTouchHelper(callback)
             itemTouchHelper!!.attachToRecyclerView(rw)
-
-            onScrollListener?.let { rw.addOnScrollListener(it) }
         }
 
         storiesAdapter = StoriesAdapter { story ->
             onStoryClick(story)
         }
         binding.rvStories.adapter = storiesAdapter
-    }
-
-    private fun createWebRtcConnectionForTopmostExpandedItem() {
-        val firstLayoutPosition = layoutManager?.findFirstVisibleItemPosition()!!
-        val lastLayoutPosition = layoutManager?.findLastVisibleItemPosition()!!
-        val lastAddressPosition = mViewModel.addressUiState.value?.lastIndex ?: return
-        val first = minOf(firstLayoutPosition, lastAddressPosition)
-        val last = minOf(lastLayoutPosition, lastAddressPosition)
-        if (first < 0 || last < 0 || last < first) return
-
-        mViewModel.setWebRtcUrlForTopmostExpandedItemInRange(first..last)
     }
 
     private fun onStoryClick(story: Story) {
@@ -246,7 +215,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
 
     private fun onEntrancePageSelected(action: OnEntrancePageSelected) {
         mViewModel.setEntranceInitialPosition(action.houseId, action.page)
-        mViewModel.setWebRtcUrl(action.entranceCamera?.whepUrl)
     }
 
     private fun startDrag(position: Int) {
@@ -257,8 +225,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     }
 
     private fun navigateToEntranceCameraFragment(camera: EntranceCamera, lock: Lock) {
-        navigatingToEntranceCameraFragment = true
-        mViewModel.setWebRtcUrl(camera.whepUrl)
         val action = AddressFragmentDirections
             .actionAddressFragmentToEntranceCameraFragment(camera, lock)
         findNavController().navigate(action)
@@ -400,13 +366,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             viewLifecycleOwner
         ) { addressList ->
             binding.tvEmptyList.isVisible = addressList.isEmpty()
-            adapter.submitList(addressList) {
-                if (mViewModel.entranceView == EntrancesView.PREVIEW) {
-                    binding.addressList.doOnNextLayout {
-                        createWebRtcConnectionForTopmostExpandedItem()
-                    }
-                }
-            }
+            adapter.submitList(addressList)
             binding.swipeContainer.isRefreshing = false
             updateAllWidget(requireContext())
         }
@@ -477,10 +437,6 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         adapter = null
         layoutManager = null
         _binding = null
-        if (!navigatingToEntranceCameraFragment) {
-            mViewModel.setWebRtcUrl(null)
-            Timber.d("debug_webrtc webrtc is cleansed")
-        }
     }
 
     private fun <T> requireInitialized(value: T?): T =

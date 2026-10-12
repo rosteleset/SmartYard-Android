@@ -76,7 +76,8 @@ private fun CameraItemPreview() {
             latitude = null,
             longitude = null,
             token = "",
-            url = ""
+            url = "",
+            _hasSound = true
         ),
         onClick = {}
     )

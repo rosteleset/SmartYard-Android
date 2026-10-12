@@ -3,6 +3,6 @@ package com.sesameware.domain.model.request
 import com.squareup.moshi.Json
 
 data class LikeRequest(
-    @Json(name = "event") val event: String,
-    @Json(name = "comment") val comment: String
+    @param:Json(name = "event") val event: String,
+    @param:Json(name = "comment") val comment: String
 )

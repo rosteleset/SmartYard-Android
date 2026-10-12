@@ -7,18 +7,18 @@ import com.squareup.moshi.Json
  * Created on 13/03/2020.
  */
 data class PutIntercomRequest(
-    @Json(name = "flatId") val flatId: Int,
-    @Json(name = "settings") val settings: Settings?
+    @param:Json(name = "flatId") val flatId: Int,
+    @param:Json(name = "settings") val settings: Settings?
 )
 
 data class Settings(
-    @Json(name = "enableDoorCode") val enableDoorCode: String?,
-    @Json(name = "CMS") val cms: String?,
-    @Json(name = "VoIP") val voip: String?,
-    @Json(name = "autoOpen") val autoOpen: String?,
-    @Json(name = "whiteRabbit") val whiteRabbit: Int?,
-    @Json(name = "paperBill") val paperBill: String?,
-    @Json(name = "disablePlog") val disablePlog: String?,
-    @Json(name = "hiddenPlog") val hiddenPlog: String?,
-    @Json(name = "FRSDisabled") val frsDisable: String?
+    @param:Json(name = "enableDoorCode") val enableDoorCode: String?,
+    @param:Json(name = "CMS") val cms: String?,
+    @param:Json(name = "VoIP") val voip: String?,
+    @param:Json(name = "autoOpen") val autoOpen: String?,
+    @param:Json(name = "whiteRabbit") val whiteRabbit: Int?,
+    @param:Json(name = "paperBill") val paperBill: String?,
+    @param:Json(name = "disablePlog") val disablePlog: String?,
+    @param:Json(name = "hiddenPlog") val hiddenPlog: String?,
+    @param:Json(name = "FRSDisabled") val frsDisable: String?
 )

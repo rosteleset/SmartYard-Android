@@ -15,7 +15,7 @@ data class CommonErrorThrowable(
     val data: CommonError
 ) : Throwable()
 
-enum class ErrorStatus(@StringRes val messageId: Int) {
+enum class ErrorStatus(@field:StringRes val messageId: Int) {
     ERROR_CONNECTION(R.string.common_error_connection),
     TIMEOUT(R.string.common_timeout),
     OTHER(R.string.common_error),

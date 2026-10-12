@@ -10,10 +10,10 @@ import com.squareup.moshi.Json
 typealias ListConnectIssueResponse = ApiResult<List<Issue>>?
 
 data class Issue(
-    @Json(name = "address")
+    @param:Json(name = "address")
     val address: String? = "", // г Тамбов, Свободная, дом 4 корп.1  Подготовить конверт с qr-кодом. Далее заявку отправить курьеру.
-    @Json(name = "courier")
+    @param:Json(name = "courier")
     val courier: String? = "", // f
-    @Json(name = "key")
+    @param:Json(name = "key")
     val key: String? = "" // REM-417561
 )

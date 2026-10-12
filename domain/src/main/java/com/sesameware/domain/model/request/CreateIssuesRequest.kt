@@ -7,13 +7,13 @@ import com.squareup.moshi.Json
  * Created on 31/03/2020.
  */
 data class CreateIssuesRequest(
-    @Json(name = "issue")
+    @param:Json(name = "issue")
     val issue: Issue?,
-    @Json(name = "customFields")
+    @param:Json(name = "customFields")
     val customFields: CustomFields?,
-    @Json(name = "actions")
+    @param:Json(name = "actions")
     val actions: List<String>?,
-    @Json(name = "class")
+    @param:Json(name = "class")
     val cls: String? = null
 ) {
     enum class TypeAction(var list: List<String> = listOf()) {
@@ -23,30 +23,30 @@ data class CreateIssuesRequest(
     }
 
     data class CustomFields(
-        @Json(name = "10011")
+        @param:Json(name = "10011")
         val x10011: String? = null, // -1
-        @Json(name = "11841")
+        @param:Json(name = "11841")
         val x11841: String? = null, // $телефон, введенный пользователем$
-        @Json(name = "12440")
+        @param:Json(name = "12440")
         val x12440: String? = null, // Приложение
-        @Json(name = "10743")
+        @param:Json(name = "10743")
         var x10743: String? = null, // широта 12312312
-        @Json(name = "10744")
+        @param:Json(name = "10744")
         var x10744: String? = null, // долгота 123123123
-        @Json(name = "10941")
+        @param:Json(name = "10941")
         val x10941: Int? = null, // 10581
-        @Json(name = "11840")
+        @param:Json(name = "11840")
         var x11840: String? = null, // текущая дата и время
     )
 
     data class Issue(
-        @Json(name = "description")
+        @param:Json(name = "description")
         val description: String = "", // ФИО: Иван Иванов Телефон: 89176194895, Адрес: test, Услуги: test
-        @Json(name = "project")
+        @param:Json(name = "project")
         val project: String = "REM", // REM
-        @Json(name = "summary")
+        @param:Json(name = "summary")
         val summary: String = "", // Авто: Звонок с приложения
-        @Json(name = "type")
+        @param:Json(name = "type")
         val type: Long = 0 // 31231231231231231231231232
     )
 
@@ -93,14 +93,14 @@ enum class IssueTypeV2(val type: String) {
 }
 
 data class CreateIssuesRequestV2(
-    @Json(name = "type") val type: IssueTypeV2,
-    @Json(name = "userName") val userName: String? = null,
-    @Json(name = "inputAddress") val inputAddress: String? = null,
-    @Json(name = "services") val services: String? = null,
-    @Json(name = "comments") val comments: String? = null,
-    @Json(name = "cameraId") val cameraId: String? = null,
-    @Json(name = "cameraName") val cameraName: String? = null,
-    @Json(name = "fragmentDate") val fragmentDate: String? = null,
-    @Json(name = "fragmentTime") val fragmentTime: String? = null,
-    @Json(name = "fragmentDuration") val fragmentDuration: String? = null
+    @param:Json(name = "type") val type: IssueTypeV2,
+    @param:Json(name = "userName") val userName: String? = null,
+    @param:Json(name = "inputAddress") val inputAddress: String? = null,
+    @param:Json(name = "services") val services: String? = null,
+    @param:Json(name = "comments") val comments: String? = null,
+    @param:Json(name = "cameraId") val cameraId: String? = null,
+    @param:Json(name = "cameraName") val cameraName: String? = null,
+    @param:Json(name = "fragmentDate") val fragmentDate: String? = null,
+    @param:Json(name = "fragmentTime") val fragmentTime: String? = null,
+    @param:Json(name = "fragmentDuration") val fragmentDuration: String? = null
 )

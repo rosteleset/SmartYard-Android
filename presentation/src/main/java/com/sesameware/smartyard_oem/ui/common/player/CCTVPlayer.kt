@@ -1,8 +1,10 @@
-package com.sesameware.smartyard_oem.ui.main.address.cctv_video
+package com.sesameware.smartyard_oem.ui.common.player
 
 import android.content.Context
 import android.net.Uri
 import com.google.android.exoplayer2.C
+import com.google.android.exoplayer2.DefaultLoadControl
+import com.google.android.exoplayer2.ExoPlaybackException
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.PlaybackException
@@ -10,14 +12,13 @@ import com.google.android.exoplayer2.PlaybackParameters
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.Timeline
 import com.google.android.exoplayer2.Tracks
-import com.google.android.exoplayer2.mediacodec.MediaCodecUtil
-import com.google.android.exoplayer2.source.hls.HlsManifest
-import com.google.android.exoplayer2.source.hls.playlist.HlsPlaylistTracker
+import com.google.android.exoplayer2.source.MediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
-import com.google.android.exoplayer2.util.EventLogger
+import com.google.android.exoplayer2.upstream.HttpDataSource
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.video.VideoSize
 import com.sesameware.data.DataModule
+import com.sesameware.data.player.log.PlayerLogger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
@@ -39,10 +40,14 @@ import kotlin.concurrent.fixedRateTimer
 
 abstract class BaseCCTVPlayer {
     open var isMuted: Boolean = true
+    open var soundEnabled: Boolean = true
+    abstract fun prepare()
     abstract fun play()
     abstract fun pause()
     abstract fun stop()
     abstract fun seekTo(position: Long)
+    abstract fun seekToDefaultPosition()
+    abstract fun setMediaSource(mediaSource: MediaSource, enableSound: Boolean = soundEnabled)
     abstract fun currentPosition(): Long
     abstract fun mediaDuration(): Long
     abstract fun setPlaybackSpeed(speed: Float)
@@ -50,7 +55,7 @@ abstract class BaseCCTVPlayer {
     abstract fun isPlaying(): Boolean
     abstract fun isEnded(): Boolean
     abstract fun isIdle(): Boolean
-    abstract fun prepareMedia(mediaUrl: String?, from: Long = INVALID_POSITION, mediaDuration: Long = INVALID_DURATION, seekMediaTo: Long = 0L, doPlay: Boolean = false)
+    abstract fun prepareMedia(mediaUrl: String?, from: Long = INVALID_POSITION, mediaDuration: Long = INVALID_DURATION, seekMediaTo: Long = 0L, doPlay: Boolean = false, enableSound: Boolean)
     abstract fun releasePlayer()
     open var playWhenReady: Boolean = false
 
@@ -63,6 +68,7 @@ abstract class BaseCCTVPlayer {
         fun onRenderFirstFrame() {}
         fun onVideoSizeChanged(videoSize: VideoSize) {}
         fun onAudioAvailabilityChanged(isAvailable: Boolean) {}
+        fun onAbrTrackChanged(resolution: String, bitrate: Int) {}
     }
 
     companion object {
@@ -71,13 +77,20 @@ abstract class BaseCCTVPlayer {
     }
 }
 
-open class DefaultCCTVPlayer(private val context: Context, private val forceVideoTrack: Boolean, protected val callbacks: Callbacks? = null) : BaseCCTVPlayer() {
+open class DefaultCCTVPlayer(
+    private val context: Context,
+    protected val callbacks: Callbacks? = null
+) : BaseCCTVPlayer() {
 
     override var isMuted: Boolean = false
         set(value) {
             field = value
             mPlayer?.volume = if (value) 0.0f else 1.0f
+            PlayerLogger.d("[EXO] Muted state changed to: $value")
         }
+
+    override var soundEnabled: Boolean = true
+
     protected var mPlayer: ExoPlayer? = null
 
     override var playWhenReady: Boolean
@@ -90,240 +103,191 @@ open class DefaultCCTVPlayer(private val context: Context, private val forceVide
         createPlayer()
     }
 
-    fun isLlHlsError(error: PlaybackException): Boolean {
-        val errorCode = error.errorCode
-        val errorCause = error.cause
-
-        val isBehindLiveWindow = errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW
-        val isHttpError = errorCode == PlaybackException.ERROR_CODE_IO_BAD_HTTP_STATUS
-        val isTimeout = errorCode == PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT
-         val isPlaylistStuck = errorCause is HlsPlaylistTracker.PlaylistStuckException
-
-        return isBehindLiveWindow || isHttpError || isTimeout || isPlaylistStuck
-    }
-
-    fun isLlHlsStream(): Boolean {
-        val manifest = mPlayer?.currentManifest
-
-        if (manifest !is HlsManifest) return false
-
-        val mediaPlaylist = manifest.mediaPlaylist
-        val usesParts = mediaPlaylist.partTargetDurationUs != C.TIME_UNSET
-        val canBlockReload = mediaPlaylist.serverControl.canBlockReload
-
-        return usesParts || canBlockReload
-    }
-
-    // For LL-HLS with slow connection
-    private fun performFallback(seekToLastPosition: Boolean = false) {
-        val currentPosition = mPlayer?.currentPosition ?: return
-
-        val fallbackMediaItem = mPlayer?.currentMediaItem?.buildUpon()
-            ?.setLiveConfiguration(
-                MediaItem.LiveConfiguration.Builder()
-                    .setTargetOffsetMs(15000)
-                    .setMinOffsetMs(10000)
-                    .setMaxOffsetMs(30000)
-                    .build()
-            )
-            ?.build()
-
-        if (fallbackMediaItem != null) {
-            mPlayer?.setMediaItem(fallbackMediaItem)
-            if (seekToLastPosition) mPlayer?.seekTo(currentPosition)
-            mPlayer?.prepare()
-            mPlayer?.play()
-        }
+    override fun prepare() {
+        PlayerLogger.i("[EXO] Prepare called")
+        mPlayer?.prepare()
     }
 
     override fun play() {
+        PlayerLogger.i("[EXO] Play called")
         mPlayer?.play()
     }
 
     override fun pause() {
+        PlayerLogger.i("[EXO] Pause called")
         mPlayer?.pause()
     }
 
     override fun stop() {
+        PlayerLogger.i("[EXO] Stop called")
         mPlayer?.stop()
     }
 
     override fun seekTo(position: Long) {
+        PlayerLogger.i("[EXO] SeekTo $position ms called")
         mPlayer?.seekTo(position)
     }
 
-    override fun currentPosition(): Long {
-        return mPlayer?.currentPosition ?: INVALID_POSITION
+    override fun seekToDefaultPosition() {
+        PlayerLogger.i("[EXO] SeekToDefaultPosition called")
+        mPlayer?.seekToDefaultPosition()
     }
 
-    override fun mediaDuration(): Long {
-        return mPlayer?.duration ?: INVALID_DURATION
+    override fun setMediaSource(mediaSource: MediaSource, enableSound: Boolean) {
+        soundEnabled = enableSound
+        PlayerLogger.i("[EXO] SetMediaSource called")
+        mPlayer?.setMediaSource(mediaSource)
     }
 
+    override fun currentPosition(): Long = mPlayer?.currentPosition ?: INVALID_POSITION
+    override fun mediaDuration(): Long = mPlayer?.duration ?: INVALID_DURATION
     override fun setPlaybackSpeed(speed: Float) {
         mPlayer?.playbackParameters = PlaybackParameters(speed)
     }
 
-    override fun isReady(): Boolean {
-        return mPlayer?.playbackState == Player.STATE_READY
-    }
+    override fun isReady(): Boolean = mPlayer?.playbackState == Player.STATE_READY
+    override fun isPlaying(): Boolean = mPlayer?.isPlaying == true
+    override fun isEnded(): Boolean = mPlayer?.playbackState == Player.STATE_ENDED
+    override fun isIdle(): Boolean = mPlayer?.playbackState == Player.STATE_IDLE
 
-    override fun isPlaying(): Boolean {
-        return mPlayer?.isPlaying == true
-    }
-
-    override fun isEnded(): Boolean {
-        return mPlayer?.playbackState == Player.STATE_ENDED
-    }
-
-    override fun isIdle(): Boolean {
-        return mPlayer?.playbackState == Player.STATE_IDLE
-    }
-
-    override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
-        Timber.d("debug_dmm  mediaUrl = $mediaUrl")
+    override fun prepareMedia(
+        mediaUrl: String?,
+        from: Long,
+        mediaDuration: Long,
+        seekMediaTo: Long,
+        doPlay: Boolean,
+        enableSound: Boolean
+    ) {
+        soundEnabled = enableSound
+        PlayerLogger.d("[EXO] Preparing media. URL: $mediaUrl")
         mPlayer?.setMediaItem(MediaItem.fromUri(Uri.parse(mediaUrl)))
         mPlayer?.prepare()
         mPlayer?.playWhenReady = doPlay
         if (seekMediaTo > 0) {
+            PlayerLogger.d("[EXO] Seeking to initial position: $seekMediaTo ms")
             mPlayer?.seekTo(seekMediaTo)
         }
     }
 
     override fun releasePlayer() {
+        PlayerLogger.i("[EXO] Releasing EXO player")
         stop()
         mPlayer?.release()
         mPlayer = null
     }
 
-    fun getPlayer() : ExoPlayer? {
-        return mPlayer
-    }
-
+    fun getPlayer(): ExoPlayer? = mPlayer
 
     private fun createPlayer() {
-        Timber.d("__P__ createPlayer called")
+        PlayerLogger.i("[EXO] createPlayer called")
         val trackSelector = DefaultTrackSelector(context)
-        mPlayer  = ExoPlayer.Builder(context)
+        val loadControl = DefaultLoadControl.Builder()
+            .setBufferDurationsMs(2000, 50000, 1500, 2000)
+            .setPrioritizeTimeOverSizeThresholds(true)
+            .build()
+
+        mPlayer = ExoPlayer.Builder(context)
             .setTrackSelector(trackSelector)
+            .setLoadControl(loadControl)
             .build()
         mPlayer?.volume = 0.0f
-        mPlayer?.addAnalyticsListener(EventLogger())
+//        if (BuildConfig.DEBUG) mPlayer?.addAnalyticsListener(EventLogger())
+
         mPlayer?.addListener(object : Player.Listener {
             override fun onPlaybackStateChanged(state: Int) {
                 super.onPlaybackStateChanged(state)
 
-                if (state == Player.STATE_READY) {
-                    callbacks?.onPlayerStateReady(this@DefaultCCTVPlayer)
-                }
+                when (state) {
+                    Player.STATE_READY -> {
+                        PlayerLogger.d("[EXO] State: READY (Playing: ${mPlayer?.playWhenReady})")
+                        callbacks?.onPlayerStateReady(this@DefaultCCTVPlayer)
+                    }
 
-                if (state == Player.STATE_ENDED) {
-                    callbacks?.onPlayerStateEnded()
-                }
+                    Player.STATE_ENDED -> {
+                        PlayerLogger.i("[EXO] State: ENDED")
+                        callbacks?.onPlayerStateEnded()
+                    }
 
-                if (state == Player.STATE_BUFFERING) {
-                    callbacks?.onPlayerStateBuffering()
-                }
+                    Player.STATE_BUFFERING -> {
+                        PlayerLogger.i("[EXO] State: BUFFERING...")
+                        callbacks?.onPlayerStateBuffering()
+                    }
 
-                if (state == Player.STATE_IDLE) {
-                    callbacks?.onPlayerStateIdle()
+                    Player.STATE_IDLE -> {
+                        PlayerLogger.i("[EXO] State: IDLE")
+                        callbacks?.onPlayerStateIdle()
+                    }
                 }
             }
 
             override fun onPlayerError(error: PlaybackException) {
                 super.onPlayerError(error)
 
-                Timber.d("__P__  Player error: ${error.errorCode} - ${error.message}")
+                val cause = error.cause
+                val rawMsg = cause?.message ?: error.message
+                val cleanMsg = rawMsg?.lineSequence()?.firstOrNull()?.substringBefore("at ")?.trim() ?: "Unknown error"
+                val errorMsg = "[EXO] Player error [${error.errorCodeName}]: $cleanMsg"
+                PlayerLogger.e(message = errorMsg)
+
+                if (error is ExoPlaybackException && cause is HttpDataSource.HttpDataSourceException) {
+                    PlayerLogger.e(message = "[EXO] HTTP Error. Code: ${error.errorCode}")
+                }
+
+                if (error.errorCode == PlaybackException.ERROR_CODE_BEHIND_LIVE_WINDOW) {
+                    PlayerLogger.e(message = "[EXO] BehindLiveWindowException! Player needs restart.")
+                }
+
                 callbacks?.onPlayerError(error)
             }
 
             override fun onTracksChanged(tracks: Tracks) {
                 super.onTracksChanged(tracks)
 
-                callbacks?.onAudioAvailabilityChanged(containsAudioTrack(tracks.groups))
+                val hasAudio = soundEnabled && containsAudioTrack(tracks.groups)
+                PlayerLogger.d("[EXO] Tracks changed. Sound enabled: $soundEnabled" +
+                        if (soundEnabled) " Audio available: $hasAudio" else "")
+                callbacks?.onAudioAvailabilityChanged(hasAudio)
 
-                if (!forceVideoTrack) {
-                    return
+                tracks.groups.forEach { group ->
+                    if (group.type == C.TRACK_TYPE_VIDEO && group.isSelected) {
+                        for (i in 0 until group.length) {
+                            if (group.isTrackSelected(i)) {
+                                val format = group.getTrackFormat(i)
+                                val resolution = "${format.width}x${format.height}"
+                                val bitrate = format.bitrate
+                                PlayerLogger.i("[EXO] ABR Video Track Selected: $resolution, Bitrate: ${bitrate / 1000} kbps")
+                                callbacks?.onAbrTrackChanged(resolution, bitrate)
+                            }
+                        }
+                    }
                 }
-
-                forcePlayableTracksSelection()
             }
 
             override fun onRenderedFirstFrame() {
                 super.onRenderedFirstFrame()
-
-                Timber.d("__P__  Player rendered first frame")
+                PlayerLogger.d("[EXO] First frame rendered (TTFF)")
                 callbacks?.onRenderFirstFrame()
             }
 
             override fun onVideoSizeChanged(videoSize: VideoSize) {
                 super.onVideoSizeChanged(videoSize)
-
-                Timber.d("__P__  Player video size changed")
+                PlayerLogger.d("[EXO] Video size changed to: ${videoSize.width}x${videoSize.height}")
                 callbacks?.onVideoSizeChanged(videoSize)
             }
         })
     }
 
     private fun containsAudioTrack(trackGroups: List<Tracks.Group>): Boolean {
-        Timber.d("__P__  Player searching audio track")
-        trackGroups.forEach { group ->
-            val trackGroup = group.mediaTrackGroup
-            for (i in 0 until trackGroup.length) {
-                if (MimeTypes.isAudio(trackGroup.getFormat(i).sampleMimeType)) {
-                    return true
-                }
+        return trackGroups.any { group ->
+            (0 until group.length).any { i ->
+                MimeTypes.isAudio(group.getTrackFormat(i).sampleMimeType)
             }
         }
-        return false
-    }
-
-    // ExoPlayer не всегда подбирает читаемый трек из набора треков разного разрешения для одного видео
-    // Метод вручную собирает набор подходящих треков
-    private fun forcePlayableTracksSelection() {
-        Timber.d("__P__  Player selecting playable tracks")
-        val decoderInfo = MediaCodecUtil.getDecoderInfo(MimeTypes.VIDEO_H264, false, false)
-        val maxSupportedWidth =
-            (decoderInfo?.capabilities?.videoCapabilities?.supportedWidths?.upper ?: 0) * RESOLUTION_TOLERANCE
-        val maxSupportedHeight =
-            (decoderInfo?.capabilities?.videoCapabilities?.supportedHeights?.upper ?: 0) * RESOLUTION_TOLERANCE
-
-        (mPlayer?.trackSelector as? DefaultTrackSelector)?.let { trackSelector ->
-            trackSelector.currentMappedTrackInfo?.let { mappedTrackInfo ->
-                for (k in 0 until mappedTrackInfo.rendererCount) {
-                    if (mappedTrackInfo.getRendererType(k) == C.TRACK_TYPE_VIDEO) {
-                        val rendererTrackGroups = mappedTrackInfo.getTrackGroups(k)
-                        for (i in 0 until rendererTrackGroups.length) {
-                            val tracks2 = mutableListOf<Int>()
-                            for (j in 0 until rendererTrackGroups[i].length) {
-                                if (mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_HANDLED ||
-                                    mappedTrackInfo.getTrackSupport(k, i, j) == C.FORMAT_EXCEEDS_CAPABILITIES &&
-                                    (maxSupportedWidth >= rendererTrackGroups[i].getFormat(j).width ||
-                                            maxSupportedHeight >= rendererTrackGroups[i].getFormat(j).height)
-                                ) {
-                                    tracks2.add(j)
-                                }
-                            }
-                            val selectionOverride = DefaultTrackSelector.SelectionOverride(i, *tracks2.toIntArray())
-                            @Suppress("DEPRECATION")
-                            trackSelector.setParameters(
-                                trackSelector.buildUponParameters()
-                                    .setSelectionOverride(k, rendererTrackGroups, selectionOverride)
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    companion object {
-        const val RESOLUTION_TOLERANCE = 1.08  // коэффициент допуска видео разрешения
     }
 }
 
-abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
-    : DefaultCCTVPlayer(context, forceVideoTrack, callbacks), CoroutineScope by MainScope() {
+abstract class NoDurationPlayer(context: Context, callbacks: Callbacks? = null)
+    : DefaultCCTVPlayer(context, callbacks), CoroutineScope by MainScope() {
 
     protected var httpClient: OkHttpClient
 
@@ -437,9 +401,17 @@ abstract class NoDurationPlayer(context: Context, forceVideoTrack: Boolean, call
     }
 }
 
-class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
-    : NoDurationPlayer(context, forceVideoTrack, callbacks) {
-    override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
+class MacroscopPlayer(context: Context, callbacks: Callbacks? = null)
+    : NoDurationPlayer(context, callbacks) {
+    override fun prepareMedia(
+        mediaUrl: String?,
+        from: Long,
+        mediaDuration: Long,
+        seekMediaTo: Long,
+        doPlay: Boolean,
+        enableSound: Boolean
+    ) {
+        soundEnabled = enableSound
         mediaUrl?.let { url ->
             currentSegmentStart = seekMediaTo
             currentMediaPosition = currentSegmentStart
@@ -453,7 +425,7 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
             }
             mUrl = url
 
-            setMediaSeek(doPlay)
+            setMediaSeek(doPlay, )
         }
     }
 
@@ -477,7 +449,14 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
                             val r = response.body!!.string()
                             val realHlsUrl = mUrl.substring(0, p) + "/" + r
                             withContext(Dispatchers.Main) {
-                               super.prepareMedia(realHlsUrl, INVALID_POSITION, INVALID_DURATION, 0L, doPlay)
+                               super.prepareMedia(
+                                   mediaUrl = realHlsUrl,
+                                   from = INVALID_POSITION,
+                                   mediaDuration = INVALID_DURATION,
+                                   seekMediaTo = 0L,
+                                   doPlay = doPlay,
+                                   enableSound = soundEnabled
+                               )
                             }
                         }
                     }
@@ -491,9 +470,17 @@ class MacroscopPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Cal
     }
 }
 
-class ForpostPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callbacks? = null)
-    : NoDurationPlayer(context, forceVideoTrack, callbacks) {
-    override fun prepareMedia(mediaUrl: String?, from: Long, mediaDuration: Long, seekMediaTo: Long, doPlay: Boolean) {
+class ForpostPlayer(context: Context, callbacks: Callbacks? = null)
+    : NoDurationPlayer(context, callbacks) {
+    override fun prepareMedia(
+        mediaUrl: String?,
+        from: Long,
+        mediaDuration: Long,
+        seekMediaTo: Long,
+        doPlay: Boolean,
+        enableSound: Boolean
+    ) {
+        soundEnabled = enableSound
         mediaUrl?.let { url ->
             currentSegmentStart = seekMediaTo
             currentMediaPosition = currentSegmentStart
@@ -532,9 +519,16 @@ class ForpostPlayer(context: Context, forceVideoTrack: Boolean, callbacks: Callb
                     httpClient.newCall(request).execute().use { response ->
                         if (response.isSuccessful) {
                             val json = JSONObject(response.body!!.string())
-                            val realHls = json.optString("URL", "")
+                            val realHlsUrl = json.optString("URL", "")
                             withContext(Dispatchers.Main) {
-                                super.prepareMedia(realHls, INVALID_POSITION, INVALID_DURATION,0, doPlay)
+                                super.prepareMedia(
+                                    mediaUrl = realHlsUrl,
+                                    from = INVALID_POSITION,
+                                    mediaDuration = INVALID_DURATION,
+                                    seekMediaTo = 0L,
+                                    doPlay = doPlay,
+                                    enableSound = soundEnabled
+                                )
                             }
                         }
                     }

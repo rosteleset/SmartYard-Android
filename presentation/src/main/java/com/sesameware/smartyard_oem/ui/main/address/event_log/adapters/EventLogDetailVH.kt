@@ -18,8 +18,8 @@ import com.sesameware.domain.model.response.Plog
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemEventLogDetailBinding
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.event_log.ItemEventLogDetailDelegate
 import com.sesameware.smartyard_oem.ui.main.address.event_log.TrackedEventData
 import org.koin.java.KoinJavaComponent.injectOrNull

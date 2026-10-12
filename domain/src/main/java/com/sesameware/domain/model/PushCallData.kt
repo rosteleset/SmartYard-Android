@@ -58,7 +58,7 @@ data class PushCallData(
         }
     val webRtcVideoUrl: String get() =
         when (mediaServerType) {
-            else -> "$videoStream/whep?token=$videoToken"
+            else -> if (videoStream.isBlank()) "" else "$videoStream/whep?token=$videoToken"
         }
 
     val dtmfProtocol: DtmfProtocol

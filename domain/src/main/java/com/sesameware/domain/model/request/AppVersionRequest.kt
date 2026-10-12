@@ -7,6 +7,6 @@ import com.squareup.moshi.Json
  * Created on 08.06.2020.
  */
 data class AppVersionRequest(
-    @Json(name = "version") val version: String,
-    @Json(name = "platform") val platform: String
+    @param:Json(name = "version") val version: String,
+    @param:Json(name = "platform") val platform: String
 )

@@ -6,65 +6,65 @@ typealias ProviderConfigResponse = ApiResult<ProviderConfig>?
 
 data class ProviderConfig(
     //чат
-    @Json(name = HAS_CHAT) val _hasChat: String? = "f",
+    @param:Json(name = HAS_CHAT) val _hasChat: String? = "f",
 
     //городские камеры (по умолчанию нет)
-    @Json(name = HAS_CITY_CAMS) val _hasCityCams: String? = "f",
+    @param:Json(name = HAS_CITY_CAMS) val _hasCityCams: String? = "f",
 
     //платежи
-    @Json(name = HAS_PAYMENTS) val _hasPayments: String? = "f",
+    @param:Json(name = HAS_PAYMENTS) val _hasPayments: String? = "f",
 
     //URL для платежей
-    @Json(name = PAYMENTS_URL) val paymentsUrl: String? = null,
+    @param:Json(name = PAYMENTS_URL) val paymentsUrl: String? = null,
 
     //номер телефона техподдержки
-    @Json(name = SUPPORT_PHONE) val supportPhone: String? = null,
+    @param:Json(name = SUPPORT_PHONE) val supportPhone: String? = null,
 
     //настройки чата
-    @Json(name = CHAT_URL) val chatUrl: String? = null,
-    @Json(name = CHAT_OPTIONS) val chatOptions: ChatOptions? = null,
+    @param:Json(name = CHAT_URL) val chatUrl: String? = null,
+    @param:Json(name = CHAT_OPTIONS) val chatOptions: ChatOptions? = null,
 
     //настройки TimeZone
-    @Json(name = TIME_ZONE) val timeZone: String? = null,
+    @param:Json(name = TIME_ZONE) val timeZone: String? = null,
 
     //настройки гостевого доступа
-    @Json(name = GUEST_ACCESS) val _guestAccess: String = GUEST_ACCESS_TURN_ON_ONLY,
+    @param:Json(name = GUEST_ACCESS) val _guestAccess: String = GUEST_ACCESS_TURN_ON_ONLY,
 
     //представление камер
-    @Json(name = CCTV_VIEW) val _cctvView: String = CCTV_VIEW_LIST,
+    @param:Json(name = CCTV_VIEW) val _cctvView: String = CCTV_VIEW_LIST,
 
     //активная вкладка
-    @Json(name = ACTIVE_TAB) val activeTab: String = TAB_ADDRESSES,
+    @param:Json(name = ACTIVE_TAB) val activeTab: String = TAB_ADDRESSES,
 
     //версия заявок
-    @Json(name = ISSUES_VERSION) val issuesVersion: String = "1",
+    @param:Json(name = ISSUES_VERSION) val issuesVersion: String = "1",
 
     //appeal form name, patronymic and last validation
-    @Json(name = VALIDATION_NAME_PATTERN) val validationNamePattern: String = "",
-    @Json(name = VALIDATION_PATRONYMIC_PATTERN) val validationPatronymicPattern: String = "",
-    @Json(name = VALIDATION_LAST_PATTERN) val validationLastPattern: String = "",
+    @param:Json(name = VALIDATION_NAME_PATTERN) val validationNamePattern: String = "",
+    @param:Json(name = VALIDATION_PATRONYMIC_PATTERN) val validationPatronymicPattern: String = "",
+    @param:Json(name = VALIDATION_LAST_PATTERN) val validationLastPattern: String = "",
 
     //address verification UI
-    @Json(name = ADDRESS_VERIFICATION_TAB_LAYOUT_VISIBLE) val _addressVerificationTabLayoutVisible: String = "t",
-    @Json(name = ADDRESS_VERIFICATION_TAB_1_VISIBLE) val _addressVerificationTab1Visible: String = "t",
-    @Json(name = ADDRESS_VERIFICATION_TAB_2_VISIBLE) val _addressVerificationTab2Visible: String = "t",
+    @param:Json(name = ADDRESS_VERIFICATION_TAB_LAYOUT_VISIBLE) val _addressVerificationTabLayoutVisible: String = "t",
+    @param:Json(name = ADDRESS_VERIFICATION_TAB_1_VISIBLE) val _addressVerificationTab1Visible: String = "t",
+    @param:Json(name = ADDRESS_VERIFICATION_TAB_2_VISIBLE) val _addressVerificationTab2Visible: String = "t",
 
     //events tracking
-    @Json(name = HAS_EVENTS_TRACKING) val _hasEventsTracking: String? = "f",
+    @param:Json(name = HAS_EVENTS_TRACKING) val _hasEventsTracking: String? = "f",
 
     //stories
-    @Json(name = HAS_STORIES) val _hasStories: String? = "f",
+    @param:Json(name = HAS_STORIES) val _hasStories: String? = "f",
 
     //entrances view
-    @Json(name = ENTRANCES_VIEW) val _entrancesView: String? = null,
+    @param:Json(name = ENTRANCES_VIEW) val _entrancesView: String? = null,
 
     //last name
-    @Json(name = USER_HAS_LAST_NAME) val _userHasLastName: String? = "f",
+    @param:Json(name = USER_HAS_LAST_NAME) val _userHasLastName: String? = "f",
 
     //privacy policy
-    @Json(name = PRIVACY_POLICY) val privacyPolicy: String? = null,
+    @param:Json(name = PRIVACY_POLICY) val privacyPolicy: String? = null,
 
-    @Json(name = "stunUrl") val stunUrl: String? = null,
+    @param:Json(name = "stunUrl") val stunUrl: String? = null,
 
     //face groups
     @param:Json(name = FACE_GROUPS) val _faceGroups: String? = "f",
@@ -73,7 +73,7 @@ data class ProviderConfig(
     @param:Json(name = FACE_CLUSTERING) val _faceClustering: String? = "f",
 ) {
     val hasChat: Boolean
-        get() = _hasChat == "t" && chatUrl?.isNotEmpty() == true
+        get() = _hasChat == "t" || chatUrl?.isNotEmpty() == true
 
     val hasCityCams: Boolean
         get() = _hasCityCams == "t"
@@ -82,9 +82,9 @@ data class ProviderConfig(
         get() = _hasPayments == "t" && paymentsUrl?.isNotEmpty() == true
 
     data class ChatOptions(
-        @Json(name = CHAT_ID) val id: String? = null,
-        @Json(name = CHAT_DOMAIN) val domain: String? = null,
-        @Json(name = CHAT_TOKEN) val token: String? = null,
+        @param:Json(name = CHAT_ID) val id: String? = null,
+        @param:Json(name = CHAT_DOMAIN) val domain: String? = null,
+        @param:Json(name = CHAT_TOKEN) val token: String? = null,
     )
 
     val guestAccess: GuestAccessType get() = GuestAccessType.getType(_guestAccess)

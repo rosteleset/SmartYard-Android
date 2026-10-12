@@ -8,17 +8,17 @@ import com.squareup.moshi.Json
  */
 
 data class RangeObject(
-    @Json(name = "motion_log")
+    @param:Json(name = "motion_log")
     var motionLog: List<Any> = listOf(),
-    @Json(name = "ranges")
+    @param:Json(name = "ranges")
     var ranges: List<Range> = listOf(),
-    @Json(name = "stream")
+    @param:Json(name = "stream")
     var stream: String = "" // 89740
 ) {
     data class Range(
-        @Json(name = "duration")
+        @param:Json(name = "duration")
         var duration: Int = 0, // 619035
-        @Json(name = "from")
+        @param:Json(name = "from")
         var from: Int = 0 // 1596517202
     )
 }

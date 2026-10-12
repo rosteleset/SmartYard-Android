@@ -7,5 +7,5 @@ import com.squareup.moshi.Json
  * Created on 18/03/2020.
  */
 data class GetAddressRequest(
-    @Json(name = "streetId") val streetId: Int
+    @param:Json(name = "streetId") val streetId: Int
 )

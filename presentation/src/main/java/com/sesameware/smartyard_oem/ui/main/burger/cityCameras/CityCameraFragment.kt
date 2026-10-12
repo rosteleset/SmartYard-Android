@@ -11,14 +11,12 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
@@ -39,10 +37,10 @@ import com.sesameware.smartyard_oem.databinding.FragmentCityCameraBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
+import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.ForpostPlayer
+import com.sesameware.smartyard_oem.ui.common.player.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
 import com.sesameware.smartyard_oem.ui.main.burger.cityCameras.adapters.CityCameraEventAdapter
 import com.sesameware.smartyard_oem.ui.showStandardAlert
@@ -99,7 +97,10 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
 
         binding.zlCityCamera.setSingleTapConfirmedListener {
             if (mPlayer?.isIdle() == true) {
-                changeVideoSource(viewModel.chosenCamera.value?.hls ?: "")
+                changeVideoSource(
+                    viewModel.chosenCamera.value?.hls ?: "",
+                    viewModel.chosenCamera.value?.hasSound ?: true
+                )
             }
         }
 
@@ -283,7 +284,9 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         lifecycleScope.launch(Dispatchers.IO) {
             delay(delayMs)
             withContext(Dispatchers.Main) {
-                changeVideoSource(viewModel.chosenCamera.value?.hls ?: "")
+                changeVideoSource(viewModel.chosenCamera.value?.hls ?: "",
+                    viewModel.chosenCamera.value?.hasSound ?: true
+                )
             }
         }
     }
@@ -352,9 +355,9 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
 
         val player = when (serverType) {
-            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), forceVideoTrack, callbacks)
-            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), forceVideoTrack, callbacks)
-            else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), callbacks)
+            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), callbacks)
+            else -> DefaultCCTVPlayer(requireContext(), callbacks)
         }
         videoView.player = player.getPlayer()
         videoView.useController = false
@@ -367,14 +370,14 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         return player
     }
 
-    private fun changeVideoSource(hls_url: String) {
+    private fun changeVideoSource(hls_url: String, enableSound: Boolean) {
         if (hls_url.isEmpty()) {
             return
         }
 
         mPlayer?.let { player ->
             binding.pbCityCamera.visibility = View.VISIBLE
-            player.prepareMedia(hls_url, doPlay = true)
+            player.prepareMedia(hls_url, doPlay = true, enableSound = enableSound)
         }
     }
 

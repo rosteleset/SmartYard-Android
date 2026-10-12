@@ -7,6 +7,6 @@ import com.squareup.moshi.Json
  * Created on 26/03/2020.
  */
 data class ResendRequest(
-    @Json(name = "flatId") val flatId: Int,
-    @Json(name = "guestPhone") val guestPhone: String
+    @param:Json(name = "flatId") val flatId: Int,
+    @param:Json(name = "guestPhone") val guestPhone: String
 )

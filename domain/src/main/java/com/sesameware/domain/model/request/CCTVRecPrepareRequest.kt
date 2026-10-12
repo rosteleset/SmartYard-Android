@@ -7,7 +7,7 @@ import com.squareup.moshi.Json
  * Created on 28.04.2020.
  */
 data class CCTVRecPrepareRequest(
-    @Json(name = "id") val cameraID: Int,
-    @Json(name = "from") val from: String,
-    @Json(name = "to") val to: String
+    @param:Json(name = "id") val cameraID: Int,
+    @param:Json(name = "from") val from: String,
+    @param:Json(name = "to") val to: String
 )

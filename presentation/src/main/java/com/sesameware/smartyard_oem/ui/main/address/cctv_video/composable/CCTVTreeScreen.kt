@@ -144,7 +144,8 @@ private object PreviewCCTVData {
         latitude = null,
         longitude = null,
         token = "",
-        url = ""
+        url = "",
+        _hasSound = true
     )
 
     val mockCameras = listOf(

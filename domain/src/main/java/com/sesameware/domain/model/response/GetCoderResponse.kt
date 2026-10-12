@@ -9,8 +9,8 @@ import com.squareup.moshi.Json
 typealias GetCoderResponse = ApiResult<Coder>
 
 data class Coder(
-    @Json(name = "lat") val lat: String,
-    @Json(name = "lon") val lon: String,
-    @Json(name = "address") val address: String
+    @param:Json(name = "lat") val lat: String,
+    @param:Json(name = "lon") val lon: String,
+    @param:Json(name = "address") val address: String
 
 )

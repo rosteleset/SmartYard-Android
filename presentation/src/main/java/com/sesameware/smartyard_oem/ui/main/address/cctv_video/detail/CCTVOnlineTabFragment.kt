@@ -32,11 +32,11 @@ import com.sesameware.smartyard_oem.databinding.FragmentCctvDetailOnlineBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
+import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.ForpostPlayer
+import com.sesameware.smartyard_oem.ui.common.player.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.adapters.DetailButtonsAdapter
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
@@ -273,9 +273,9 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
         }
 
         val player = when (serverType) {
-            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), forceVideoTrack, callbacks)
-            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), forceVideoTrack, callbacks)
-            else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), callbacks)
+            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), callbacks)
+            else -> DefaultCCTVPlayer(requireContext(), callbacks)
         }
         videoView.player = player.getPlayer()
         videoView.useController = false
@@ -291,7 +291,7 @@ class CCTVOnlineTabFragment : Fragment(), ExitFullscreenListener {
     fun changeVideoSource(cctvData: CCTVData) {
         binding.mProgress.visibility = View.VISIBLE
         Timber.d("debug_dmm  prepareMedia url = ${cctvData.hls}")
-        mPlayer?.prepareMedia(cctvData.hls, doPlay = true)
+        mPlayer?.prepareMedia(cctvData.hls, doPlay = true, enableSound = cctvData.hasSound)
     }
 
     fun releasePlayer() {

@@ -5,34 +5,36 @@ import com.squareup.moshi.Json
 typealias GetSettingsListResponse = ApiResult<List<Settings>>?
 
 data class Settings(
-    @Json(name = "address")
+    @param:Json(name = "address")
     val address: String = "",
-    @Json(name = "clientId")
+    @param:Json(name = "clientId")
     val clientId: String = "",
-    @Json(name = "clientName")
+    @param:Json(name = "clientName")
     val clientName: String = "",
-    @Json(name = "contractName")
+    @param:Json(name = "contractName")
     val contractName: String = "",
-    @Json(name = "contractOwner")
+    @param:Json(name = "contractOwner")
     val _contractOwner: String = "",
-    @Json(name = "flatId")
+    @param:Json(name = "flatId")
     val flatId: Int = -1,
-    @Json(name = "flatNumber")
+    @param:Json(name = "flatNumber")
     val flatNumber: String = "",
-    @Json(name = "flatOwner")
+    @param:Json(name = "flatOwner")
     val _flatOwner: String = "",
-    @Json(name = "hasGates")
+    @param:Json(name = "hasGates")
     val _hasGates: String = "",
-    @Json(name = "houseId")
+    @param:Json(name = "houseId")
     val houseId: Int = -1,
-    @Json(name = "lcab")
+    @param:Json(name = "lcab")
     val lcab: String?,
-    @Json(name = "roommates")
+    @param:Json(name = "roommates")
     val roommates: List<Roommate> = listOf(),
-    @Json(name = "services")
+    @param:Json(name = "services")
     val services: List<String> = listOf(),
-    @Json(name = "hasPlog")
-    val _hasPlog: String = ""
+    @param:Json(name = "hasPlog")
+    val _hasPlog: String = "",
+
+    @param:Json(name = "availableServices") val availableServices: List<ServicesData>? = null
 ) {
     val hasGates: Boolean
         get() = _hasGates == "t"
@@ -44,11 +46,11 @@ data class Settings(
         get() = _flatOwner == "t" || _contractOwner == "t"
 
     data class Roommate(
-        @Json(name = "expire")
+        @param:Json(name = "expire")
         val expire: String = "",
-        @Json(name = "phone")
+        @param:Json(name = "phone")
         val phone: String = "",
-        @Json(name = "type")
+        @param:Json(name = "type")
         val type: String = ""
     )
 }

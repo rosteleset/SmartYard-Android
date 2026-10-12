@@ -44,7 +44,8 @@ data class TrackedEventData(
 data class DoorphoneData(
     val url: String,
     val token: String,
-    val serverType: MediaServerType
+    val serverType: MediaServerType,
+    val hasSound: Boolean
 ) {
     fun getHlsAt(time: LocalDateTime, durationSeconds: Long, timeZone: String): String {
         val zoned = time.atZone(ZoneId.of(timeZone))
@@ -125,12 +126,12 @@ class EventLogViewModel(
             val dataByEntrance = hashMapOf<Int, DoorphoneData>()
             val result = addressInteractor.camMap()
             result?.data?.forEach {
-                data[it.domophoneId] = DoorphoneData(it.url, it.token, it.serverType)
+                data[it.domophoneId] = DoorphoneData(it.url, it.token, it.serverType, it.hasSound)
                 it.entranceId?.let { entranceId ->
-                    dataByEntrance[entranceId] = DoorphoneData(it.url, it.token, it.serverType)
+                    dataByEntrance[entranceId] = DoorphoneData(it.url, it.token, it.serverType, it.hasSound)
                 }
                 it.altCameras?.forEach { camera ->
-                    altData[camera.cameraId] = DoorphoneData(camera.url, camera.token, camera.serverType)
+                    altData[camera.cameraId] = DoorphoneData(camera.url, camera.token, camera.serverType, it.hasSound)
                 }
             }
             withContext(Dispatchers.Main) {

@@ -5,19 +5,19 @@ import com.squareup.moshi.Json
 typealias ExtResponse = ApiResult<Ext>?
 
 data class Ext(
-    @Json(name = "basePath") val basePath: String? = null,
-    @Json(name = "code") val code: String? = null,
-    @Json(name = "version") val _version: Int? = null,
-    @Json(name = "webViewOptions") val options: WebViewOptions? = null
+    @param:Json(name = "basePath") val basePath: String? = null,
+    @param:Json(name = "code") val code: String? = null,
+    @param:Json(name = "version") val _version: Int? = null,
+    @param:Json(name = "webViewOptions") val options: WebViewOptions? = null
 ) {
     val version get() = _version ?: 1
 }
 
 data class WebViewOptions(
-    @Json(name = "navBarHidden") val _isHeaderHidden: Any? = null,
-    @Json(name = "statusBarColor") val statusBarColor: String? = null,
-    @Json(name = "statusBarStyle") val statusBarStyle: String? = null,
-    @Json(name = "pullToRefreshEnabled") val _pullToRefreshEnabled: Any? = null,
+    @param:Json(name = "navBarHidden") val _isHeaderHidden: Any? = null,
+    @param:Json(name = "statusBarColor") val statusBarColor: String? = null,
+    @param:Json(name = "statusBarStyle") val statusBarStyle: String? = null,
+    @param:Json(name = "pullToRefreshEnabled") val _pullToRefreshEnabled: Any? = null,
 ) {
     val isHeaderHidden get() = when (val value = _isHeaderHidden) {
         is Boolean -> value

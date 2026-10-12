@@ -8,9 +8,9 @@ typealias GetServicesResponse = ApiResult<List<ServicesData>>?
 
 @Parcelize
 data class ServicesData(
-    @Json(name = "icon") val icon: String,
-    @Json(name = "title") val title: String,
-    @Json(name = "description") val description: String,
-    @Json(name = "byDefault") val byDefault: String,
-    @Json(name = "canChange") val canChange: String
+    @param:Json(name = "icon") val icon: String,
+    @param:Json(name = "title") val title: String,
+    @param:Json(name = "description") val description: String = "",
+    @param:Json(name = "byDefault") val byDefault: String = "f",
+    @param:Json(name = "canChange") val canChange: String = "t"
 ) : Parcelable

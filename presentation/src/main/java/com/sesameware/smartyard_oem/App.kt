@@ -3,6 +3,7 @@ package com.sesameware.smartyard_oem
 import android.app.Application
 import android.webkit.WebView
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.sesameware.data.player.log.PlayerDebugTree
 import com.sesameware.smartyard_oem.di.Modules
 import org.koin.android.ext.koin.androidContext
 import org.koin.androidx.fragment.koin.fragmentFactory
@@ -29,6 +30,7 @@ class App : Application() {
     private fun initLogger() {
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
+            Timber.plant(PlayerDebugTree())
             WebView.setWebContentsDebuggingEnabled(true)
         }
         //Timber.plant(Timber.DebugTree())

@@ -1,13 +1,14 @@
 package com.sesameware.data
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.os.Build
 import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerInterceptor
-import com.sesameware.data.DataModule.BASE_URL
 import com.sesameware.data.interceptors.CommonInterceptor
 import com.sesameware.data.interceptors.SessionInterceptor
 import com.sesameware.data.local.db.ItemsDatabase
+import com.sesameware.data.network.AndroidNetworkMonitor
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.data.prefs.SharedPreferenceStorage
 import com.sesameware.data.remote.TeledomApi
@@ -22,6 +23,7 @@ import com.sesameware.data.repository.InboxRepositoryImpl
 import com.sesameware.data.repository.IssueRepositoryImpl
 import com.sesameware.data.repository.LPRSRepositoryImpl
 import com.sesameware.data.repository.PayRepositroyImpl
+import com.sesameware.data.repository.PlayerLogRepositoryImpl
 import com.sesameware.data.repository.SipRepositoryImpl
 import com.sesameware.data.repository.WebRtcStreamingRepositoryImpl
 import com.sesameware.domain.interfaces.AddressRepository
@@ -34,7 +36,9 @@ import com.sesameware.domain.interfaces.GeoRepository
 import com.sesameware.domain.interfaces.InboxRepository
 import com.sesameware.domain.interfaces.IssueRepository
 import com.sesameware.domain.interfaces.LPRSRepository
+import com.sesameware.domain.interfaces.NetworkMonitor
 import com.sesameware.domain.interfaces.PayRepository
+import com.sesameware.domain.interfaces.PlayerLogRepository
 import com.sesameware.domain.interfaces.SipRepository
 import com.sesameware.domain.interfaces.WebRtcStreamingRepository
 import com.sesameware.domain.model.response.ProviderConfig
@@ -52,6 +56,8 @@ import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
 import org.webrtc.VideoDecoderFactory
 import org.webrtc.VideoEncoderFactory
+import org.webrtc.audio.AudioDeviceModule
+import org.webrtc.audio.JavaAudioDeviceModule
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
@@ -86,6 +92,8 @@ object DataModule {
         }
 
         single { createChuckerInterceptor(get()) }
+
+        single { PlayerLogRepositoryImpl() as PlayerLogRepository }
 
         single { get<ItemsDatabase>().itemDao() }
 
@@ -129,6 +137,18 @@ object DataModule {
             DefaultVideoEncoderFactory(eglBase.eglBaseContext, true, true)
         }
 
+        single<AudioDeviceModule> {
+            val context = androidContext()
+            JavaAudioDeviceModule.builder(context)
+                .setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MOVIE)
+                        .build()
+                )
+                .createAudioDeviceModule()
+        }
+
         single<PeerConnectionFactory> {
             val context = androidContext()
 
@@ -139,12 +159,15 @@ object DataModule {
             PeerConnectionFactory.initialize(options)
 
             PeerConnectionFactory.builder()
+                .setAudioDeviceModule(get<AudioDeviceModule>())
                 .setVideoDecoderFactory(get<VideoDecoderFactory>())
                 .setVideoEncoderFactory(get<VideoEncoderFactory>())
                 .createPeerConnectionFactory()
         }
 
-        single { WebRtcStreamingRepositoryImpl(get(), get(named("clean"))) as WebRtcStreamingRepository }
+        single { WebRtcStreamingRepositoryImpl(get(), get(named("clean")), get()) as WebRtcStreamingRepository }
+
+        single<NetworkMonitor> { AndroidNetworkMonitor(androidContext()) }
     }
 
     fun createChuckerInterceptor(applicationContext: Context): Interceptor =
@@ -202,6 +225,7 @@ object DataModule {
         val builder = OkHttpClient.Builder()
 
         with (builder) {
+            retryOnConnectionFailure(true)
             if (BuildConfig.DEBUG) {
                 addNetworkInterceptor(chuckerInterceptor)
             }

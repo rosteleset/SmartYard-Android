@@ -1,6 +1,8 @@
 package com.sesameware.smartyard_oem.ui.main.settings.model
 
+import com.sesameware.domain.model.response.ServicesData
 import com.sesameware.domain.model.response.Settings
+import kotlin.collections.List
 
 /**
  * @author Nail Shakurov
@@ -17,6 +19,7 @@ data class SettingsAddressModel(
     val lcab: String?,
     val hasGates: Boolean,
     val hasPlog: Boolean,
+    val availableServices: List<ServicesData>? = null,
 ) {
     var isExpanded: Boolean = false
 }
@@ -33,4 +36,5 @@ fun Settings.toSettingsAddressModel(isExpanded: Boolean = false) =
         lcab,
         hasGates,
         hasPlog,
+        availableServices,
     ).apply { this.isExpanded = isExpanded }

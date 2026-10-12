@@ -6,8 +6,8 @@ import com.squareup.moshi.Json
  * Created on 28.04.2020.
  */
 data class CommentRequest(
-    @Json(name = "comment")
+    @param:Json(name = "comment")
     val comment: String = "", // Cменился способ доставки. Подготовить пакет для курьера.
-    @Json(name = "key")
+    @param:Json(name = "key")
     val key: String = "" // REM-418379
 )

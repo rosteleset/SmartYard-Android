@@ -10,33 +10,33 @@ import com.squareup.moshi.Json
 typealias PaymentsListResponse = ApiResult<List<PayAddress>>?
 
 data class PayAddress(
-    @Json(name = "accounts")
+    @param:Json(name = "accounts")
     val accounts: List<Account> = listOf(),
-    @Json(name = "address")
+    @param:Json(name = "address")
     val address: String = "" // Тамбов, ул. Дмитрия Карбышева, дом 5, кв 1
 ) {
     data class Account(
-        @Json(name = "balance")
+        @param:Json(name = "balance")
         val balance: Float = 0.0f, // 0
-        @Json(name = "blocked")
+        @param:Json(name = "blocked")
         val blocked: String = "", // t
-        @Json(name = "bonus")
+        @param:Json(name = "bonus")
         val bonus: Float = 0.0f, // 0
-        @Json(name = "clientId")
+        @param:Json(name = "clientId")
         val clientId: String = "", // 89545
-        @Json(name = "clientName")
+        @param:Json(name = "clientName")
         val clientName: String = "", // Попова Ирина
-        @Json(name = "contractName")
+        @param:Json(name = "contractName")
         val contractName: String = "", // ФЛ-84235/20
-        @Json(name = "contractPayName")
+        @param:Json(name = "contractPayName")
         val contractPayName: String = "", // 84235
-        @Json(name = "services")
+        @param:Json(name = "services")
         val services: List<String> = listOf(),
-        @Json(name = "payAdvice")
+        @param:Json(name = "payAdvice")
         val payAdvice: Float = 0.0f,
-        @Json(name = "lcab")
+        @param:Json(name = "lcab")
         val lcab: String = "",
-        @Json(name = "lcabPay")
+        @param:Json(name = "lcabPay")
         val lcabPay: String = ""
     )
 }

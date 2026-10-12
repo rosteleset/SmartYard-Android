@@ -2,8 +2,10 @@ package com.sesameware.domain.model.response
 
 import android.os.Parcelable
 import com.sesameware.domain.model.concatIfCorrectUrl
+import com.sesameware.domain.model.mapper.toEntranceCamera
 import com.squareup.moshi.Json
 import kotlinx.parcelize.Parcelize
+import kotlin.collections.map
 
 typealias CamMapResponse = ApiResult<List<CamMap>>?
 
@@ -11,23 +13,26 @@ typealias CamMapResponse = ApiResult<List<CamMap>>?
 data class EntranceCamera(
     val previewUrl: String,
     val whepUrl: String = "",
+    val llHlsUrl: String = "",
     val hlsUrl: String,
+    val enableSound: Boolean,
     val previewCacheKey: String
 ) : Parcelable {
     val isValid: Boolean
-        get() = previewUrl.isNotBlank() || hlsUrl.isNotBlank() || hlsUrl.isNotBlank()
+        get() = previewUrl.isNotBlank() || hlsUrl.isNotBlank() || llHlsUrl.isNotBlank()
 }
 
 data class CamMap(
-    @Json(name = "id") val domophoneId: Int,
-    @Json(name = "entranceId") val entranceId: Int? = null,
-    @Json(name = "url") val url: String,
-    @Json(name = "token") val token: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
-    @Json(name = "altCameras") val altCameras: List<AltCameras>? = null  // additional cameras
+    @param:Json(name = "id") val domophoneId: Int,
+    @param:Json(name = "entranceId") val entranceId: Int? = null,
+    @param:Json(name = "url") val url: String,
+    @param:Json(name = "token") val token: String,
+    @param:Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    @param:Json(name = "hasSound") val _hasSound: Boolean?,
+    @param:Json(name = "altCameras") val altCameras: List<AltCamera>? = null  // additional cameras
 ) {
 
-    private val timestamp: Long = System.currentTimeMillis()
+    val timestamp: Long = System.currentTimeMillis()
 
     val serverType: MediaServerType
         get() {
@@ -40,45 +45,21 @@ data class CamMap(
             }
         }
 
-    private fun getEntranceCamera(url: String, token: String): EntranceCamera {
-        val previewUrl = when (serverType) {
-            MediaServerType.NIMBLE -> concatIfCorrectUrl(url,"/thumbnail.mp4?wmsAuthSign=$token")
-            MediaServerType.FORPOST -> concatIfCorrectUrl(url, "&$token")
-            MediaServerType.MACROSCOP,
-            MediaServerType.SESAMEWARE,
-            MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/preview.mp4?token=$token")
-        }
-        return EntranceCamera(
-            previewUrl = previewUrl,
-            hlsUrl = when (serverType) {
-                MediaServerType.NIMBLE -> concatIfCorrectUrl(url,"/playlist.m3u8?wmsAuthSign=$token")
-                MediaServerType.MACROSCOP,
-                MediaServerType.FORPOST -> concatIfCorrectUrl(url, "&$token")
-                MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/index.m3u8?token=$token")
-            },
-            whepUrl = when (serverType) {
-                MediaServerType.SESAMEWARE,
-                MediaServerType.FLUSSONIC -> concatIfCorrectUrl(url, "/whep?token=$token")
-                MediaServerType.NIMBLE,
-                MediaServerType.MACROSCOP,
-                MediaServerType.FORPOST -> ""
-            },
-            previewCacheKey = "$previewUrl$timestamp"
-        )
-    }
+    val hasSound: Boolean
+        get() = _hasSound ?: true
 
-    val entranceCamera: EntranceCamera
-        get() = getEntranceCamera(url, token)
+    val entranceCameras: List<EntranceCamera>
+        get() = mutableListOf(this.toEntranceCamera()).apply {
+            val addCams = altCameras?.map { it.toEntranceCamera(timestamp) }.orEmpty()
+            addAll(addCams)
+        }.toList()
 
-    val additionalCameras: List<EntranceCamera>?
-        get() = altCameras?.map { altCam -> getEntranceCamera(altCam.url, altCam.token) }
-
-    data class AltCameras(
-        @Json(name = "cameraId") val cameraId: Int,
-        @Json(name = "url") val url: String,
-        @Json(name = "token") val token: String,
-        @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC
+    data class AltCamera(
+        @param:Json(name = "cameraId") val cameraId: Int,
+        @param:Json(name = "url") val url: String,
+        @param:Json(name = "token") val token: String,
+        @param:Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+        @param:Json(name = "hasSound") val _hasSound: Boolean?
     ) {
         val serverType: MediaServerType
             get() {
@@ -90,5 +71,8 @@ data class CamMap(
                     else -> MediaServerType.FLUSSONIC
                 }
             }
+
+        val hasSound: Boolean
+            get() = _hasSound ?: true
     }
 }

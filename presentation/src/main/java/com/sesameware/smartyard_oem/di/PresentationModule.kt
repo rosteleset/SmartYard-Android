@@ -75,7 +75,7 @@ object PresentationModule {
         viewModel { MainActivityViewModel(get(), get(), get(), get()) }
         viewModel { ChatViewModel(get()) }
         viewModel { SettingsViewModel(get(), get(), get()) }
-        viewModel { AddressViewModel(get(), get(), get(), get(), get(), get(), get()) }
+        viewModel { AddressViewModel(get(), get(), get(), get(), get(), get(), get(), get()) }
         viewModel { EventLogViewModel(get(), get()) }
         viewModel { FaceSettingsViewModel(get(), get(), get()) }
         viewModel { (handle: SavedStateHandle) -> CCTVViewModel(handle, get(), get()) }

@@ -49,7 +49,11 @@ class TouchInterceptorZoomLayout @JvmOverloads constructor(
 
     fun setAspectRatio(ratio: Float?) {
         aspectRatio = ratio
-        post { updateChildBounds() }
+        if (width > 0 && height > 0) {
+            updateChildBounds()
+        } else {
+            post { updateChildBounds() }
+        }
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

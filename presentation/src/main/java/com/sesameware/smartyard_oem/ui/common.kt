@@ -729,6 +729,10 @@ fun WebView.injectInsets(windowInsets: WindowInsetsCompat) {
             if (document.head) document.head.appendChild(style);
         }
         style.innerHTML = `
+            html, body {
+                height: auto !important; 
+                min-height: 100% !important;
+            }
             body { 
                 padding-top: ${top}px !important; 
                 padding-bottom: ${bottom}px !important; 

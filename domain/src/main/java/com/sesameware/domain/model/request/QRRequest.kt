@@ -7,5 +7,5 @@ import com.squareup.moshi.Json
  * Created on 24/03/2020.
  */
 data class QRRequest(
-    @Json(name = "QR") val QR: String
+    @param:Json(name = "QR") val QR: String
 )

@@ -6,6 +6,6 @@ import com.squareup.moshi.Json
  * Created on 20/03/2020.
  */
 data class RecoveryOptionsRequest(
-    @Json(name = "contract")
+    @param:Json(name = "contract")
     val contract: String = "" // f70392
 )

@@ -7,5 +7,5 @@ import com.squareup.moshi.Json
  * Created on 13/03/2020.
  */
 data class GetIntercomRequest(
-    @Json(name = "flatId") val houseId: Int
+    @param:Json(name = "flatId") val houseId: Int
 )

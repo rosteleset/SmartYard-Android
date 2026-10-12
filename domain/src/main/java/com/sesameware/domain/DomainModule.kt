@@ -1,19 +1,19 @@
 package com.sesameware.domain
 
-import org.koin.dsl.module
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.CCTVInteractor
 import com.sesameware.domain.interactors.DatabaseInteractor
+import com.sesameware.domain.interactors.ExtInteractor
+import com.sesameware.domain.interactors.FRSInteractor
 import com.sesameware.domain.interactors.GeoInteractor
 import com.sesameware.domain.interactors.InboxInteractor
 import com.sesameware.domain.interactors.IssueInteractor
+import com.sesameware.domain.interactors.LPRSInteractor
 import com.sesameware.domain.interactors.PayInteractor
 import com.sesameware.domain.interactors.SipInteractor
-import com.sesameware.domain.interactors.FRSInteractor
-import com.sesameware.domain.interactors.ExtInteractor
-import com.sesameware.domain.interactors.LPRSInteractor
 import com.sesameware.domain.interactors.WebRtcStreamingInteractor
+import org.koin.dsl.module
 
 object DomainModule {
 

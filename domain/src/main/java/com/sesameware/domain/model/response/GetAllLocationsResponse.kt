@@ -5,6 +5,6 @@ import com.squareup.moshi.Json
 typealias GetAllLocationsResponse = ApiResult<List<LocationData>>
 
 data class LocationData(
-    @Json(name = "locationId") val locationId: Int,
-    @Json(name = "name") val name: String
+    @param:Json(name = "locationId") val locationId: Int,
+    @param:Json(name = "name") val name: String
 )

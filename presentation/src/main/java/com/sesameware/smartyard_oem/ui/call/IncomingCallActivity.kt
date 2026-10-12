@@ -113,11 +113,25 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
     private val peerConnectionFactory: PeerConnectionFactory by inject()
 
-    private fun buildPeerConnection(observer: PeerConnection.Observer) =
-        peerConnectionFactory.createPeerConnection(
-            listOf(PeerConnection.IceServer.builder(mPushCallData.stun).createIceServer()),
-            observer
-        )
+    private fun buildPeerConnection(observer: PeerConnection.Observer): PeerConnection? {
+        val iceServers = mutableListOf<PeerConnection.IceServer>()
+        val stun = if (::mPushCallData.isInitialized) mPushCallData.stun else null
+        if (!stun.isNullOrBlank()) {
+            runCatching {
+                val stunUri = if (stun.startsWith("stun:", ignoreCase = true) || stun.startsWith("turn:", ignoreCase = true)) {
+                    stun
+                } else {
+                    "stun:$stun"
+                }
+                iceServers.add(PeerConnection.IceServer.builder(stunUri).createIceServer())
+            }.onFailure { e ->
+                Timber.e(e, "debug_webrtc invalid ice server uri: $stun")
+            }
+        }
+        return runCatching {
+            peerConnectionFactory.createPeerConnection(iceServers, observer)
+        }.getOrNull()
+    }
 
     fun addIceCandidate(iceCandidate: IceCandidate?) {
         peerConnection?.addIceCandidate(iceCandidate)
@@ -152,12 +166,12 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
             override fun onAddStream(p0: MediaStream?) {
                 Timber.d("debug_webrtc onAddStream: $p0")
-                p0?.videoTracks?.firstOrNull()?.addSink(binding.mWebRTCView)
+                runCatching { p0?.videoTracks?.firstOrNull()?.addSink(binding.mWebRTCView) }
             }
 
             override fun onRemoveStream(p0: MediaStream?) {
                 Timber.d("debug_webrtc onRemoveStream: $p0")
-                p0?.videoTracks?.firstOrNull()?.removeSink(binding.mWebRTCView)
+                runCatching { p0?.videoTracks?.firstOrNull()?.removeSink(binding.mWebRTCView) }
             }
 
             override fun onDataChannel(p0: DataChannel?) {
@@ -172,6 +186,10 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
                 Timber.d("debug_webrtc onAddTrack: $p0 \n ${p1.contentToString()}")
             }
         })
+        if (peerConnection == null) {
+            Timber.e("debug_webrtc peerConnection is null")
+            return
+        }
         peerConnection?.createConnection()
     }
 
@@ -186,30 +204,49 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
 
                 setLocalDescription(object : SimpleSdpObserver() {
                     override fun onSetSuccess() {
+                        val videoUrl = mPushCallData.webRtcVideoUrl
+                        if (videoUrl.isBlank() ||
+                            (!videoUrl.startsWith("http://", ignoreCase = true) &&
+                             !videoUrl.startsWith("https://", ignoreCase = true))
+                        ) {
+                            Timber.e("debug_webrtc invalid videoUrl: $videoUrl")
+                            return
+                        }
+
                         val body = RequestBody.create("application/sdp".toMediaTypeOrNull(), desc?.description ?: "")
-                        Timber.d("debug_webrtc    server URL ${mPushCallData.webRtcVideoUrl}")
+                        Timber.d("debug_webrtc    server URL $videoUrl")
                         Timber.d("debug_webrtc    ${body.contentType()}    ${body.contentLength()}")
-                        val request = Request.Builder()
-                            .url(mPushCallData.webRtcVideoUrl)
-                            .post(body)
-                            .build()
+
                         val httpClient = OkHttpClient.Builder()
                             .callTimeout(5, TimeUnit.SECONDS)
                             .build()
+
                         try {
+                            val request = Request.Builder()
+                                .url(videoUrl)
+                                .post(body)
+                                .build()
+
                             httpClient.newCall(request).execute().use { response ->
                                 Timber.d("debug_webrtc    response code ${response.code}")
                                 if (response.isSuccessful) {
-                                    val sdpAnswer = SessionDescription(SessionDescription.Type.ANSWER, response.body!!.string())
-                                    setRemoteDescription(object : SimpleSdpObserver() {
-                                        override fun onSetSuccess() {
-                                            Timber.d("debug_webrtc onSetSuccessRemoteSession")
-                                        }
-                                    }, sdpAnswer)
+                                    val responseBody = response.body?.string()
+                                    if (!responseBody.isNullOrEmpty()) {
+                                        val sdpAnswer = SessionDescription(SessionDescription.Type.ANSWER, responseBody)
+                                        setRemoteDescription(object : SimpleSdpObserver() {
+                                            override fun onSetSuccess() {
+                                                Timber.d("debug_webrtc onSetSuccessRemoteSession")
+                                            }
+                                        }, sdpAnswer)
+                                    } else {
+                                        Timber.e("debug_webrtc response body is null or empty")
+                                    }
+                                } else {
+                                    Timber.e("debug_webrtc WHEP response unsuccessful: ${response.code}")
                                 }
                             }
                         } catch (e: Exception) {
-                            Timber.d("debug_webrtc $e")
+                            Timber.e(e, "debug_webrtc WHEP request failed")
                         }
                         Timber.d("debug_webrtc onSetSuccess")
                     }
@@ -234,21 +271,30 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
     override val mViewModel by viewModel<IncomingCallActivityViewModel>()
     private lateinit var mPushCallData: PushCallData
     private val hasWebRTC: Boolean
-        get() = ::mPushCallData.isInitialized && mPushCallData.videoStream.isNotEmpty()
+        get() = ::mPushCallData.isInitialized &&
+                mPushCallData.videoStream.isNotBlank() &&
+                mPushCallData.videoStream != "null" &&
+                (mPushCallData.videoStream.startsWith("http://", ignoreCase = true) ||
+                 mPushCallData.videoStream.startsWith("https://", ignoreCase = true))
     private var hasSnapshot = true
     private var mSensorManager: SensorManager? = null
     private var mProximity: Sensor? = null
     private var useSpeaker = false
 
     private fun startWebRTC() {
-        if (!isWebRTCStopped) {
+        if (!isWebRTCStopped || !hasWebRTC) {
             return
         }
 
-        setupWebRtcView()
-        binding.mWebRTCView.addFrameListener(webRTCListener, 1f)
-        createConnection()
-        isWebRTCStopped = false
+        runCatching {
+            setupWebRtcView()
+            binding.mWebRTCView.addFrameListener(webRTCListener, 1f)
+            createConnection()
+            isWebRTCStopped = false
+        }.onFailure { e ->
+            Timber.e(e, "debug_webrtc failed to start WebRTC")
+            isWebRTCStopped = true
+        }
     }
 
     private fun setupWebRtcView() {
@@ -527,7 +573,7 @@ class IncomingCallActivity : CommonActivity(), KoinComponent, SensorEventListene
         mViewModel.imageStringData.observe(
             this,
             EventObserver { string ->
-                if (string.isEmpty() || !hasSnapshot) {
+                if (string.isEmpty() || !hasSnapshot || isFinishing || isDestroyed) {
                     return@EventObserver
                 }
                 Timber.d("debug_dmm  observe imageStringData url=$string")

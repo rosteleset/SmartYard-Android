@@ -10,27 +10,27 @@ import com.squareup.moshi.Json
 typealias IntercomResponse = ApiResult<Intercom>
 
 data class Intercom(
-    @Json(name = "allowDoorCode")
+    @param:Json(name = "allowDoorCode")
     val _allowDoorCode: String = "", // t
-    @Json(name = "autoOpen")
+    @param:Json(name = "autoOpen")
     val autoOpen: String = "", // 2020-03-13 15:55:34
-    @Json(name = "CMS")
+    @param:Json(name = "CMS")
     val _cMS: String? = null,
-    @Json(name = "doorCode")
+    @param:Json(name = "doorCode")
     val doorCode: String? = "", // 99764
-    @Json(name = "VoIP")
+    @param:Json(name = "VoIP")
     val _voIP: String? = null,
-    @Json(name = "whiteRabbit")
+    @param:Json(name = "whiteRabbit")
     val whiteRabbit: Int? = null,
-    @Json(name = "paperBill")
+    @param:Json(name = "paperBill")
     val _paperBill: String? = null,
-    @Json(name = "disablePlog")
+    @param:Json(name = "disablePlog")
     val _disablePlog: String? = null,
-    @Json(name = "hiddenPlog")
+    @param:Json(name = "hiddenPlog")
     val _hiddenPlog: String? = null,
-    @Json(name = "FRSDisabled")
+    @param:Json(name = "FRSDisabled")
     val _frsDisabled: String? = null,
-    @Json(name = "LPRSDisabled")
+    @param:Json(name = "LPRSDisabled")
     val _lprsDisabled: String? = null
 ) {
     val allowDoorCode: Boolean

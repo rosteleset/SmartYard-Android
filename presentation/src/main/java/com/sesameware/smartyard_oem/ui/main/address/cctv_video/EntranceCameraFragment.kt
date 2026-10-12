@@ -1,16 +1,17 @@
 package com.sesameware.smartyard_oem.ui.main.address.cctv_video
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo
-import android.graphics.Color
+import android.graphics.Bitmap
+import android.media.AudioManager
 import android.os.Bundle
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
+import android.os.SystemClock
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import androidx.annotation.MainThread
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
@@ -20,23 +21,32 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.bumptech.glide.Glide
 import com.bumptech.glide.signature.ObjectKey
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.PlaybackException
+import com.sesameware.data.player.log.PlayerLogger
 import com.sesameware.data.repository.WebRtcMediaTrack
 import com.sesameware.domain.interfaces.WebRtcState
+import com.sesameware.domain.model.NetworkStatus
 import com.sesameware.smartyard_oem.BuildConfig
+import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentEntranceCameraBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.FallbackMediaSourceFactory
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
+import com.sesameware.smartyard_oem.ui.main.player.log.PlayerLogFragment
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.webrtc.AudioTrack
 import org.webrtc.EglBase
+import org.webrtc.EglRenderer
 import org.webrtc.RendererCommon
 import org.webrtc.RendererCommon.RendererEvents
 import org.webrtc.VideoTrack
@@ -44,20 +54,30 @@ import timber.log.Timber
 import kotlin.time.Duration.Companion.milliseconds
 
 class EntranceCameraFragment : Fragment() {
+    companion object {
+        private const val WEB_RTC_FF_TIMEOUT = 8000
+        private const val DEFAULT_VIDEO_ASPECT_RATIO = 16f / 9f
+    }
     private var _binding: FragmentEntranceCameraBinding? = null
     private val binding get() = _binding!!
 
     private val args: EntranceCameraFragmentArgs by navArgs()
     private val viewModel by sharedViewModel<AddressViewModel>()
 
-    private var mode = Mode.IDLE
-    private var started = false
+    private var isWebRtcFailed = false
+    private var isWebRtcTracksAttached = false
+    private var isWebRtcRendererInitialized = false
     private val rootEglBase: EglBase by inject()
     private var videoTrack: VideoTrack? = null
     private var audioTrack: AudioTrack? = null
-    private var hlsPlayer: BaseCCTVPlayer? = null
-    private var firstFrameTimeoutJob: Job? = null
-    private var webRtcCollectionJob: Job? = null
+    private var hlsPlayer: DefaultCCTVPlayer? = null
+    private var webRtcFirstFrameTimeoutJob: Job? = null
+    private var playerNetworkJob: Job? = null
+    private var webRtcFrameListener: EglRenderer.FrameListener? = null
+    private var webRtcFirstFrameRendered = false
+    private var webRtcAttachmentId = 0L
+    private var webRtcAttachedAtMs = 0L
+    private val mediaSourceFactory = FallbackMediaSourceFactory()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -70,118 +90,44 @@ class EntranceCameraFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.connectionLog.isVisible = BuildConfig.DEBUG
         enterFullscreen()
+        activity?.volumeControlStream = AudioManager.STREAM_MUSIC
         bindViews()
-        collectWebRtcState()
-    }
-
-    private fun collectWebRtcState() {
-        webRtcCollectionJob?.cancel()
-        webRtcCollectionJob = viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.webRtcState.transformWhile { state ->
-                    emit(state)
-                    state !is WebRtcState.Error
-                }.collect { state ->
-                    when (state) {
-                        is WebRtcState.Connected -> {
-                            val (video, audio) = state.unpackToPair()
-                            val noVideo = if (video == null) " not" else ""
-                            val noAudio = if (audio == null) " not" else ""
-                            addDebugConnectionState("Starting WebRTC: video$noVideo connected, audio$noAudio connected",)
-                            addDebugConnectionState("Playing ${args.entranceCamera.whepUrl}")
-                            Timber.d("debug_webrtc starting playthrough: ${video?.javaClass?.simpleName} ${audio?.javaClass?.simpleName}")
-                            videoTrack = video
-                            audioTrack = audio
-                            startWebRtc()
-                            mode = Mode.WEB_RTC
-
-                            firstFrameTimeoutJob?.cancel()
-                            firstFrameTimeoutJob = viewLifecycleOwner.lifecycleScope.launch {
-                                delay(2000.milliseconds)
-                                val timeoutMsg = "WebRTC first frame waiting timeout"
-                                addDebugConnectionState("WebRTC connection error: $timeoutMsg")
-                                Timber.d("debug_webrtc connection error:  $timeoutMsg")
-                                fallbackToHls()
-                            }
-                        }
-                        is WebRtcState.Disconnected -> releaseWebRtcView()
-                        is WebRtcState.Error -> {
-                            addDebugConnectionState("WebRTC connection error: ${state.message}")
-                            Timber.d("debug_webrtc connection error:  ${state.message},\ncause:  ${state.cause}")
-                            fallbackToHls()
-                        }
-                        else -> {}
-                    }
-                }
-            }
-        }
-    }
-
-    private fun fallbackToHls() {
-        webRtcCollectionJob?.cancel()
-        addDebugConnectionState("Fallback to HLS")
-        mode = Mode.HLS
-        releaseWebRtcView()
-        createHlsPlayer(binding.playerView, binding.progressBar)
-        startHls()
-    }
-
-    private fun startWebRtc() {
-        videoTrack?.apply {
-            setEnabled(true)
-            addSink(binding.webRtcView)
-        }
-
-        audioTrack?.let { audio ->
-            with (binding) {
-                ivMute.isSelected = true
-                audio.setEnabled(false)
-
-                ivMute.setOnClickListener {
-                    audio.setEnabled(!audio.enabled())
-                    ivMute.isSelected = !audio.enabled()
-                }
-
-                muteWrapper.isVisible = true
-            }
-        }
-
-        started = true
-    }
-
-    private fun stopWebRtc() {
-        Timber.d("debug_webrtc stopWebRtc")
-        firstFrameTimeoutJob?.cancel()
-
-        videoTrack?.apply {
-            removeSink(binding.webRtcView)
-            setEnabled(false)
-        }
-
-        audioTrack?.let { audio ->
-            with (binding) {
-                ivMute.isSelected = true
-                audio.setEnabled(false)
-            }
-        }
-
-        started = false
-    }
-
-    private fun releaseWebRtcView() {
-        Timber.d("debug_webrtc releaseWebRtc")
-        firstFrameTimeoutJob?.cancel()
-
-        videoTrack = null
-        started = false
-        runCatching { binding.webRtcView.release() }
+        createHlsPlayer()
+        runWebRtc()
     }
 
     private fun bindViews() {
+        // Only the active video surface is visible. Preview masks it until a frame
+        // reaches the renderer; SurfaceView alpha is not a reliable surface switch.
+        binding.playerView.isVisible = false
+        binding.webRtcView.isVisible = true
+        binding.webRtcView.alpha = 1f
+        binding.ivPreview.isVisible = true
+
+        if (BuildConfig.DEBUG){
+            binding.ivPlayerLog.isVisible = true
+
+            val fragment = PlayerLogFragment()
+            val tag = PlayerLogFragment.TAG
+            childFragmentManager.beginTransaction()
+                .add(R.id.playerLogContainer, fragment, tag)
+                .hide(fragment)
+                .commit()
+
+            binding.ivPlayerLog.setOnClickListener {
+                childFragmentManager.beginTransaction()
+                    .show(fragment)
+                    .commit()
+            }
+        }
         binding.ivBack.setOnClickListener { findNavController().popBackStack() }
         binding.tbOpen.setOnClickListener {
+            Timber.d(
+                "%s%s",
+                "debug_dmm Opening door: domophoneId=${args.lock.domophoneId}, ",
+                "doorId=${args.lock.doorId}"
+            )
             viewModel.openDoor(args.lock)
             _binding?.tbOpen?.isClickable = false
             _binding?.root?.postDelayed(
@@ -199,6 +145,7 @@ class EntranceCameraFragment : Fragment() {
             .into(binding.ivPreview)
 
         binding.progressBar.isVisible = true
+        binding.zlEntranceCamera.setAspectRatio(DEFAULT_VIDEO_ASPECT_RATIO)
         binding.webRtcView.run {
             setEnableHardwareScaler(true)
 
@@ -206,125 +153,412 @@ class EntranceCameraFragment : Fragment() {
 
             init(rootEglBase.eglBaseContext, object : RendererEvents {
                 override fun onFirstFrameRendered() {
-                    firstFrameTimeoutJob?.cancel()
-                    post {
-                        Timber.d("debug_webrtc onFirstFrameRendered")
-                        binding.progressBar.isVisible = false
-                        binding.ivPreview.isVisible = false
-                        binding.ivNoStream.isVisible = false
-                        alpha = 1.0f
-                    }
+                    // SurfaceEglRenderer reports an incoming frame BEFORE its GL draw,
+                    // once per init(), not once per attachment. Diagnostic only.
+                    PlayerLogger.d("[WRTC-MEDIA] Renderer received its first frame since init (not render-ready)")
                 }
 
                 override fun onFrameResolutionChanged(videoWidth: Int, videoHeight: Int, rotation: Int) {
-                    post {
-                        Timber.d("debug_webrtc FrameResolutionChanged")
+                    val renderer = this@run
+                    renderer.post {
+                        val currentBinding = _binding ?: return@post
+                        if (currentBinding.webRtcView !== renderer || isWebRtcFailed || !isWebRtcTracksAttached) return@post
+                        PlayerLogger.i("[WRTC-MEDIA] Video resolution:" +
+                                " ${videoWidth}x${videoHeight}, rotation: $rotation")
                         val isPortrait = rotation == 90 || rotation == 270
                         val actualWidth = if (isPortrait) videoHeight else videoWidth
                         val actualHeight = if (isPortrait) videoWidth else videoHeight
 
                         if (actualWidth > 0 && actualHeight > 0) {
-                            val ratio = actualWidth.toFloat() / actualHeight.toFloat()
-                            binding.zlEntranceCamera.setAspectRatio(ratio)
+                            currentBinding.zlEntranceCamera.setAspectRatio(actualWidth.toFloat() / actualHeight.toFloat())
                         }
                     }
                 }
             })
+            isWebRtcRendererInitialized = true
         }
     }
 
-    private fun addDebugConnectionState(newLine: String, error: Boolean = false) {
-        val prevText = binding.connectionLog.text
-        val builder = SpannableStringBuilder(prevText)
-        if (prevText.isNotEmpty()) {
-            builder.append("\n")
+    private fun runWebRtc() {
+        val whepUrl = args.entranceCamera.whepUrl
+        if (whepUrl.isBlank()) {
+            PlayerLogger.w("[FLOW] Fallback to LL-HLS (Reason: WHEP URL is blank)")
+            isWebRtcFailed = true
+            runHls()
+            return
         }
-        val start = builder.length
-        builder.append(newLine)
-        if (error) {
-            builder.setSpan(
-                ForegroundColorSpan(Color.RED),
-                start,
-                builder.length,
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            )
+
+        playerNetworkJob?.cancel()
+        playerNetworkJob = viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                try {
+                    if (isWebRtcFailed) {
+                        runHls()
+                        return@repeatOnLifecycle
+                    }
+
+                    viewModel.networkStatus.collectLatest { status ->
+                        when (status) {
+                            is NetworkStatus.Disconnected -> {
+                                PlayerLogger.w("[NETWORK] Network lost. Detaching WebRTC tracks...")
+                                binding.progressBar.isVisible = true
+                                detachWebRtcTracks()
+                            }
+
+                            is NetworkStatus.AvailableWiFi,
+                            is NetworkStatus.AvailableCellular -> {
+                                while (isActive && !isWebRtcFailed) {
+                                    PlayerLogger.d("[NETWORK] Network available. Connecting WebRTC...")
+                                    startWebRtcFlow(whepUrl)
+                                    if (isWebRtcFailed) break
+                                    PlayerLogger.w("[NETWORK] WebRTC stream disconnected or error." +
+                                            " Retrying in 2 seconds...")
+                                    delay(2000.milliseconds)
+                                }
+                            }
+
+                            is NetworkStatus.Undefined -> {
+                                PlayerLogger.d("[NETWORK] Network Undefined...")
+                            }
+                        }
+
+                    }
+                } finally {
+                    // A fallback cancels this collector. Its cleanup must not reset
+                    // the HLS UI/audio controls after runHls() has taken ownership.
+                    if (!isWebRtcFailed) detachWebRtcTracks()
+                }
+            }
         }
-        binding.connectionLog.text = builder
     }
 
-    private fun createHlsPlayer(videoView: PlayerView, progressView: View) {
+    private suspend fun startWebRtcFlow(whepUrl: String) {
+        viewModel.playWebRtcStream(whepUrl)
+            .transformWhile { state ->
+                emit(state)
+                state !is WebRtcState.Fatal
+            }
+            .collect { state ->
+                when (state) {
+                    is WebRtcState.Connected -> {
+                        binding.progressBar.isVisible = true
+                        PlayerLogger.d("[WRTC-MEDIA] Connected delivered at elapsedRealtimeMs=${SystemClock.elapsedRealtime()}; waiting for rendered video")
+                        val (video, audio) = state.unpackToPair()
+                        attachWebRtcTracks(video, audio)
+                    }
+
+                    is WebRtcState.Fatal -> {
+                        PlayerLogger.w("[FLOW] Fatal WebRTC Error. Fallback to LL-HLS")
+                        detachWebRtcTracks()
+                        isWebRtcFailed = true
+                        runHls()
+                    }
+
+                    is WebRtcState.Disconnected,
+                    is WebRtcState.Error -> {
+                        binding.progressBar.isVisible = true
+                        detachWebRtcTracks()
+                    }
+
+                    else -> {}
+                }
+            }
+    }
+
+    private fun attachWebRtcTracks(video: VideoTrack?, audio: AudioTrack?) {
+        PlayerLogger.i("[FLOW] attachWebRtcTracks called")
+        if (isWebRtcFailed || !isWebRtcRendererInitialized) return
+        if (isWebRtcTracksAttached) {
+            PlayerLogger.w("[FLOW] Tracks already attached!")
+            return
+        }
+        val renderer = binding.webRtcView
+        val attachmentId = ++webRtcAttachmentId
+        val attachedAtMs = SystemClock.elapsedRealtime()
+        webRtcAttachedAtMs = attachedAtMs
+        videoTrack = video
+        audioTrack = audio
+        webRtcFirstFrameRendered = false
+        isWebRtcTracksAttached = true
+        binding.playerView.isVisible = false
+        renderer.isVisible = true
+        renderer.alpha = 1f
+        binding.ivPreview.isVisible = true
+        binding.progressBar.isVisible = true
+        binding.ivNoStream.isVisible = false
+        // FrameListener's exposed overload ignores FPS reduction. Explicitly use
+        // unrestricted rendering so its notification follows the normal GL draw.
+        renderer.disableFpsReduction()
+
+        webRtcFrameListener?.let { listener ->
+            runCatching { renderer.removeFrameListener(listener) }
+        }
+        val listener = object : EglRenderer.FrameListener {
+            override fun onFrame(bitmap: Bitmap?) {
+                val renderedAtMs = SystemClock.elapsedRealtime()
+                renderer.post {
+                    val currentBinding = _binding ?: return@post
+                    if (currentBinding.webRtcView !== renderer ||
+                        attachmentId != webRtcAttachmentId ||
+                        !isWebRtcTracksAttached || isWebRtcFailed || webRtcFirstFrameRendered
+                    ) return@post
+                    // EglRenderer removes FrameListeners before calling them.
+                    // scale=0 deliberately delivers null without GPU readback.
+                    webRtcFrameListener = null
+                    webRtcFirstFrameTimeoutJob?.cancel()
+                    PlayerLogger.d("[WRTC-MEDIA] First frame rendered on webRtcView" +
+                            " attachment=$attachmentId elapsedRealtimeMs=$renderedAtMs" +
+                            " attachToRenderMs=${renderedAtMs - attachedAtMs}" +
+                            " uiDispatchMs=${SystemClock.elapsedRealtime() - renderedAtMs}")
+                    webRtcFirstFrameRendered = true
+                    showWebRtcWhenReady()
+                }
+            }
+        }
+        webRtcFrameListener = listener
+        // Register BEFORE attaching the sink so an immediate frame is not missed.
+        renderer.addFrameListener(listener, 0f)
+        runCatching { videoTrack?.setEnabled(true) }
+            .onFailure { PlayerLogger.e(it, "[WRTC-MEDIA] Failed to enable video track") }
+        runCatching { videoTrack?.addSink(renderer) }
+            .onFailure { PlayerLogger.e(it, "[WRTC-MEDIA] Failed to attach video sink") }
+
+        with(binding) {
+            val soundEnabled = args.entranceCamera.enableSound
+            muteWrapper.isVisible = soundEnabled && audioTrack != null
+            ivMute.isSelected = true
+            runCatching { audioTrack?.setEnabled(false) }
+
+            ivMute.setOnClickListener {
+                val isAudioEnabled = ivMute.isSelected
+                runCatching {
+                    val audioManager = context?.getSystemService(Context.AUDIO_SERVICE) as? AudioManager
+                    if (audioManager?.mode != AudioManager.MODE_NORMAL) {
+                        audioManager?.mode = AudioManager.MODE_NORMAL
+                    }
+                }
+                runCatching { audioTrack?.setEnabled(isAudioEnabled) }
+                ivMute.isSelected = !isAudioEnabled
+                logAudioState(soundEnabled)
+            }
+            logAudioState(soundEnabled)
+        }
+
+        webRtcFirstFrameTimeoutJob?.cancel()
+        webRtcFirstFrameTimeoutJob = viewLifecycleOwner.lifecycleScope.launch {
+            val timeout = WEB_RTC_FF_TIMEOUT
+            PlayerLogger.i("[WRTC-MEDIA] Waiting for first frame (Timeout: ${timeout}ms)")
+            delay(timeout.milliseconds)
+            if (attachmentId != webRtcAttachmentId || webRtcFirstFrameRendered) return@launch
+            PlayerLogger.w("[FLOW] Fallback to LL-HLS (Reason: first frame waiting timeout;" +
+                    " attachment=$attachmentId waitedMs=${SystemClock.elapsedRealtime() - webRtcAttachedAtMs})")
+            detachWebRtcTracks()
+            isWebRtcFailed = true
+            runHls()
+        }
+    }
+
+    private fun logAudioState(soundEnabled: Boolean) {
+        val actualAudioEnabled = runCatching { audioTrack?.enabled() == true }.getOrDefault(false)
+        val rbtSoundState = if (soundEnabled) "enabled" else "disabled"
+        val trackEnabled = if (actualAudioEnabled) "enabled" else "disabled"
+        val audioTrackState = if (soundEnabled) "; audio track is $trackEnabled" else ""
+        val message = "[WRTC-MEDIA] Sound is $rbtSoundState by RBT$audioTrackState"
+        if (soundEnabled && actualAudioEnabled) {
+            PlayerLogger.d(message)
+        } else {
+            PlayerLogger.w(message)
+        }
+    }
+
+    private fun showWebRtcWhenReady() {
+        val currentBinding = _binding ?: return
+        if (!webRtcFirstFrameRendered || !isWebRtcTracksAttached || isWebRtcFailed) return
+        // View pre-draw does not synchronize with SurfaceView's GL rendering.
+        currentBinding.ivPreview.isVisible = false
+        currentBinding.progressBar.isVisible = false
+        currentBinding.ivNoStream.isVisible = false
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun detachWebRtcTracks() {
+        PlayerLogger.i("[FLOW] detachWebRtcTracks called")
+        ++webRtcAttachmentId // Invalidate callbacks already posted to the UI thread.
+        webRtcFirstFrameTimeoutJob?.cancel()
+        val currentBinding = _binding ?: return
+
+        webRtcFrameListener?.let { listener ->
+            runCatching { currentBinding.webRtcView.removeFrameListener(listener) }
+            webRtcFrameListener = null
+        }
+
+        val vTrack = videoTrack
+        val aTrack = audioTrack
+
+        videoTrack = null
+        audioTrack = null
+        isWebRtcTracksAttached = false
+        webRtcFirstFrameRendered = false
+
+        if (vTrack != null) {
+            runCatching { vTrack.removeSink(binding.webRtcView) }
+            runCatching { vTrack.setEnabled(false) }
+        }
+
+        currentBinding.ivPreview.isVisible = true
+        currentBinding.progressBar.isVisible = true
+        if (isWebRtcRendererInitialized) {
+            runCatching { currentBinding.webRtcView.clearImage() }
+        }
+
+        if (aTrack != null) {
+            runCatching { aTrack.setEnabled(false) }
+        }
+
+        with(binding) {
+            ivMute.isSelected = true
+            ivMute.setOnClickListener(null)
+            muteWrapper.isVisible = false
+        }
+    }
+
+    @MainThread
+    private fun releaseWebRtc() {
+        if (!isWebRtcRendererInitialized) return
+        val renderer = _binding?.webRtcView ?: return
+        if (isWebRtcTracksAttached || webRtcFrameListener != null) {
+            detachWebRtcTracks()
+        }
+        // Invalidate queued frame callbacks before stopping the EGL thread.
+        ++webRtcAttachmentId
+        webRtcFirstFrameTimeoutJob?.cancel()
+        isWebRtcRendererInitialized = false
+        PlayerLogger.i("[FLOW] Releasing WebRTC EGL renderer")
+        runCatching { renderer.release() }
+            .onFailure { PlayerLogger.e(it, "[FLOW] Failed to release WebRTC EGL renderer") }
+    }
+
+    private fun createHlsPlayer(): DefaultCCTVPlayer {
         val callbacks = object : BaseCCTVPlayer.Callbacks {
             override fun onPlayerStateReady(player: DefaultCCTVPlayer) {
-                addDebugConnectionState("HLS player ready",)
-                val hasLL = if (player.isLlHlsStream()) "LL-" else ""
-                addDebugConnectionState("Playing ${hasLL}HLS stream ${args.entranceCamera.hlsUrl}",)
-                binding.ivNoStream.isVisible = false
-                Timber.d("debug_dmm hls onPlayerStateReady")
-                progressView.isVisible = false
-                binding.ivPreview.isVisible = false
                 activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                (hlsPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let { format ->
+
+                hlsPlayer?.getPlayer()?.videoFormat?.let { format ->
+                    PlayerLogger.d("[HLS] video format: ${format.width}x${format.height}, ${format.frameRate.toInt()} fps")
                     if (format.width > 0 && format.height > 0) {
                         binding.zlEntranceCamera.setAspectRatio(format.width.toFloat() / format.height.toFloat())
                     }
                 }
+
             }
 
-            override fun onPlayerStateBuffering() {
-                progressView.isVisible = true
+            override fun onRenderFirstFrame() {
+                val currentBinding = _binding ?: return
+                if (!isWebRtcFailed || !viewLifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return
+                PlayerLogger.d("[HLS-MEDIA] First frame rendered; revealing HLS surface")
+                currentBinding.playerView.alpha = 1f
+                currentBinding.ivPreview.isVisible = false
+                currentBinding.progressBar.isVisible = false
+                currentBinding.ivNoStream.isVisible = false
             }
 
-            override fun onPlayerStateEnded() {
-                progressView.isVisible = false
-            }
-
-            override fun onPlayerStateIdle() {
-                progressView.isVisible = false
+            override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
+                if (isWebRtcFailed) {
+                    binding.muteWrapper.isVisible = isAvailable
+                    if (isAvailable) {
+                        hlsPlayer?.isMuted = true
+                        binding.ivMute.isSelected = true
+                        binding.ivMute.setOnClickListener {
+                            val mute = hlsPlayer?.isMuted != true
+                            hlsPlayer?.isMuted = mute
+                            binding.ivMute.isSelected = mute
+                            PlayerLogger.d("[HLS-MEDIA] Audio ${if (!mute) "enabled" else "disabled"}")
+                        }
+                    }
+                }
             }
 
             override fun onPlayerError(exception: Exception) {
-                progressView.isVisible = false
+                val playbackException = exception as? PlaybackException
+                if (playbackException?.errorCode ==
+                    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_TIMEOUT ||
+                    playbackException?.errorCode ==
+                    PlaybackException.ERROR_CODE_IO_NETWORK_CONNECTION_FAILED
+                ) {
+                    PlayerLogger.w("[HLS] Network timeout caught! Stopping and waiting for network...")
+                    binding.progressBar.isVisible = true
+                    hlsPlayer?.stop()
+                }
+                PlayerLogger.e(message = "[HLS] Fatal fail")
+                binding.progressBar.isVisible = false
                 binding.ivNoStream.isVisible = true
-                val reason = resolveError(exception)
-                addDebugConnectionState("HLS play error: $reason", error = true)
-                mode = Mode.STOPPED
-                (exception as? ExoPlaybackException)?.let { Timber.d("Entrance HLS error ${it.type}") }
             }
         }
 
-        hlsPlayer = DefaultCCTVPlayer(requireContext(), true, callbacks).also { player ->
-            videoView.player = (player as DefaultCCTVPlayer).getPlayer()
-            videoView.useController = false
-            player.playWhenReady = true
-        }
+        hlsPlayer = DefaultCCTVPlayer(requireContext(), callbacks)
+        return hlsPlayer!!
     }
 
-    private fun resolveError(exception: Exception): String =
-        (exception as? ExoPlaybackException)?.let {
-            "HLS error ${it.message}"
-        } ?: exception.message
-        ?: "Unknown error"
-
-    private fun startHls() {
+    @MainThread
+    private fun runHls() {
+        playerNetworkJob?.cancel()
+        // Hide/destroy the WebRTC surface, not just its View alpha. Two visible
+        // SurfaceViews in the same container can obscure the fallback's video.
+        binding.webRtcView.isVisible = false
+        // HLS fallback is final for this view; no need to keep an idle EGL thread.
+        releaseWebRtc()
+        binding.playerView.isVisible = true
+        binding.playerView.alpha = 1f
+        binding.ivPreview.isVisible = true
+        binding.progressBar.isVisible = true
+        binding.ivNoStream.isVisible = false
+        val llHlsUrl = args.entranceCamera.llHlsUrl
         val hlsUrl = args.entranceCamera.hlsUrl
-        if (hlsUrl.isBlank()) {
+        if (llHlsUrl.isBlank() || hlsUrl.isBlank()) {
+            val ll = if (llHlsUrl.isBlank()) "LL-HLS URL is blank" else ""
+            val hls = if (hlsUrl.isBlank()) ", HLS URL is blank" else ""
+            PlayerLogger.e(message = "[(LL)HLS] Preparation error: (Reason: $ll$hls)")
             binding.progressBar.isVisible = false
-            addDebugConnectionState("HLS play error: empty URL", error = true)
             binding.ivNoStream.isVisible = true
             return
         }
 
-        hlsPlayer?.prepareMedia(hlsUrl, doPlay = true)
+        val mediaSource = mediaSourceFactory.createSource(llHlsUrl, hlsUrl)
+        hlsPlayer?.setMediaSource(mediaSource, enableSound = args.entranceCamera.enableSound)
+        playerNetworkJob = viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.networkStatus.collectLatest { status ->
+                    when (status) {
+                        is NetworkStatus.Disconnected -> {
+                            PlayerLogger.w("[NETWORK] Network lost. Stopping HLS to prevent timeout...")
+                            binding.progressBar.isVisible = true
+                            hlsPlayer?.stop()
+                        }
 
-        binding.playerView.alpha = 1.0f
+                        is NetworkStatus.AvailableWiFi,
+                        is NetworkStatus.AvailableCellular -> {
+                            PlayerLogger.d("[NETWORK] Network available. Resuming HLS from Live edge...")
+                            hlsPlayer?.let { player ->
+                                binding.ivPreview.isVisible = true
+                                binding.progressBar.isVisible = true
+                                binding.ivNoStream.isVisible = false
+                                if (binding.playerView.player == null) {
+                                    PlayerLogger.d("[(LL)HLS] Assigning Player before prepare")
+                                    binding.playerView.player = player.getPlayer()
+                                }
+                                player.seekToDefaultPosition()
+                                player.prepare()
+                                player.play()
+                            }
+                        }
 
-        started = true
-    }
-
-    private fun stopHls() {
-        hlsPlayer?.stop()
-
-        started = false
+                        is NetworkStatus.Undefined -> {
+                            PlayerLogger.d("[NETWORK] Network Undefined...")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun releaseHls() {
@@ -349,29 +583,21 @@ class EntranceCameraFragment : Fragment() {
     override fun onStop() {
         super.onStop()
 
-        if (!started) return
-
-        when (mode) {
-            Mode.WEB_RTC -> stopWebRtc()
-            Mode.HLS -> stopHls()
-            else -> {}
+        if (isWebRtcFailed) {
+            hlsPlayer?.stop()
+        } else {
+            detachWebRtcTracks()
         }
-    }
 
-    override fun onStart() {
-        super.onStart()
-
-        if (started) return
-
-        when (mode) {
-            Mode.WEB_RTC -> startWebRtc()
-            Mode.HLS -> startHls()
-            else -> {}
-        }
+        binding.ivPreview.isVisible = true
+        binding.progressBar.isVisible = true
     }
 
     override fun onDestroyView() {
-        releaseWebRtcView()
+        playerNetworkJob?.cancel()
+        webRtcFirstFrameTimeoutJob?.cancel()
+        detachWebRtcTracks()
+        releaseWebRtc()
         releaseHls()
         exitFullscreen()
         _binding = null
@@ -379,18 +605,10 @@ class EntranceCameraFragment : Fragment() {
         super.onDestroyView()
     }
 
-
     private fun WebRtcState.Connected.unpackToPair(): Pair<VideoTrack?, AudioTrack?> {
         val video = (this.videoTrack as? WebRtcMediaTrack)?.rtcTrack as? VideoTrack
         val audio = (this.audioTrack as? WebRtcMediaTrack)?.rtcTrack as? AudioTrack
 
         return video to audio
-    }
-
-    private enum class Mode {
-        IDLE,
-        WEB_RTC,
-        HLS,
-        STOPPED
     }
 }

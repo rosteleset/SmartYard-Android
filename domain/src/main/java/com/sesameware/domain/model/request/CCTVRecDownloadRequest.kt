@@ -7,5 +7,5 @@ import com.squareup.moshi.Json
  * Created on 28.04.2020.
  */
 data class CCTVRecDownloadRequest(
-    @Json(name = "id") val fragmentID: Int
+    @param:Json(name = "id") val fragmentID: Int
 )

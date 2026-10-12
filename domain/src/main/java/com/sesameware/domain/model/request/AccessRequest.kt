@@ -7,9 +7,9 @@ import com.squareup.moshi.Json
  * Created on 25/03/2020.
  */
 data class AccessRequest(
-    @Json(name = "flatId") val flatId: Int,
-    @Json(name = "guestPhone") val guestPhone: String?,
-    @Json(name = "type") val type: String?,
-    @Json(name = "expire") val expire: String?,
-    @Json(name = "clientId") val clientId: String?
+    @param:Json(name = "flatId") val flatId: Int,
+    @param:Json(name = "guestPhone") val guestPhone: String?,
+    @param:Json(name = "type") val type: String?,
+    @param:Json(name = "expire") val expire: String?,
+    @param:Json(name = "clientId") val clientId: String?
 )

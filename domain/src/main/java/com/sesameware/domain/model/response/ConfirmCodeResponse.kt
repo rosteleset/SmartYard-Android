@@ -6,19 +6,19 @@ import com.squareup.moshi.Json
 typealias ConfirmCodeResponse = ApiResult<ConfirmCodeData>
 
 data class ConfirmCodeData(
-    @Json(name = "accessToken") val accessToken: String,
-    @Json(name = "names") val names: Any? = null
+    @param:Json(name = "accessToken") val accessToken: String,
+    @param:Json(name = "names") val names: Any? = null
 )
 
 data class UserName(
-    @Json(name = "name")
+    @param:Json(name = "name")
     @SerializedName(value = "firstName", alternate = ["name"])
     val firstName: String = "",
 
-    @Json(name = "patronymic")
+    @param:Json(name = "patronymic")
     val patronymic: String = "",
 
-    @Json(name = "last")
+    @param:Json(name = "last")
     @SerializedName(value = "lastName", alternate = ["last"])
     val lastName: String = ""
 ) {

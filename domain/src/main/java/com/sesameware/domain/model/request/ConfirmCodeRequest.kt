@@ -3,7 +3,7 @@ package com.sesameware.domain.model.request
 import com.squareup.moshi.Json
 
 data class ConfirmCodeRequest(
-    @Json(name = "userPhone") val userPhone: String,
-    @Json(name = "smsCode") val smsCode: String,
-    @Json(name = "deviceToken") val deviceToken: String
+    @param:Json(name = "userPhone") val userPhone: String,
+    @param:Json(name = "smsCode") val smsCode: String,
+    @param:Json(name = "deviceToken") val deviceToken: String
 )

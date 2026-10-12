@@ -7,6 +7,6 @@ import com.squareup.moshi.Json
  * Created on 02/04/2020.
  */
 data class GetCoderRequest(
-    @Json(name = "address")
+    @param:Json(name = "address")
     val address: String
 )

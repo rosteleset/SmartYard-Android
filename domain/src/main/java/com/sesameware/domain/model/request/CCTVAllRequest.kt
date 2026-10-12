@@ -7,6 +7,6 @@ import com.squareup.moshi.Json
  * Created on 28.04.2020.
  */
 data class CCTVAllRequest(
-    @Json(name = "houseId")
+    @param:Json(name = "houseId")
     val houseId: Int
 )

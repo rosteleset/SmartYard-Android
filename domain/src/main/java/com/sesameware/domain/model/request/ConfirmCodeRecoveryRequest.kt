@@ -7,8 +7,8 @@ import com.squareup.moshi.Json
  * Created on 21/03/2020.
  */
 data class ConfirmCodeRecoveryRequest(
-    @Json(name = "contract")
+    @param:Json(name = "contract")
     val contract: String = "", // f70392
-    @Json(name = "code")
+    @param:Json(name = "code")
     val code: String = "" // 1234
 )

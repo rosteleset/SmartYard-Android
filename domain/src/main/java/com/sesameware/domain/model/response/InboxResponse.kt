@@ -9,8 +9,8 @@ import com.squareup.moshi.Json
 typealias InboxResponse = ApiResult<Inbox>
 
 data class Inbox(
-    @Json(name = "basePath")
+    @param:Json(name = "basePath")
     val basePath: String = "",
-    @Json(name = "code")
+    @param:Json(name = "code")
     val code: String = "" // <!DOCTYPE html><html lang="ru"><head>..
 )

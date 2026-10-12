@@ -43,10 +43,10 @@ class SettingsViewModel(
     var nextListNoCache = true
 
     enum class TypeDialog(
-        @StringRes val title: Int,
-        @StringRes val caption: Int,
-        @StringRes val button: Int,
-        @StringRes val chatMsg: Int
+        @field:StringRes val title: Int,
+        @field:StringRes val caption: Int,
+        @field:StringRes val button: Int,
+        @field:StringRes val chatMsg: Int
     ) {
         Connected(
             R.string.setting_dialog_service_connected_title,

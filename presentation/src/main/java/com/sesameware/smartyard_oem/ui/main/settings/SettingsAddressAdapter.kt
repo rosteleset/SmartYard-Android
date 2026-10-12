@@ -53,6 +53,7 @@ class SettingsAddressAdapter(
     ): Boolean {
         Timber.d("debug_dmm model.services: ${model.services}")
         val isConnected = model.services.contains(service.value)
+        view.isVisible = true
         view.isSelected = isConnected
         view.setOnClickListener {
             onAvailableServiceClick(
@@ -72,11 +73,34 @@ class SettingsAddressAdapter(
         fun bind(item: SettingsAddressModel) {
             binding.tvAddress.text = item.address
             binding.tvCaption.text = item.contractName
-            configServiceIndicator(binding.cbWifi, Services.Internet, item)
-            configServiceIndicator(binding.cbCall, Services.Phone, item)
-            configServiceIndicator(binding.cbEye, Services.Cctv, item)
-            configServiceIndicator(binding.cbMonitor, Services.Iptv, item)
-            val isKey = configServiceIndicator(binding.cbKey, Services.Domophone, item)
+            var isKey = false
+
+            if (item.availableServices != null) {
+                Timber.d("debug_dmm item.availableServices: ${item.availableServices}")
+                binding.cbWifi.isVisible = false
+                binding.cbCall.isVisible = false
+                binding.cbEye.isVisible = false
+                binding.cbMonitor.isVisible = false
+                binding.cbKey.isVisible = false
+                val availableServices = item.availableServices
+                availableServices.forEach { service ->
+                    Timber.d("debug_dmm service.name: ${service.icon}")
+                    when (service.icon) {
+                        Services.Internet.value -> configServiceIndicator(binding.cbWifi, Services.Internet, item)
+                        Services.Phone.value -> configServiceIndicator(binding.cbCall, Services.Phone, item)
+                        Services.Cctv.value -> configServiceIndicator(binding.cbEye, Services.Cctv, item)
+                        Services.Iptv.value -> configServiceIndicator(binding.cbMonitor, Services.Iptv, item)
+                        Services.Domophone.value -> isKey = configServiceIndicator(binding.cbKey, Services.Domophone, item)
+                    }
+                }
+            } else {
+                configServiceIndicator(binding.cbWifi, Services.Internet, item)
+                configServiceIndicator(binding.cbCall, Services.Phone, item)
+                configServiceIndicator(binding.cbEye, Services.Cctv, item)
+                configServiceIndicator(binding.cbMonitor, Services.Iptv, item)
+                isKey = configServiceIndicator(binding.cbKey, Services.Domophone, item)
+            }
+
             binding.llLcab.setOnClickListener {
                 onAddressAccountClick(item.lcab ?: "")
             }

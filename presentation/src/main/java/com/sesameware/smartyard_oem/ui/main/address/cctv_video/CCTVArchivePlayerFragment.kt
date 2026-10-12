@@ -42,6 +42,10 @@ import com.sesameware.smartyard_oem.removeTrailingZeros
 import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
+import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.ForpostPlayer
+import com.sesameware.smartyard_oem.ui.common.player.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.UserInteractionListener
@@ -80,6 +84,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
     private val hideVideoControllersRunnable = Runnable {
         hideVideoControllers()
     }
+    private var audioEnabled: Boolean = false
 
     private var canRenewToken = true
 
@@ -241,7 +246,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         if (mCCTVViewModel.isFullscreen.value == true) {
             binding.contentWrap.visibility = View.GONE
             binding.mFullScreens.visibility = View.GONE
-            binding.mMute.visibility = View.GONE
+            binding.mMute.isVisible = false
             areVideoControllersShown = false
         }
     }
@@ -250,7 +255,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         if (mCCTVViewModel.isFullscreen.value == true) {
             binding.contentWrap.visibility = View.VISIBLE
             binding.mFullScreens.visibility = View.VISIBLE
-            binding.mMute.visibility = View.VISIBLE
+            binding.mMute.isVisible = audioEnabled
             areVideoControllersShown = true
             resetInactiveTimer()
         }
@@ -456,7 +461,8 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         }
 
         binding.mMute.setOnClickListener {
-            val isMuted = mPlayer?.isMuted != false
+            val player = mPlayer ?: return@setOnClickListener
+            val isMuted = player.isMuted
             setMute(!isMuted)
         }
         binding.tvTitle.text = getString(R.string.cctv_video_from_date, chosenDate.format(mDateFormatter))
@@ -742,7 +748,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         binding.panelPlay.show(!active)
         binding.btnMainAction.setText(if (active) R.string.cctv_download_and_get_link else R.string.cctv_choose_fragment)
         binding.mFullScreens.isVisible = !active
-        binding.mMute.isVisible = !active
+        binding.mMute.isVisible = !active && audioEnabled
         binding.rangePlayer.show(!active, true)
         binding.rangeTrimmer.show(active, true)
         binding.rvTimeFragmentButtonsWrap.show(!active)
@@ -832,14 +838,15 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
 
             override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
                 binding.mMute.isVisible = isAvailable
+                audioEnabled = isAvailable
                 if (isAvailable) setMute(true)
             }
         }
 
         val player = when (serverType) {
-            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), forceVideoTrack, callbacks)
-            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), forceVideoTrack, callbacks)
-            else -> DefaultCCTVPlayer(requireContext(), forceVideoTrack, callbacks)
+            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), callbacks)
+            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), callbacks)
+            else -> DefaultCCTVPlayer(requireContext(), callbacks)
         }
         videoView.player = player.getPlayer()
         videoView.useController = false
@@ -891,7 +898,14 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         try {
             val archiveRange = archiveRanges[currentArchiveRangeIndex]
             val hls = mCCTVViewModel.chosenCamera.value?.getHlsAt(archiveRange.from, archiveRange.durationSeconds, DataModule.serverTz)
-            mPlayer?.prepareMedia(hls, archiveRange.fromUtc, archiveRange.durationSeconds, seekMediaTo, doPlay)
+            mPlayer?.prepareMedia(
+                hls,
+                archiveRange.fromUtc,
+                archiveRange.durationSeconds,
+                seekMediaTo,
+                doPlay,
+                enableSound = mCCTVViewModel.chosenCamera.value?.hasSound ?: true
+            )
         } catch (e: Throwable) {
             mViewModel.showVideoLoader(false)
             mViewModel.handleError(e)

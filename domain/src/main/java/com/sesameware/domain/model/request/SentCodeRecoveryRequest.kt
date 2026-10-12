@@ -7,8 +7,8 @@ import com.squareup.moshi.Json
  * Created on 21/03/2020.
  */
 data class SentCodeRecoveryRequest(
-    @Json(name = "contract")
+    @param:Json(name = "contract")
     val contract: String = "", // f70392
-    @Json(name = "contact_id")
+    @param:Json(name = "contact_id")
     val contact_id: String = "" // 7b4b42e4d0727573fb542fd88eb2ef71
 )

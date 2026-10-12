@@ -31,10 +31,10 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentEventLogDetailBinding
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.BaseCCTVPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.DefaultCCTVPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ForpostPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.MacroscopPlayer
+import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
+import com.sesameware.smartyard_oem.ui.common.player.ForpostPlayer
+import com.sesameware.smartyard_oem.ui.common.player.MacroscopPlayer
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailAdapter
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailItemAction
 import com.sesameware.smartyard_oem.ui.main.address.event_log.adapters.EventLogDetailVH
@@ -127,9 +127,9 @@ class EventLogDetailFragment : Fragment() {
             }
 
             mPlayer = when (serverType) {
-                MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), false, callbacks)
-                MediaServerType.FORPOST -> ForpostPlayer(requireContext(), false, callbacks)
-                else -> DefaultCCTVPlayer(requireContext(), false, callbacks)
+                MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), callbacks)
+                MediaServerType.FORPOST -> ForpostPlayer(requireContext(), callbacks)
+                else -> DefaultCCTVPlayer(requireContext(), callbacks)
             }
             mPlayer?.let { currentViewHolder?.setPlayer(it) }
         }
@@ -160,7 +160,8 @@ class EventLogDetailFragment : Fragment() {
             ZonedDateTime.of(fromDate, ZoneId.of(DataModule.serverTz)).toEpochSecond(),
             EventLogViewModel.EVENT_VIDEO_DURATION_SECONDS,
             EventLogViewModel.EVENT_VIDEO_BACK_SECONDS * 1000L,
-            true
+            true,
+            data.hasSound
         )
     }
 

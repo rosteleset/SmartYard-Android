@@ -19,13 +19,14 @@ private val mPreviewFormatterMacroscop = DateTimeFormatter.ofPattern("dd.MM.yyyy
 
 @Parcelize
 data class CCTVData(
-    @Json(name = "id") val id: Int,
-    @Json(name = "name") val name: String,
-    @Json(name = "lat") val latitude: Double?,
-    @Json(name = "lon") val longitude: Double?,
-    @Json(name = "token") val token: String,
-    @Json(name = "url") val url: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    @param:Json(name = "id") val id: Int,
+    @param:Json(name = "name") val name: String,
+    @param:Json(name = "lat") val latitude: Double?,
+    @param:Json(name = "lon") val longitude: Double?,
+    @param:Json(name = "token") val token: String,
+    @param:Json(name = "url") val url: String,
+    @param:Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    @param:Json(name = "hasSound") val _hasSound: Boolean?
 ) : Parcelable {
 
     @IgnoredOnParcel
@@ -41,6 +42,15 @@ data class CCTVData(
             MediaServerType.FORPOST -> "$url&$token"
             MediaServerType.SESAMEWARE,
             MediaServerType.FLUSSONIC -> "$url/index.m3u8?token=$token"
+        }
+
+    val llhls: String get() =
+        when (serverType) {
+            MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
+            MediaServerType.MACROSCOP -> "$url&$token"
+            MediaServerType.FORPOST -> "$url&$token"
+            MediaServerType.SESAMEWARE,
+            MediaServerType.FLUSSONIC -> "$url/llhls.m3u8?token=$token"
         }
 
     val preview: String get() =
@@ -87,17 +97,21 @@ data class CCTVData(
                 else -> MediaServerType.FLUSSONIC
             }
         }
+
+    val hasSound: Boolean
+        get() = _hasSound ?: true
 }
 
 @Parcelize
 data class CCTVCityCameraData(
-    @Json(name = "id") val id: Int,
-    @Json(name = "name") val name: String,
-    @Json(name = "lat") val latitude: Double?,
-    @Json(name = "lon") val longitude: Double?,
-    @Json(name = "url") val url: String,
-    @Json(name = "token") val token: String,
-    @Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    @param:Json(name = "id") val id: Int,
+    @param:Json(name = "name") val name: String,
+    @param:Json(name = "lat") val latitude: Double?,
+    @param:Json(name = "lon") val longitude: Double?,
+    @param:Json(name = "url") val url: String,
+    @param:Json(name = "token") val token: String,
+    @param:Json(name = "serverType") val _serverType: String? = MediaServerType.MEDIA_TYPE_FLUSSONIC,
+    @param:Json(name = "hasSound") val _hasSound: Boolean?
 ) : Parcelable {
     val hls: String get() = when (serverType) {
         MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
@@ -105,6 +119,14 @@ data class CCTVCityCameraData(
         MediaServerType.FORPOST -> "$url&$token"
         MediaServerType.SESAMEWARE,
         MediaServerType.FLUSSONIC -> "$url/index.m3u8?token=$token"
+    }
+
+    val llhls: String get() = when (serverType) {
+        MediaServerType.NIMBLE -> "$url/playlist.m3u8?wmsAuthSign=$token"
+        MediaServerType.MACROSCOP -> "$url&$token"
+        MediaServerType.FORPOST -> "$url&$token"
+        MediaServerType.SESAMEWARE,
+        MediaServerType.FLUSSONIC -> "$url/llhls.m3u8?token=$token"
     }
 
     val serverType: MediaServerType
@@ -117,18 +139,21 @@ data class CCTVCityCameraData(
                 else -> MediaServerType.FLUSSONIC
             }
         }
+
+    val hasSound: Boolean
+        get() = _hasSound ?: true
 }
 
 @Parcelize
 data class CCTVYoutubeData(
-    @Json(name = "id") val id: Int,
-    @Json(name = "eventTime") val eventTime: String,
-    @Json(name = "title") val title: String,
-    @Json(name = "description") val description: String,
-    @Json(name = "thumbnailsDefault") val thumbnailsDefault: String,
-    @Json(name = "thumbnailsMedium") val thumbnailsMedium: String,
-    @Json(name = "thumbnailsHigh") val thumbnailsHigh: String,
-    @Json(name = "url") val url: String
+    @param:Json(name = "id") val id: Int,
+    @param:Json(name = "eventTime") val eventTime: String,
+    @param:Json(name = "title") val title: String,
+    @param:Json(name = "description") val description: String,
+    @param:Json(name = "thumbnailsDefault") val thumbnailsDefault: String,
+    @param:Json(name = "thumbnailsMedium") val thumbnailsMedium: String,
+    @param:Json(name = "thumbnailsHigh") val thumbnailsHigh: String,
+    @param:Json(name = "url") val url: String
 ) : Parcelable
 
 enum class MediaServerType {
@@ -149,11 +174,11 @@ enum class MediaServerType {
 
 @Parcelize
 data class CCTVDataTree(
-    @Json(name = "groupId") val groupId: Int = DEFAULT_GROUP_ID,
-    @Json(name = "groupName") val groupName: String?,
-    @Json(name = "type") val _type: String? = CCTVRepresentationType.TYPE_MAP,
-    @Json(name = "childGroups") val childGroups: List<CCTVDataTree>?,
-    @Json(name = "cameras") val cameras: List<CCTVData>?
+    @param:Json(name = "groupId") val groupId: Int = DEFAULT_GROUP_ID,
+    @param:Json(name = "groupName") val groupName: String?,
+    @param:Json(name = "type") val _type: String? = CCTVRepresentationType.TYPE_MAP,
+    @param:Json(name = "childGroups") val childGroups: List<CCTVDataTree>?,
+    @param:Json(name = "cameras") val cameras: List<CCTVData>?
 ) : Parcelable {
     val type: CCTVRepresentationType
         get() {

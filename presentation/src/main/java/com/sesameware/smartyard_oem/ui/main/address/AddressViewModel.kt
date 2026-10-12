@@ -11,8 +11,10 @@ import com.sesameware.domain.interactors.DatabaseInteractor
 import com.sesameware.domain.interactors.ExtInteractor
 import com.sesameware.domain.interactors.IssueInteractor
 import com.sesameware.domain.interactors.WebRtcStreamingInteractor
+import com.sesameware.domain.interfaces.NetworkMonitor
 import com.sesameware.domain.interfaces.WebRtcState
 import com.sesameware.domain.model.AddressItem
+import com.sesameware.domain.model.NetworkStatus
 import com.sesameware.domain.model.StateButton
 import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.domain.model.response.Address
@@ -33,19 +35,13 @@ import com.sesameware.smartyard_oem.ui.main.address.models.IssueModel
 import com.sesameware.smartyard_oem.ui.main.address.models.Lock
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.currentCoroutineContext
-import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
@@ -58,7 +54,8 @@ class AddressViewModel(
     private val issueInteractor: IssueInteractor,
     override val mDatabaseInteractor: DatabaseInteractor,
     private val extInteractor: ExtInteractor,
-    private val webRtcInteractor: WebRtcStreamingInteractor
+    private val webRtcInteractor: WebRtcStreamingInteractor,
+    private val networkMonitor: NetworkMonitor
 ) : GenericViewModel() {
 
     val entranceView: EntrancesView
@@ -82,26 +79,11 @@ class AddressViewModel(
 
     val houseIdFlats: HashMap<Int, List<Flat>> = hashMapOf()
 
-    private val _selectedWebRtcUrl = MutableStateFlow<String?>(null)
+    fun playWebRtcStream(whepUrl: String): Flow<WebRtcState> {
+        return webRtcInteractor.playStream(whepUrl)
+    }
 
-    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-    val webRtcState: StateFlow<WebRtcState> = _selectedWebRtcUrl
-        .debounce { url ->
-            if (url == null) 0L else 300L
-        }
-        .flatMapLatest { url ->
-            if (url == null) {
-                flowOf(WebRtcState.Idle)
-            } else {
-                webRtcInteractor.playStream(url)
-                    .catch { emit(WebRtcState.Error("Stream failed")) }
-            }
-        }
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.Eagerly,
-            initialValue = WebRtcState.Idle
-        )
+    val networkStatus: StateFlow<NetworkStatus> = networkMonitor.networkStatus
 
     fun openDoor(id: Lock) {
         viewModelScope.withProgress {
@@ -130,11 +112,6 @@ class AddressViewModel(
         if (list[houseIndex].initialSliderPosition != index) {
             list[houseIndex].initialSliderPosition = index
         }
-    }
-
-    fun setWebRtcUrl(whepUrl: String?) {
-        Timber.d("debug_dmm new whepUrl: $whepUrl")
-        _selectedWebRtcUrl.value = whepUrl
     }
 
     fun setHouseItemSavedPosition(oldPosition: Int, newPosition: Int) {
@@ -360,7 +337,7 @@ class AddressViewModel(
 
         return camMapList.groupBy(
             { it.domophoneId },
-            { listOf(it.entranceCamera) + it.additionalCameras.orEmpty() }
+            { it.entranceCameras }
             ).mapValues { (_, lists) -> lists.flatten() }
             .toMap()
     }
@@ -371,7 +348,7 @@ class AddressViewModel(
         return camMapList.filterNot { it.entranceId == null }
             .groupBy(
                 { it.entranceId!! },
-                { listOf(it.entranceCamera) + it.additionalCameras.orEmpty() }
+                { it.entranceCameras }
             )
             .mapValues { (_, lists) -> lists.flatten() }
             .toMap()
@@ -412,23 +389,6 @@ class AddressViewModel(
     fun persistUi() {
         mPreferenceStorage.expandedHouseIds = houseUiState.value?.toExpandedHouseIds()
         mPreferenceStorage.houseIdPositions = houseUiState.value?.toHouseIdPositions()
-    }
-
-    fun setWebRtcUrlForTopmostExpandedItemInRange(visiblePositions: IntRange) {
-        val firstExpanded = firstExpandedOrNull(visiblePositions) ?: return
-        Timber.d("debug_dmm found item ${firstExpanded.address}")
-        val allCameras = firstExpanded.entranceList.flatMap { it.cameras }
-        val lastSelectedCam = allCameras.getOrNull(firstExpanded.initialSliderPosition)
-
-        setWebRtcUrl(lastSelectedCam?.whepUrl)
-    }
-
-    private fun firstExpandedOrNull(positions: IntRange): HouseUiModel? {
-        val list = houseUiState.value ?: return null
-        val safeRange = positions.first.coerceIn(0, list.size)..positions.last.coerceIn(-1, list.size - 1)
-        if (safeRange.isEmpty()) return null
-
-        return list.slice(safeRange).firstOrNull { it.isExpanded }
     }
 
     companion object {
