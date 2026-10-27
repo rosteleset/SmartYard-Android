@@ -17,6 +17,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentInputAddressBinding
 import com.sesameware.smartyard_oem.hideKeyboard
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.injectOrNull
@@ -164,6 +165,7 @@ class InputAddressFragment : Fragment() {
         }
 
         delegate?.extendConfig(binding)
+        binding.etApartment.hideKeyboardOnImeAction()
     }
 
     private fun validateFields(text: String) {

@@ -31,14 +31,21 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
+        android:ellipsize="end"
+        android:maxLines="2"
         android:text="@string/title_gate_access"
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
+        app:autoSizeMaxTextSize="32sp"
         app:autoSizeMinTextSize="15sp"
+        app:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivBack" />
 
 

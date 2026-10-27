@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/textView9"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
@@ -39,9 +39,15 @@
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
+        android:maxLines="1"
+        android:ellipsize="end"
         app:autoSizeTextType="uniform"
-        app:layout_constraintTop_toBottomOf="@+id/imageView7"
-        tools:layout_editor_absoluteX="32dp" />
+        app:autoSizeMinTextSize="15sp"
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
 
     <ImageView
         android:id="@+id/imageView7"
@@ -57,7 +63,7 @@
 
     <TextView
         android:id="@+id/textView11"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="8dp"
@@ -65,6 +71,14 @@
         android:layout_marginBottom="8dp"
         android:text="@string/address_verification_descriptions"
         android:textColor="@color/on_top_background"
+        android:maxLines="2"
+        android:ellipsize="end"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeMaxTextSize="14sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
     <androidx.viewpager.widget.ViewPager

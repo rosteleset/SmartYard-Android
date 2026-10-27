@@ -89,7 +89,7 @@ class WebRtcStreamingRepositoryImpl(
                         val message =
                             "${error?.errorCode ?: 0} - ${error?.errorText} ?: Network timeout"
                         PlayerLogger.w("ICE connection failed: $message")
-                        trySend(WebRtcState.Error)
+                        trySend(WebRtcState.Fatal)
                         close()
                     } else {
                         val message =
@@ -279,7 +279,7 @@ class WebRtcStreamingRepositoryImpl(
                     diagnostics.start(this@callbackFlow, peerConnection, connectedAtMs)
                 }
             }  catch (e: WhepHttpException) {
-                if (e.code in 400..499) {
+                if (e.code in 400..599) {
                     val message = "[WRTC-ERR] Fatal stream error (${e.code} - ${e.message})."
                     PlayerLogger.w(message)
                     trySend(WebRtcState.Fatal)
@@ -290,25 +290,15 @@ class WebRtcStreamingRepositoryImpl(
                     trySend(WebRtcState.Error)
                     close()
                 }
-            } catch (e: UnknownHostException) {
-                val message = "[WHEP] Network unavailable (UnknownHostException)"
-                PlayerLogger.e(message = message)
-                trySend(WebRtcState.Error)
-                close()
-            } catch (e: SocketTimeoutException) {
-                val message = "[WHEP] Network timeout"
-                PlayerLogger.e(message = message)
-                trySend(WebRtcState.Error)
-                close()
             } catch (e: IOException) {
-                val message = "[WHEP] Connection transport error: ${e.message}"
+                val message = "[WHEP] Network/Transport error (${e.javaClass.simpleName}): ${e.message}"
                 PlayerLogger.e(message = message)
-                trySend(WebRtcState.Error)
+                trySend(WebRtcState.Fatal)
                 close()
             } catch (e: Exception) {
                 if (isActive) {
                     PlayerLogger.e(e, "[WRTC-ERR] WHEP Connection Exception: ${e.message}")
-                    trySend(WebRtcState.Error)
+                    trySend(WebRtcState.Fatal)
                     close()
                 }
             }

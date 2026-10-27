@@ -1,32 +1,67 @@
-package com.sesameware.domain.model.mapper
+package com.sesameware.smartyard_oem.ui.common.player
 
 import com.sesameware.domain.model.concatIfCorrectUrl
+import com.sesameware.domain.model.response.CCTVCityCameraData
+import com.sesameware.domain.model.response.CCTVData
 import com.sesameware.domain.model.response.CamMap
-import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.domain.model.response.MediaServerType
+import kotlin.random.Random
 
-
-internal fun CamMap.toEntranceCamera(): EntranceCamera {
+internal fun CCTVData.toStreamSourceConfig(): StreamSourceConfig {
     val previewUrl = resolvePreviewUrl(url, token, serverType)
-    return EntranceCamera(
+    return StreamSourceConfig(
         previewUrl = previewUrl,
         whepUrl = resolveWhepUrl(url, token, serverType),
         llHlsUrl = resolveLlHlsUrl(url, token, serverType),
         hlsUrl = resolveHlsUrl(url, token, serverType),
         enableSound = hasSound,
-        previewCacheKey = "$previewUrl$timestamp"
+        previewCacheKey = previewCacheKey,
+        serverType = serverType
     )
 }
 
-internal fun CamMap.AltCamera.toEntranceCamera(timestamp: Long): EntranceCamera {
+internal fun CCTVCityCameraData.toStreamSourceConfig(): StreamSourceConfig {
     val previewUrl = resolvePreviewUrl(url, token, serverType)
-    return EntranceCamera(
+    return StreamSourceConfig(
         previewUrl = previewUrl,
         whepUrl = resolveWhepUrl(url, token, serverType),
         llHlsUrl = resolveLlHlsUrl(url, token, serverType),
         hlsUrl = resolveHlsUrl(url, token, serverType),
         enableSound = hasSound,
-        previewCacheKey = "$previewUrl$timestamp"
+        previewCacheKey = Random.nextInt().toString(),
+        serverType = serverType
+    )
+}
+
+private fun CamMap.toSingleStreamSourceConfig(): StreamSourceConfig {
+    val previewUrl = resolvePreviewUrl(url, token, serverType)
+    return StreamSourceConfig(
+        previewUrl = previewUrl,
+        whepUrl = resolveWhepUrl(url, token, serverType),
+        llHlsUrl = resolveLlHlsUrl(url, token, serverType),
+        hlsUrl = resolveHlsUrl(url, token, serverType),
+        enableSound = hasSound,
+        previewCacheKey = "$previewUrl$timestamp",
+        serverType = serverType
+    )
+}
+
+internal fun CamMap.toStreamSourceConfigs(): List<StreamSourceConfig> =
+    mutableListOf(this.toSingleStreamSourceConfig()).apply {
+        val addCams = altCameras?.map { it.toStreamSourceConfig(timestamp) }.orEmpty()
+        addAll(addCams)
+    }.toList()
+
+internal fun CamMap.AltCamera.toStreamSourceConfig(timestamp: Long): StreamSourceConfig {
+    val previewUrl = resolvePreviewUrl(url, token, serverType)
+    return StreamSourceConfig(
+        previewUrl = previewUrl,
+        whepUrl = resolveWhepUrl(url, token, serverType),
+        llHlsUrl = resolveLlHlsUrl(url, token, serverType),
+        hlsUrl = resolveHlsUrl(url, token, serverType),
+        enableSound = hasSound,
+        previewCacheKey = "$previewUrl$timestamp",
+        serverType = serverType
     )
 }
 

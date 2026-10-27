@@ -457,6 +457,7 @@
     <string name="specify_reason">Укажите причину</string>
     <string name="dialog_delete_reason_description">При удалении адреса вам будет недоступно управление услугами адреса</string>
     <string name="text_delete">Удалить</string>
+    <string name="text_edit">Изменить</string>
     <string name="text_dismiss">Отмена</string>
     <string name="pay_number_sample">№68992</string>
     <string name="pay_sum">Сумма:</string>
@@ -541,7 +542,7 @@
     <string name="all_cars">Все авто</string>
     <string name="tab_title_by_license_plate">По номеру авто</string>
     <string name="tab_title_by_phone_number">По телефону</string>
-    <string name="entrance_camera_is_not_available">Камера не доступна</string>
+    <string name="entrance_camera_is_not_available">Камера недоступна</string>
 
     <string-array name="registered_number_or_car_types">
         <item>Все</item>
@@ -559,6 +560,7 @@
     <string name="event_log_track_group">Отслеживать группу</string>
     <string name="event_log_track_face_new_group">Отслеживать лицо (создать группу)</string>
     <string name="event_log_enter_group_name">Введите название группы</string>
+    <string name="event_log_track_lp">Отслеживать номерной знак</string>
 
     <!-- Лица -->
     <string name="face_groups_title">Группы лиц</string>
@@ -578,4 +580,42 @@
     <string name="face_group_selection_existing">Существующая группа</string>
     <string name="face_group_selection_new">Новая группа</string>
     <string name="add_face">Добавить лицо</string>
+
+    <!-- Автономный режим -->
+    <string name="offline_alert_no_connection_title">Нет соединения!</string>
+    <string name="offline_alert_switch_mode">Нажмите \"OK\", чтобы вернуться в онлайн режим.\nНажмите \"Отмена\", чтобы остаться в оффлайн режиме.</string>
+    <string name="offline_hint_swipe_to_exit">Вы находитесь в офлайн режиме. Чтобы выйти, смахните вниз по заголовку.</string>
+    <string name="offline_home_title">Мои адреса</string>
+    <string name="offline_message_connection_lost">Интернет-соединение потеряно. Нажмите «OK», чтобы открыть сохранённые адреса и коды дверей.</string>
+    <string name="offline_message_connection_restored">Ура! Соединение появилось!</string>
+    <string name="offline_message_server_unavailable">Выйти из офлайн-режима пока нельзя — нет интернет-соединения. Попробуйте позже.</string>
+    <string name="offline_back">Назад</string>
+    <string name="home_addresses_empty_offline_title">Похоже, данных нет или они ещё не успели сохраниться.</string>
+
+    <!-- Диалог добавления автомобильного номера (версия 2) -->
+    <string name="dialog_license_plate_v2_title">Добавить автомобильный номер</string>
+    <string name="dialog_license_plate_v2_title_edit">Изменить автомобильный номер</string>
+    <string name="dialog_license_plate_v2_country">Страна</string>
+    <string name="dialog_license_plate_v2_number_hint">Автомобильный номер</string>
+    <string name="dialog_license_plate_v2_number_incomplete">Номер заполнен не полностью или не соответствует формату</string>
+    <string name="dialog_license_plate_v2_validity_unlimited">Бессрочно</string>
+    <string name="dialog_license_plate_v2_valid_from_date">Дата начала</string>
+    <string name="dialog_license_plate_v2_valid_from_time">Время начала</string>
+    <string name="dialog_license_plate_v2_valid_to_date">Дата окончания</string>
+    <string name="dialog_license_plate_v2_valid_to_time">Время окончания</string>
+    <string name="dialog_license_plate_v2_auto_end">Окончание через %s ч.</string>
+    <string name="dialog_license_plate_v2_auto_end_preview">Окончание: %s</string>
+    <string name="dialog_license_plate_v2_period_invalid">Окончание не может быть раньше начала</string>
+    <string name="dialog_license_plate_v2_confirm">Добавить</string>
+    <string name="dialog_license_plate_v2_cancel">Отменить</string>
+
+    <!-- Названия стран для автомобильных номеров -->
+    <string name="country_ru">Россия</string>
+    <string name="country_am">Армения</string>
+    <string name="country_by">Беларусь</string>
+    <string name="country_kz">Казахстан</string>
+
+    <!-- Период действия -->
+    <string name="period_from">с: %s</string>
+    <string name="period_to">по: %s</string>
 </resources>

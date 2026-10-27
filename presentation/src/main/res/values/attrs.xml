@@ -39,4 +39,9 @@
         <attr name="badgeColor" format="color" />
     </declare-styleable>
 
+    <declare-styleable name="IconCardButton">
+        <attr name="android:src" />
+        <attr name="srcCompat" format="reference" />
+    </declare-styleable>
+
 </resources>

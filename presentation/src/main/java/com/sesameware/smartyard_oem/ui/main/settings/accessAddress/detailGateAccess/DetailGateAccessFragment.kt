@@ -9,11 +9,13 @@ import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.sesameware.domain.model.response.LprsVersion
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.AccessAddressViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.AccessType
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.detailGateAccess.compose.DetailGateAccessScreen
+import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogLicensePlateV2.DialogLicensePlateV2
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.LicensePlateValue
@@ -45,6 +47,12 @@ class DetailGateAccessFragment : Fragment() {
                     onAddLicensePlateClick = {
                         createDialogShareAccessDialog(AccessType.GATE_BY_LICENSE_PLATE)
                     },
+                    onEditLicensePlateClick = {
+                        DialogLicensePlateV2.newInstance(
+                            args.flatId,
+                            LicensePlateValue(it.number, it.countryCode, it.validFrom, it.validTo, it.watcherId)
+                        ).show(parentFragmentManager, "")
+                    },
                     onAddPhoneClick = {
                         createDialogShareAccessDialog(AccessType.GATE_BY_PHONE)
                     }
@@ -70,6 +78,12 @@ class DetailGateAccessFragment : Fragment() {
     }
 
     private fun createDialogShareAccessDialog(type: AccessType) {
+        if (type == AccessType.GATE_BY_LICENSE_PLATE &&
+            mViewModel.lprsVersion == LprsVersion.V2
+        ) {
+            DialogLicensePlateV2.newInstance(args.flatId).show(parentFragmentManager, "")
+            return
+        }
         DialogShareAccessDialog(type, ::onAddAccessByPhone, ::onAddAccessByLicensePlate)
             .show(parentFragmentManager, "")
     }

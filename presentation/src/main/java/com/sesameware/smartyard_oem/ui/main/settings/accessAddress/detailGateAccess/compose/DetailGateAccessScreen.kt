@@ -22,14 +22,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.sesameware.domain.model.response.LprsVersion
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.AccessAddressViewModel
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.AccessType
-import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.LicensePlateValue
 
 // Модель для объединения данных в один список
 sealed class GateAccessItemData {
-    data class LicensePlate(val licensePlate: String) : GateAccessItemData()
+    data class LicensePlate(val number: String, val countryCode: String, val validFrom: String?, val validTo: String?, val watcherId: Int?) : GateAccessItemData()
     data class Phone(val phoneNumber: String) : GateAccessItemData()
     data class AddShortcut(@field:StringRes val id: Int) : GateAccessItemData()
 }
@@ -45,6 +45,7 @@ fun DetailGateAccessScreen(
     hasGates: Boolean,
     onBackClick: () -> Unit,
     onAddLicensePlateClick: () -> Unit,
+    onEditLicensePlateClick: (GateAccessItemData.LicensePlate) -> Unit,
     onAddPhoneClick: () -> Unit
 ) {
     val roommates = viewModel.roommate.observeAsState(emptyList()).value
@@ -54,10 +55,12 @@ fun DetailGateAccessScreen(
     var selectedTab by rememberSaveable { mutableIntStateOf(initialTab) }
 
     val hasLprs = intercom.lprsDisabled == false
+    // Editing is supported only by the version 2 dialog.
+    val canEditLicensePlate = viewModel.lprsVersion == LprsVersion.V2
 
     val listItems = remember(selectedTab, roommates, licensePlates) {
         if (selectedTab == 0) {
-            licensePlates.map { GateAccessItemData.LicensePlate(it.value) } +
+            licensePlates.map { GateAccessItemData.LicensePlate(it.number, it.countryCode, it.validFrom, it.validTo, it.watcherId) } +
                     GateAccessItemData.AddShortcut(R.string.barrier_add_vehicle)
         } else {
             roommates
@@ -98,11 +101,14 @@ fun DetailGateAccessScreen(
                 items(listItems) { item ->
                     when (item) {
                         is GateAccessItemData.LicensePlate -> DetailLicensePlateGateAccessItem(
-                            licensePlate = item.licensePlate,
+                            licensePlate = item,
                             onDeleteClick = {
-                                viewModel.removeLicensePlate(flatId,
-                                    LicensePlateValue(item.licensePlate)
-                                )
+                                viewModel.removeLicensePlate(flatId, item.number)
+                            },
+                            onEditClick = if (canEditLicensePlate) {
+                                { onEditLicensePlateClick(item) }
+                            } else {
+                                null
                             }
                         )
                         is GateAccessItemData.Phone -> DetailPhoneGateAccessItem(

@@ -39,15 +39,22 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             android:textAlignment="textStart"
             android:textColor="@color/on_top_background"
             android:textSize="32sp"
             android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            app:autoSizeTextType="uniform"
             app:autoSizeMinTextSize="15sp"
+            app:autoSizeMaxTextSize="32sp"
+            app:autoSizeStepGranularity="1sp"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/ivBack"
             tools:text="cameraDate" />
 
@@ -76,13 +83,14 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <FrameLayout
+                    <com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout
                         android:id="@+id/videoWrap"
                         android:layout_width="match_parent"
-                        android:layout_height="222dp"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="@dimen/cctv_trim_page_margin"
                         android:layout_marginTop="24dp"
                         android:layout_marginEnd="@dimen/cctv_trim_page_margin"
+                        app:aspectRatio="16:9"
                         android:background="@drawable/background_radius_video_clip">
 
                         <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
@@ -101,34 +109,37 @@
 
                         </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
 
+                        <include layout="@layout/stub_video" />
+
                         <ProgressBar
                             android:id="@+id/mVideoLoader"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center" />
 
-
-                        <ImageView
+                        <com.sesameware.smartyard_oem.ui.main.IconCardButton
                             android:id="@+id/ivBackwardArchive"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start|center_vertical"
                             android:layout_marginStart="32dp"
                             android:alpha="0"
-                            android:src="@drawable/ic_backward_15"
+                            app:srcCompat="@drawable/ic_backward_15"
                             android:visibility="invisible"
-                            tools:ignore="ContentDescription" />
+                            tools:alpha="1"
+                            tools:visibility="visible" />
 
-                        <ImageView
+                        <com.sesameware.smartyard_oem.ui.main.IconCardButton
                             android:id="@+id/ivForwardArchive"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center_vertical|end"
                             android:layout_marginEnd="32dp"
                             android:alpha="0"
-                            android:src="@drawable/ic_forward_15"
+                            app:srcCompat="@drawable/ic_forward_15"
                             android:visibility="invisible"
-                            tools:ignore="ContentDescription" />
+                            tools:alpha="1"
+                            tools:visibility="visible" />
 
                         <com.sesameware.lib.RangeSlider
                             android:id="@+id/rangePlayer"
@@ -146,25 +157,22 @@
 
                         </com.sesameware.lib.RangeSlider>
 
-                        <ImageButton
+                        <com.sesameware.smartyard_oem.ui.main.IconCardButton
                             android:id="@+id/mFullScreens"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="top|end"
-                            android:layout_margin="12dp"
-                            android:background="@drawable/ic_cctv_enter_fullscreen"
-                            tools:ignore="ContentDescription" />
+                            android:layout_margin="8dp"
+                            android:src="@drawable/selector_fullscreen" />
 
-                        <ImageView
+                        <com.sesameware.smartyard_oem.ui.main.IconCardButton
                             android:id="@+id/mMute"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="top|start"
-                            android:padding="12dp"
-                            android:scaleType="centerInside"
+                            android:layout_margin="8dp"
+                            android:src="@drawable/selector_mute"
                             android:visibility="gone"
-                            app:srcCompat="@drawable/selector_mute"
-                            tools:ignore="ContentDescription"
                             tools:visibility="visible" />
 
                         <com.sesameware.lib.RangeSlider
@@ -181,7 +189,7 @@
                             app:sliderHeight="35.31dp"
                             app:trimMode="true"
                             app:trimThumbDrawable="@drawable/ic_cctv_thumb_trim" />
-                    </FrameLayout>
+                    </com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout>
 
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:id="@+id/rvTimeFragmentButtonsWrap"

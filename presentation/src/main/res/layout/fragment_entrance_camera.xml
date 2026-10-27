@@ -9,93 +9,26 @@
     android:clipToPadding="false"
     tools:context=".ui.main.address.cctv_video.EntranceCameraFragment">
 
-    <com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout
-        android:id="@+id/zlEntranceCamera"
+    <com.sesameware.smartyard_oem.ui.common.player.CCTVPlayerView
+        android:id="@+id/cctvPlayerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <FrameLayout
-            android:id="@+id/videoSurfaceWrap"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.exoplayer2.ui.PlayerView
-                android:id="@+id/playerView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:alpha="0"
-                app:use_controller="false"
-                app:resize_mode="fit" />
-
-            <org.webrtc.SurfaceViewRenderer
-                android:id="@+id/webRtcView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:alpha="0" />
-
-            <!-- Keep the loading preview above both video surfaces until a frame renders. -->
-            <ImageView
-                android:id="@+id/ivPreview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/black"
-                android:scaleType="fitCenter"
-                tools:scaleType="centerCrop"
-                tools:ignore="ContentDescription"
-                tools:src="@drawable/ic_placeholder_image" />
-
-        </FrameLayout>
-
-    </com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/progressBar"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_gravity="center"
-        app:cardBackgroundColor="#66000000"
-        app:cardCornerRadius="120dp"
-        app:cardElevation="0dp">
-
-        <ProgressBar
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminateTint="@color/on_filled" />
-
-    </androidx.cardview.widget.CardView>
+        android:layout_height="match_parent" />
 
     <ImageView
-        android:id="@+id/ivNoStream"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:visibility="invisible"
-        app:srcCompat="@drawable/ic_no_photography_24"
-        app:tint="@color/on_filled"
-        tools:ignore="ContentDescription"
-        tools:visibility="visible"/>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"
+        tools:src="@tools:sample/backgrounds/scenic"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
-    <androidx.cardview.widget.CardView
+    <com.sesameware.smartyard_oem.ui.main.IconCardButton
         android:id="@+id/ivBack"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="28dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="#66000000"
-        app:cardCornerRadius="50dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:src="@drawable/ic_back_arrow"
-            app:tint="@color/on_top_background"
-            tools:ignore="ContentDescription" />
-
-    </androidx.cardview.widget.CardView>
+        android:src="@drawable/ic_back_arrow" />
 
     <androidx.cardview.widget.CardView
         android:layout_height="wrap_content"
@@ -122,55 +55,26 @@
 
     </androidx.cardview.widget.CardView>
 
-    <androidx.cardview.widget.CardView
+    <com.sesameware.smartyard_oem.ui.main.IconCardButton
         android:id="@+id/muteWrapper"
-        android:layout_height="wrap_content"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="top|end"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="28dp"
+        android:src="@drawable/selector_mute"
         android:visibility="invisible"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="#66000000"
-        app:cardCornerRadius="50dp"
-        tools:visibility="visible">
+        tools:visibility="visible" />
 
-        <ImageView
-            android:id="@+id/ivMute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:scaleType="centerInside"
-            app:srcCompat="@drawable/selector_mute"
-            tools:ignore="ContentDescription" />
-
-    </androidx.cardview.widget.CardView>
-
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/playerLogContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-
-    <androidx.cardview.widget.CardView
+    <com.sesameware.smartyard_oem.ui.main.IconCardButton
         android:id="@+id/ivPlayerLog"
         android:layout_height="wrap_content"
         android:layout_width="wrap_content"
         android:layout_gravity="bottom|end"
-        android:padding="4dp"
-        android:layout_margin="16dp"
-        app:cardElevation="0dp"
-        app:cardBackgroundColor="#66000000"
-        app:cardCornerRadius="50dp"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:src="@drawable/ic_log"
-            app:tint="@color/on_filled"
-            tools:ignore="ContentDescription" />
-
-    </androidx.cardview.widget.CardView>
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:src="@drawable/ic_log"
+        android:visibility="gone"
+        tools:visibility="visible" />
 
 </FrameLayout>

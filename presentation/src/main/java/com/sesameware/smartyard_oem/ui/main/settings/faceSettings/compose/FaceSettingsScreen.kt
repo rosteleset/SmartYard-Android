@@ -8,13 +8,15 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -22,11 +24,13 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -561,6 +565,7 @@ fun AddFaceItem(onClick: () -> Unit) {
     }
 }
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun InputDialog(
     title: String,
@@ -570,6 +575,7 @@ fun InputDialog(
     onDismiss: () -> Unit,
     onConfirm: (String, Boolean) -> Unit
 ) {
+    val keyboardController = LocalSoftwareKeyboardController.current
     var text by remember { mutableStateOf(initialValue) }
     var checked by remember { mutableStateOf(isTracked ?: false) }
     val isValid = text.isNotBlank()
@@ -613,6 +619,8 @@ fun InputDialog(
                         Text(text = hint)
                     },
                     singleLine = true,
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
                     modifier = Modifier.fillMaxWidth(),
                     isError = !isValid
                 )
@@ -628,7 +636,11 @@ fun InputDialog(
                         Checkbox(
                             checked = checked,
                             null,
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.padding(end = 8.dp),
+                            colors = CheckboxDefaults.colors(
+                                checkedColor = colorResource(R.color.brand),
+                                checkmarkColor = colorResource(R.color.button_text_flooded)
+                            )
                         )
                         Text(stringResource(R.string.event_log_track_group))
                     }

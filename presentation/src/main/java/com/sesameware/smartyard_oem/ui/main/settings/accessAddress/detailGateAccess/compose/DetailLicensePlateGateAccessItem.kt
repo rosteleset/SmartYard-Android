@@ -32,12 +32,15 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.countryCodeToFlag
+import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogLicensePlateV2.PlateValidityCalculator
 
 @Composable
 fun DetailLicensePlateGateAccessItem(
-    licensePlate: String,
+    licensePlate: GateAccessItemData.LicensePlate,
     onDeleteClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onEditClick: (() -> Unit)? = null,
     carPainter: Painter = painterResource(id = R.drawable.ic_carpic)
 ) {
     var menuExpanded by remember { mutableStateOf(false) }
@@ -59,12 +62,34 @@ fun DetailLicensePlateGateAccessItem(
         Spacer(modifier = Modifier.width(12.dp))
 
         Text(
-            text = licensePlate,
+            text = countryCodeToFlag(licensePlate.countryCode) + " " + licensePlate.number + if (licensePlate.watcherId != null) " \uD83D\uDC41" else "",
             color = colorResource(id = R.color.accent),
             fontSize = 13.sp,
             fontFamily = FontFamily(Font(R.font.license_plate_font)),
             modifier = Modifier.weight(1f)
         )
+
+        var period = ""
+        if (licensePlate.validFrom != null) {
+            period += stringResource(id = R.string.period_from,
+                PlateValidityCalculator.fromIso(licensePlate.validFrom))
+        }
+        if (licensePlate.validTo != null) {
+            period += (if (period.isNotEmpty()) "\n" else "") + stringResource(id = R.string.period_to,
+                PlateValidityCalculator.fromIso(licensePlate.validTo))
+        }
+
+        if (period.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(12.dp))
+            Text(
+                text = period,
+                color = colorResource(id = R.color.accent),
+                fontSize = 8.sp,
+                lineHeight = 12.sp,
+                fontFamily = FontFamily(Font(R.font.license_plate_font)),
+                modifier = Modifier.weight(1f)
+            )
+        }
 
         Box {
             IconButton(
@@ -83,6 +108,20 @@ fun DetailLicensePlateGateAccessItem(
                 expanded = menuExpanded,
                 onDismissRequest = { menuExpanded = false }
             ) {
+                if (onEditClick != null) {
+                    DropdownMenuItem(
+                        onClick = {
+                            menuExpanded = false
+                            onEditClick()
+                        }
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.text_edit),
+                            color = colorResource(R.color.accent),
+                            fontFamily = FontFamily(Font(R.font.source_sans_pro_regular))
+                        )
+                    }
+                }
                 DropdownMenuItem(
                     onClick = {
                         menuExpanded = false

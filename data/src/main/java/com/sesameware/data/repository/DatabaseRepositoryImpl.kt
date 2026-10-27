@@ -1,8 +1,8 @@
 package com.sesameware.data.repository
 
 import com.sesameware.data.local.dao.AddressDao
-import com.sesameware.data.local.mapper.toItem
-import com.sesameware.data.local.mapper.toItemEntity
+import com.sesameware.data.local.entity.mapper.toItem
+import com.sesameware.data.local.entity.mapper.toItemEntity
 import com.sesameware.domain.interfaces.DatabaseRepository
 import com.sesameware.domain.model.AddressItem
 import com.sesameware.domain.model.StateButton

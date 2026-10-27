@@ -22,24 +22,10 @@ android {
         targetSdk rootProject.targetSdk
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
     }
 
     buildFeatures {
         buildConfig true
-    }
-
-    buildTypes {
-        disableLint {
-        }
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
     }
 
     // It must be in that order, otherwise google-services.json won't catch up.

@@ -30,7 +30,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
@@ -39,10 +39,14 @@
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
-        app:autoSizeMinTextSize="15sp"
-        android:maxLines="2"
+        android:maxLines="1"
         android:ellipsize="end"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="15sp"
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivBack"/>
 
     <View
@@ -65,6 +69,9 @@
         android:layout_marginEnd="32dp"
         style="@style/AutoCompleteTextViewStyle"
         android:hint="@string/hint_city"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@id/actvStreet"
+        android:singleLine="true"
         app:layout_constraintTop_toTopOf="@+id/surface"/>
 
     <ProgressBar
@@ -89,6 +96,9 @@
         android:layout_marginEnd="32dp"
         style="@style/AutoCompleteTextViewStyle"
         android:hint="@string/hint_street"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@id/actvHouse"
+        android:singleLine="true"
         app:layout_constraintTop_toBottomOf="@+id/actvCity"/>
 
     <ProgressBar
@@ -113,6 +123,9 @@
         android:layout_marginEnd="8dp"
         style="@style/AutoCompleteTextViewStyle"
         android:hint="@string/hint_house"
+        android:imeOptions="actionNext"
+        android:nextFocusForward="@id/etApartment"
+        android:singleLine="true"
         app:layout_constraintTop_toBottomOf="@+id/actvStreet"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/etApartment"/>
@@ -139,6 +152,8 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
         android:hint="@string/hint_flat"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:inputType="textCapWords|textNoSuggestions"
         app:layout_constraintTop_toBottomOf="@+id/actvStreet"
         app:layout_constraintEnd_toEndOf="parent"

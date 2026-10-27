@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
+    tools:theme="@style/AppTheme"
     tools:context=".ui.main.settings.accessAddress.AccessAddressFragment">
 
     <ImageView
@@ -21,7 +22,7 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="8dp"
@@ -29,8 +30,19 @@
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
+        android:maxLines="1"
+        android:autoSizeTextType="uniform"
+        android:autoSizeMinTextSize="15sp"
+        android:autoSizeMaxTextSize="32sp"
+        android:autoSizeStepGranularity="1sp"
+        app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="15sp"
-        app:layout_constraintTop_toBottomOf="@+id/ivBack" />
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivBack"
+        tools:targetApi="26" />
 
 
     <View

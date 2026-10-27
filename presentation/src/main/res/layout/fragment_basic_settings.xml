@@ -20,18 +20,22 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="@string/title_common_settings"
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
+        app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="15sp"
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivBack" />
 
 
@@ -286,15 +290,15 @@
 
                         <TextView
                             android:id="@+id/tvBalanceCaption"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:gravity="fill_vertical"
                             android:paddingLeft="24dp"
                             android:paddingTop="24dp"
                             android:text="@string/lack_funds_notifications"
                             android:textColor="@color/accent"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/pdCallRingtone" />
+                            app:layout_constraintTop_toBottomOf="@+id/pdCallRingtone"
+                            app:layout_constraintEnd_toStartOf="@+id/sBalance"/>
 
                         <TextView
                             android:id="@+id/tvBalanceTitle"

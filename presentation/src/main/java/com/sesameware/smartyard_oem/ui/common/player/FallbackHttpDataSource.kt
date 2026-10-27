@@ -28,17 +28,10 @@ class FallbackHttpDataSource(
                 PlayerLogger.d("[EXO-FBDS] Starting primaryUri: $primaryUri")
                 return upstream.open(dataSpec)
             } catch (e: InvalidResponseCodeException) {
-                if (e.responseCode in 403..404) {
-                    PlayerLogger.w(
-                        "[EXO-FBDS] Primary data source failed with ${e.responseCode}: " +
-                                "throwing exception for retry/restart"
-                    )
-                    throw e
-                }
                 val code = e.responseCode
                 val msg = e.message
                 PlayerLogger.w(
-                    "[EXO-FBDS] Primary data source failed with invalid response: $code - $msg"
+                    "[EXO-FBDS] Primary data source failed with HTTP $code ($msg): switching to fallback"
                 )
                 StreamFallbackCache.markFailed(primaryUri)
                 return openFallback(dataSpec)
@@ -51,6 +44,7 @@ class FallbackHttpDataSource(
             }
         }
 
+        activeUri = null
         return upstream.open(dataSpec)
     }
 
@@ -65,4 +59,9 @@ class FallbackHttpDataSource(
     }
 
     override fun getUri(): Uri? = activeUri ?: upstream.uri
+
+    override fun close() {
+        activeUri = null
+        upstream.close()
+    }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat.getString
@@ -17,6 +18,7 @@ import com.sesameware.domain.utils.listenerEmpty
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FormAppealBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.regexInputFilter
 import com.sesameware.smartyard_oem.ui.takeIfNotBlank
 import com.sesameware.smartyard_oem.ui.toRegexOrNull
@@ -89,6 +91,13 @@ class AppealForm @JvmOverloads constructor(
             this.textChangeListener()
         }
         binding.lastText.isVisible = userHasLastName
+        binding.patronymicText.imeOptions = if (binding.lastText.isVisible) {
+            EditorInfo.IME_ACTION_NEXT
+        } else {
+            EditorInfo.IME_ACTION_DONE
+        }
+        binding.patronymicText.hideKeyboardOnImeAction()
+        binding.lastText.hideKeyboardOnImeAction()
 
         namePattern.takeIfNotBlank()?.let { binding.nameText.regexInputFilter(it) }
         patronymicPattern.takeIfNotBlank()?.let { binding.patronymicText.regexInputFilter(it) }

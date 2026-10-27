@@ -2,7 +2,6 @@ package com.sesameware.data
 
 import android.content.Context
 import android.media.AudioAttributes
-import android.os.Build
 import androidx.room.Room
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.sesameware.data.interceptors.CommonInterceptor
@@ -22,6 +21,7 @@ import com.sesameware.data.repository.GeoRepositoryImpl
 import com.sesameware.data.repository.InboxRepositoryImpl
 import com.sesameware.data.repository.IssueRepositoryImpl
 import com.sesameware.data.repository.LPRSRepositoryImpl
+import com.sesameware.data.repository.OfflineCacheSession
 import com.sesameware.data.repository.PayRepositroyImpl
 import com.sesameware.data.repository.PlayerLogRepositoryImpl
 import com.sesameware.data.repository.SipRepositoryImpl
@@ -50,7 +50,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
-import org.webrtc.DefaultVideoDecoderFactory
+import org.koin.java.KoinJavaComponent.get
 import org.webrtc.DefaultVideoEncoderFactory
 import org.webrtc.EglBase
 import org.webrtc.PeerConnectionFactory
@@ -65,7 +65,15 @@ import java.util.concurrent.TimeUnit
 
 object DataModule {
     var BASE_URL = BuildConfig.PROVIDER_URL
-    var providerConfig = ProviderConfig()
+    var providerConfig: ProviderConfig
+        set(value) {
+            val prefs: PreferenceStorage = get(PreferenceStorage::class.java)
+            prefs.providerConfig = value
+        }
+        get() {
+            val prefs: PreferenceStorage = get(PreferenceStorage::class.java)
+            return prefs.providerConfig ?: ProviderConfig()
+        }
     var providerName = BuildConfig.PROVIDER_NAME
     var defaultPhonePattern = BuildConfig.DEFAULT_PHONE_PATTERN
     var phonePattern: String = defaultPhonePattern
@@ -87,6 +95,7 @@ object DataModule {
 
         single {
             Room.databaseBuilder(get(), ItemsDatabase::class.java, ItemsDatabase.DATABASE_NAME)
+                .addMigrations(ItemsDatabase.MIGRATION_4_5)
                 .fallbackToDestructiveMigration(false)
                 .build()
         }
@@ -97,11 +106,15 @@ object DataModule {
 
         single { get<ItemsDatabase>().itemDao() }
 
+        single { get<ItemsDatabase>().offlineAddressDao() }
+
         factory { DatabaseRepositoryImpl(get()) as DatabaseRepository }
 
         factory { AuthRepositoryImpl(get(), get()) as AuthRepository }
 
-        factory { AddressRepositoryImpl(get(), get()) as AddressRepository }
+        single { OfflineCacheSession() }
+
+        factory { AddressRepositoryImpl(get(), get(), get(), get(), get()) as AddressRepository }
 
         factory { GeoRepositoryImpl(get(), get()) as GeoRepository }
 
@@ -127,9 +140,7 @@ object DataModule {
 
         single<VideoDecoderFactory> {
             val eglBase: EglBase = get()
-            val isBuggyDevice = shouldForceSoftwareDecoder()
-//            SafeVideoDecoderFactory(eglBase.eglBaseContext, disableHighProfile = isBuggyDevice)
-            DefaultVideoDecoderFactory(eglBase.eglBaseContext)
+            SafeVideoDecoderFactory(eglBase.eglBaseContext)
         }
 
         single<VideoEncoderFactory> {
@@ -175,21 +186,6 @@ object DataModule {
             .maxContentLength(250_000L)
             .alwaysReadResponseBody(true)
             .build()
-
-    private fun shouldForceSoftwareDecoder(): Boolean {
-        val is32Bit = Build.SUPPORTED_64_BIT_ABIS.isEmpty()
-
-        // Trouble devices
-        val manufacturer = Build.MANUFACTURER.orEmpty()
-        val model = Build.MODEL.orEmpty()
-        val isBuggyDevice = manufacturer.contains("samsung", ignoreCase = true) &&
-                (model.contains("A13", ignoreCase = true) ||
-                        model.contains("A12", ignoreCase = true) ||
-                        model.contains("A03", ignoreCase = true) ||
-                        model.contains("A04", ignoreCase = true))
-
-        return is32Bit || isBuggyDevice
-    }
 
     private fun createApi(client: OkHttpClient, moshi: Moshi): TeledomApi {
         return Retrofit.Builder()
@@ -253,5 +249,12 @@ object DataModule {
     }
 
     private fun createPreferenceStorage(context: Context): PreferenceStorage =
-        SharedPreferenceStorage(context)
+        SharedPreferenceStorage(context).also { preferences ->
+            // Restore before any repository can read the offline cache owner, including
+            // direct MainActivity cold launches. Keep the exact persisted URL: it is
+            // part of the owner hash, and a selected provider must beat OEM defaults.
+            preferences.providerBaseUrl?.takeIf { it.isNotBlank() }?.let {
+                BASE_URL = it
+            }
+        }
 }

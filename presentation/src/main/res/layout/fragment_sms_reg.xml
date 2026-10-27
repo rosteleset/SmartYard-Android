@@ -1,15 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
     tools:context=".ui.reg.sms.SmsRegFragment">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/imageView"
@@ -52,6 +48,8 @@
         android:cursorVisible="false"
         android:digits="1234567890"
         android:inputType="number"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:layoutDirection="ltr"
         android:maxLength="4"
         android:textIsSelectable="false"
@@ -157,5 +155,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvError" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -105,8 +105,8 @@
         android:label="fragment_entrance_camera"
         tools:layout="@layout/fragment_entrance_camera">
         <argument
-            android:name="entranceCamera"
-            app:argType="com.sesameware.domain.model.response.EntranceCamera" />
+            android:name="cameraConfig"
+            app:argType="com.sesameware.smartyard_oem.ui.common.player.StreamSourceConfig" />
         <argument
             android:name="lock"
             app:argType="com.sesameware.smartyard_oem.ui.main.address.models.Lock" />

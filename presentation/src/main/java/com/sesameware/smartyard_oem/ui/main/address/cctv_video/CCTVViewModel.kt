@@ -219,11 +219,14 @@ class CCTVViewModel(
     fun chooseCamera(index: Int) {
         Timber.d("__Q__  call chooseCamera with index = $index")
         state[chosenIndex_Key] = index
-        cameraList.value?.get(index)?.let { camera ->
-            state[chosenCamera_Key] = camera
-            downloadMaskImage(camera.preview)
-            loadPeriod()
-        }
+        val list = cameraList.value
+        if (list.isNullOrEmpty()) return
+        if (index >= list.size) return
+
+        val camera = list[index]
+        state[chosenCamera_Key] = camera
+        downloadMaskImage(camera.preview)
+        loadPeriod()
     }
 
     fun chooseGroup(index: Int, groupName: String? = null) {

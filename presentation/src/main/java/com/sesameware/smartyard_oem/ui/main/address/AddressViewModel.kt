@@ -19,12 +19,13 @@ import com.sesameware.domain.model.StateButton
 import com.sesameware.domain.model.request.ExtRequest
 import com.sesameware.domain.model.response.Address
 import com.sesameware.domain.model.response.CamMap
-import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.domain.model.response.Story
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
 import com.sesameware.smartyard_oem.R
+import com.sesameware.smartyard_oem.ui.common.player.StreamSourceConfig
+import com.sesameware.smartyard_oem.ui.common.player.toStreamSourceConfigs
 import com.sesameware.smartyard_oem.ui.main.address.event_log.Flat
 import com.sesameware.smartyard_oem.ui.main.address.helpers.CombinedLiveData
 import com.sesameware.smartyard_oem.ui.main.address.models.AddressUiModel
@@ -332,23 +333,23 @@ class AddressViewModel(
         }
     }
 
-    private fun getEntranceCamerasByDomophoneId(camMapList: List<CamMap>?): Map<Int, List<EntranceCamera>>? {
+    private fun getEntranceCamerasByDomophoneId(camMapList: List<CamMap>?): Map<Int, List<StreamSourceConfig>>? {
         if (camMapList == null) return null
 
         return camMapList.groupBy(
             { it.domophoneId },
-            { it.entranceCameras }
+            { it.toStreamSourceConfigs() }
             ).mapValues { (_, lists) -> lists.flatten() }
             .toMap()
     }
 
-    private fun getEntranceCamerasByEntranceId(camMapList: List<CamMap>?): Map<Int, List<EntranceCamera>>? {
+    private fun getEntranceCamerasByEntranceId(camMapList: List<CamMap>?): Map<Int, List<StreamSourceConfig>>? {
         if (camMapList == null) return null
 
         return camMapList.filterNot { it.entranceId == null }
             .groupBy(
                 { it.entranceId!! },
-                { it.entranceCameras }
+                { it.toStreamSourceConfigs() }
             )
             .mapValues { (_, lists) -> lists.flatten() }
             .toMap()

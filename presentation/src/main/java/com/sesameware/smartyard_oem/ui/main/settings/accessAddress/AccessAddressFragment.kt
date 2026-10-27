@@ -20,6 +20,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayout
 import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.GuestAccessType
+import com.sesameware.domain.model.response.LicensePlateMapper.cyrillicLettersToLatin
+import com.sesameware.domain.model.response.LprsVersion
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAccessAddressBinding
@@ -30,6 +32,7 @@ import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemG
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByPhoneBinder
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapter.ItemGateAccessByPhoneShowAllBinder
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.adapterdelegates.ContactAdapter
+import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogLicensePlateV2.DialogLicensePlateV2
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.dialogShareAccess.DialogShareAccessDialog
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.manager.FixedListItemManager
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
@@ -140,6 +143,12 @@ class AccessAddressFragment : Fragment() {
     }
 
     private fun createDialogShareAccessDialog(type: AccessType) {
+        if (type == AccessType.GATE_BY_LICENSE_PLATE &&
+            mViewModel.lprsVersion == LprsVersion.V2
+        ) {
+            DialogLicensePlateV2.newInstance(flatId).show(parentFragmentManager, "")
+            return
+        }
         DialogShareAccessDialog(type, ::onAddAccessByPhone, ::onAddAccessByLicensePlate)
             .show(parentFragmentManager, "")
     }
@@ -230,7 +239,7 @@ class AccessAddressFragment : Fragment() {
         ) { lpList ->
             val stub = listOf(LicensePlateValue(""))
             gateAccessByLicensePlateManager!!.submitList(
-                lpList.take(CARD_ITEMS_FOR_PREVIEW).map { LicensePlateValue(it.value) }, stub
+                lpList.take(CARD_ITEMS_FOR_PREVIEW).map { LicensePlateValue(it.number, it.countryCode, it.validFrom, it.validTo, it.watcherId) }, stub
             )
         }
 
@@ -438,6 +447,9 @@ class AccessAddressFragment : Fragment() {
             else -> return
         }
         popupMenu.inflate(menu)
+        // Editing is supported only by the version 2 dialog.
+        popupMenu.menu.findItem(R.id.action_edit_license_plate)?.isVisible =
+            mViewModel.lprsVersion == LprsVersion.V2
 
         val accentColor = ContextCompat.getColor(context, R.color.accent)
         for (i in 0 until popupMenu.menu.size) {
@@ -462,8 +474,12 @@ class AccessAddressFragment : Fragment() {
                     contact?.let { mViewModel.deleteRoommate(flatId, it.number, clientId) }
                     true
                 }
+                R.id.action_edit_license_plate -> {
+                    lpValue?.let { DialogLicensePlateV2.newInstance(flatId, it).show(parentFragmentManager, "") }
+                    true
+                }
                 R.id.action_delete_license_plate -> {
-                    lpValue?.let { mViewModel.removeLicensePlate(flatId, it) }
+                    lpValue?.let { mViewModel.removeLicensePlate(flatId, if (mViewModel.lprsVersion == LprsVersion.V2) it.number else it.number.cyrillicLettersToLatin()) }
                     true
                 }
                 else -> false

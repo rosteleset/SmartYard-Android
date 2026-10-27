@@ -9,6 +9,7 @@ import com.sesameware.data.BuildConfig
 import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.data.repository.BaseRepository.Companion.getStatus
+import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.AuthInteractor
 import com.sesameware.domain.interactors.DatabaseInteractor
 import com.sesameware.domain.model.CommonError
@@ -80,6 +81,8 @@ open class GenericViewModel : ViewModel(), KoinComponent {
     fun logout(context: Context) {
         viewModelScope.withProgress({ false }) {
             mPreferenceStorage.clear()
+            val addressInteractor: AddressInteractor by inject()
+            addressInteractor.clearOfflineCache()
             mDatabaseInteractor.deleteAll()
             DataModule.BASE_URL = BuildConfig.PROVIDER_URL
             refreshPushToken(context.applicationContext)

@@ -58,7 +58,15 @@ import com.sesameware.smartyard_oem.ui.reg.RegistrationViewModel
 import com.sesameware.smartyard_oem.ui.setupExitOnBackPressedWhenInRoot
 import com.sesameware.smartyard_oem.ui.setupPopToRootOnItemReselected
 import com.sesameware.smartyard_oem.ui.setupWithNavController
-import kotlinx.coroutines.runBlocking
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.sesameware.domain.interfaces.NetworkMonitor
+import com.sesameware.domain.model.NetworkStatus
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
+import org.koin.android.ext.android.inject
 import org.koin.androidx.fragment.android.setupKoinFragmentFactory
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.injectOrNull
@@ -90,6 +98,30 @@ class MainActivity : CommonActivity(), BottomNavProvider {
     var filePathCallback: ValueCallback<Array<Uri>>? = null
 
     private lateinit var navController: NavController
+    private val networkMonitor: NetworkMonitor by inject()
+    private var lastOnline: Boolean? = null
+    private var pendingConnectionDialog = ConnectionDialogKind.NONE
+    private var connectionDialog: AlertDialog? = null
+    private var offlineNavigationPending = false
+
+    private enum class ConnectionDialogKind(val savedValue: Int) {
+        NONE(0),
+        CONNECTION_LOST(1),
+        CONNECTION_RESTORED(2),
+        OFFLINE_EXIT_BLOCKED(3);
+
+        companion object {
+            fun fromSavedValue(value: Int): ConnectionDialogKind =
+                entries.firstOrNull { it.savedValue == value } ?: OFFLINE_EXIT_BLOCKED
+        }
+    }
+
+    private val isOfflineScreen: Boolean
+        get() = ::navController.isInitialized && navController.currentDestination?.id == R.id.homeOfflineFragment
+
+    private val isDeviceOnline: Boolean
+        get() = networkMonitor.networkStatus.value == NetworkStatus.AvailableWiFi ||
+            networkMonitor.networkStatus.value == NetworkStatus.AvailableCellular
 
     override fun onCreate(savedInstanceState: Bundle?) {
 
@@ -115,21 +147,12 @@ class MainActivity : CommonActivity(), BottomNavProvider {
 
         fragmentHasHeader = true
 
-        runBlocking {
-            try {
-                mRegModel.getProviderConfig()
-                mRegModel.mAuthInteractor.phonePattern()?.let { result ->
-                    DataModule.phonePattern = result.data
-                }
-            } catch (e: CommonErrorThrowable) {
-                Timber.d("debug_dmm    getProviderConfig error: ${e.message}")
-                if (e.data.httpCode == 401) {
-                    mViewModel.logout(this@MainActivity)
-                } else {
-
-                }
-            }
-        }
+        lastOnline = if (savedInstanceState?.containsKey("offline_last_online") == true)
+            savedInstanceState.getBoolean("offline_last_online") else null
+        pendingConnectionDialog = ConnectionDialogKind.fromSavedValue(
+            savedInstanceState?.getInt("offline_dialog") ?: ConnectionDialogKind.NONE.savedValue
+        )
+        offlineNavigationPending = savedInstanceState?.getBoolean("offline_navigation_pending") ?: false
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
@@ -140,6 +163,8 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         setupStatusBarWithNavController()
         setupBottomNavigationView()
         setupInsets()
+        setupOfflineMode()
+        loadProviderConfig()
 
         appVersion()
 
@@ -190,6 +215,10 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         handleDeepLink(intent)
 
         onBackPressedDispatcher.addCallback(this) {
+            if (isOfflineScreen) {
+                attemptDismissOffline()
+                return@addCallback
+            }
             exitFullscreenListener?.onExitFullscreen()
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
             isEnabled = false
@@ -198,6 +227,161 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         }
 
         delegate?.extendConfig(binding)
+    }
+
+    private fun loadProviderConfig() {
+        lifecycleScope.launch {
+            // Do not block first render or attempt provider startup while disconnected.
+            networkMonitor.networkStatus.first {
+                it == NetworkStatus.AvailableWiFi || it == NetworkStatus.AvailableCellular
+            }
+            try {
+                mRegModel.getProviderConfig()
+                mRegModel.mAuthInteractor.phonePattern()?.let { DataModule.phonePattern = it.data }
+                if (!DataModule.providerConfig.hasChat) binding.bottomNav.removeItem(R.id.chat)
+                if (!DataModule.providerConfig.hasPayments) binding.bottomNav.removeItem(R.id.pay)
+            } catch (e: CancellationException) {
+                throw e
+            } catch (e: CommonErrorThrowable) {
+                if (e.data.httpCode == 401) mViewModel.logout(this@MainActivity)
+            } catch (_: Exception) {
+                // Cached offline data remains usable if provider startup fails.
+            }
+        }
+    }
+
+    private fun setupOfflineMode() {
+        setupOfflineDestinationListener()
+        observeNetworkStatus()
+    }
+
+    private fun setupOfflineDestinationListener() {
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val offline = destination.id == R.id.homeOfflineFragment
+            binding.bottomNav.isVisible = !offline
+            binding.bottomGradient.isVisible = !offline
+            binding.bottomGradient2.isVisible = !offline
+            if (offline) {
+                WindowCompat.getInsetsController(window, window.decorView)
+                    .show(WindowInsetsCompat.Type.systemBars())
+                fragmentHasHeader = false
+            }
+            ViewCompat.requestApplyInsets(binding.root)
+        }
+    }
+
+    private fun observeNetworkStatus() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.RESUMED) {
+                networkMonitor.networkStatus.collect { status ->
+                    handleNetworkStatus(status)
+                }
+            }
+        }
+    }
+
+    private fun handleNetworkStatus(status: NetworkStatus) {
+        if (status == NetworkStatus.Undefined) return
+
+        val online = status != NetworkStatus.Disconnected
+        val previous = lastOnline
+        lastOnline = online
+
+        val firstKnownStatus = previous == null
+        val becameDisconnected = !online && previous != false
+        val connectionRestored = online && previous == false
+
+        if (becameDisconnected) {
+            dismissConnectionDialog()
+            pendingConnectionDialog = ConnectionDialogKind.CONNECTION_LOST
+            // On first launch without a connection, enter offline immediately.
+            // Otherwise, wait for confirmation in the connection-lost dialog.
+            if (firstKnownStatus || isOfflineScreen) enterOfflineMode()
+        } else if (connectionRestored) {
+            dismissConnectionDialog()
+            // Complete deferred navigation before choosing the restored dialog.
+            if (offlineNavigationPending) enterOfflineMode()
+            pendingConnectionDialog = if (isOfflineScreen) {
+                ConnectionDialogKind.CONNECTION_RESTORED
+            } else {
+                ConnectionDialogKind.NONE
+            }
+        }
+
+        if (offlineNavigationPending) enterOfflineMode()
+        showConnectionDialog()
+    }
+
+    private fun dismissConnectionDialog() {
+        connectionDialog?.dismiss()
+        connectionDialog = null
+    }
+
+    private fun enterOfflineMode() {
+        if (isOfflineScreen) {
+            offlineNavigationPending = false
+            return
+        }
+        if (supportFragmentManager.isStateSaved) {
+            offlineNavigationPending = true
+            return
+        }
+        offlineNavigationPending = false
+        navController.navigate(R.id.homeOfflineFragment)
+    }
+
+    fun attemptDismissOffline() {
+        if (!isOfflineScreen) return
+        if (isDeviceOnline) {
+            dismissConnectionDialog()
+            pendingConnectionDialog = ConnectionDialogKind.NONE
+            navController.popBackStack()
+            reloadToAddress()
+        } else {
+            pendingConnectionDialog = ConnectionDialogKind.OFFLINE_EXIT_BLOCKED
+            showConnectionDialog()
+        }
+    }
+
+    private fun showConnectionDialog() {
+        if (pendingConnectionDialog == ConnectionDialogKind.NONE || connectionDialog != null ||
+            supportFragmentManager.isStateSaved || isFinishing) return
+        val kind = pendingConnectionDialog
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+        when (kind) {
+            ConnectionDialogKind.CONNECTION_LOST -> builder.setTitle(R.string.offline_alert_no_connection_title)
+                .setMessage(R.string.offline_message_connection_lost)
+                .setCancelable(false)
+                .setPositiveButton(android.R.string.ok) { _, _ ->
+                    pendingConnectionDialog = ConnectionDialogKind.NONE
+                    enterOfflineMode()
+                }
+            ConnectionDialogKind.CONNECTION_RESTORED -> builder.setTitle(R.string.offline_message_connection_restored)
+                .setMessage(R.string.offline_alert_switch_mode)
+                .setPositiveButton(android.R.string.ok) { _, _ -> attemptDismissOffline() }
+                .setNegativeButton(android.R.string.cancel) { _, _ -> pendingConnectionDialog = ConnectionDialogKind.NONE }
+                .setOnCancelListener { pendingConnectionDialog = ConnectionDialogKind.NONE }
+            ConnectionDialogKind.OFFLINE_EXIT_BLOCKED -> builder.setTitle(R.string.offline_alert_no_connection_title)
+                .setMessage(R.string.offline_message_server_unavailable)
+                .setPositiveButton(android.R.string.ok) { _, _ -> pendingConnectionDialog = ConnectionDialogKind.NONE }
+                .setOnCancelListener { pendingConnectionDialog = ConnectionDialogKind.NONE }
+            ConnectionDialogKind.NONE -> return
+        }
+        connectionDialog = builder.create().also { dialog ->
+            dialog.setOnDismissListener {
+                if (connectionDialog === dialog) connectionDialog = null
+                // Connection may disappear just as the user confirms the restored dialog.
+                if (pendingConnectionDialog != ConnectionDialogKind.NONE && pendingConnectionDialog != kind &&
+                    lifecycle.currentState.isAtLeast(Lifecycle.State.RESUMED)) {
+                    binding.root.post { showConnectionDialog() }
+                }
+            }
+            dialog.show()
+        }
+    }
+
+    override fun handleConnectionError(): Boolean {
+        return !isDeviceOnline
     }
 
     private fun handleBadge(badge: Boolean, itemId: Int) {
@@ -224,6 +408,9 @@ class MainActivity : CommonActivity(), BottomNavProvider {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
 
+        lastOnline?.let { outState.putBoolean("offline_last_online", it) }
+        outState.putInt("offline_dialog", pendingConnectionDialog.savedValue)
+        outState.putBoolean("offline_navigation_pending", offlineNavigationPending)
         if (::navController.isInitialized) {
             navController.saveState()?.let { bundle ->
                 outState.putBundle(NAV_CONTROLLER_STATE_KEY, bundle)
@@ -247,7 +434,7 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         mViewModel.bottomNavigateTo.observe(
             this,
             EventObserver { itemId ->
-                bar.selectedItemId = itemId
+                if (!isOfflineScreen && !offlineNavigationPending) bar.selectedItemId = itemId
             }
         )
 
@@ -373,7 +560,7 @@ class MainActivity : CommonActivity(), BottomNavProvider {
                 putExtra(IncomingCallActivity.PUSH_DATA, LinphoneService.instance?.provider?.pushCallData)
             }
             startActivity(intent)
-        } else {
+        } else if (!isOfflineScreen && isDeviceOnline) {
             checkLockedScreenPermission()
         }
     }
@@ -388,7 +575,7 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         handleDeepLink(intent)
     }
 
-    @Suppress("DEPRECATION")
+    @SuppressLint("WrongConstant")
     fun hideSystemUI() {
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
@@ -400,8 +587,8 @@ class MainActivity : CommonActivity(), BottomNavProvider {
         ViewCompat.requestApplyInsets(binding.root)
     }
 
-    @Suppress("DEPRECATION")
     fun showSystemUI() {
+        if (isOfflineScreen) return
         val windowInsetsController = WindowCompat.getInsetsController(window, window.decorView)
         windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
         binding.bottomNav.isVisible = true
@@ -412,18 +599,19 @@ class MainActivity : CommonActivity(), BottomNavProvider {
     }
 
     fun navigateToAddressAuthFragment() {
+        if (isOfflineScreen) return
         binding.bottomNav.selectedItemId = R.id.address
         mViewModel.navigationToAddressAuthFragmentAction()
     }
 
     fun reloadToAddress() {
-        if (binding.bottomNav.selectedItemId == R.id.address) {
-            binding.bottomNav.selectedItemId = R.id.address
-            mViewModel.navigationToAddress()
-        }
+        if (isOfflineScreen) return
+        binding.bottomNav.selectedItemId = R.id.address
+        mViewModel.navigationToAddress()
     }
 
     fun navigateToChat() {
+        if (isOfflineScreen) return
         binding.bottomNav.selectedItemId = R.id.chat
     }
 
@@ -451,6 +639,8 @@ class MainActivity : CommonActivity(), BottomNavProvider {
     override fun onStop() {
         super.onStop()
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+        connectionDialog?.dismiss()
+        connectionDialog = null
     }
 
     @Deprecated("Deprecated in Java")

@@ -61,6 +61,7 @@ class CCTVDetailFragment : Fragment() {
         )
         binding.viewPager.adapter = adapter
         binding.tabLayout.setupWithViewPager(binding.viewPager)
+        binding.tabLayout.getTabAt(1)?.view?.isEnabled = false
         binding.viewPager.addOnPageChangeListener(object : SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 mCCTVViewModel.setCurrentTabPosition(position)
@@ -99,8 +100,8 @@ class CCTVDetailFragment : Fragment() {
         }
         mCCTVViewModel.closedRangeCalendar.observe(
             viewLifecycleOwner
-        ) { calendar ->
-            val hasArchive = !calendar.peekContent().isEmpty()
+        ) {
+            val hasArchive = mCCTVViewModel.availableRanges.isNotEmpty()
             binding.viewPager.scrollEnabled = hasArchive
 
             val tab = binding.tabLayout.getTabAt(1) ?: return@observe

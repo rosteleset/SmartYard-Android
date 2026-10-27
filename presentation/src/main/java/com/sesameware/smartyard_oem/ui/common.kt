@@ -949,3 +949,12 @@ inline fun <reified T : Fragment> NavController.attachDestinationToGraph(
         targetGraph.addDestination(destination)
     }
 }
+
+fun countryCodeToFlag(countryCode: String): String {
+    return countryCode
+        .uppercase()
+        .map { char ->
+            String(Character.toChars(char.code + 0x1F1E6 - 'A'.code))
+        }
+        .joinToString("")
+}

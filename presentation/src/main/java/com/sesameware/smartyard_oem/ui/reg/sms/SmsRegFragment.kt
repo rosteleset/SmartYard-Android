@@ -22,6 +22,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentSmsRegBinding
 import com.sesameware.smartyard_oem.eventHandler
 import com.sesameware.smartyard_oem.getColorCompat
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.java.KoinJavaComponent.injectOrNull
@@ -154,6 +155,7 @@ class SmsRegFragment : Fragment() {
         }
 
         delegate?.extendConfig(binding)
+        binding.pin.hideKeyboardOnImeAction()
     }
 
     private fun togglePinLineColor(error: Boolean) {

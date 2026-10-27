@@ -1,0 +1,4 @@
+<resources>
+    <!-- Duration of guest vehicle license plate validity when expiration is automatic (in hours) -->
+    <integer name="guest_vehicle_validity_hours">24</integer>
+</resources>

@@ -5,12 +5,38 @@ import java.util.Locale
 typealias ListLicensePlatesResponse = ApiResult<List<LicensePlate>>?
 
 class LicensePlate {
-    val value: String
+    val number: String
+    var countryCode: String = "ru"
+    val validFrom: String?
+    val validTo: String?
+    val watcherId: Int?
 
     constructor(input: String?) {
         val normalized = normalizeInput(input)
         throwIfInvalid(normalized)
-        value = normalized
+        number = normalized
+        countryCode = "ru"
+        validFrom = null
+        validTo = null
+        watcherId = null
+    }
+
+    /**
+     * v2 constructor: the plate is already validated on the server side against the
+     * country-specific regex, so no Russian-specific normalization/validation is applied.
+     */
+    constructor(
+        number: String?,
+        countryCode: String?,
+        validFrom: String? = null,
+        validTo: String? = null,
+        watcherId: Int? = null
+    ) {
+        this.number = number.orEmpty()
+        this.countryCode = countryCode ?: "ru"
+        this.validFrom = validFrom
+        this.validTo = validTo
+        this.watcherId = watcherId
     }
 
     private fun normalizeInput(input: String?): String {
@@ -44,15 +70,15 @@ class LicensePlate {
 
         other as LicensePlate
 
-        return value == other.value
+        return number == other.number
     }
 
     override fun hashCode(): Int {
-        return value.hashCode()
+        return number.hashCode()
     }
 
     override fun toString(): String {
-        return "LicensePlate(value='$value')"
+        return "LicensePlate(value='$number')"
     }
 
     companion object {

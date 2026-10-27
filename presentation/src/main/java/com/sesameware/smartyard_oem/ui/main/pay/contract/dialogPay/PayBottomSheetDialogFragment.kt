@@ -19,6 +19,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.BottomDialogSheetPayBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.main.pay.contract.PayContractFragmentDirections
 import com.sesameware.smartyard_oem.ui.openUrl
 import java.util.regex.Matcher
@@ -110,6 +111,7 @@ class PayBottomSheetDialogFragment : BottomSheetDialogFragment() {
 
         //задаем максимальное количество знаков после запятой
         binding.etMoneyBalance.inputFilterDecimal(8, 2)
+        binding.etMoneyBalance.hideKeyboardOnImeAction()
 
         binding.etMoneyBalance.addTextChangedListener {
             it?.let {

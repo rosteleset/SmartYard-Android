@@ -18,6 +18,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.DialogFragment
@@ -25,6 +26,7 @@ import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.LicensePlate
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.DialogShareAccessBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.AccessType
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.ContactModel
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.LicensePlateValue
@@ -69,6 +71,8 @@ class DialogShareAccessDialog(
         } else {
             setupForPhone()
         }
+        binding.prefixEditText.imeOptions = EditorInfo.IME_ACTION_DONE
+        binding.prefixEditText.hideKeyboardOnImeAction()
     }
 
     private fun String.licensePlatePatternToHint(): String {

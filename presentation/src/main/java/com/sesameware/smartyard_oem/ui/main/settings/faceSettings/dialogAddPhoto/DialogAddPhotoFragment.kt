@@ -19,6 +19,7 @@ import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.GroupData
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.DialogAddPhotoBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 
 class DialogAddPhotoFragment(
@@ -50,6 +51,7 @@ class DialogAddPhotoFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.etNewGroupName.hideKeyboardOnImeAction()
         binding.ivAddFacePhoto.setFaceRect(faceLeft, faceTop, faceWidth, faceHeight, isReg)
         Glide.with(binding.ivAddFacePhoto)
             .asBitmap()

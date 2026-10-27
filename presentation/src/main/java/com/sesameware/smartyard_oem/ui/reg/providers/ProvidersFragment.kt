@@ -5,14 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
+import android.view.inputmethod.EditorInfo
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentProvidersBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class ProvidersFragment : Fragment() {
@@ -44,6 +47,7 @@ class ProvidersFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         initRecycler()
+        binding.etFilterProviders.hideKeyboardOnImeAction(EditorInfo.IME_ACTION_SEARCH)
 
         mViewModel.providersList.observe(
             viewLifecycleOwner
@@ -92,6 +96,8 @@ class ProvidersFragment : Fragment() {
             }
             adapter.notifyDataSetChanged()
             binding.btnChooseProvider.isEnabled = false
+            binding.progressBar.isVisible = false
+            binding.content.isVisible = true
             providerId = ""
             providerBaseUrl = ""
         }

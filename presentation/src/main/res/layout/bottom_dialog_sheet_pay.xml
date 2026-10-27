@@ -79,6 +79,8 @@
         android:background="@drawable/background_edit_text_radius"
         android:ems="10"
         android:inputType="numberDecimal"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:padding="16dp"
         android:text="0.0"
         android:textColor="@color/accent"

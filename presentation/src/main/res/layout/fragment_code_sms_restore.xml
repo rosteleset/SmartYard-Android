@@ -50,6 +50,8 @@
         android:cursorVisible="false"
         android:digits="1234567890"
         android:inputType="number"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:layoutDirection="ltr"
         android:maxLength="4"
         android:textIsSelectable="false"

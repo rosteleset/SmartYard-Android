@@ -6,6 +6,7 @@ import com.sesameware.domain.model.request.ActionIssueRequest
 import com.sesameware.domain.model.request.ActionIssueRequestV2
 import com.sesameware.domain.model.request.AddGroupRequest
 import com.sesameware.domain.model.request.AddLicensePlateNumberRequest
+import com.sesameware.domain.model.request.AddLicensePlateNumberRequestV2
 import com.sesameware.domain.model.request.AddMyPhoneRequest
 import com.sesameware.domain.model.request.AppVersionRequest
 import com.sesameware.domain.model.request.AttachFaceToGroupRequest
@@ -100,6 +101,8 @@ import com.sesameware.domain.model.response.ListConnectIssueResponse
 import com.sesameware.domain.model.response.ListFacesResponse
 import com.sesameware.domain.model.response.ListGroupsResponse
 import com.sesameware.domain.model.response.ListLicensePlatesNumbersResponse
+import com.sesameware.domain.model.response.ListLicensePlatesNumbersV2Response
+import com.sesameware.domain.model.response.SupportedPlateNumberFormatsResponse
 import com.sesameware.domain.model.response.OfficesResponse
 import com.sesameware.domain.model.response.OpenDoorResponse
 import com.sesameware.domain.model.response.PayPrepareResponse
@@ -468,6 +471,23 @@ interface TeledomApi {
         @Url url: String,
         @Body request: RemoveLicensePlateNumberRequest
     ): Response<RemoveLicensePlateResponse>
+
+    @POST
+    suspend fun addNumberV2(
+        @Url url: String,
+        @Body request: AddLicensePlateNumberRequestV2
+    ): Response<AddLicensePlateNumberResponse>
+
+    @POST
+    suspend fun listNumbersV2(
+        @Url url: String,
+        @Body request: ListLicensePlateNumbersRequest
+    ): Response<ListLicensePlatesNumbersV2Response>
+
+    @POST
+    suspend fun listSupportedPlateNumberFormats(
+        @Url url: String
+    ): Response<SupportedPlateNumberFormatsResponse>
 
     @POST
     suspend fun camMap(@Url url: String): Response<CamMapResponse>

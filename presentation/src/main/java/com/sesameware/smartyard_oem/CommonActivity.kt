@@ -66,6 +66,8 @@ abstract class CommonActivity : AppCompatActivity() {
         mViewModel.applySavedNightMode()
     }
 
+    protected open fun handleConnectionError(): Boolean = false
+
     override fun onStart() {
         super.onStart()
         progressDialog = ProgressDialog().createDialog(this)
@@ -73,10 +75,10 @@ abstract class CommonActivity : AppCompatActivity() {
             this,
             EventObserver { error ->
                 when (error.status) {
-                    ErrorStatus.ERROR_CONNECTION,
-                    ErrorStatus.TIMEOUT, ErrorStatus.UNAUTHORIZED -> {
-                        showStandardAlert(this, error.status.messageId)
+                    ErrorStatus.ERROR_CONNECTION, ErrorStatus.TIMEOUT -> {
+                        if (!handleConnectionError()) showStandardAlert(this, error.status.messageId)
                     }
+                    ErrorStatus.UNAUTHORIZED -> showStandardAlert(this, error.status.messageId)
                     ErrorStatus.AUTHORIZATION_ON_ANOTHER -> {
                         showStandardAlert(
                             this,

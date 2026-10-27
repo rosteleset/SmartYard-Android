@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.bumptech.glide.signature.ObjectKey
-import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.domain.model.response.EntrancesView
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.ItemEntranceBinding
@@ -28,6 +27,7 @@ import com.sesameware.smartyard_oem.databinding.ItemHouseBinding
 import com.sesameware.smartyard_oem.databinding.ItemIssueBinding
 import com.sesameware.smartyard_oem.databinding.ItemWebExtBinding
 import com.sesameware.smartyard_oem.databinding.ItemYardBinding
+import com.sesameware.smartyard_oem.ui.common.player.StreamSourceConfig
 import com.sesameware.smartyard_oem.ui.main.address.models.AddressUiModel
 import com.sesameware.smartyard_oem.ui.main.address.models.EntranceState
 import com.sesameware.smartyard_oem.ui.main.address.models.ExtItemModel
@@ -52,7 +52,7 @@ import org.koin.java.KoinJavaComponent.injectOrNull
 typealias HouseCallback = (HouseAction) -> Unit
 typealias IssueCallback = (IssueAction) -> Unit
 
-class AddressListAdapter(
+class AddressAdapter(
     private val houseCallback: HouseCallback,
     private val issueCallback: IssueCallback,
     private val entranceView: EntrancesView
@@ -404,7 +404,7 @@ class HouseViewHolder private constructor(
         state: EntranceState,
         callback: HouseCallback
     ) {
-        val camera = state.cameras.firstOrNull()
+        val cameraConfig = state.cameras.firstOrNull()
         var previewSuccess = false
 
         with(itemBinding) {
@@ -416,10 +416,10 @@ class HouseViewHolder private constructor(
 
             Glide.with(ivPreview).clear(ivPreview)
 
-            if (camera != null) {
+            if (cameraConfig != null) {
                 Glide.with(ivPreview)
-                    .load(camera.previewUrl)
-                    .signature(ObjectKey(camera.previewCacheKey))
+                    .load(cameraConfig.previewUrl)
+                    .signature(ObjectKey(cameraConfig.previewCacheKey))
                     .error(R.drawable.ic_no_photography_24)
                     .centerCrop()
                     .listener(object : RequestListener<Drawable> {
@@ -452,8 +452,8 @@ class HouseViewHolder private constructor(
             }
 
             root.setOnClickListener {
-                if (camera != null && camera.isValid && previewSuccess) {
-                    callback(OnEntrancePreviewClick(camera, state.lock))
+                if (cameraConfig != null && cameraConfig.isValid && previewSuccess) {
+                    callback(OnEntrancePreviewClick(cameraConfig, state.lock))
                 } else {
                     val caption = root.context.getString(R.string.entrance_camera_is_not_available)
                     Toast.makeText(root.context, caption, Toast.LENGTH_SHORT).show()
@@ -600,7 +600,7 @@ private class EntranceSliderAdapter(
         private var previewSuccess = false
 
         fun bind(state: EntranceState, callback: HouseCallback) {
-            val camera: EntranceCamera? = state.cameras.firstOrNull()
+            val cameraConfig: StreamSourceConfig? = state.cameras.firstOrNull()
 
             with(binding) {
                 ivImage.setImageResource(state.iconRes)
@@ -609,10 +609,10 @@ private class EntranceSliderAdapter(
 
                 val color = ContextCompat.getColor(root.context, R.color.on_filled)
 
-                if (camera != null) {
+                if (cameraConfig != null) {
                     Glide.with(ivPreview)
-                        .load(camera.previewUrl)
-                        .signature(ObjectKey(camera.previewCacheKey))
+                        .load(cameraConfig.previewUrl)
+                        .signature(ObjectKey(cameraConfig.previewCacheKey))
                         .error(R.drawable.ic_no_photography_24)
                         .centerCrop()
                         .listener(object : RequestListener<Drawable> {
@@ -645,8 +645,8 @@ private class EntranceSliderAdapter(
                 }
 
                 root.setOnClickListener {
-                    if (camera != null && camera.isValid && previewSuccess) {
-                        callback(OnEntrancePreviewClick(camera, state.lock))
+                    if (cameraConfig != null && cameraConfig.isValid && previewSuccess) {
+                        callback(OnEntrancePreviewClick(cameraConfig, state.lock))
                     } else {
                         val caption = root.context
                             .getString(R.string.entrance_camera_is_not_available)

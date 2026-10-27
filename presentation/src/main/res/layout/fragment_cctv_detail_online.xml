@@ -9,7 +9,6 @@
     android:fillViewport="true"
     tools:context=".ui.main.address.cctv_video.detail.CCTVOnlineTabFragment">
 
-
     <LinearLayout
         android:id="@+id/llVideoPlayback"
         android:layout_width="match_parent"
@@ -19,58 +18,49 @@
         android:orientation="vertical"
         android:paddingBottom="40dp">
 
-        <FrameLayout
+        <com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout
             android:id="@+id/videoWrap"
             android:layout_width="match_parent"
-            android:layout_height="222dp"
+            android:layout_height="match_parent"
             android:layout_marginTop="24dp"
+            app:aspectRatio="16:9"
             android:background="@drawable/background_radius_video_clip">
 
-            <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
-                android:id="@+id/zlOnline"
+            <com.sesameware.smartyard_oem.ui.common.player.CCTVPlayerView
+                android:id="@+id/cctvPlayerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" />
 
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/mVideoView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:focusable="true"
-                    app:resize_mode="fixed_height" />
-
-            </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
-
-            <ProgressBar
-                android:id="@+id/mProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center" />
-
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/mFullScreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:visibility="visible"
-                app:srcCompat="@drawable/selector_fullscreen"
-                tools:ignore="ContentDescription" />
+                android:layout_margin="8dp"
+                android:src="@drawable/selector_fullscreen"
+                android:visibility="visible" />
 
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/mMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:visibility="gone"
-                app:srcCompat="@drawable/selector_mute"
-                tools:ignore="ContentDescription"
+                android:layout_margin="8dp"
+                android:src="@drawable/selector_mute"
+                android:visibility="invisible"
                 tools:visibility="visible" />
-        </FrameLayout>
 
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
+                android:id="@+id/ivPlayerLog"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_log"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
@@ -82,4 +72,5 @@
             android:nestedScrollingEnabled="false" />
 
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

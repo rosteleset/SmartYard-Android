@@ -5,6 +5,7 @@ import com.sesameware.domain.model.CommonErrorThrowable
 import com.sesameware.domain.model.ErrorStatus
 import com.sesameware.domain.model.response.ApiResultNull
 import com.squareup.moshi.Moshi
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -31,6 +32,8 @@ open class BaseRepository(open val moshi: Moshi) {
         return withContext(Dispatchers.IO) {
             try {
                 apiCall.invoke()
+            } catch (cancellation: CancellationException) {
+                throw cancellation
             } catch (throwable: Throwable) {
                 throw CommonErrorThrowable(convertError(throwable))
             }

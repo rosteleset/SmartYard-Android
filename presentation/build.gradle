@@ -1,6 +1,5 @@
 plugins {
     id 'com.android.application'
-    id 'org.jetbrains.compose'
     id 'org.jetbrains.kotlin.plugin.compose'
     id 'kotlin-android'
     id 'kotlin-parcelize'
@@ -55,11 +54,12 @@ android {
         applicationId "com.sesameware.smartyard_oem"
         minSdk = rootProject.minSdk
         targetSdk = rootProject.targetSdk
-        versionCode = 119
-        versionName = '1.0.119'
+        versionCode = 123
+        versionName = '1.0.123'
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         resourceConfigurations += ["ru", "en", "kk", "uz", "hy"]
         vectorDrawables.useSupportLibrary = true
+        manifestPlaceholders = [ruStoreProjectId: ""]
         ndk {
             //noinspection ChromeOsAbiSupport
             abiFilters 'arm64-v8a', 'armeabi-v7a'
@@ -67,17 +67,21 @@ android {
     }
 
     buildTypes {
-        disableLint {
-            signingConfig = signingConfigs.debug
-            debuggable = true
-        }
         debug {
-            signingConfig = signingConfigs.debug
+            signingConfig signingConfigs.debug
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled false
+                mappingFileUploadEnabled false
+            }
         }
         release {
-            signingConfig = signingConfigs.debug
-            minifyEnabled = false
+            signingConfig signingConfigs.debug
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            firebaseCrashlytics {
+                nativeSymbolUploadEnabled true
+            }
         }
     }
 
@@ -121,11 +125,11 @@ android {
         compose = true
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion = '1.5.2'
-    }
+    ndkVersion = "29.0.14206865"
+
     namespace = 'com.sesameware.smartyard_oem'
 }
+
 
 if (project.file('signing.gradle').exists()) {
     apply from: 'signing.gradle'
@@ -137,6 +141,8 @@ if (file('ext.gradle').exists()) {
 
 if (rootProject.clientDir != null) {
     apply from: "flavors.gradle"
+} else {
+    apply from: "src/teledom/ok-tracer.gradle"
 }
 
 // Disabling push and analytics plug-in tasks for all builds except selected
@@ -190,11 +196,6 @@ dependencies {
     implementation "com.github.romandanylyk:PageIndicatorView:$pageIndicator"
     implementation "androidx.core:core-splashscreen:$splashscreen"
     implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleRuntimeKtx"
-    implementation "androidx.activity:activity-compose:$activityCompose"
-    implementation 'androidx.compose.ui:ui-graphics'
-    implementation 'androidx.compose.ui:ui-tooling-preview'
-    debugImplementation 'androidx.compose.ui:ui-tooling'
-    debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
     // Google
     googleImplementation platform("com.google.firebase:firebase-bom:$firebaseBom")
@@ -205,6 +206,7 @@ dependencies {
 
     // Huawei
     huaweiImplementation "com.huawei.agconnect:agconnect-crash:$huaweiAgconnect"
+    huaweiImplementation "com.huawei.agconnect:agconnect-crash-native:$huaweiAgconnect"
     huaweiImplementation "com.huawei.hms:push:$huaweiPush"
 
     //Rustore
@@ -337,13 +339,17 @@ dependencies {
     def composeBom = platform("androidx.compose:compose-bom:$composeBom")
     implementation(composeBom)
     androidTestImplementation(composeBom)
-    implementation "androidx.compose.runtime:runtime"
     implementation "androidx.compose.ui:ui"
     implementation "androidx.compose.foundation:foundation"
-    implementation "androidx.compose.foundation:foundation-layout"
     implementation "androidx.compose.material:material"
+    implementation 'androidx.compose.material:material-icons-extended'
     implementation "androidx.compose.runtime:runtime-livedata"
-    implementation "androidx.compose.ui:ui-tooling"
+    implementation 'androidx.compose.ui:ui-tooling-preview'
+    debugImplementation 'androidx.compose.ui:ui-tooling'
+    debugImplementation 'androidx.compose.ui:ui-test-manifest'
+
+    // Compose Activity integration
+    implementation "androidx.activity:activity-compose:$activityCompose"
 
     // WebRTC
     implementation("io.getstream:stream-webrtc-android:$webrtc")

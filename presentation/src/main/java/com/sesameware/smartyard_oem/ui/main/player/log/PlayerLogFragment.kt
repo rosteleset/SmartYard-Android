@@ -37,7 +37,6 @@ class PlayerLogFragment : Fragment() {
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { view, windowInsets ->
             val insets = windowInsets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(insets.left, insets.top, insets.right,insets.bottom)
-            Timber.d("qwe $insets")
             windowInsets
         }
         return binding.root

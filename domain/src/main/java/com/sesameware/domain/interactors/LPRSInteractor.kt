@@ -8,6 +8,7 @@ import com.sesameware.domain.model.response.LicensePlateMapper.cyrillicLettersTo
 import com.sesameware.domain.model.response.LicensePlateMapper.latinLettersToCyrillic
 import com.sesameware.domain.model.response.ListLicensePlatesResponse
 import com.sesameware.domain.model.response.RemoveLicensePlateResponse
+import com.sesameware.domain.model.response.SupportedPlateNumberFormatsResponse
 
 class LPRSInteractor(
     private val repository: LPRSRepository
@@ -16,7 +17,7 @@ class LPRSInteractor(
         flatId: Int,
         licensePlate: LicensePlate
     ): AddLicensePlateNumberResponse {
-        val number = licensePlate.value.cyrillicLettersToLatin()
+        val number = licensePlate.number.cyrillicLettersToLatin()
         return repository.addLicensePlateNumber(flatId, number)
     }
 
@@ -37,9 +38,45 @@ class LPRSInteractor(
 
     suspend fun removeLicensePlate(
         flatId: Int,
-        licensePlate: LicensePlate
+        number: String
     ): RemoveLicensePlateResponse {
-        val number = licensePlate.value.cyrillicLettersToLatin()
         return repository.removeLicensePlateNumber(flatId, number)
+    }
+
+    suspend fun addLicensePlateV2(
+        flatId: Int,
+        number: String,
+        countryCode: String,
+        validFrom: String?,
+        validTo: String?
+    ): AddLicensePlateNumberResponse {
+        return repository.addLicensePlateNumberV2(flatId, number, countryCode, validFrom, validTo)
+    }
+
+    suspend fun listLicensePlatesV2(
+        flatId: Int
+    ): ListLicensePlatesResponse {
+        return repository.listLicensePlateNumbersV2(flatId)?.let { response ->
+            val licensePlates = response.data.map {
+                LicensePlate(
+                    number = it.plateNumber,
+                    countryCode = it.countryCode,
+                    validFrom = it.validFrom,
+                    validTo = it.validTo,
+                    watcherId = it.watcherId,
+                )
+            }
+
+            ApiResult(
+                code = response.code,
+                name = response.name,
+                message = response.message,
+                data = licensePlates,
+            )
+        }
+    }
+
+    suspend fun listSupportedPlateNumberFormats(): SupportedPlateNumberFormatsResponse {
+        return repository.listSupportedPlateNumberFormats()
     }
 }

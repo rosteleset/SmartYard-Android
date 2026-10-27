@@ -201,6 +201,19 @@
                     android:adjustViewBounds="true"
                     android:scaleType="centerCrop" />
 
+
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/pvEventVideo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black"
+                    android:alpha="0"
+                    android:translationZ="5dp"
+                    app:use_artwork="false"
+                    app:use_controller="false" />
+
+                <include layout="@layout/stub_video" />
+
                 <TextView
                     android:id="@+id/tvNoImage"
                     android:layout_width="wrap_content"
@@ -217,31 +230,20 @@
                     app:drawableTopCompat="@drawable/ic_no_photography_24"
                     tools:visibility="visible" />
 
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/pvEventVideo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@android:color/black"
-                    android:alpha="0"
-                    android:translationZ="5dp"
-                    app:use_artwork="false"
-                    app:use_controller="false" />
-
             </androidx.cardview.widget.CardView>
 
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/ivEventHelp"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 android:translationZ="10dp"
                 app:layout_constraintEnd_toEndOf="@id/clEventImageOrVideo"
                 app:layout_constraintTop_toTopOf="@id/clEventImageOrVideo"
-                app:srcCompat="@drawable/ic_baseline_help"
+                app:srcCompat="@drawable/ic_help_mono"
                 tools:ignore="ContentDescription" />
 
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/ivEventRewindBackward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -253,9 +255,10 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@id/clEventImageOrVideo"
                 app:srcCompat="@drawable/ic_backward_10"
-                tools:ignore="ContentDescription" />
+                tools:alpha="1"
+                tools:visibility="visible" />
 
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/ivEventRewindForward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -267,20 +270,19 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/clEventImageOrVideo"
                 app:srcCompat="@drawable/ic_forward_10"
-                tools:ignore="ContentDescription" />
+                tools:alpha="1"
+                tools:visibility="visible" />
 
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/ivEventMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="12dp"
                 android:translationZ="10dp"
                 android:visibility="gone"
-                android:scaleType="centerInside"
-                app:srcCompat="@drawable/selector_mute"
+                android:layout_margin="8dp"
+                android:src="@drawable/selector_mute"
                 app:layout_constraintStart_toStartOf="@id/clEventImageOrVideo"
                 app:layout_constraintTop_toTopOf="@id/clEventImageOrVideo"
-                tools:ignore="ContentDescription"
                 tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group

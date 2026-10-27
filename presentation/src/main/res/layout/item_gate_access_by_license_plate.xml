@@ -2,8 +2,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="115dp"
-    android:layout_height="90dp"
+    android:layout_width="125dp"
+    android:layout_height="110dp"
     android:layout_marginHorizontal="4dp"
     android:padding="12dp"
     android:background="@drawable/background_card"
@@ -21,19 +21,64 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="top|end"
-        app:srcCompat="@drawable/ic_menu"
-        android:foreground="?attr/selectableItemBackground" />
+        android:foreground="?attr/selectableItemBackground"
+        app:srcCompat="@drawable/ic_menu" />
 
-    <TextView
-        android:id="@+id/tvLicensePlate"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:ellipsize="end"
-        android:fontFamily="@font/license_plate_font"
-        app:fontFamily="@font/license_plate_font"
-        android:textColor="@color/accent"
-        android:textSize="12sp"
-        tools:text="С 995 АС 6901" />
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvCountryFlag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="4dp"
+                android:gravity="center"
+                android:textSize="14sp"
+                tools:text="🇷🇺" />
+
+            <TextView
+                android:id="@+id/tvLicensePlate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ellipsize="end"
+                android:fontFamily="@font/license_plate_font"
+                android:maxLines="1"
+                android:textColor="@color/accent"
+                android:textSize="12sp"
+                tools:text="С995АС69" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvValidFrom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/accent"
+            android:textSize="9sp"
+            tools:text="с: 01.10.2026" />
+
+        <TextView
+            android:id="@+id/tvValidTo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:textColor="@color/accent"
+            android:textSize="9sp"
+            tools:text="по: 31.10.2026" />
+
+    </LinearLayout>
 
 </FrameLayout>

@@ -454,6 +454,7 @@
     <string name="specify_reason">Specify reason</string>
     <string name="dialog_delete_reason_description">When you delete the address, you will no longer have access to address-related services</string>
     <string name="text_delete">Delete</string>
+    <string name="text_edit">Edit</string>
     <string name="text_dismiss">Cancel</string>
     <string name="pay_number_sample">No. 68992</string>
     <string name="pay_sum">Amount:</string>
@@ -554,8 +555,9 @@
     <string name="tracked_events_delete_confirm_positive">Delete</string>
     <string name="tracked_events_delete_confirm_negative">Cancel</string>
     <string name="event_log_track_group">Track group</string>
-    <string name="event_log_track_face_new_group">Track face (create group)</string>
+    <string name="event_log_track_face_new_group">Track face (create a group)</string>
     <string name="event_log_enter_group_name">Enter group name</string>
+    <string name="event_log_track_lp">Track license plate</string>
     <string name="face_groups_title">Face groups</string>
     <string name="face_group_add">Add group</string>
     <string name="face_group_edit">Edit group</string>
@@ -572,4 +574,41 @@
     <string name="face_group_ungrouped_faces">Ungrouped</string>
     <string name="face_group_selection_existing">Existing group</string>
     <string name="face_group_selection_new">New group</string>
+    <string name="add_face">Add face</string>
+    <string name="offline_alert_no_connection_title">No connection!</string>
+    <string name="offline_alert_switch_mode">Tap OK to return online.\nTap Cancel to stay offline.</string>
+    <string name="offline_hint_swipe_to_exit">You are offline. Swipe down on the header to exit.</string>
+    <string name="offline_home_title">My addresses</string>
+    <string name="offline_message_connection_lost">Internet connection lost. Tap OK to open saved addresses and door codes.</string>
+    <string name="offline_message_connection_restored">Connection restored!</string>
+    <string name="offline_message_server_unavailable">You cannot leave offline mode without an internet connection. Try again later.</string>
+    <string name="home_addresses_empty_offline_title">No data has been saved yet.</string>
+    <string name="offline_back">Back</string>
+
+    <!-- Диалог добавления автомобильного номера (версия 2) -->
+    <string name="dialog_license_plate_v2_title">Add license plate number</string>
+    <string name="dialog_license_plate_v2_title_edit">Edit license plate number</string>
+    <string name="dialog_license_plate_v2_country">Country</string>
+    <string name="dialog_license_plate_v2_number_hint">License plate number</string>
+    <string name="dialog_license_plate_v2_number_incomplete">The number is not fully filled or does not match the format</string>
+    <string name="dialog_license_plate_v2_validity_unlimited">Unlimited</string>
+    <string name="dialog_license_plate_v2_valid_from_date">Start date</string>
+    <string name="dialog_license_plate_v2_valid_from_time">Start time</string>
+    <string name="dialog_license_plate_v2_valid_to_date">End date</string>
+    <string name="dialog_license_plate_v2_valid_to_time">End time</string>
+    <string name="dialog_license_plate_v2_auto_end">Ends in %s h.</string>
+    <string name="dialog_license_plate_v2_auto_end_preview">End: %s</string>
+    <string name="dialog_license_plate_v2_period_invalid">End cannot be earlier than start</string>
+    <string name="dialog_license_plate_v2_confirm">Add</string>
+    <string name="dialog_license_plate_v2_cancel">Cancel</string>
+
+    <!-- Названия стран для автомобильных номеров -->
+    <string name="country_ru">Russia</string>
+    <string name="country_am">Armenia</string>
+    <string name="country_by">Belarus</string>
+    <string name="country_kz">Kazakhstan</string>
+
+    <!-- Период действия -->
+    <string name="period_from">from: %s</string>
+    <string name="period_to">to: %s</string>
 </resources>

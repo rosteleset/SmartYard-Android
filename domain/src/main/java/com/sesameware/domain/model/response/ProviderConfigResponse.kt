@@ -39,6 +39,9 @@ data class ProviderConfig(
     //версия заявок
     @param:Json(name = ISSUES_VERSION) val issuesVersion: String = "1",
 
+    //версия LPRS (автомобильные номера)
+    @param:Json(name = LPRS_VERSION) val lprsVersion: String = "1",
+
     //appeal form name, patronymic and last validation
     @param:Json(name = VALIDATION_NAME_PATTERN) val validationNamePattern: String = "",
     @param:Json(name = VALIDATION_PATRONYMIC_PATTERN) val validationPatronymicPattern: String = "",
@@ -110,6 +113,10 @@ data class ProviderConfig(
     val entrancesView: EntrancesView
         get() = EntrancesView.from(_entrancesView)
 
+    //версия LPRS
+    val lprsVersionType: LprsVersion
+        get() = LprsVersion.from(lprsVersion)
+
     val userHasLastName: Boolean
         get() = _userHasLastName == "t"
 
@@ -169,6 +176,9 @@ data class ProviderConfig(
         //версия заявок
         const val ISSUES_VERSION = "issuesVersion"
         const val ISSUES_VERSION_NONE = "none"
+
+        //версия LPRS
+        const val LPRS_VERSION = "lprsVersion"
 
         //appeal form validation
         const val VALIDATION_NAME_PATTERN = "validationNamePattern"
@@ -230,6 +240,16 @@ enum class CCTVViewTypeType {
                 else -> LIST
             }
         }
+    }
+}
+
+enum class LprsVersion(val value: String) {
+    V1("1"),
+    V2("2");
+
+    companion object {
+        fun from(value: String?): LprsVersion =
+            entries.find { it.value == value } ?: V1
     }
 }
 

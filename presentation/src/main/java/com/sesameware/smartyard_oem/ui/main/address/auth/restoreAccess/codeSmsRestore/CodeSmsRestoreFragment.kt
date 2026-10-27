@@ -19,6 +19,7 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCodeSmsRestoreBinding
 import com.sesameware.smartyard_oem.eventHandler
 import com.sesameware.smartyard_oem.getColorCompat
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.isEmailCharacter
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -73,6 +74,7 @@ class CodeSmsRestoreFragment : Fragment() {
             }
         )
 
+        binding.pin.hideKeyboardOnImeAction()
         binding.pin.focus()
 
         binding.pin.addTextChangedListener {

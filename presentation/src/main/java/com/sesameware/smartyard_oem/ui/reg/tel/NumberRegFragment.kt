@@ -20,6 +20,7 @@ import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentNumberRegBinding
 import com.sesameware.smartyard_oem.databinding.PinEntryBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
 import com.sesameware.smartyard_oem.ui.dpToPx
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -84,6 +85,7 @@ class NumberRegFragment : Fragment() {
         createFromTemplate()
 
         delegate?.extendConfig(binding, pinSlots)
+        binding.etHiddenPhoneNumber.hideKeyboardOnImeAction()
     }
 
     private fun createFromTemplate() {

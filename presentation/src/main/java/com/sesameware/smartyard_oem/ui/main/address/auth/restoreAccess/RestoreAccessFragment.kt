@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sesameware.smartyard_oem.EventObserver
 import com.sesameware.smartyard_oem.afterTextChanged
 import com.sesameware.smartyard_oem.databinding.FragmentRestoreAccessBinding
+import com.sesameware.smartyard_oem.hideKeyboardOnImeAction
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -48,6 +49,7 @@ class RestoreAccessFragment : Fragment() {
         arguments?.let {
             contractNumber = RestoreAccessFragmentArgs.fromBundle(it).contractNumber
         }
+        binding.etContractNumber.hideKeyboardOnImeAction()
         binding.etContractNumber.setText(contractNumber)
         binding.btnRecovery.isEnabled = binding.etContractNumber.text?.isNotEmpty() == true
         binding.etContractNumber.addTextChangedListener {

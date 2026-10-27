@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout
+        android:id="@+id/zoomLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/videoSurfaceWrap"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <com.google.android.exoplayer2.ui.PlayerView
+                android:id="@+id/playerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0"
+                app:use_controller="false"
+                app:resize_mode="fit" />
+
+            <org.webrtc.SurfaceViewRenderer
+                android:id="@+id/webRtcView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:alpha="0" />
+
+            <ImageView
+                android:id="@+id/ivPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/black"
+                android:scaleType="centerCrop"
+                tools:ignore="ContentDescription"
+                tools:src="@tools:sample/backgrounds/scenic" />
+
+        </FrameLayout>
+
+    </com.sesameware.smartyard_oem.ui.main.address.cctv_video.TouchInterceptorZoomLayout>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="#66000000"
+        app:cardCornerRadius="120dp"
+        app:cardElevation="0dp"
+        tools:visibility="gone">
+
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/on_filled" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/ivNoStream"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        app:cardBackgroundColor="#66000000"
+        app:cardCornerRadius="120dp"
+        app:cardElevation="0dp"
+        android:visibility="invisible"
+        tools:visibility="visible">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="8dp"
+            app:srcCompat="@drawable/ic_no_photography_24"
+            app:tint="@color/on_filled"
+            tools:ignore="ContentDescription" />
+
+    </androidx.cardview.widget.CardView>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/playerLogContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</FrameLayout>

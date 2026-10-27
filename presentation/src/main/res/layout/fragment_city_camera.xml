@@ -5,7 +5,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:animateLayoutChanges="true"
     tools:context=".ui.main.burger.cityCameras.CityCameraFragment">
 
     <ImageView
@@ -37,99 +36,93 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="@string/title_city_camera_sample"
         android:textAlignment="textStart"
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
+        app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="15sp"
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeStepGranularity="1sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/ivCityCameraBack" />
 
     <TextView
         android:id="@+id/tvCityCameraTitleSub"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="5dp"
         android:textColor="@color/on_top_background"
         android:textSize="14sp"
-        app:autoSizeMinTextSize="10sp"
         android:maxLines="2"
         android:ellipsize="end"
+        app:autoSizeTextType="uniform"
+        app:autoSizeMinTextSize="10sp"
+        app:autoSizeMaxTextSize="14sp"
+        app:autoSizeStepGranularity="1sp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCityCameraTitle"
         tools:text="@string/address_sample" />
 
     <LinearLayout
         android:id="@+id/llCityCameraMain"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="18dp"
         android:background="@drawable/background_surface_inverted"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvCityCameraTitleSub">
 
-        <FrameLayout
-            android:id="@+id/flCityCameraVideoWrap"
+        <com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout
+            android:id="@+id/video_wrap"
             android:layout_width="match_parent"
-            android:layout_height="222dp"
+            android:layout_height="match_parent"
+            app:aspectRatio="16:9"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/background_radius_video_clip">
 
-            <com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
-                android:id="@+id/zlCityCamera"
+            <com.sesameware.smartyard_oem.ui.common.player.CCTVPlayerView
+                android:id="@+id/cctvPlayerView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" />
 
-                <com.google.android.exoplayer2.ui.PlayerView
-                    android:id="@+id/pvCityCamera"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:focusable="true"
-                    app:resize_mode="fixed_height" />
-
-            </com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout>
-
-            <ProgressBar
-                android:id="@+id/pbCityCamera"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:indeterminateTint="@color/brand" />
-
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/ivCityCameraFullscreen"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
-                android:padding="12dp"
-                android:scaleType="centerInside"
-                android:visibility="visible"
-                app:srcCompat="@drawable/selector_fullscreen"
-                tools:ignore="ContentDescription" />
+                android:layout_margin="8dp"
+                android:src="@drawable/selector_fullscreen" />
 
-            <ImageView
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
                 android:id="@+id/mMute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|start"
-                android:padding="12dp"
-                android:scaleType="centerInside"
+                android:layout_margin="8dp"
+                android:src="@drawable/selector_mute"
                 android:visibility="gone"
-                app:srcCompat="@drawable/selector_mute"
-                tools:ignore="ContentDescription"
                 tools:visibility="visible" />
 
-        </FrameLayout>
+            <com.sesameware.smartyard_oem.ui.main.IconCardButton
+                android:id="@+id/ivPlayerLog"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="bottom|center"
+                android:layout_margin="8dp"
+                android:src="@drawable/ic_log"
+                android:visibility="gone"
+                tools:visibility="visible" />
+
+        </com.sesameware.smartyard_oem.ui.main.FixedAspectRatioFrameLayout>
 
         <Button
             android:id="@+id/btnCityCameraEvents"

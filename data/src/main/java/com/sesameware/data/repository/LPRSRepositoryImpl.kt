@@ -4,11 +4,14 @@ import com.sesameware.data.DataModule
 import com.sesameware.data.remote.TeledomApi
 import com.sesameware.domain.interfaces.LPRSRepository
 import com.sesameware.domain.model.request.AddLicensePlateNumberRequest
+import com.sesameware.domain.model.request.AddLicensePlateNumberRequestV2
 import com.sesameware.domain.model.request.ListLicensePlateNumbersRequest
 import com.sesameware.domain.model.request.RemoveLicensePlateNumberRequest
 import com.sesameware.domain.model.response.AddLicensePlateNumberResponse
 import com.sesameware.domain.model.response.ListLicensePlatesNumbersResponse
+import com.sesameware.domain.model.response.ListLicensePlatesNumbersV2Response
 import com.sesameware.domain.model.response.RemoveLicensePlateResponse
+import com.sesameware.domain.model.response.SupportedPlateNumberFormatsResponse
 import com.squareup.moshi.Moshi
 
 class LPRSRepositoryImpl(
@@ -44,6 +47,40 @@ class LPRSRepositoryImpl(
             teledomApi.removeNumber(
                 DataModule.BASE_URL + "lprs/removeNumber",
                 RemoveLicensePlateNumberRequest(flatId, number)
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun addLicensePlateNumberV2(
+        flatId: Int,
+        number: String,
+        countryCode: String,
+        validFrom: String?,
+        validTo: String?
+    ): AddLicensePlateNumberResponse {
+        return safeApiCall {
+            teledomApi.addNumberV2(
+                DataModule.BASE_URL + "lprs/addNumber",
+                AddLicensePlateNumberRequestV2(flatId, number, countryCode, validFrom, validTo)
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun listLicensePlateNumbersV2(
+        flatId: Int
+    ): ListLicensePlatesNumbersV2Response {
+        return safeApiCall {
+            teledomApi.listNumbersV2(
+                DataModule.BASE_URL + "lprs/listNumbersV2",
+                ListLicensePlateNumbersRequest(flatId)
+            ).getResponseBody()
+        }
+    }
+
+    override suspend fun listSupportedPlateNumberFormats(): SupportedPlateNumberFormatsResponse {
+        return safeApiCall {
+            teledomApi.listSupportedPlateNumberFormats(
+                DataModule.BASE_URL + "lprs/listSupportedPlateNumberFormats"
             ).getResponseBody()
         }
     }

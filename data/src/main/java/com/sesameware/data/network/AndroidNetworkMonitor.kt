@@ -12,11 +12,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import timber.log.Timber
 
 internal class AndroidNetworkMonitor(context: Context) : NetworkMonitor {
     private val connectivityManager =
@@ -64,13 +68,16 @@ internal class AndroidNetworkMonitor(context: Context) : NetworkMonitor {
             awaitClose {
                 connectivityManager.unregisterNetworkCallback(callback)
             }
+        }.onEach {
+            delay(500L)
         }.debounce { status ->
             when (status) {
                 NetworkStatus.Disconnected -> 600L
                 NetworkStatus.AvailableCellular -> 1500L
                 else -> 0L
             }
-        }.stateIn(
+        }.distinctUntilChanged()
+        .stateIn(
             localScope,
             SharingStarted.Eagerly,
             NetworkStatus.Undefined

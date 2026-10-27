@@ -1,12 +1,22 @@
-tracer {
-    defaultConfig {
-        // See the "Settings" section
-        appToken = "*******************************************"
-        pluginToken = "********************************************"
+File propsFile = file("teledom.properties")
+Properties props = new Properties()
+if (propsFile.exists()) {
+    propsFile.withReader('UTF-8') { reader -> props.load(reader) }
+}
 
-        // Enables mapping files uploading during a build. The default value is true, i.e. the uploading is enabled.
+tracer {
+    create('defaultConfig') {
+        pluginToken = props.getProperty('ok.tracer.plugin.token', "")
+    }
+    create('debug') {
+        appToken = props.getProperty('ok.tracer.app.token.debug', "")
+        uploadMapping = false
+        uploadNativeSymbols = false
+    }
+    create('release') {
+        appToken = props.getProperty('ok.tracer.app.token.release', "")
         uploadMapping = true
-        // Enables output of debugging information about the plugin operation. The default value is false.
-        // printBuildUUID = true
+        uploadNativeSymbols = true
+        uploadRetryCount = 3
     }
 }

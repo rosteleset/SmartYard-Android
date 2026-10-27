@@ -16,53 +16,42 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
-import android.widget.ProgressBar
 import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.exoplayer2.ExoPlaybackException
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout
-import com.google.android.exoplayer2.ui.PlayerView
 import com.sesameware.data.DataModule
-import com.sesameware.domain.model.response.MediaServerType
 import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.lib.dpToPx
+import com.sesameware.smartyard_oem.BuildConfig
 import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentCityCameraBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.common.player.CCTVStreamPlayerManager
+import com.sesameware.smartyard_oem.ui.common.player.toStreamSourceConfig
 import com.sesameware.smartyard_oem.ui.main.ExitFullscreenListener
 import com.sesameware.smartyard_oem.ui.main.MainActivity
-import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
-import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
-import com.sesameware.smartyard_oem.ui.common.player.ForpostPlayer
-import com.sesameware.smartyard_oem.ui.common.player.MacroscopPlayer
-import com.sesameware.smartyard_oem.ui.main.address.cctv_video.ZoomLayout
 import com.sesameware.smartyard_oem.ui.main.burger.cityCameras.adapters.CityCameraEventAdapter
+import com.sesameware.smartyard_oem.ui.main.player.log.PlayerLogFragment
 import com.sesameware.smartyard_oem.ui.showStandardAlert
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedStateViewModel
 import org.koin.java.KoinJavaComponent.injectOrNull
-import timber.log.Timber
 
 class CityCameraFragment : Fragment(), ExitFullscreenListener {
     private var _binding: FragmentCityCameraBinding? = null
     private val binding get() = _binding!!
     private val delegate: CityCameraDelegate? by injectOrNull(CityCameraDelegate::class.java)
 
-    private var mPlayer: BaseCCTVPlayer? = null
-    private var forceVideoTrack = true  //принудительное использование треков с высоким разрешением
+    private val playerManager: CCTVStreamPlayerManager by inject()
     private val viewModel: CityCamerasViewModel by sharedStateViewModel()
 
     //для полноэкранного режима
     private var lpVideoWrap: ViewGroup.LayoutParams? = null
+    private var videoWrapAspectRatio = 0f
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View {
@@ -72,12 +61,8 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         bindViews()
-
         setupObservers()
-
         delegate?.extendConfig(binding, viewModel, viewLifecycleOwner)
     }
 
@@ -95,15 +80,6 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             binding.clEvents.isVisible = true
         }
 
-        binding.zlCityCamera.setSingleTapConfirmedListener {
-            if (mPlayer?.isIdle() == true) {
-                changeVideoSource(
-                    viewModel.chosenCamera.value?.hls ?: "",
-                    viewModel.chosenCamera.value?.hasSound ?: true
-                )
-            }
-        }
-
         binding.btnCityCameraRequestRecord.setOnClickListener {
             this.findNavController().navigate(R.id.action_cityCameraFragment_to_requestRecordFragment)
         }
@@ -114,50 +90,13 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             }
         }
 
-        binding.mMute.setOnClickListener {
-            viewModel.isMuted.value?.let {
-                viewModel.mute(!it)
-            }
-        }
-    }
-
-    override fun onDestroyView() {
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        (activity as? MainActivity)?.setExitFullscreenListener(null)
-
-        super.onDestroyView()
-    }
-
-    override fun onPause() {
-        super.onPause()
-
-        Timber.d("debug_dmm __onPause")
-        releasePlayer()
-        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        Timber.d("debug_dmm __onResume")
-        if ((activity as? MainActivity)?.binding?.bottomNav?.selectedItemId == R.id.settings) {
-            initPlayer(viewModel.chosenCamera.value?.serverType)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        mPlayer?.stop()
-        Timber.d("__Q__   releasePlayer from onStop")
-        releasePlayer()
-        viewModel.mute(true)
+        binding.videoWrap.clipToOutline = true
     }
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
 
-        (binding.pvCityCamera.parent as ZoomLayout).resetZoom()
+        binding.cctvPlayerView.resetZoom()
     }
 
     override fun onExitFullscreen() {
@@ -170,7 +109,6 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         viewModel.chosenCamera.observe(
             viewLifecycleOwner
         ) { camera ->
-
             camera ?: return@observe
 
             val slash = camera.name.indexOf("/")
@@ -181,6 +119,16 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                 binding.tvCityCameraTitle.text = camera.name
                 binding.tvCityCameraTitleSub.text = ""
             }
+
+            playerManager.attach(
+                lifecycleOwner = viewLifecycleOwner,
+                playerView = binding.cctvPlayerView,
+                config = camera.toStreamSourceConfig(),
+                muteButton = binding.mMute,
+                playerLogButton = binding.ivPlayerLog,
+                fragmentManager = childFragmentManager
+            )
+            binding.ivPlayerLog.isVisible = BuildConfig.DEBUG && viewModel.isFullscreen.value == true
 
             viewModel.getEvents(camera.id) {
                 if (viewModel.eventList.isEmpty()) {
@@ -204,13 +152,6 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
             } else {
                 setNormalMode()
             }
-        }
-
-        viewModel.isMuted.observe(
-            viewLifecycleOwner
-        ) { isMuted ->
-            binding.mMute.isSelected = isMuted
-            mPlayer?.isMuted = isMuted
         }
     }
 
@@ -265,164 +206,56 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
         }
     }
 
-    private fun releasePlayer() {
-        Timber.d("debug_dmm release")
-        mPlayer?.releasePlayer()
-        mPlayer = null
-    }
-
-    private fun initPlayer(serverType: MediaServerType?) {
-        if (mPlayer == null && view != null) {
-            mPlayer = createPlayer(serverType, binding.pvCityCamera, binding.pbCityCamera)
-        }
-        binding.flCityCameraVideoWrap.clipToOutline = true
-
-        loadDelayed(LOADING_VIDEO_DELAY)
-    }
-
-    private fun loadDelayed(delayMs: Long) {
-        lifecycleScope.launch(Dispatchers.IO) {
-            delay(delayMs)
-            withContext(Dispatchers.Main) {
-                changeVideoSource(viewModel.chosenCamera.value?.hls ?: "",
-                    viewModel.chosenCamera.value?.hasSound ?: true
-                )
-            }
-        }
-    }
-
-    private fun createPlayer(
-        serverType: MediaServerType?,
-        videoView: PlayerView,
-        progressView: ProgressBar
-    ): BaseCCTVPlayer {
-        Timber.d("debug_dmm createPlayer()")
-
-        val callbacks = object : BaseCCTVPlayer.Callbacks {
-            override fun onPlayerStateReady(player: DefaultCCTVPlayer) {
-                progressView.visibility = View.GONE
-                (mPlayer as? DefaultCCTVPlayer)?.getPlayer()?.videoFormat?.let {
-                    if (it.width > 0 && it.height > 0) {
-                        (binding.pvCityCamera.parent as ZoomLayout).setAspectRatio(it.width.toFloat() / it.height.toFloat())
-                    }
-                }
-                if (mPlayer?.playWhenReady == true) {
-                    activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                }
-            }
-
-            override fun onPlayerStateEnded() {
-                progressView.visibility = View.GONE
-                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-
-            override fun onPlayerStateBuffering() {
-                progressView.visibility = View.VISIBLE
-            }
-
-            override fun onPlayerStateIdle() {
-                progressView.visibility = View.GONE
-                activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-            }
-
-            override fun onPlayerError(exception: Exception) {
-                progressView.visibility = View.GONE
-
-                (exception as? ExoPlaybackException)?.let { error ->
-                    if (error.type == ExoPlaybackException.TYPE_SOURCE) {
-                        viewModel.showGlobalError(error.sourceException)
-                    }
-
-                    if (error.type == ExoPlaybackException.TYPE_RENDERER) {
-                        if (forceVideoTrack) {
-                            forceVideoTrack = false
-                            releasePlayer()
-                            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                            initPlayer(viewModel.chosenCamera.value?.serverType)
-                        }
-                    }
-
-                    return
-                }
-
-                viewModel.showGlobalError(exception)
-            }
-
-            override fun onAudioAvailabilityChanged(isAvailable: Boolean) {
-                binding.mMute.isVisible = isAvailable
-                if (isAvailable) viewModel.mute(true)
-            }
-        }
-
-        val player = when (serverType) {
-            MediaServerType.MACROSCOP -> MacroscopPlayer(requireContext(), callbacks)
-            MediaServerType.FORPOST -> ForpostPlayer(requireContext(), callbacks)
-            else -> DefaultCCTVPlayer(requireContext(), callbacks)
-        }
-        videoView.player = player.getPlayer()
-        videoView.useController = false
-        player.playWhenReady = true
-
-        val p = videoView.parent as ViewGroup
-        p.removeView(videoView)
-        p.addView(videoView, 0)
-
-        return player
-    }
-
-    private fun changeVideoSource(hls_url: String, enableSound: Boolean) {
-        if (hls_url.isEmpty()) {
-            return
-        }
-
-        mPlayer?.let { player ->
-            binding.pbCityCamera.visibility = View.VISIBLE
-            player.prepareMedia(hls_url, doPlay = true, enableSound = enableSound)
-        }
-    }
-
     private fun setFullscreenMode() {
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
         //сохраняем дефолтный layout
-        lpVideoWrap = binding.flCityCameraVideoWrap.layoutParams
+        lpVideoWrap = binding.videoWrap.layoutParams
 
-        binding.pbCityCamera.progress = 0
-        binding.ivCityCameraFullscreen.visibility = View.VISIBLE
-        binding.pvCityCamera.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
+        binding.ivPlayerLog.isVisible = BuildConfig.DEBUG
         binding.ivCityCameraFullscreen.isSelected = true
-        binding.flCityCameraVideoWrap.background = null
+        binding.videoWrap.background = null
+        videoWrapAspectRatio = binding.videoWrap.aspectRatio
+        binding.videoWrap.setAspectRatio(0f)
         (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(Color.BLACK)
 
         (activity as? MainActivity)?.hideSystemUI()
         (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.INVISIBLE
-        (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)
-        (activity as? MainActivity)?.binding?.llMain?.addView(binding.flCityCameraVideoWrap, 0)
+        (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+        (activity as? MainActivity)?.binding?.llMain?.addView(binding.videoWrap, 0)
 
-        binding.flCityCameraVideoWrap.applyBottomNavInsetsToPadding()
-        val lp = binding.flCityCameraVideoWrap.layoutParams as FrameLayout.LayoutParams
+        binding.videoWrap.applyBottomNavInsetsToPadding()
+        val lp = binding.videoWrap.layoutParams as FrameLayout.LayoutParams
         lp.width = ViewGroup.LayoutParams.MATCH_PARENT
         lp.height = ViewGroup.LayoutParams.MATCH_PARENT
         lp.topMargin = 0
-        binding.flCityCameraVideoWrap.layoutParams = lp
-        binding.flCityCameraVideoWrap.requestLayout()
-        (binding.pvCityCamera.parent as ZoomLayout).resetZoom()
+        binding.videoWrap.layoutParams = lp
+        binding.videoWrap.requestLayout()
+        binding.cctvPlayerView.resetZoom()
     }
 
     @SuppressLint("SourceLockedOrientationActivity")
     private fun setNormalMode() {
+        val logFragment = childFragmentManager.findFragmentByTag(PlayerLogFragment.TAG)
+        if (logFragment != null && logFragment.isAdded && !logFragment.isHidden) {
+            childFragmentManager.beginTransaction().hide(logFragment).commit()
+        }
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-        (binding.flCityCameraVideoWrap.parent as ViewGroup).removeView(binding.flCityCameraVideoWrap)
-        (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.VISIBLE
-        binding.llCityCameraMain.addView(binding.flCityCameraVideoWrap, 0)
         (activity as? MainActivity)?.showSystemUI()
-        binding.pvCityCamera.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIXED_HEIGHT
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+        (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+        if (videoWrapAspectRatio > 0f) binding.videoWrap.setAspectRatio(videoWrapAspectRatio)
+        (activity as? MainActivity)?.binding?.navHostContainer?.visibility = View.VISIBLE
+        binding.llCityCameraMain.addView(binding.videoWrap, 0)
+        binding.ivPlayerLog.isVisible = false
         binding.ivCityCameraFullscreen.isSelected = false
-        binding.flCityCameraVideoWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
+        binding.videoWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_radius_video_clip)
 
         //возвращаем дефолтные layouts
         lpVideoWrap?.let { lp ->
-            ViewCompat.setOnApplyWindowInsetsListener(binding.flCityCameraVideoWrap, null)
+            ViewCompat.setOnApplyWindowInsetsListener(binding.videoWrap, null)
             if (lp is ViewGroup.MarginLayoutParams) {
                 lp.height = 222.dpToPx()
                 lp.width = ViewGroup.LayoutParams.MATCH_PARENT
@@ -430,14 +263,18 @@ class CityCameraFragment : Fragment(), ExitFullscreenListener {
                 lp.marginEnd = 16.dpToPx()
                 lp.topMargin = 16.dpToPx()
             }
-            binding.flCityCameraVideoWrap.layoutParams = lp
-            binding.flCityCameraVideoWrap.requestLayout()
+            binding.videoWrap.layoutParams = lp
+            binding.videoWrap.requestLayout()
         }
-        (binding.pvCityCamera.parent as ZoomLayout).resetZoom()
+        binding.cctvPlayerView.resetZoom()
         (activity as? MainActivity)?.binding?.llMain?.background = ColorDrawable(ContextCompat.getColor(requireContext(), R.color.shaded_background))
     }
 
-    companion object {
-        const val LOADING_VIDEO_DELAY = 1000L
+    override fun onDestroyView() {
+        (activity as? MainActivity)?.setExitFullscreenListener(null)
+        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        _binding = null
+
+        super.onDestroyView()
     }
 }

@@ -1,5 +1,13 @@
 ## History of major changes
 
+### Version 1.0.123
+
+* Offline Mode & Caching: Added local DB caching and offline UI for addresses and doors when offline.
+* LPRS v2 License Plate Management: Introduced V2 license plate editing dialog with event tracking options.
+* Cascade Player & LL-HLS Recovery: Extracted unified Cascade Player across CCTV/City cameras and added auto-recovery for LL-HLS playback errors.
+* WebRTC/SIP Stability & Session Recovery: Fixed incoming call crashes during initial WebRTC frame rendering and added auto-retry on session kill.
+* Secured Door Opening & Access Validity: Hardened door unlocking security flow and added UI display for time-bounded access permissions (validFrom/validTo).
+
 ### Version 1.0.119
 
 * LL-HLS & Streaming: Added Low-Latency HLS support (Flussonic/Sesameware).

@@ -35,6 +35,8 @@ data class Address(
         @param:Json(name = "icon")
         val icon: String = "", // barrier
         @param:Json(name = "name")
-        val name: String = "" // Шлагбаум
+        val name: String = "", // Шлагбаум
+        @param:Json(name = "doorCode")
+        val doorCode: String? = null
     )
 }

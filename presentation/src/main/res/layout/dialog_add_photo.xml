@@ -88,6 +88,8 @@
                 android:background="@drawable/button_bg_no_flooded_rounded"
                 android:hint="@string/event_log_enter_group_name"
                 android:inputType="textCapSentences"
+                android:imeOptions="actionDone"
+                android:singleLine="true"
                 android:maxLines="1"
                 android:padding="12dp"
                 android:textColor="@color/accent"

@@ -27,6 +27,7 @@ import com.sesameware.domain.model.response.ResendResponse
 import com.sesameware.domain.model.response.PlogDaysResponse
 import com.sesameware.domain.model.response.PlogResponse
 import com.sesameware.domain.model.response.GetTrackedEventsResponse
+import com.sesameware.domain.model.OfflineAddress
 import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UntrackEventResponse
 
@@ -39,6 +40,14 @@ class AddressInteractor(
 ) {
     suspend fun getAddressList(): GetAddressListResponse {
         return repository.getAddressList()
+    }
+
+    suspend fun getOfflineAddresses(): List<OfflineAddress> {
+        return repository.getOfflineAddresses()
+    }
+
+    suspend fun clearOfflineCache() {
+        repository.clearOfflineCache()
     }
 
     suspend fun getSettingsList(): GetSettingsListResponse {

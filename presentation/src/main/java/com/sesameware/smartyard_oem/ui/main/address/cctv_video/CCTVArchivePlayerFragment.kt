@@ -19,7 +19,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import androidx.core.view.ViewCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
@@ -41,7 +40,6 @@ import com.sesameware.smartyard_oem.databinding.FragmentCctvArchivePlayerBinding
 import com.sesameware.smartyard_oem.removeTrailingZeros
 import com.sesameware.smartyard_oem.show
 import com.sesameware.smartyard_oem.ui.animationFadeInFadeOut
-import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.common.player.BaseCCTVPlayer
 import com.sesameware.smartyard_oem.ui.common.player.DefaultCCTVPlayer
 import com.sesameware.smartyard_oem.ui.common.player.ForpostPlayer
@@ -78,6 +76,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
     private var lpContentWrap: ViewGroup.LayoutParams? = null
     private var lpVideoWrap: ViewGroup.LayoutParams? = null
     private var lpRangeSlider: ViewGroup.LayoutParams? = null
+    private var videoWrapAspectRatio = 0f
     private var playerResizeMode: Int = 0
     private var areVideoControllersShown = false
     private val hideVideoControllersHandler = Handler(Looper.getMainLooper())
@@ -310,6 +309,8 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
 
         lpVideoWrap = binding.videoWrap.layoutParams
         (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+        videoWrapAspectRatio = binding.videoWrap.aspectRatio
+        binding.videoWrap.setAspectRatio(0f)
         binding.clVideoPlayback.addView(binding.videoWrap, 1)
 
         moveRangeSliderToMainActivity()
@@ -323,6 +324,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         (activity as? MainActivity)?.hideSystemUI()
 
         activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         binding.contentWrap.background = null
         binding.svContentWrap.background = null
         binding.flVideoPlayback.setBackgroundColor(Color.BLACK)
@@ -330,7 +332,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
 
         playerResizeMode = binding.mPlayerView.resizeMode
         binding.mPlayerView.resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT
-        binding.mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_exit_fullscreen)
+        binding.mFullScreens.isSelected = true
 
         val lp2 = binding.videoWrap.layoutParams as ConstraintLayout.LayoutParams
         lp2.width = ConstraintLayout.LayoutParams.MATCH_PARENT
@@ -353,7 +355,6 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
         (binding.mPlayerView.parent as ZoomLayout).resetZoom()
 
         lpPanelPlay = LinearLayout.LayoutParams(binding.panelPlay.layoutParams as ViewGroup.MarginLayoutParams)
-        binding.panelPlay.applyBottomNavInsetsToMargin()
 
         adapter?.setFullscreen(true)
         binding.tvSpeedUp.setTextColor(ContextCompat.getColor(requireContext(), R.color.on_filled))
@@ -385,13 +386,13 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
             activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
             (binding.videoWrap.parent as ViewGroup).removeView(binding.videoWrap)
+            if (videoWrapAspectRatio > 0f) binding.videoWrap.setAspectRatio(videoWrapAspectRatio)
             binding.llControls.addView(binding.videoWrap, 0)
 
             moveRangeSliderBackToFragment()
 
             addTrimAndMainAction()
 
-            ViewCompat.setOnApplyWindowInsetsListener(binding.panelPlay, null)
             lpPanelPlay?.let {
                 binding.panelPlay.layoutParams = it
                 binding.panelPlay.requestLayout()
@@ -402,6 +403,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
             binding.ivBack.visibility = View.VISIBLE
             binding.tvTitle.visibility = View.VISIBLE
             (activity as? MainActivity)?.showSystemUI()
+            activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
 
             binding.contentWrap.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_dialog)
             binding.svContentWrap.background =
@@ -411,7 +413,7 @@ open class CCTVArchivePlayerFragment : Fragment(), UserInteractionListener, Exit
                 ColorDrawable(ContextCompat.getColor(requireContext(), R.color.dialog_background))
 
             binding.mPlayerView.resizeMode = playerResizeMode
-            binding.mFullScreens.background = ContextCompat.getDrawable(requireContext(), R.drawable.ic_cctv_enter_fullscreen)
+            binding.mFullScreens.isSelected = false
 
             //возвращаем дефолтные layouts
             binding.videoWrap.layoutParams = lpVideoWrap

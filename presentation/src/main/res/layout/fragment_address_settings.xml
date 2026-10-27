@@ -19,17 +19,22 @@
 
     <TextView
         android:id="@+id/tvTitle"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="32dp"
         android:layout_marginTop="8dp"
         android:ellipsize="end"
-        android:maxLines="2"
+        android:maxLines="1"
         android:text="@string/address_setup"
         android:textColor="@color/on_top_background"
         android:textSize="32sp"
         android:textStyle="bold"
+        app:autoSizeTextType="uniform"
         app:autoSizeMinTextSize="15sp"
+        app:autoSizeMaxTextSize="32sp"
+        app:autoSizeStepGranularity="1sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivBack" />
 
 

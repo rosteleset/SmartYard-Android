@@ -10,4 +10,8 @@
     <include app:graph="@navigation/pay" />
     <include app:graph="@navigation/settings" />
 
+    <fragment
+        android:id="@+id/homeOfflineFragment"
+        android:name="com.sesameware.smartyard_oem.ui.main.address.offline.HomeOfflineFragment"
+        android:label="@string/offline_home_title" />
 </navigation>

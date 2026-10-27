@@ -8,6 +8,7 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.edit
 import com.google.gson.Gson
 import com.sesameware.data.R
+import com.sesameware.domain.model.response.ProviderConfig
 import com.sesameware.domain.model.response.UserName
 import kotlinx.parcelize.Parcelize
 import kotlin.properties.ReadWriteProperty
@@ -28,6 +29,7 @@ interface PreferenceStorage {
     var onboardingCompleted: Boolean
     var xDmApiRefresh: Boolean
     var providerId: String?
+    var providerConfig: ProviderConfig?
     var providerBaseUrl: String?
     var showCamerasOnMap: Boolean
     var houseIdPositions: Map<Int, Int>?
@@ -63,6 +65,7 @@ class SharedPreferenceStorage constructor(
         const val PREF_ADDRESS_OPTIONS = "PREF_ADDRESS_OPTIONS_2"
         const val PREF_WHERE_IS_CONTRACT_WARNING_SEEN = "PREF_WHERE_IS_CONTRACT_WARNING_SEEN"
         const val PREF_PROVIDER_ID = "PREF_PROVIDER_ID"
+        const val PREF_PROVIDER_CONFIG = "PREF_PROVIDER_CONFIG"
         const val PREF_PROVIDER_BASE_URL = "PREF_PROVIDER_BASE_URL"
         const val PREF_SHOW_CAMERAS_ON_MAP = "PREF_SHOW_CAMERAS_ON_MAP"
         const val PREFS_HOUSE_ID_POSITIONS = "PREFS_HOUSE_ID_POSITIONS"
@@ -104,6 +107,12 @@ class SharedPreferenceStorage constructor(
         get() = apiRefresh
         set(value) { apiRefresh = value }
     override var providerId by StringPreference(prefs, PREF_PROVIDER_ID, null)
+    override var providerConfig by SerializablePreferenceNullable(
+        prefs,
+        PREF_PROVIDER_CONFIG,
+        null,
+        ProviderConfig::class.java
+    )
     override var providerBaseUrl by StringPreference(prefs, PREF_PROVIDER_BASE_URL, null)
     override var showCamerasOnMap by BooleanPreference(prefs, PREF_SHOW_CAMERAS_ON_MAP, true)
     override var houseIdPositions: Map<Int, Int>? by MapPreference(
@@ -136,6 +145,7 @@ class SharedPreferenceStorage constructor(
 
     override fun clear() {
         providerId = null
+        providerConfig = null
         providerBaseUrl = null
         authToken = null
         userName = null

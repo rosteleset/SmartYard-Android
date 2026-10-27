@@ -452,6 +452,7 @@
     <string name="specify_reason">Sababni ko‘rsating</string>
     <string name="dialog_delete_reason_description">Manzilni o‘chirishda sizga manzil xizmatlarini boshqarish imkoniyati berilmaydi</string>
     <string name="text_delete">O‘chirish</string>
+    <string name="text_edit">Tahrirlash</string>
     <string name="text_dismiss">Bekor qilish</string>
     <string name="pay_number_sample">#68992</string>
     <string name="pay_sum">Umumiy summa:</string>
@@ -557,6 +558,7 @@
     <string name="event_log_track_group">Guruhni kuzatish</string>
     <string name="event_log_track_face_new_group">Yuzni kuzatish (guruh yaratish)</string>
     <string name="event_log_enter_group_name">Guruh nomini kiriting</string>
+    <string name="event_log_track_lp">Davlat raqamini kuzatish</string>
 
     <!-- Лица -->
     <string name="face_groups_title">Yuzlar guruhlari</string>
@@ -576,4 +578,40 @@
     <string name="face_group_selection_existing">Mavjud guruh</string>
     <string name="face_group_selection_new">Yangi guruh</string>
     <string name="add_face">Yuzni qo‘shish</string>
+    <string name="offline_alert_no_connection_title">Aloqa yo‘q!</string>
+    <string name="offline_alert_switch_mode">Onlayn rejimga qaytish uchun OK tugmasini bosing.\nOflayn rejimda qolish uchun Bekor qilish tugmasini bosing.</string>
+    <string name="offline_hint_swipe_to_exit">Siz oflayn rejimdasiz. Chiqish uchun yuqori qismni pastga suring.</string>
+    <string name="offline_home_title">Mening manzillarim</string>
+    <string name="offline_message_connection_lost">Internet aloqasi uzildi. Saqlangan manzillar va eshik kodlarini ochish uchun OK tugmasini bosing.</string>
+    <string name="offline_message_connection_restored">Aloqa tiklandi!</string>
+    <string name="offline_message_server_unavailable">Internet aloqasisiz oflayn rejimdan chiqib bo‘lmaydi. Keyinroq qayta urinib ko‘ring.</string>
+    <string name="home_addresses_empty_offline_title">Hali ma’lumotlar saqlanmagan.</string>
+    <string name="offline_back">Orqaga</string>
+
+    <!-- Диалог добавления автомобильного номера (версия 2) -->
+    <string name="dialog_license_plate_v2_title">Avtomobil raqamini qo‘shish</string>
+    <string name="dialog_license_plate_v2_title_edit">Avtomobil raqamini tahrirlash</string>
+    <string name="dialog_license_plate_v2_country">Mamlakat</string>
+    <string name="dialog_license_plate_v2_number_hint">Avtomobil raqami</string>
+    <string name="dialog_license_plate_v2_number_incomplete">Raqam to‘liq kiritilmagan yoki formatga mos kelmaydi</string>
+    <string name="dialog_license_plate_v2_validity_unlimited">Muddatsiz</string>
+    <string name="dialog_license_plate_v2_valid_from_date">Boshlanish sanasi</string>
+    <string name="dialog_license_plate_v2_valid_from_time">Boshlanish vaqti</string>
+    <string name="dialog_license_plate_v2_valid_to_date">Tugash sanasi</string>
+    <string name="dialog_license_plate_v2_valid_to_time">Tugash vaqti</string>
+    <string name="dialog_license_plate_v2_auto_end">%s soatdan keyin tugaydi</string>
+    <string name="dialog_license_plate_v2_auto_end_preview">Tugash vaqti: %s</string>
+    <string name="dialog_license_plate_v2_period_invalid">Tugash vaqti boshlanishidan oldin bo‘lishi mumkin emas</string>
+    <string name="dialog_license_plate_v2_confirm">Qo‘shish</string>
+    <string name="dialog_license_plate_v2_cancel">Bekor qilish</string>
+
+    <!-- Названия стран для автомобильных номеров -->
+    <string name="country_ru">Rossiya</string>
+    <string name="country_am">Armaniston</string>
+    <string name="country_by">Belarus</string>
+    <string name="country_kz">Qozog‘iston</string>
+
+    <!-- Период действия -->
+    <string name="period_from">dan: %s</string>
+    <string name="period_to">gacha: %s</string>
 </resources>

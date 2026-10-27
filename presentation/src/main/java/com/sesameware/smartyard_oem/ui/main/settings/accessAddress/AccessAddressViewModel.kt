@@ -4,16 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.distinctUntilChanged
 import androidx.lifecycle.viewModelScope
+import com.sesameware.data.DataModule
 import com.sesameware.data.prefs.PreferenceStorage
 import com.sesameware.domain.interactors.AddressInteractor
 import com.sesameware.domain.interactors.LPRSInteractor
 import com.sesameware.domain.model.response.Code
 import com.sesameware.domain.model.response.Intercom
 import com.sesameware.domain.model.response.LicensePlate
+import com.sesameware.domain.model.response.LprsVersion
+import com.sesameware.domain.model.response.Plog
 import com.sesameware.domain.model.response.Settings.Roommate
+import com.sesameware.domain.model.response.SupportedPlateNumberFormat
 import com.sesameware.smartyard_oem.Event
 import com.sesameware.smartyard_oem.GenericViewModel
-import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.ui.main.settings.accessAddress.models.LicensePlateValue
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -43,6 +46,19 @@ class AccessAddressViewModel(
 
     private val _dialogToSuccessSms = MutableLiveData<Event<Unit>>()
     val dialogToSuccessSms: LiveData<Event<Unit>> get() = _dialogToSuccessSms
+
+    // LPRS API version centrally determined from the provider configuration
+    val lprsVersion: LprsVersion
+        get() = DataModule.providerConfig.lprsVersionType
+
+    // Supported license plate number formats (version 2 only)
+    private val _supportedPlateFormats = MutableLiveData<List<SupportedPlateNumberFormat>>()
+    val supportedPlateFormats: LiveData<List<SupportedPlateNumberFormat>>
+        get() = _supportedPlateFormats
+
+    // Signal successful license plate addition (version 2) to close the dialog
+    private val _addLicensePlateV2Success = MutableLiveData<Event<Unit>>()
+    val addLicensePlateV2Success: LiveData<Event<Unit>> get() = _addLicensePlateV2Success
 
     fun resetCode(flatId: Int) {
         viewModelScope.withProgress {
@@ -80,19 +96,63 @@ class AccessAddressViewModel(
 
     fun addLicensePlate(flatId: Int, licensePlate: LicensePlateValue) {
         viewModelScope.withProgress {
-            lprsInteractor.addLicensePlate(flatId, LicensePlate(licensePlate.value))
+            lprsInteractor.addLicensePlate(flatId, LicensePlate(licensePlate.number))
             refreshLicensePlateList(flatId)
         }
     }
 
-    private suspend fun refreshLicensePlateList(flatId: Int) {
-        _licensePlates.postValue(lprsInteractor.listLicensePlates(flatId)?.data ?: listOf())
+    /**
+     * Adds a license plate number using API version 2, with a country code and an optional validity period.
+     * On success, signals the dialog to close and refresh the list.
+     */
+    fun addLicensePlateV2(
+        flatId: Int,
+        number: String,
+        countryCode: String,
+        validFrom: String?,
+        validTo: String?,
+        trackEvent: Boolean
+    ) {
+        viewModelScope.withProgress {
+            lprsInteractor.addLicensePlateV2(flatId, number, countryCode, validFrom, validTo)
+            if (trackEvent) {
+                addressInteractor.trackEvent(flatId, Plog.EVENT_OPEN_GATES_BY_VEHICLE, number, "")
+            }
+            refreshLicensePlateList(flatId)
+            _addLicensePlateV2Success.postValue(Event(Unit))
+        }
     }
 
-    fun removeLicensePlate(flatId: Int, licensePlate: LicensePlateValue) {
+    /**
+     * Loads the supported license plate number formats (list of countries) for API version 2.
+     */
+    fun loadSupportedPlateFormats() {
         viewModelScope.withProgress {
-            lprsInteractor.removeLicensePlate(flatId, LicensePlate(licensePlate.value))
+            val formats = lprsInteractor.listSupportedPlateNumberFormats()?.data ?: listOf()
+            _supportedPlateFormats.postValue(formats)
+        }
+    }
+
+    private suspend fun refreshLicensePlateList(flatId: Int) {
+        val plates = when (lprsVersion) {
+            LprsVersion.V2 -> lprsInteractor.listLicensePlatesV2(flatId)?.data
+            else -> lprsInteractor.listLicensePlates(flatId)?.data
+        }
+        _licensePlates.postValue(plates ?: listOf())
+    }
+
+    /**
+     * Removes a license plate number and refreshes the list.
+     * [onRemoved] is invoked only if the removal succeeded, once the whole operation has completed.
+     */
+    fun removeLicensePlate(flatId: Int, number: String, onRemoved: (() -> Unit)? = null) {
+        var removed = false
+        viewModelScope.withProgress {
+            lprsInteractor.removeLicensePlate(flatId, number)
+            removed = true
             refreshLicensePlateList(flatId)
+        }.invokeOnCompletion {
+            if (removed) onRemoved?.invoke()
         }
     }
 

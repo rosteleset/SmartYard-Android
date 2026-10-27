@@ -47,13 +47,18 @@ class IncomingCallActivityViewModel(
 
     fun setSlideShowEnabled(isEnabled: Boolean) {
         Timber.d("debug_dmm    call setSlideShowEnabled isEnabled=$isEnabled")
+        if (!::mPushCallData.isInitialized) return
+
         if (isEnabled) {
             if (mPushCallData.videoStream.isEmpty()) {
                 playSlideShow(mPushCallData.live)
             }
         } else {
+            val wasRunning = slideShowTimer != null
             stopSlideShow()
-            imageStringData.postValue(Event(mPushCallData.image))
+            if (wasRunning) {
+                imageStringData.postValue(Event(mPushCallData.image))
+            }
         }
     }
 
@@ -64,6 +69,9 @@ class IncomingCallActivityViewModel(
 
     fun start(data: PushCallData) {
         mPushCallData = data
+        if (data.image.isNotEmpty()) {
+            imageStringData.value = Event(data.image)
+        }
     }
 
     fun connectedChangeStateUiAudioToSpeaker() {

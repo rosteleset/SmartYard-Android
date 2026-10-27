@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import com.sesameware.smartyard_oem.GlobalDataSource
 import com.sesameware.smartyard_oem.ui.call.IncomingCallActivityViewModel
 import com.sesameware.smartyard_oem.ui.common.AppealFormViewModel
+import com.sesameware.smartyard_oem.ui.common.player.CCTVStreamPlayerManager
 import com.sesameware.smartyard_oem.ui.launcher.LauncherViewModel
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
 import com.sesameware.smartyard_oem.ui.main.address.AddressViewModel
@@ -18,6 +19,7 @@ import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
 import com.sesameware.smartyard_oem.ui.main.address.event_log.EventLogViewModel
 import com.sesameware.smartyard_oem.ui.main.address.inputAddress.InputAddressViewModel
 import com.sesameware.smartyard_oem.ui.main.address.noNetwork.NoNetworkViewModel
+import com.sesameware.smartyard_oem.ui.main.address.offline.HomeOfflineViewModel
 import com.sesameware.smartyard_oem.ui.main.address.qrCode.QrCodeViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.courier.WorkSoonCourierViewModel
 import com.sesameware.smartyard_oem.ui.main.address.workSoon.office.WorkSoonOfficeViewModel
@@ -67,6 +69,7 @@ object PresentationModule {
         viewModel { QrCodeViewModel(get()) }
         viewModel { NotificationViewModel(get()) }
         viewModel { NoNetworkViewModel(get(), get(), get()) }
+        viewModel { HomeOfflineViewModel(get(), get()) }
         viewModel { CourierViewModel(get(), get(), get()) }
         viewModel { WorkSoonOfficeViewModel(get(), get(), get()) }
         viewModel { WorkSoonCourierViewModel(get(), get(), get()) }
@@ -87,6 +90,7 @@ object PresentationModule {
         viewModel { PayWebViewViewModel(get()) }
         viewModel { TrackedEventsViewModel(get()) }
         factory { CallToSupportFragment() }
+        factory { CCTVStreamPlayerManager(get(), get(), get(), get(), get()) }
         single { GlobalDataSource() }
     }
 }

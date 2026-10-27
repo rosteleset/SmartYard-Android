@@ -16,9 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.ContentScale.Companion
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -28,14 +31,13 @@ import com.sesameware.smartyard_oem.R
 @Composable
 fun CameraItem(
     camera: CCTVData,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Card(
         shape = RoundedCornerShape(12.dp),
         backgroundColor = colorResource(id = R.color.light_background),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+        modifier = modifier
     ) {
         Row(
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -52,14 +54,14 @@ fun CameraItem(
                 fontSize = 14.sp,
                 color = colorResource(id = R.color.accent),
                 text = camera.name,
-            )
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+                )
             Image(
                 painter = painterResource(id = R.drawable.ic_video_camera),
                 contentDescription = null,
-                alignment = Alignment.CenterEnd,
-                modifier = Modifier
-                    .padding(top = 16.dp, bottom = 16.dp, end = 24.dp)
-                    .size(24.dp),
+                contentScale = ContentScale.Inside,
+                modifier = Modifier.size(48.dp),
                 colorFilter = ColorFilter.tint(colorResource(id = R.color.no_accent))
             )
         }

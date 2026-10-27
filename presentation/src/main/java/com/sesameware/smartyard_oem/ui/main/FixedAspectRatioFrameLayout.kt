@@ -11,7 +11,8 @@ class FixedAspectRatioFrameLayout @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
-    private var aspectRatio: Float = 0f
+    var aspectRatio: Float = 0f
+        private set
     private var dominantDimension: Int = DOMINANT_AUTO
 
     companion object {

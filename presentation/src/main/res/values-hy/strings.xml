@@ -457,6 +457,7 @@
     <string name="specify_reason">Նշեք պատճառը</string>
     <string name="dialog_delete_reason_description">Հասցեն ջնջելու դեպքում դուք չեք կարողանա կառավարել այդ հասցեի ծառայությունները։</string>
     <string name="text_delete">Ջնջել</string>
+    <string name="text_edit">Խմբագրել</string>
     <string name="text_dismiss">Չեղարկել</string>
     <string name="pay_number_sample">№68992</string>
     <string name="pay_sum">Գումար՝</string>
@@ -559,6 +560,7 @@
     <string name="event_log_track_group">Հետևել խմբին</string>
     <string name="event_log_track_face_new_group">Հետևել դեմքին (ստեղծել խումբ)</string>
     <string name="event_log_enter_group_name">Մուտքագրեք խմբի անվանումը</string>
+    <string name="event_log_track_lp">Հետևել համարանիշին</string>
 
     <!-- Лица -->
     <string name="face_groups_title">Դեմքերի խմբեր</string>
@@ -578,4 +580,40 @@
     <string name="face_group_selection_existing">Գոյություն ունեցող խումբ</string>
     <string name="face_group_selection_new">Նոր խումբ</string>
     <string name="add_face">Ավելացնել դեմք</string>
+    <string name="offline_alert_no_connection_title">Կապ չկա։</string>
+    <string name="offline_alert_switch_mode">Սեղմեք OK՝ առցանց ռեժիմ վերադառնալու համար։\nՍեղմեք Չեղարկել՝ անցանց ռեժիմում մնալու համար։</string>
+    <string name="offline_hint_swipe_to_exit">Դուք անցանց ռեժիմում եք։ Դուրս գալու համար վերնամասում սահեցրեք ներքև։</string>
+    <string name="offline_home_title">Իմ հասցեները</string>
+    <string name="offline_message_connection_lost">Ինտերնետ կապն ընդհատվել է։ Սեղմեք OK՝ պահպանված հասցեներն ու դռների կոդերը բացելու համար։</string>
+    <string name="offline_message_connection_restored">Կապը վերականգնվել է։</string>
+    <string name="offline_message_server_unavailable">Առանց ինտերնետ կապի հնարավոր չէ դուրս գալ անցանց ռեժիմից։ Փորձեք ավելի ուշ։</string>
+    <string name="home_addresses_empty_offline_title">Տվյալներ դեռ չեն պահպանվել։</string>
+    <string name="offline_back">Հետ</string>
+
+    <!-- Диалог добавления автомобильного номера (версия 2) -->
+    <string name="dialog_license_plate_v2_title">Ավելացնել ավտոմեքենայի համարը</string>
+    <string name="dialog_license_plate_v2_title_edit">Խմբագրել ավտոմեքենայի համարը</string>
+    <string name="dialog_license_plate_v2_country">Երկիր</string>
+    <string name="dialog_license_plate_v2_number_hint">Ավտոմեքենայի համարը</string>
+    <string name="dialog_license_plate_v2_number_incomplete">Համարը լրացված չէ կամ չի համապատասխանում ձևաչափին</string>
+    <string name="dialog_license_plate_v2_validity_unlimited">Անժամկետ</string>
+    <string name="dialog_license_plate_v2_valid_from_date">Սկզբի ամսաթիվը</string>
+    <string name="dialog_license_plate_v2_valid_from_time">Սկզբի ժամը</string>
+    <string name="dialog_license_plate_v2_valid_to_date">Ավարտի ամսաթիվը</string>
+    <string name="dialog_license_plate_v2_valid_to_time">Ավարտի ժամը</string>
+    <string name="dialog_license_plate_v2_auto_end">Ավարտը %s ժամից</string>
+    <string name="dialog_license_plate_v2_auto_end_preview">Ավարտը՝ %s</string>
+    <string name="dialog_license_plate_v2_period_invalid">Ավարտը չի կարող սկզբից շուտ լինել</string>
+    <string name="dialog_license_plate_v2_confirm">Ավելացնել</string>
+    <string name="dialog_license_plate_v2_cancel">Չեղարկել</string>
+
+    <!-- Названия стран для автомобильных номеров -->
+    <string name="country_ru">Ռուսաստան</string>
+    <string name="country_am">Հայաստան</string>
+    <string name="country_by">Բելառուս</string>
+    <string name="country_kz">Ղազախստան</string>
+
+    <!-- Период действия -->
+    <string name="period_from">սկսած՝ %s </string>
+    <string name="period_to">մինչև՝ %s</string>
 </resources>

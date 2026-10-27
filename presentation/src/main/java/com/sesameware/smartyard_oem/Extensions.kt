@@ -11,6 +11,7 @@ import android.text.TextWatcher
 import android.util.TypedValue
 import android.view.View
 import android.view.autofill.AutofillManager
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.TextView
@@ -106,6 +107,20 @@ fun String.md5(): String {
 
 fun String.isEmailCharacter(): Boolean {
     return this.contains("@")
+}
+
+/** Handles only the requested soft-keyboard action, without retaining an Activity or submitting. */
+fun EditText.hideKeyboardOnImeAction(action: Int = EditorInfo.IME_ACTION_DONE) {
+    setOnEditorActionListener { view, actionId, event ->
+        if (event == null && actionId == action) {
+            val inputManager = view.context
+                .getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
+            inputManager?.hideSoftInputFromWindow(view.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+            true
+        } else {
+            false
+        }
+    }
 }
 
 fun hideKeyboard(activity: Activity) {

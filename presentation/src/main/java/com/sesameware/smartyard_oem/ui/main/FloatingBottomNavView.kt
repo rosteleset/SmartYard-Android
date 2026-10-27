@@ -35,6 +35,7 @@ class FloatingBottomNavView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
     private var activeTabResource = 0
+    private var inactiveTabResource = 0
 
     private var activeTabColor = "#007AFF".toColorInt()
     private var inactiveTabColor = "#8E8E93".toColorInt()
@@ -60,15 +61,15 @@ class FloatingBottomNavView @JvmOverloads constructor(
         var menuRes = 0
         attrs?.let {
             context.withStyledAttributes(it, R.styleable.FloatingBottomNavView) {
-                activeTabResource = getResourceId(R.styleable.FloatingBottomNavView_activeTabColor, activeTabColor)
+                activeTabResource = getResourceId(R.styleable.FloatingBottomNavView_activeTabColor, activeTabResource)
                 activeTabColor = getColor(R.styleable.FloatingBottomNavView_activeTabColor, activeTabColor)
+                inactiveTabResource = getResourceId(R.styleable.FloatingBottomNavView_inactiveTabColor, inactiveTabResource)
                 inactiveTabColor = getColor(R.styleable.FloatingBottomNavView_inactiveTabColor, inactiveTabColor)
                 solidBgColor = getColor(R.styleable.FloatingBottomNavView_solidBackgroundColor, solidBgColor)
                 strokeBgColor = getColor(R.styleable.FloatingBottomNavView_strokeBackgroundColor, strokeBgColor)
                 indicatorColor = getColor(R.styleable.FloatingBottomNavView_indicatorColor, indicatorColor)
                 badgeColor = getColor(R.styleable.FloatingBottomNavView_badgeColor, badgeColor)
                 menuRes = getResourceId(R.styleable.FloatingBottomNavView_menu, 0)
-
             }
         }
 
@@ -371,6 +372,24 @@ class FloatingBottomNavView @JvmOverloads constructor(
 
         activeTabColor = ContextCompat.getColor(context, resid)
         activeTabResource = resid
+
+        updateTabColor(selectedItemId)
+    }
+
+    fun setInactiveTabColor(@ColorInt color: Int) {
+        if (inactiveTabColor == color) return
+
+        inactiveTabColor = color
+        inactiveTabResource = 0
+
+        updateTabColor(selectedItemId)
+    }
+
+    fun setInactiveTabResource(@ColorRes resid: Int) {
+        if (resid == 0 || inactiveTabResource == resid) return
+
+        inactiveTabColor = ContextCompat.getColor(context, resid)
+        inactiveTabResource = resid
 
         updateTabColor(selectedItemId)
     }

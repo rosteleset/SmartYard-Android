@@ -1,26 +1,8 @@
 package com.sesameware.domain.model.response
 
-import android.os.Parcelable
-import com.sesameware.domain.model.concatIfCorrectUrl
-import com.sesameware.domain.model.mapper.toEntranceCamera
 import com.squareup.moshi.Json
-import kotlinx.parcelize.Parcelize
-import kotlin.collections.map
 
 typealias CamMapResponse = ApiResult<List<CamMap>>?
-
-@Parcelize
-data class EntranceCamera(
-    val previewUrl: String,
-    val whepUrl: String = "",
-    val llHlsUrl: String = "",
-    val hlsUrl: String,
-    val enableSound: Boolean,
-    val previewCacheKey: String
-) : Parcelable {
-    val isValid: Boolean
-        get() = previewUrl.isNotBlank() || hlsUrl.isNotBlank() || llHlsUrl.isNotBlank()
-}
 
 data class CamMap(
     @param:Json(name = "id") val domophoneId: Int,
@@ -47,12 +29,6 @@ data class CamMap(
 
     val hasSound: Boolean
         get() = _hasSound ?: true
-
-    val entranceCameras: List<EntranceCamera>
-        get() = mutableListOf(this.toEntranceCamera()).apply {
-            val addCams = altCameras?.map { it.toEntranceCamera(timestamp) }.orEmpty()
-            addAll(addCams)
-        }.toList()
 
     data class AltCamera(
         @param:Json(name = "cameraId") val cameraId: Int,

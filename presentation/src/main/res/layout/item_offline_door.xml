@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="12dp">
+
+    <ImageView
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_marginEnd="12dp"
+        app:srcCompat="@drawable/ic_el_code"
+        tools:ignore="ContentDescription" />
+
+    <TextView
+        android:id="@+id/tv_door_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:textColor="@color/accent"
+        android:textSize="14sp"
+        tools:text="Подъезд 1" />
+
+    <TextView
+        android:id="@+id/tv_door_code"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_radius_upper_blue"
+        android:paddingHorizontal="12dp"
+        android:paddingVertical="6dp"
+        android:textColor="@color/accent"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        tools:text="99764" />
+
+</LinearLayout>

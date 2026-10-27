@@ -23,7 +23,6 @@ import com.sesameware.data.DataModule
 import com.sesameware.domain.model.response.CCTVDataTree
 import com.sesameware.domain.model.response.CCTVRepresentationType
 import com.sesameware.domain.model.response.CCTVViewTypeType
-import com.sesameware.domain.model.response.EntranceCamera
 import com.sesameware.domain.model.response.PRESENT_METHOD_OPEN_APP
 import com.sesameware.domain.model.response.PRESENT_METHOD_POPUP
 import com.sesameware.domain.model.response.PRESENT_METHOD_VIEW
@@ -33,10 +32,11 @@ import com.sesameware.smartyard_oem.R
 import com.sesameware.smartyard_oem.databinding.FragmentAddressBinding
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToMargin
 import com.sesameware.smartyard_oem.ui.applyBottomNavInsetsToPadding
+import com.sesameware.smartyard_oem.ui.common.player.StreamSourceConfig
 import com.sesameware.smartyard_oem.ui.custom_web_view.WebViewCodeCache
 import com.sesameware.smartyard_oem.ui.main.MainActivity
 import com.sesameware.smartyard_oem.ui.main.MainActivityViewModel
-import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressListAdapter
+import com.sesameware.smartyard_oem.ui.main.address.adapters.AddressAdapter
 import com.sesameware.smartyard_oem.ui.main.address.adapters.HouseViewHolder
 import com.sesameware.smartyard_oem.ui.main.address.adapters.StoriesAdapter
 import com.sesameware.smartyard_oem.ui.main.address.cctv_video.CCTVViewModel
@@ -77,7 +77,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
     private val mViewModel by sharedViewModel<AddressViewModel>()
     private val mEventLog by sharedViewModel<EventLogViewModel>()
 
-    private var adapter: AddressListAdapter? = null
+    private var adapter: AddressAdapter? = null
     private var storiesAdapter: StoriesAdapter? = null
     private var layoutManager: LinearLayoutManager? = null
     private var itemTouchHelper: ItemTouchHelper? = null
@@ -115,7 +115,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
 
     private fun initAddressList() {
         layoutManager = LinearLayoutManager(requireContext())
-        adapter = AddressListAdapter(
+        adapter = AddressAdapter(
             ::onAddressAction,
             ::onIssueAction,
             mViewModel.entranceView
@@ -204,7 +204,7 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
             is OnExpandClick -> {
                 mViewModel.setHouseItemExpanded(action.position, action.isExpanded)
             }
-            is OnOpenEntranceClick -> mViewModel.openDoor(action.lock)
+            is OnOpenEntranceClick -> runCatching { mViewModel.openDoor(action.lock) }
             is OnEntrancePreviewClick -> navigateToEntranceCameraFragment(action.camera, action.lock)
             is OnHouseAddressLongClick -> startDrag(action.position)
             is OnWebExtensionClick -> navigateToWebFragment(action.title, action.basePath,
@@ -224,9 +224,9 @@ class AddressFragment : Fragment(), GuestAccessDialogFragment.OnGuestAccessListe
         }
     }
 
-    private fun navigateToEntranceCameraFragment(camera: EntranceCamera, lock: Lock) {
+    private fun navigateToEntranceCameraFragment(cameraConfig: StreamSourceConfig, lock: Lock) {
         val action = AddressFragmentDirections
-            .actionAddressFragmentToEntranceCameraFragment(camera, lock)
+            .actionAddressFragmentToEntranceCameraFragment(cameraConfig, lock)
         findNavController().navigate(action)
     }
 

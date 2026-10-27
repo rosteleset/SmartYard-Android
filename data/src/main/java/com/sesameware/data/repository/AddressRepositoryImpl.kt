@@ -49,8 +49,12 @@ import com.sesameware.domain.model.response.GetTrackedEventsResponse
 import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UntrackEventResponse
 import com.sesameware.domain.model.response.UpdateGroupResponse
-import okhttp3.OkHttpClient
-import java.util.concurrent.TimeUnit
+import com.sesameware.data.local.dao.OfflineAddressDao
+import com.sesameware.data.local.entity.mapper.toOfflineAddressEntity
+import com.sesameware.data.local.entity.mapper.toOfflineDoorEntities
+import com.sesameware.domain.model.OfflineAddress
+import com.sesameware.data.prefs.PreferenceStorage
+import kotlinx.coroutines.sync.withLock
 
 /**
  * @author Nail Shakurov
@@ -58,12 +62,48 @@ import java.util.concurrent.TimeUnit
  */
 class AddressRepositoryImpl(
     private val teledomApi: TeledomApi,
-    override val moshi: Moshi
+    override val moshi: Moshi,
+    private val offlineAddressDao: OfflineAddressDao,
+    private val preferences: PreferenceStorage,
+    private val cacheSession: OfflineCacheSession
 ) : AddressRepository, BaseRepository(moshi) {
 
     override suspend fun getAddressList(): GetAddressListResponse {
-        return safeApiCall {
-            teledomApi.getAddressList(DataModule.BASE_URL + "address/getAddressList").getResponseBody()
+        val baseUrl = DataModule.BASE_URL
+        val (owner, generation) = cacheSession.mutex.withLock {
+            cacheSession.owner(preferences, baseUrl) to cacheSession.generation
+        }
+        val response = safeApiCall {
+            teledomApi.getAddressList(baseUrl + "address/getAddressList").getResponseBody()
+        }
+        response?.data?.let { addresses ->
+            if (owner == null) return@let
+            val offlineAddresses = addresses
+                .mapIndexed { i, addr -> addr.toOfflineAddressEntity(i, owner) }
+            val offlineDoorsWithCode = addresses.flatMap { addr ->
+                addr.toOfflineDoorEntities().filter { it.doorCode.isNotBlank() }
+            }
+            cacheSession.mutex.withLock {
+                if (generation == cacheSession.generation &&
+                    owner == cacheSession.owner(preferences, DataModule.BASE_URL)) {
+                    offlineAddressDao
+                        .replaceOfflineData(offlineAddresses, offlineDoorsWithCode)
+                }
+            }
+        }
+        return response
+    }
+
+    override suspend fun getOfflineAddresses(): List<OfflineAddress> = cacheSession.mutex.withLock {
+        val owner = cacheSession.owner(preferences, DataModule.BASE_URL) ?: return@withLock emptyList()
+        val addresses = offlineAddressDao.readOfflineData(owner)
+        if (owner == cacheSession.owner(preferences, DataModule.BASE_URL)) addresses else emptyList()
+    }
+
+    override suspend fun clearOfflineCache() {
+        cacheSession.mutex.withLock {
+            cacheSession.invalidate()
+            offlineAddressDao.clearOfflineData()
         }
     }
 

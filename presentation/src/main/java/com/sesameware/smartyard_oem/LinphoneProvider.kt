@@ -50,7 +50,8 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
             state: Call.State,
             message: String
         ) {
-            Timber.d("debug_dmm call_state: $state message: $message")
+            val isVideo = call.remoteParams?.isVideoEnabled == true
+            Timber.d("debug_dmm call_state: $state message: $message isVideoEnabled=$isVideo")
             val cState = CCallState(state, message, call, core)
             callState.value = cState
 
@@ -90,8 +91,13 @@ class LinphoneProvider(val core: Core, val service: LinphoneService) : KoinCompo
     }
 
     fun isVideoCall(): Boolean = if (isConnected()) {
-        core.currentCall?.remoteParams?.isVideoEnabled == true
+        val currentCall = core.currentCall
+        val remoteParams = currentCall?.remoteParams
+        val isVideo = remoteParams?.isVideoEnabled == true
+        Timber.d("debug_dmm isVideoCall check: isConnected=true, currentCall=${currentCall != null}, remoteParamsIsVideoEnabled=${remoteParams?.isVideoEnabled}, result=$isVideo")
+        isVideo
     } else {
+        Timber.d("debug_dmm isVideoCall check: isConnected=false, result=false")
         false
     }
 

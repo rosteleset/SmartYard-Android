@@ -26,6 +26,7 @@ import com.sesameware.domain.model.response.PlogResponse
 import com.sesameware.domain.model.response.GetTrackedEventsResponse
 import com.sesameware.domain.model.response.TrackEventResponse
 import com.sesameware.domain.model.response.UntrackEventResponse
+import com.sesameware.domain.model.OfflineAddress
 
 /**
  * @author Nail Shakurov
@@ -33,6 +34,10 @@ import com.sesameware.domain.model.response.UntrackEventResponse
  */
 interface AddressRepository {
     suspend fun getAddressList(): GetAddressListResponse
+
+    suspend fun getOfflineAddresses(): List<OfflineAddress>
+
+    suspend fun clearOfflineCache()
 
     suspend fun getSettingsList(): GetSettingsListResponse
 
